@@ -10,7 +10,8 @@
 
 @implementation SubMuxer
 
-MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const char* language_iso639_2, uint16_t video_width, uint16_t video_height, uint16_t subtitleHeight)
+MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const char* language_iso639_2,
+                               uint16_t video_width, uint16_t video_height, uint16_t subtitleHeight)
 {
     const uint8_t textColor[4] = { 255,255,255,255 };
     MP4TrackId subtitle_track = MP4AddSubtitleTrack(file, refTrackId);
