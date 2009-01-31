@@ -12,7 +12,7 @@
 
 @interface MyDocument : NSDocument
 {
-    MP4FileHandle   fileHandle;
+    MP4FileHandle   readOnlyFile;
     NSString*       filePath;
 
     IBOutlet NSTextField    *subtitleFilePath;

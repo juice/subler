@@ -8,11 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SubUtilities.h"
+#include "MP4Utilities.h"
 
 @interface SubMuxer : NSObject {
 
 }
 
-int muxSubtitleTrack(NSString* filePath, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay);
+int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay);
 
 @end

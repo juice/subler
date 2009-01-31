@@ -7,7 +7,6 @@
 //
 
 #import "SubMuxer.h"
-#include "MP4Utilities.h"
 
 @implementation SubMuxer
 
@@ -45,10 +44,9 @@ MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const 
     uint8_t nval[36];
     uint32_t *ptr32 = (uint32_t*) nval;
     uint32_t size;
+    
     MP4GetTrackBytesProperty(file,subtitle_track, "tkhd.matrix", &val, &size);
-
     memcpy(nval, val, size);
-
     ptr32[7] = CFSwapInt32HostToBig( (video_height - subtitleHeight) * 0x10000 );
 
     MP4SetTrackBytesProperty(file,subtitle_track, "tkhd.matrix", nval, size);    
@@ -61,7 +59,7 @@ MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const 
 	return subtitle_track;
 }
 
-int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId,const char* string, MP4Duration duration, MP4Duration offset)
+int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId,const char* string, MP4Duration duration)
 {
     const size_t stringLength = strlen(string);
     u_int8_t buffer[1024];
@@ -70,37 +68,32 @@ int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId,const cha
     buffer[0] = (stringLength >> 8) & 0xff;
     buffer[1] = stringLength & 0xff;
 
-    if(offset) {
-        u_int8_t empty[2] = {0,0};
-        Err = MP4WriteSample(file,
-                             subtitleTrackId,
-                             empty,
-                             2,
-                             offset,
-                             0, true);
-    }
-    else if(duration) {
     Err = MP4WriteSample(file,
                          subtitleTrackId,
                          buffer,
                          stringLength + 2,
                          duration,
                          0, true);
-    }
     return Err;
 }
 
-int muxSubtitleTrack(NSString* filePath, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay) {
-    MP4FileHandle fileHandle;
+int writeEmptySubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, MP4Duration duration)
+{
+    int Err;
+    u_int8_t empty[2] = {0,0};
+    Err = MP4WriteSample(file,
+                         subtitleTrackId,
+                         empty,
+                         2,
+                         duration,
+                         0, true);
+    return Err;
+}
+
+int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay) {
     MP4TrackId subtitleTrackId;
     int trackNumber, i, videoTrack, videoWidth, videoHeight;
     uint64_t hSpacing, vSpacing;
-
-    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        printf("Error\n");
-        return 0;
-    }
 
     trackNumber = MP4GetNumberOfTracks( fileHandle, 0, 0);
     for (i = 0; i <= trackNumber; i++) {
@@ -133,29 +126,28 @@ int muxSubtitleTrack(NSString* filePath, NSString* subtitlePath, const char* lan
 
     subtitleTrackId = createSubtitleTrack( fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight );
     NSLog(@"lalala");
-    i = 0;
+    
+    int firstSub = 0;
     while (![ss isEmpty]) {
 		SubLine *sl = [ss getSerializedPacket];
         NSLog(@"begin: %d, end: %d", sl->begin_time, sl->end_time);
 		const char *str = [sl->line UTF8String];
-        if (i == 0) {
-            i++;
-            writeSubtitleSample(fileHandle, subtitleTrackId, str, 0, sl->begin_time + delay);
+        if (firstSub == 0) {
+            firstSub++;
+            writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->begin_time + delay);
         }
         if ([sl->line isEqualToString:@"\n"])
         {
-            writeSubtitleSample(fileHandle, subtitleTrackId, str, 0, sl->end_time - sl->begin_time);
+            writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->end_time - sl->begin_time);
             continue;
         }
-        writeSubtitleSample(fileHandle, subtitleTrackId, str, sl->end_time - sl->begin_time, 0);
+        writeSubtitleSample(fileHandle, subtitleTrackId, str, sl->end_time - sl->begin_time);
 	}
 
-    writeSubtitleSample(fileHandle, subtitleTrackId, " ", 0, 100);
+    writeEmptySubtitleSample(fileHandle, subtitleTrackId, 100);
 
     [ss release];
     [pool release];
-
-    MP4Close(fileHandle);
 
     return 0;
 }
