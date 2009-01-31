@@ -12,10 +12,10 @@
 #include <string.h>
 
 typedef enum {  TRACK_DISABLED = 0x0,
-    TRACK_ENABLED = 0x1,
-    TRACK_IN_MOVIE = 0x2,
-    TRACK_IN_PREVIEW = 0x4,
-    TRACK_IN_POSTER = 0x8
+                TRACK_ENABLED = 0x1,
+                TRACK_IN_MOVIE = 0x2,
+                TRACK_IN_PREVIEW = 0x4,
+                TRACK_IN_POSTER = 0x8
 } track_header_flags;
 
 
