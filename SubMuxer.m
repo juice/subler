@@ -131,7 +131,7 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     int firstSub = 0;
     while (![ss isEmpty]) {
 		SubLine *sl = [ss getSerializedPacket];
-        NSLog(@"begin: %d, end: %d", sl->begin_time, sl->end_time);
+        //NSLog(@"begin: %d, end: %d", sl->begin_time, sl->end_time);
 		const char *str = [sl->line UTF8String];
         if (firstSub == 0) {
             firstSub++;

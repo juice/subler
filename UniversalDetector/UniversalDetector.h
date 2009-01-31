@@ -1,6 +1,5 @@
 #import <Cocoa/Cocoa.h>
 
-
 @interface UniversalDetector:NSObject
 {
 	void *detectorptr;

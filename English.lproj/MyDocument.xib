@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="5"/>
+			<integer value="100042"/>
 			<integer value="100049"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -306,8 +306,8 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<object class="NSArray" key="NSToolbarIBAllowedItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="926924802"/>
-						<reference ref="605071939"/>
 						<reference ref="884122659"/>
+						<reference ref="605071939"/>
 						<reference ref="292693763"/>
 						<reference ref="1001935062"/>
 						<reference ref="581074669"/>
@@ -469,13 +469,18 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 														</object>
 														<reference key="NSTextColor" ref="735875572"/>
 													</object>
-													<object class="NSTextFieldCell" key="NSDataCell" id="582695777">
-														<int key="NSCellFlags">337772096</int>
-														<int key="NSCellFlags2">2048</int>
-														<string key="NSContents">Text Cell</string>
+													<object class="NSTextFieldCell" key="NSDataCell" id="369013806">
+														<int key="NSCellFlags">67239488</int>
+														<int key="NSCellFlags2">272630784</int>
+														<string key="NSContents">Text</string>
 														<reference key="NSSupport" ref="871642454"/>
 														<reference key="NSControlView" ref="355153569"/>
-														<reference key="NSBackgroundColor" ref="280740441"/>
+														<object class="NSColor" key="NSBackgroundColor" id="289450487">
+															<int key="NSColorSpace">6</int>
+															<string key="NSCatalogName">System</string>
+															<string key="NSColorName">controlColor</string>
+															<reference key="NSColor" ref="719684796"/>
+														</object>
 														<reference key="NSTextColor" ref="439098392"/>
 													</object>
 													<int key="NSResizingMask">3</int>
@@ -647,12 +652,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 								<string key="NSContents"/>
 								<reference key="NSSupport" ref="871642454"/>
 								<reference key="NSControlView" ref="276208791"/>
-								<object class="NSColor" key="NSBackgroundColor" id="289450487">
-									<int key="NSColorSpace">6</int>
-									<string key="NSCatalogName">System</string>
-									<string key="NSColorName">controlColor</string>
-									<reference key="NSColor" ref="719684796"/>
-								</object>
+								<reference key="NSBackgroundColor" ref="289450487"/>
 								<reference key="NSTextColor" ref="439098392"/>
 							</object>
 						</object>
@@ -926,7 +926,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 									</object>
 									<object class="NSAttributedString" key="NS.nan">
 										<string key="NSString">NaN</string>
-										<object class="NSDictionary" key="NSAttributes" id="755153121">
+										<object class="NSDictionary" key="NSAttributes" id="202599403">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSArray" key="dict.sortedKeys">
 												<bool key="EncodedWithXMLCoder">YES</bool>
@@ -936,7 +936,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 											</object>
 										</object>
 									</object>
-									<object class="NSDecimalNumberPlaceholder" key="NS.min" id="315960131">
+									<object class="NSDecimalNumberPlaceholder" key="NS.min" id="42490655">
 										<int key="NS.exponent">0</int>
 										<int key="NS.length">0</int>
 										<bool key="NS.negative">YES</bool>
@@ -944,7 +944,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 										<int key="NS.mantissa.bo">1</int>
 										<bytes key="NS.mantissa">AAAAAAAAAAAAAAAAAAAAAA</bytes>
 									</object>
-									<reference key="NS.max" ref="315960131"/>
+									<reference key="NS.max" ref="42490655"/>
 									<object class="NSDecimalNumberHandler" key="NS.rounding">
 										<int key="NS.roundingmode">3</int>
 										<bool key="NS.raise.overflow">YES</bool>
@@ -1010,10 +1010,10 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 									</object>
 									<object class="NSAttributedString" key="NS.nan">
 										<string key="NSString">NaN</string>
-										<reference key="NSAttributes" ref="755153121"/>
+										<reference key="NSAttributes" ref="202599403"/>
 									</object>
-									<reference key="NS.min" ref="315960131"/>
-									<reference key="NS.max" ref="315960131"/>
+									<reference key="NS.min" ref="42490655"/>
+									<reference key="NS.max" ref="42490655"/>
 									<object class="NSDecimalNumberHandler" key="NS.rounding">
 										<int key="NS.roundingmode">3</int>
 										<bool key="NS.raise.overflow">YES</bool>
@@ -1133,14 +1133,6 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<int key="connectionID">100061</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">startMuxing:</string>
-						<reference key="source" ref="512844837"/>
-						<reference key="destination" ref="700268767"/>
-					</object>
-					<int key="connectionID">100063</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">documentWindow</string>
 						<reference key="source" ref="512844837"/>
@@ -1227,6 +1219,14 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<reference key="destination" ref="25872634"/>
 					</object>
 					<int key="connectionID">100111</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">addSubtitleTrack:</string>
+						<reference key="source" ref="512844837"/>
+						<reference key="destination" ref="700268767"/>
+					</object>
+					<int key="connectionID">100120</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1365,14 +1365,9 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<reference key="object" ref="18787711"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="582695777"/>
+							<reference ref="369013806"/>
 						</object>
 						<reference key="parent" ref="355153569"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">100043</int>
-						<reference key="object" ref="582695777"/>
-						<reference key="parent" ref="18787711"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">100044</int>
@@ -1714,6 +1709,11 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<reference key="object" ref="232059793"/>
 						<reference key="parent" ref="727128300"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">100123</int>
+						<reference key="object" ref="369013806"/>
+						<reference key="parent" ref="18787711"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1735,7 +1735,6 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>100040.IBPluginDependency</string>
 					<string>100041.IBPluginDependency</string>
 					<string>100042.IBPluginDependency</string>
-					<string>100043.IBPluginDependency</string>
 					<string>100044.IBPluginDependency</string>
 					<string>100045.IBPluginDependency</string>
 					<string>100048.IBEditorWindowLastContentRect</string>
@@ -1788,6 +1787,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>100117.IBPluginDependency</string>
 					<string>100118.IBPluginDependency</string>
 					<string>100119.IBPluginDependency</string>
+					<string>100123.IBPluginDependency</string>
 					<string>5.IBEditorWindowLastContentRect</string>
 					<string>5.IBWindowTemplateEditedContentRect</string>
 					<string>5.ImportedFromIB2</string>
@@ -1818,9 +1818,8 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{285, 569}, {480, 182}}</string>
-					<string>{{285, 569}, {480, 182}}</string>
+					<string>{{286, 540}, {480, 182}}</string>
+					<string>{{286, 540}, {480, 182}}</string>
 					<reference ref="6"/>
 					<boolean value="YES" id="5"/>
 					<reference ref="5"/>
@@ -1857,7 +1856,8 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{184, 766}, {617, 0}}</string>
+					<string>{{116, 824}, {617, 0}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1901,7 +1901,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">100119</int>
+			<int key="maxID">100123</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1913,6 +1913,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addSubtitleTrack:</string>
 							<string>closeSheet:</string>
 							<string>deleteTrack:</string>
 							<string>openBrowse:</string>
@@ -1922,6 +1923,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>

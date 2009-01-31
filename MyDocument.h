@@ -9,11 +9,14 @@
 
 #import <Cocoa/Cocoa.h>
 #import "mp4v2/mp4v2.h"
+#import "MP4FileWrapper.h"
 
 @interface MyDocument : NSDocument
 {
     MP4FileHandle   readOnlyFile;
-    NSString*       filePath;
+    NSString       *filePath;
+    
+    MP4FileWrapper  *mp4File;
 
     IBOutlet NSTextField    *subtitleFilePath;
     IBOutlet NSTextField    *label;
@@ -34,7 +37,8 @@
 - (IBAction) showSubititleWindow: (id) sender;
 - (IBAction) closeSheet: (id) sender;
 - (IBAction) openBrowse: (id) sender;
-- (IBAction) startMuxing: (id) sender;
+- (BOOL) startMuxing: (MP4SubtitleTrackWrapper*) track;
+- (IBAction) addSubtitleTrack: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 
 - (void) reloadTable: (id) sender;

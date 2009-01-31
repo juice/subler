@@ -10,6 +10,7 @@
 #import "SubMuxer.h"
 #import "MP4Utilities.h"
 #import "lang.h"
+#import "SubtitleTrack.h"
 
 @implementation MyDocument
 
@@ -36,26 +37,36 @@
     [super windowControllerDidLoadNib:aController];
 }
 
-- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
+- (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
-    // Insert code here to write your document to data of the specified type. If the given outError != NULL, ensure that you set *outError when returning nil.
+    NSLog(@"Hello");
+    
+    MP4SubtitleTrackWrapper *track;
+    for (track in mp4File.tracksArray)
+    {
+        if( [track.trackType isEqualToString:@"Subtitle Track"])
+            if (track.hasChanged) {
+                [self startMuxing:track];
+                [self updateChangeCount:NSChangeCleared];
+            }
+    }
 
-    // You can also choose to override -fileWrapperOfType:error:, -writeToURL:ofType:error:, or -writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
-
-    // For applications targeted for Panther or earlier systems, you should use the deprecated API -dataRepresentationOfType:. In this case you can also choose to override -fileWrapperRepresentationOfType: or -writeToFile:ofType: instead.
+    [self reloadTable:self];
+    
 
     if ( outError != NULL ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
-	return nil;
+	return YES;
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    readOnlyFile = MP4Read( [[absoluteURL path] UTF8String], 0);
     filePath = [absoluteURL path];
 
-    if ( outError != NULL || !readOnlyFile ) {
+    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
+    
+    if ( outError != NULL || !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
     return YES;
@@ -67,12 +78,10 @@
             return YES;
 
     else if (toolbarItem == deleteTrack) {
-        if ([fileTracksTable selectedRow] != -1 && [NSApp isActive]) {
-            MP4TrackId trackId = MP4FindTrackId( readOnlyFile, [fileTracksTable selectedRow], 0, 0);
-            const char* trackType = MP4GetTrackType( readOnlyFile, trackId);
-            if (!strcmp(trackType, "sbtl"))
+        if ([fileTracksTable selectedRow] != -1 && [NSApp isActive])
+            if ([[[mp4File.tracksArray objectAtIndex:[fileTracksTable selectedRow]] trackType]
+                    isEqualToString:@"Subtitle Track"])
                 return YES;
-        }    
     }
     return NO;
 }
@@ -82,53 +91,37 @@
  **********************************************************************/
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
-    if( !readOnlyFile )
+    if( !mp4File )
         return 0;
     
-    return MP4GetNumberOfTracks( readOnlyFile, 0, 0);
+    return [mp4File tracksCount];
 }
 
 - (id) tableView:(NSTableView *)tableView 
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
-    MP4TrackId trackId = MP4FindTrackId( readOnlyFile, rowIndex, 0, 0);
+    MP4TrackWrapper *track = [mp4File.tracksArray objectAtIndex:rowIndex];
 
+    if(!track)
+        return nil;
+    
     if( [tableColumn.identifier isEqualToString:@"trackId"] )
-       return [NSString stringWithFormat:@"%d", trackId];
+       return [NSString stringWithFormat:@"%d", track.trackId];
 
     if( [tableColumn.identifier isEqualToString:@"trackName"] )
     {
-        const char* trackType = MP4GetTrackType( readOnlyFile, trackId);
-        if (!strcmp(trackType, MP4_AUDIO_TRACK_TYPE))
-            return NSLocalizedString(@"Audio Track", @"Audio Track");
-        else if (!strcmp(trackType, MP4_VIDEO_TRACK_TYPE))
-            return NSLocalizedString(@"Video Track", @"Video Track");
-        else if (!strcmp(trackType, MP4_TEXT_TRACK_TYPE))
-            return NSLocalizedString(@"Text Track", @"Text Track");
-        else if (!strcmp(trackType, "sbtl"))
-            return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
-        else
-            return NSLocalizedString(@"Unknown Track", @"Unknown Track");
+        return track.trackType;
     }
 
     if( [tableColumn.identifier isEqualToString:@"trackInfo"] )
-        return [NSString stringWithFormat:@"%s", MP4GetTrackMediaDataName(readOnlyFile, trackId)];
+        return track.trackMedia;
 
     if( [tableColumn.identifier isEqualToString:@"trackDuration"] )
-        return [NSString stringWithFormat:@"%ds", MP4GetTrackDuration(readOnlyFile, trackId) / MP4GetTrackTimeScale( readOnlyFile, trackId) ];
+        return [NSString stringWithFormat:@"%ds", (int) track.duration];
 
     if( [tableColumn.identifier isEqualToString:@"trackLanguage"] )
-    {
-        char* lang;
-        NSString *language;
-        lang = malloc(sizeof(char)*4);
-        MP4GetTrackLanguage( readOnlyFile, trackId, lang);
-        language = [NSString stringWithFormat:@"%s", lang_for_code2(lang)->eng_name];
-        free(lang);
-        
-        return language;
-    }
+        return track.language;
 
     return nil;
 }
@@ -171,35 +164,60 @@ returnCode contextInfo: (void *) contextInfo
     [addSubtitleWindow orderOut:self];
 }
 
-- (IBAction) startMuxing: (id) sender
+- (BOOL) startMuxing: (MP4SubtitleTrackWrapper*) track
 {
     MP4FileHandle fileHandle;
-    iso639_lang_t *lang = lang_for_english([[[langSelection selectedItem] title] UTF8String]);
+    iso639_lang_t *lang = lang_for_english([track.language UTF8String]);
 
     fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
         printf("Error\n");
-        return;
+        return NO;
     }
     
     muxSubtitleTrack(fileHandle,
-                     [subtitleFilePath stringValue],
+                     track.trackSourcePath,
                      lang->iso639_2,
-                     [[trackHeight stringValue] integerValue],
-                     [[delay stringValue] integerValue]
+                     track.height,
+                     track.delay
     );
     
     MP4Close(fileHandle);
-
-    [self reloadTable:self];
-
+    
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
+    
+    [self updateChangeCount:NSChangeDone];
+    
+    return YES;
 }
+
+- (IBAction) addSubtitleTrack: (id) sender
+{
+    MP4SubtitleTrackWrapper *track = [[MP4SubtitleTrackWrapper alloc] init];
+    track.trackSourcePath = [subtitleFilePath stringValue];
+    track.language = [[langSelection selectedItem] title];
+    track.trackType = @"Subtitle Track";
+    track.delay = [[delay stringValue] integerValue];
+    track.height = [[trackHeight stringValue] integerValue];
+    track.hasChanged = YES;
+    
+    [mp4File.tracksArray addObject:track];
+    [track release];
+    
+    [fileTracksTable reloadData];
+    
+    [NSApp endSheet: addSubtitleWindow];
+    [addSubtitleWindow orderOut:self];
+    
+    [self updateChangeCount:NSChangeDone];
+}
+
 
 - (void) reloadTable: (id) sender
 {
-    readOnlyFile = MP4Read( [filePath UTF8String], 0);
+    [mp4File release];
+    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
     [fileTracksTable reloadData];
 }
 
@@ -208,7 +226,7 @@ returnCode contextInfo: (void *) contextInfo
     MP4FileHandle fileHandle;
 
     fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    MP4TrackId trackId = MP4FindTrackId( readOnlyFile, [fileTracksTable selectedRow], 0, 0);
+    MP4TrackId trackId = [[mp4File.tracksArray objectAtIndex: [fileTracksTable selectedRow]] trackId];
     MP4DeleteTrack( fileHandle, trackId);
 
     updateTracksCount(fileHandle);
