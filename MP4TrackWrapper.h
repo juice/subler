@@ -16,6 +16,7 @@
     NSString    *trackMedia;
     NSString    *language;
     BOOL        hasChanged;
+    BOOL        muxed;
 	
 	int samplerate; 
 	double bitrate;     // kbit/sec
@@ -32,6 +33,7 @@
 @property (readonly) double bitrate;
 @property (readonly) double duration;
 @property(readwrite) BOOL hasChanged;
+@property(readwrite) BOOL muxed;
 
 -(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;
 -(void)readTrackType;

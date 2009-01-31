@@ -13,6 +13,7 @@
     int delay;
     int height;
 }
+
 @property(readwrite) int delay;
 @property(readwrite) int height;
 

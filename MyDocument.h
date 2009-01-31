@@ -32,6 +32,8 @@
 
     IBOutlet NSToolbarItem  *addTrackToolBar;
     IBOutlet NSToolbarItem  *deleteTrack;
+    
+    NSMutableArray          *languages;
 }
 
 - (IBAction) showSubititleWindow: (id) sender;
@@ -39,8 +41,10 @@
 - (IBAction) openBrowse: (id) sender;
 - (BOOL) startMuxing: (MP4SubtitleTrackWrapper*) track;
 - (IBAction) addSubtitleTrack: (id) sender;
+- (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track;
 - (IBAction) deleteTrack: (id) sender;
 
 - (void) reloadTable: (id) sender;
+
 
 @end
