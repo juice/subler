@@ -8,7 +8,7 @@
 
 
 #import <Cocoa/Cocoa.h>
-#include "mp4v2/mp4v2.h"
+#import "mp4v2/mp4v2.h"
 
 @interface MyDocument : NSDocument
 {

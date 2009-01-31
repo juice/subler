@@ -7,3 +7,7 @@
  *
  */
 
+#include "mp4v2/mp4v2.h"
+
+int enableFirstSubtitleTrack(MP4FileHandle fileHandle);
+int updateTracksCount(MP4FileHandle fileHandle);

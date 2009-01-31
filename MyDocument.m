@@ -8,6 +8,7 @@
 
 #import "MyDocument.h"
 #import "SubMuxer.h"
+#import "MP4Utilities.h"
 #import "lang.h"
 
 @implementation MyDocument
@@ -196,28 +197,13 @@ returnCode contextInfo: (void *) contextInfo
 - (IBAction) deleteTrack: (id) sender
 {
     MP4FileHandle fileHandle2;
-    MP4TrackId maxTrackId;
-    int i;
 
     MP4TrackId trackId = MP4FindTrackId( fileHandle, [fileTracksTable selectedRow], 0, 0);
     fileHandle2 = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
     MP4DeleteTrack( fileHandle2, trackId);
 
-    maxTrackId = 0;
-    for (i = 0; i< MP4GetNumberOfTracks( fileHandle2, 0, 0); i++ )
-                if (MP4FindTrackId(fileHandle2, i, 0, 0) > maxTrackId)
-                    maxTrackId = MP4FindTrackId(fileHandle2, i, 0, 0);
-
-    MP4SetIntegerProperty(fileHandle2, "moov.mvhd.nextTrackId", maxTrackId + 1);
-
-    for(i = 0; i < MP4GetNumberOfTracks( fileHandle2, 0, 0); i++) {
-        const char* trackType = MP4GetTrackType( fileHandle2, MP4FindTrackId( fileHandle2, i, 0, 0));
-        
-        if(!strcmp(trackType, "sbtl")) {
-            MP4SetTrackIntegerProperty(fileHandle2, MP4FindTrackId( fileHandle2, i, 0, 0), "tkhd.flags", (TRACK_ENABLED | TRACK_IN_MOVIE));
-            break;
-        }
-    }
+    updateTracksCount(fileHandle2);
+    enableFirstSubtitleTrack(fileHandle2);
 
     MP4Close(fileHandle2);
     

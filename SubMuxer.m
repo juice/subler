@@ -7,14 +7,13 @@
 //
 
 #import "SubMuxer.h"
-#include "mp4v2/mp4v2.h"
+#include "MP4Utilities.h"
 
 @implementation SubMuxer
 
 MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const char* language_iso639_2, uint16_t video_width, uint16_t video_height, uint16_t subtitleHeight)
 {
     const uint8_t textColor[4] = { 255,255,255,255 };
-    int i;
     MP4TrackId subtitle_track = MP4AddSubtitleTrack(file, refTrackId);
 
     MP4SetTrackLanguage(file, subtitle_track, language_iso639_2);
@@ -57,18 +56,7 @@ MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const 
     /* set the timescale to ms */
     MP4SetTrackTimeScale(file,subtitle_track, 1000);
 
-    MP4TrackId firstTrack = 0;
-    /* enable only the first subtitle track */
-    for(i = 0; i < MP4GetNumberOfTracks( file, 0, 0); i++) {
-        const char* trackType = MP4GetTrackType( file, MP4FindTrackId( file, i, 0, 0));
-
-        if(!strcmp(trackType, "sbtl")) {
-            if (firstTrack++ == 0)
-                MP4SetTrackIntegerProperty(file, MP4FindTrackId( file, i, 0, 0), "tkhd.flags", (TRACK_ENABLED | TRACK_IN_MOVIE));
-            else
-                MP4SetTrackIntegerProperty(file, subtitle_track, "tkhd.flags", (TRACK_DISABLED | TRACK_IN_MOVIE));
-        }
-    }
+    enableFirstSubtitleTrack(file);
 
 	return subtitle_track;
 }
