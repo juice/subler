@@ -39,6 +39,8 @@
     languages = [[NSArray arrayWithObjects:  @"English", @"Italian", @"French" , @"German", @"Japanese", @"Spanish" , @"Dutch" , @"Swedish" , @"Danish", nil] retain];
 }
 
+
+
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
     MP4SubtitleTrackWrapper *track;
@@ -142,6 +144,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     }
 }
 
+/* NSComboBoxCell dataSource */
+
 - (NSInteger)numberOfItemsInComboBoxCell:(NSComboBoxCell *)comboBoxCell
 {
     return [languages count];
@@ -160,6 +164,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [NSApp beginSheet:addSubtitleWindow modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
 }
+
+/* Open file window */
 
 - (IBAction) openBrowse: (id) sender
 {
@@ -186,6 +192,8 @@ returnCode contextInfo: (void *) contextInfo
     [subtitleFilePath setStringValue: [sheet.filenames objectAtIndex: 0]];
     [addTrack setEnabled:YES];
 }
+
+/* Track methods */
 
 - (IBAction) closeSheet: (id) sender
 {
