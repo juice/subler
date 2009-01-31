@@ -39,8 +39,6 @@
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
-    NSLog(@"Hello");
-    
     MP4SubtitleTrackWrapper *track;
     for (track in mp4File.tracksArray)
     {

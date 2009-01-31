@@ -61,6 +61,12 @@
 	}
 }
 
+- (void) dellaoc
+{
+    [trackMedia release];
+    [language release];
+}
+
 @synthesize trackSourcePath;
 @synthesize trackId;
 @synthesize trackType;

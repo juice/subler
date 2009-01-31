@@ -126,7 +126,6 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     [ss setFinished:YES];
 
     subtitleTrackId = createSubtitleTrack( fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight );
-    NSLog(@"lalala");
     
     int firstSub = 0;
     while (![ss isEmpty]) {
