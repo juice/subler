@@ -42,6 +42,7 @@
 - (BOOL) startMuxing: (MP4SubtitleTrackWrapper*) track;
 - (IBAction) addSubtitleTrack: (id) sender;
 - (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track;
+- (BOOL) updateTrackName: (MP4TrackWrapper*) track;
 - (IBAction) deleteTrack: (id) sender;
 
 - (void) reloadTable: (id) sender;

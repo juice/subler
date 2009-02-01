@@ -12,7 +12,8 @@
 @interface MP4TrackWrapper : NSObject {
     MP4TrackId  trackId;
 	NSString    *trackSourcePath;
-	NSString    *trackType;
+	NSString    *trackFormat;
+    NSString    *trackName;
     NSString    *trackMedia;
     NSString    *language;
     BOOL        hasChanged;
@@ -20,12 +21,13 @@
 	
 	int samplerate; 
 	double bitrate;     // kbit/sec
-	double duration;    // seconds    
+	double duration;    // seconds
 }
 
 @property (readwrite, retain) NSString * trackSourcePath;
 @property (readwrite) MP4TrackId trackId;
-@property (readwrite, retain) NSString *trackType;
+@property (readwrite, retain) NSString *trackFormat;
+@property (readwrite, retain) NSString *trackName;
 @property (readwrite, retain) NSString *trackMedia;
 @property (readwrite, retain) NSString *language;
 

@@ -36,22 +36,22 @@
 {
     [super windowControllerDidLoadNib:aController];
     
-    languages = [[NSArray arrayWithObjects:  @"English", @"Italian", @"French" , @"German", @"Japanese", @"Spanish" , @"Dutch" , @"Swedish" , @"Danish", nil] retain];
+    languages = [[NSArray arrayWithObjects:  @"Unknown", @"English", @"Italian", @"French" , @"German", @"Japanese", @"Spanish" , @"Dutch" , @"Swedish" , @"Danish", nil] retain];
 }
-
-
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
     MP4SubtitleTrackWrapper *track;
     for (track in mp4File.tracksArray)
     {
-        if( [track.trackType isEqualToString:@"Subtitle Track"])
+        if ([track.trackFormat isEqualToString:@"3GPP Text"])
             if (track.hasChanged && !track.muxed) {
                 [self startMuxing:track];
             }
-        if( track.hasChanged )
+        if (track.hasChanged) {
             [self updateTrackLanguage:track];
+            [self updateTrackName:track];
+        }
     }
 
     [self updateChangeCount:NSChangeCleared];
@@ -83,8 +83,8 @@
 
     else if (toolbarItem == deleteTrack) {
         if ([fileTracksTable selectedRow] != -1 && [NSApp isActive])
-            if ([[[mp4File.tracksArray objectAtIndex:[fileTracksTable selectedRow]] trackType]
-                    isEqualToString:@"Subtitle Track"])
+            if ([[[mp4File.tracksArray objectAtIndex:[fileTracksTable selectedRow]] trackFormat]
+                    isEqualToString:@"3GPP Text"])
                 return YES;
     }
     return NO;
@@ -115,11 +115,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     if( [tableColumn.identifier isEqualToString:@"trackName"] )
     {
-        return track.trackType;
+        return track.trackName;
     }
 
     if( [tableColumn.identifier isEqualToString:@"trackInfo"] )
-        return track.trackMedia;
+        return track.trackFormat;
 
     if( [tableColumn.identifier isEqualToString:@"trackDuration"] )
         return [NSString stringWithFormat:@"%ds", (int) track.duration];
@@ -139,6 +139,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"]) {
         track.language = anObject;
+        track.hasChanged = YES;
+        [self updateChangeCount:NSChangeDone];
+    }
+    if ([tableColumn.identifier isEqualToString:@"trackName"]) {
+        track.trackName = anObject;
         track.hasChanged = YES;
         [self updateChangeCount:NSChangeDone];
     }
@@ -252,12 +257,43 @@ returnCode contextInfo: (void *) contextInfo
     return YES;
 }
 
+- (BOOL) updateTrackName: (MP4TrackWrapper*) track
+{
+    MP4FileHandle fileHandle;
+    
+    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
+    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
+        printf("Error\n");
+        return NO;
+    }
+    
+    if (![track.trackName isEqualToString:@"Video Track"] &&
+        ![track.trackName isEqualToString:@"Audio Track"] &&
+        ![track.trackName isEqualToString:@"Subtitle Track"] &&
+        ![track.trackName isEqualToString:@"Text Track"] &&
+        track.trackName != nil) {
+        MP4SetTrackBytesProperty(fileHandle, track.trackId,
+                                 "udta.name.value",
+                                 (const uint8_t*) [track.trackName UTF8String], strlen([track.trackName UTF8String]));
+    }
+    
+    MP4Close(fileHandle);
+    
+    [NSApp endSheet: addSubtitleWindow];
+    [addSubtitleWindow orderOut:self];
+    
+    [self updateChangeCount:NSChangeDone];
+    
+    return YES;
+}
+
 - (IBAction) addSubtitleTrack: (id) sender
 {
     MP4SubtitleTrackWrapper *track = [[MP4SubtitleTrackWrapper alloc] init];
     track.trackSourcePath = [subtitleFilePath stringValue];
     track.language = [[langSelection selectedItem] title];
-    track.trackType = @"Subtitle Track";
+    track.trackFormat = @"3GPP Text";
+    track.trackName = @"Subtitle Track";
     track.delay = [[delay stringValue] integerValue];
     track.height = [[trackHeight stringValue] integerValue];
     track.hasChanged = YES;

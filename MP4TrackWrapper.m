@@ -32,20 +32,42 @@
 	
 	if (sourceHandle != MP4_INVALID_FILE_HANDLE)
 	{
-		const char* type = MP4GetTrackType(sourceHandle, trackId);
-        if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
-            trackType = NSLocalizedString(@"Audio Track", @"Audio Track");
-        else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
-            trackType = NSLocalizedString(@"Video Track", @"Video Track");
-        else if (!strcmp(type, MP4_TEXT_TRACK_TYPE))
-            trackType = NSLocalizedString(@"Text Track", @"Text Track");
-        else if (!strcmp(type, "sbtl"))
-            trackType = NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
+        u_int8_t    *value;
+        u_int32_t   valueSize;
+    
+        if (MP4GetTrackBytesProperty(sourceHandle, trackId,
+                                     "udta.name.value",
+                                     &value, &valueSize)) {
+            char* name[valueSize-2];
+            memcpy(name, value, valueSize);
+        
+            trackName = [[NSString stringWithFormat:@"%s",name] retain];
+        }
+        else {
+            const char* name = MP4GetTrackType(sourceHandle, trackId);
+            if (!strcmp(name, MP4_AUDIO_TRACK_TYPE))
+                trackName = NSLocalizedString(@"Audio Track", @"Audio Track");
+            else if (!strcmp(name, MP4_VIDEO_TRACK_TYPE))
+                trackName = NSLocalizedString(@"Video Track", @"Video Track");
+            else if (!strcmp(name, MP4_TEXT_TRACK_TYPE))
+                trackName = NSLocalizedString(@"Text Track", @"Text Track");
+            else if (!strcmp(name, "sbtl"))
+                trackName = NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
+            else
+                trackName = NSLocalizedString(@"Unknown Track", @"Unknown Track");
+        }
+        
+        const char* dataName = MP4GetTrackMediaDataName(sourceHandle, trackId);
+        if (!strcmp(dataName, "avc1"))
+            trackFormat = NSLocalizedString(@"H.264", @"H.264");
+        else if (!strcmp(dataName, "mp4a"))
+            trackFormat = NSLocalizedString(@"AAC", @"AAC");
+        else if (!strcmp(dataName, "text"))
+            trackFormat = NSLocalizedString(@"Text", @"Text");
+        else if (!strcmp(dataName, "tx3g"))
+            trackFormat = NSLocalizedString(@"3GPP Text", @"3GPP Text");
         else
-            trackType = NSLocalizedString(@"Unknown Track", @"Unknown Track");
-
-        trackMedia = [[NSString stringWithFormat:@"%s",
-                       MP4GetTrackMediaDataName(sourceHandle, trackId)] retain];
+            trackFormat = NSLocalizedString(@"Unknown", @"Unknown");
 
 		bitrate = (double)MP4GetTrackBitRate(sourceHandle, trackId) / 1024;
 		duration = (double)MP4ConvertFromTrackDuration(sourceHandle, trackId,
@@ -65,12 +87,14 @@
 - (void) dellaoc
 {
     [trackMedia release];
+    [trackName release];
     [language release];
 }
 
 @synthesize trackSourcePath;
 @synthesize trackId;
-@synthesize trackType;
+@synthesize trackFormat;
+@synthesize trackName;
 @synthesize trackMedia;
 @synthesize language;
 

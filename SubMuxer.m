@@ -107,17 +107,16 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     videoWidth = MP4GetTrackVideoWidth(fileHandle, videoTrack);
     videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
 
-    const char *format = MP4GetTrackMediaDataName(fileHandle, videoTrack);
-
-    if (!strcasecmp(format, "avc1"))
-        if(MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.hSpacing", &hSpacing) &&
-            MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.vSpacing", &vSpacing) )
-            videoWidth = (float) videoWidth / vSpacing * hSpacing;
-
-    else if (!strcasecmp(format, "mp4v"))
-        if(MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.hSpacing", &hSpacing) &&
-           MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.vSpacing", &vSpacing) )
-            videoWidth = (float) videoWidth / vSpacing * hSpacing;
+    if (MP4HaveTrackAtom(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp")) {
+        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.hSpacing", &hSpacing);
+        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.vSpacing", &vSpacing);
+        videoWidth = (float) videoWidth / vSpacing * hSpacing;
+    }
+    else if (MP4HaveTrackAtom(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp")) {
+        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.hSpacing", &hSpacing);
+        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.vSpacing", &vSpacing);
+        videoWidth = (float) videoWidth / vSpacing * hSpacing;
+    }
 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
@@ -130,7 +129,6 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     int firstSub = 0;
     while (![ss isEmpty]) {
 		SubLine *sl = [ss getSerializedPacket];
-        //NSLog(@"begin: %d, end: %d", sl->begin_time, sl->end_time);
 		const char *str = [sl->line UTF8String];
         if (firstSub == 0) {
             firstSub++;
