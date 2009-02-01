@@ -10,7 +10,6 @@
 #import "SubMuxer.h"
 #import "MP4Utilities.h"
 #import "lang.h"
-#import "SubtitleTrack.h"
 
 @implementation MyDocument
 
