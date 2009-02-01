@@ -10,11 +10,11 @@
 #import "mp4v2/mp4v2.h"
 
 @interface MP4TrackWrapper : NSObject {
-    MP4TrackId  trackId;
-	NSString    *trackSourcePath;
-	NSString    *trackFormat;
-    NSString    *trackName;
-    NSString    *trackMedia;
+    MP4TrackId  Id;
+	NSString    *sourcePath;
+	NSString    *format;
+    NSString    *name;
+    NSString    *media;
     NSString    *language;
     BOOL        hasChanged;
     BOOL        muxed;
@@ -24,11 +24,11 @@
 	double duration;    // seconds
 }
 
-@property (readwrite, retain) NSString * trackSourcePath;
-@property (readwrite) MP4TrackId trackId;
-@property (readwrite, retain) NSString *trackFormat;
-@property (readwrite, retain) NSString *trackName;
-@property (readwrite, retain) NSString *trackMedia;
+@property (readwrite, retain) NSString * sourcePath;
+@property (readwrite) MP4TrackId Id;
+@property (readwrite, retain) NSString *format;
+@property (readwrite, retain) NSString *name;
+@property (readwrite, retain) NSString *media;
 @property (readwrite, retain) NSString *language;
 
 @property (readonly) int samplerate;

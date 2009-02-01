@@ -46,7 +46,7 @@
     MP4SubtitleTrackWrapper *track;
     for (track in mp4File.tracksArray)
     {
-        if ([track.trackFormat isEqualToString:@"3GPP Text"])
+        if ([track.format isEqualToString:@"3GPP Text"])
             if (track.hasChanged && !track.muxed) {
                 [self startMuxing:track];
             }
@@ -100,7 +100,7 @@
 
     else if (toolbarItem == deleteTrack) {
         if ([fileTracksTable selectedRow] != -1 && [NSApp isActive])
-            if ([[[mp4File.tracksArray objectAtIndex:[fileTracksTable selectedRow]] trackFormat]
+            if ([[[mp4File.tracksArray objectAtIndex:[fileTracksTable selectedRow]] format]
                     isEqualToString:@"3GPP Text"])
                 return YES;
     }
@@ -128,15 +128,15 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         return nil;
     
     if( [tableColumn.identifier isEqualToString:@"trackId"] )
-       return [NSString stringWithFormat:@"%d", track.trackId];
+       return [NSString stringWithFormat:@"%d", track.Id];
 
     if( [tableColumn.identifier isEqualToString:@"trackName"] )
     {
-        return track.trackName;
+        return track.name;
     }
 
     if( [tableColumn.identifier isEqualToString:@"trackInfo"] )
-        return track.trackFormat;
+        return track.format;
 
     if( [tableColumn.identifier isEqualToString:@"trackDuration"] )
         return [NSString stringWithFormat:@"%d:%d:%ds", (int) track.duration / 3600,
@@ -164,8 +164,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         }
     }
     if ([tableColumn.identifier isEqualToString:@"trackName"]) {
-        if (![track.trackName isEqualToString:anObject]) {
-            track.trackName = anObject;
+        if (![track.name isEqualToString:anObject]) {
+            track.name = anObject;
             track.hasChanged = YES;
             [self updateChangeCount:NSChangeDone];
         }
@@ -241,7 +241,7 @@ returnCode contextInfo: (void *) contextInfo
     }
     
     muxSubtitleTrack(fileHandle,
-                     track.trackSourcePath,
+                     track.sourcePath,
                      lang->iso639_2,
                      track.height,
                      track.delay
@@ -268,7 +268,7 @@ returnCode contextInfo: (void *) contextInfo
         return NO;
     }
     
-    MP4SetTrackLanguage(fileHandle, track.trackId, lang->iso639_2);
+    MP4SetTrackLanguage(fileHandle, track.Id, lang->iso639_2);
     
     MP4Close(fileHandle);
     
@@ -290,15 +290,15 @@ returnCode contextInfo: (void *) contextInfo
         return NO;
     }
     
-    if (![track.trackName isEqualToString:@"Video Track"] &&
-        ![track.trackName isEqualToString:@"Audio Track"] &&
-        ![track.trackName isEqualToString:@"Subtitle Track"] &&
-        ![track.trackName isEqualToString:@"Text Track"] &&
-        track.trackName != nil) {
-        if (MP4HaveTrackAtom(fileHandle, track.trackId, "udta.name"))
-            MP4SetTrackBytesProperty(fileHandle, track.trackId,
+    if (![track.name isEqualToString:@"Video Track"] &&
+        ![track.name isEqualToString:@"Audio Track"] &&
+        ![track.name isEqualToString:@"Subtitle Track"] &&
+        ![track.name isEqualToString:@"Text Track"] &&
+        track.name != nil) {
+        if (MP4HaveTrackAtom(fileHandle, track.Id, "udta.name"))
+            MP4SetTrackBytesProperty(fileHandle, track.Id,
                                      "udta.name.value",
-                                     (const uint8_t*) [track.trackName UTF8String], strlen([track.trackName UTF8String]));
+                                     (const uint8_t*) [track.name UTF8String], strlen([track.name UTF8String]));
     }
     
     MP4Close(fileHandle);
@@ -314,10 +314,10 @@ returnCode contextInfo: (void *) contextInfo
 - (IBAction) addSubtitleTrack: (id) sender
 {
     MP4SubtitleTrackWrapper *track = [[MP4SubtitleTrackWrapper alloc] init];
-    track.trackSourcePath = [subtitleFilePath stringValue];
+    track.sourcePath = [subtitleFilePath stringValue];
     track.language = [[langSelection selectedItem] title];
-    track.trackFormat = @"3GPP Text";
-    track.trackName = @"Subtitle Track";
+    track.format = @"3GPP Text";
+    track.name = @"Subtitle Track";
     track.delay = [[delay stringValue] integerValue];
     track.height = [[trackHeight stringValue] integerValue];
     track.hasChanged = YES;
@@ -347,7 +347,7 @@ returnCode contextInfo: (void *) contextInfo
     MP4FileHandle fileHandle;
 
     fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    MP4TrackId trackId = [[mp4File.tracksArray objectAtIndex: [fileTracksTable selectedRow]] trackId];
+    MP4TrackId trackId = [[mp4File.tracksArray objectAtIndex: [fileTracksTable selectedRow]] Id];
     MP4DeleteTrack( fileHandle, trackId);
 
     updateTracksCount(fileHandle);
