@@ -38,10 +38,11 @@
         if (MP4GetTrackBytesProperty(sourceHandle, trackId,
                                      "udta.name.value",
                                      &value, &valueSize)) {
-            char* name[valueSize-2];
+            char * name;
+            name = malloc(valueSize + 2);
             memcpy(name, value, valueSize);
-        
-            trackName = [[NSString stringWithFormat:@"%s",name] retain];
+            trackName = [[NSString stringWithCString: name encoding:NSUTF8StringEncoding] retain];
+            free(name);
         }
         else {
             const char* name = MP4GetTrackType(sourceHandle, trackId);
@@ -59,13 +60,17 @@
         
         const char* dataName = MP4GetTrackMediaDataName(sourceHandle, trackId);
         if (!strcmp(dataName, "avc1"))
-            trackFormat = NSLocalizedString(@"H.264", @"H.264");
+            trackFormat = @"H.264";
         else if (!strcmp(dataName, "mp4a"))
-            trackFormat = NSLocalizedString(@"AAC", @"AAC");
+            trackFormat = @"AAC";
+        else if (!strcmp(dataName, "ac-3"))
+            trackFormat = @"AC-3", @"AC-3";
+        else if (!strcmp(dataName, "mp4v"))
+            trackFormat = @"MPEG-4 Visual";
         else if (!strcmp(dataName, "text"))
-            trackFormat = NSLocalizedString(@"Text", @"Text");
+            trackFormat = @"Text";
         else if (!strcmp(dataName, "tx3g"))
-            trackFormat = NSLocalizedString(@"3GPP Text", @"3GPP Text");
+            trackFormat = @"3GPP Text";
         else
             trackFormat = NSLocalizedString(@"Unknown", @"Unknown");
 

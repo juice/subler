@@ -34,8 +34,11 @@
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
     [super windowControllerDidLoadNib:aController];
-    
-    languages = [[NSArray arrayWithObjects:  @"Unknown", @"English", @"Italian", @"French" , @"German", @"Japanese", @"Spanish" , @"Dutch" , @"Swedish" , @"Danish", nil] retain];
+
+    languages = [[NSArray arrayWithObjects:  @"Unknown", @"English", @"French", @"German" , @"Italian", @"Dutch", @"Swedish" , @"Spanish" , @"Danish" , @"Portuguese", @"Norwegian", @"Hebrew", @"Japanese", @"Arabic", @"Finnish", @"Greek", @"Icelandic", @"Maltese", @"Turkish", @"Croatian", @"Traditional Chinese", @"Urdu", @"Hindi", @"Thai", @"Korean", @"Lithuanian", @"Polish", @"Hungarian", @"Estonian", @"Latvian", @"Lappish", @"Faeroese", @"Farsi", @"Russian", @"Simplified Chinese", @"Flemish", @"Irish", @"Albanian", nil] retain];
+
+    [langSelection addItemsWithTitles:languages];
+    [langSelection selectItemWithTitle:@"English"];
 }
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
@@ -121,7 +124,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         return track.trackFormat;
 
     if( [tableColumn.identifier isEqualToString:@"trackDuration"] )
-        return [NSString stringWithFormat:@"%ds", (int) track.duration];
+        return [NSString stringWithFormat:@"%d:%d:%ds", (int) track.duration / 3600,
+                                                        ((int)track.duration  % 3600 ) / 60,
+                                                        (int) track.duration % 60];
 
     if( [tableColumn.identifier isEqualToString:@"trackLanguage"] )
         return track.language;
@@ -137,14 +142,18 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     MP4TrackWrapper *track = [mp4File.tracksArray objectAtIndex:rowIndex];
     
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"]) {
-        track.language = anObject;
-        track.hasChanged = YES;
-        [self updateChangeCount:NSChangeDone];
+        if (![track.language isEqualToString:anObject]) {
+            track.language = anObject;
+            track.hasChanged = YES;
+            [self updateChangeCount:NSChangeDone];
+        }
     }
     if ([tableColumn.identifier isEqualToString:@"trackName"]) {
-        track.trackName = anObject;
-        track.hasChanged = YES;
-        [self updateChangeCount:NSChangeDone];
+        if (![track.trackName isEqualToString:anObject]) {
+            track.trackName = anObject;
+            track.hasChanged = YES;
+            [self updateChangeCount:NSChangeDone];
+        }
     }
 }
 
@@ -271,9 +280,10 @@ returnCode contextInfo: (void *) contextInfo
         ![track.trackName isEqualToString:@"Subtitle Track"] &&
         ![track.trackName isEqualToString:@"Text Track"] &&
         track.trackName != nil) {
-        MP4SetTrackBytesProperty(fileHandle, track.trackId,
-                                 "udta.name.value",
-                                 (const uint8_t*) [track.trackName UTF8String], strlen([track.trackName UTF8String]));
+        if (MP4HaveTrackAtom(fileHandle, track.trackId, "udta.name"))
+            MP4SetTrackBytesProperty(fileHandle, track.trackId,
+                                     "udta.name.value",
+                                     (const uint8_t*) [track.trackName UTF8String], strlen([track.trackName UTF8String]));
     }
     
     MP4Close(fileHandle);
