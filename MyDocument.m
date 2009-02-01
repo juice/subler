@@ -78,6 +78,21 @@
     return YES;
 }
 
+- (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
+{
+    [mp4File release];
+    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
+    
+    [fileTracksTable reloadData];
+    [self updateChangeCount:NSChangeCleared];
+
+    if ( outError != NULL || !mp4File ) {
+		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
+	}
+    return YES;
+}
+
+
 - (BOOL)validateToolbarItem: (NSToolbarItem *) toolbarItem
 {
     if (toolbarItem == addTrackToolBar)
