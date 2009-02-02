@@ -8,8 +8,8 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="100044"/>
 			<integer value="100049"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -35,7 +35,7 @@
 			<object class="NSWindowTemplate" id="275939982">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{133, 423}, {567, 225}}</string>
+				<string key="NSWindowRect">{{133, 442}, {559, 206}}</string>
 				<int key="NSWTFlags">1886912512</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -345,13 +345,13 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 										<object class="NSTableView" id="355153569">
 											<reference key="NSNextResponder" ref="586671699"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrameSize">{567, 209}</string>
+											<string key="NSFrameSize">{559, 190}</string>
 											<reference key="NSSuperview" ref="586671699"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="712811294">
 												<reference key="NSNextResponder" ref="529458845"/>
 												<int key="NSvFlags">256</int>
-												<string key="NSFrameSize">{567, 17}</string>
+												<string key="NSFrameSize">{559, 17}</string>
 												<reference key="NSSuperview" ref="529458845"/>
 												<reference key="NSTableView" ref="355153569"/>
 											</object>
@@ -592,7 +592,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 												</object>
 												<object class="NSTableColumn" id="864585726">
 													<string key="NSIdentifier">trackInfo</string>
-													<double key="NSWidth">1.420000e+02</double>
+													<double key="NSWidth">1.340000e+02</double>
 													<double key="NSMinWidth">8.000000e+01</double>
 													<double key="NSMaxWidth">3.402823e+38</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -629,7 +629,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 											<bool key="NSAllowsTypeSelect">YES</bool>
 										</object>
 									</object>
-									<string key="NSFrame">{{1, 17}, {567, 209}}</string>
+									<string key="NSFrame">{{1, 17}, {559, 190}}</string>
 									<reference key="NSSuperview" ref="287999566"/>
 									<reference key="NSNextKeyView" ref="355153569"/>
 									<reference key="NSDocView" ref="355153569"/>
@@ -662,7 +662,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 										<bool key="EncodedWithXMLCoder">YES</bool>
 										<reference ref="712811294"/>
 									</object>
-									<string key="NSFrame">{{1, 0}, {567, 17}}</string>
+									<string key="NSFrame">{{1, 0}, {559, 17}}</string>
 									<reference key="NSSuperview" ref="287999566"/>
 									<reference key="NSNextKeyView" ref="712811294"/>
 									<reference key="NSDocView" ref="712811294"/>
@@ -671,7 +671,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 								</object>
 								<reference ref="98013410"/>
 							</object>
-							<string key="NSFrame">{{-1, -1}, {569, 227}}</string>
+							<string key="NSFrame">{{-1, -1}, {561, 208}}</string>
 							<reference key="NSSuperview" ref="568628114"/>
 							<reference key="NSNextKeyView" ref="586671699"/>
 							<int key="NSsFlags">562</int>
@@ -683,7 +683,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 							<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 						</object>
 					</object>
-					<string key="NSFrameSize">{567, 225}</string>
+					<string key="NSFrameSize">{559, 206}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -1775,8 +1775,8 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{255, 624}, {567, 225}}</string>
-					<string>{{255, 624}, {567, 225}}</string>
+					<string>{{255, 643}, {559, 206}}</string>
+					<string>{{255, 643}, {559, 206}}</string>
 					<integer value="1" id="9"/>
 					<string>{{201, 387}, {507, 413}}</string>
 					<reference ref="6"/>
