@@ -15,7 +15,7 @@
     if ((self = [super init]))
 	{
 		fileHandle = MP4Read([mp4File UTF8String], 0);
-		
+
 		if (!fileHandle)
 			return NULL;
         tracksArray = [[NSMutableArray alloc] init];
@@ -26,7 +26,7 @@
             [tracksArray addObject:track];
             [track release];
         }
-        
+        tracksToBeDeleted = [[NSMutableArray alloc] init];
 	}
 	return self;
 }
@@ -37,5 +37,7 @@
 }
 
 @synthesize tracksArray;
+@synthesize tracksToBeDeleted;
+
 
 @end

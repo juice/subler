@@ -17,9 +17,12 @@
     MP4FileHandle fileHandle;
     
     NSMutableArray *tracksArray;
+    NSMutableArray *tracksToBeDeleted;
 }
 
 @property (readonly) NSMutableArray *tracksArray;
+@property (readonly) NSMutableArray *tracksToBeDeleted;
+
 -(id)initWithExistingMP4File:(NSString *)mp4File;
 - (int)tracksCount;
 

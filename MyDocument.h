@@ -39,10 +39,11 @@
 - (IBAction) showSubititleWindow: (id) sender;
 - (IBAction) closeSheet: (id) sender;
 - (IBAction) openBrowse: (id) sender;
-- (BOOL) startMuxing: (MP4SubtitleTrackWrapper*) track;
-- (IBAction) addSubtitleTrack: (id) sender;
+- (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track;
+- (BOOL) deleteSubtitleTrack: (MP4TrackWrapper *)track;
 - (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track;
 - (BOOL) updateTrackName: (MP4TrackWrapper*) track;
+- (IBAction) addSubtitleTrack: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 
 - (void) reloadTable: (id) sender;

@@ -44,11 +44,15 @@
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
     MP4SubtitleTrackWrapper *track;
+
+    for (track in mp4File.tracksToBeDeleted)
+            [self deleteSubtitleTrack: track];
+
     for (track in mp4File.tracksArray)
     {
         if ([track.format isEqualToString:@"3GPP Text"])
             if (track.hasChanged && !track.muxed) {
-                [self startMuxing:track];
+                [self muxSubtitleTrack:track];
             }
         if (track.hasChanged) {
             [self updateTrackLanguage:track];
@@ -229,7 +233,7 @@ returnCode contextInfo: (void *) contextInfo
     [addSubtitleWindow orderOut:self];
 }
 
-- (BOOL) startMuxing: (MP4SubtitleTrackWrapper*) track
+- (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track
 {
     MP4FileHandle fileHandle;
     iso639_lang_t *lang = lang_for_english([track.language UTF8String]);
@@ -253,6 +257,22 @@ returnCode contextInfo: (void *) contextInfo
     [addSubtitleWindow orderOut:self];
     
     [self updateChangeCount:NSChangeDone];
+    
+    return YES;
+}
+
+- (BOOL) deleteSubtitleTrack: (MP4TrackWrapper *)track
+{
+    MP4FileHandle fileHandle;
+
+    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
+    MP4TrackId trackId = track.Id;
+    MP4DeleteTrack( fileHandle, trackId);
+
+    updateTracksCount(fileHandle);
+    enableFirstSubtitleTrack(fileHandle);
+
+    MP4Close(fileHandle);
     
     return YES;
 }
@@ -302,12 +322,12 @@ returnCode contextInfo: (void *) contextInfo
     }
     
     MP4Close(fileHandle);
-    
+
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
-    
+
     [self updateChangeCount:NSChangeDone];
-    
+
     return YES;
 }
 
@@ -322,15 +342,15 @@ returnCode contextInfo: (void *) contextInfo
     track.height = [[trackHeight stringValue] integerValue];
     track.hasChanged = YES;
     track.muxed = NO;
-    
+
     [mp4File.tracksArray addObject:track];
     [track release];
-    
+
     [fileTracksTable reloadData];
-    
+
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
-    
+
     [self updateChangeCount:NSChangeDone];
 }
 
@@ -344,18 +364,11 @@ returnCode contextInfo: (void *) contextInfo
 
 - (IBAction) deleteTrack: (id) sender
 {
-    MP4FileHandle fileHandle;
-
-    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    MP4TrackId trackId = [[mp4File.tracksArray objectAtIndex: [fileTracksTable selectedRow]] Id];
-    MP4DeleteTrack( fileHandle, trackId);
-
-    updateTracksCount(fileHandle);
-    enableFirstSubtitleTrack(fileHandle);
-
-    MP4Close(fileHandle);
-    
-    [self reloadTable:sender];
+    MP4TrackWrapper *track = [[mp4File tracksArray] objectAtIndex:[fileTracksTable selectedRow]];
+    if (track.muxed)
+        [[mp4File tracksToBeDeleted] addObject: track];
+    [[mp4File tracksArray] removeObjectAtIndex:[fileTracksTable selectedRow]];
+    [fileTracksTable reloadData];
 }
 
 @end
