@@ -54,7 +54,7 @@
             if (track.hasChanged && !track.muxed) {
                 [self muxSubtitleTrack:track];
             }
-        if (track.hasChanged) {
+        if (track.hasChanged && track.Id != 0) {
             [self updateTrackLanguage:track];
             [self updateTrackName:track];
         }

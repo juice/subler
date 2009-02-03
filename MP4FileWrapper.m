@@ -36,6 +36,13 @@
     return [tracksArray count];
 }
 
+- (void) dealloc
+{
+    [tracksArray release];
+    [tracksToBeDeleted release];
+    [super dealloc];
+}
+
 @synthesize tracksArray;
 @synthesize tracksToBeDeleted;
 

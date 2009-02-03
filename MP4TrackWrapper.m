@@ -39,9 +39,10 @@
                                      "udta.name.value",
                                      &value, &valueSize)) {
             char * trackName;
-            trackName = malloc(valueSize + 2);
+            trackName = malloc(valueSize +2);
             memcpy(trackName, value, valueSize);
-            name = [[NSString stringWithCString: trackName encoding:NSUTF8StringEncoding] retain];
+            trackName[valueSize] = '\0';
+            name = [[NSString stringWithCString: trackName] retain];
             free(trackName);
         }
         else {
