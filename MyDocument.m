@@ -72,6 +72,7 @@
     [self setFileModificationDate:[[[NSFileManager defaultManager]  
                                     fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
                                    fileModificationDate]];
+
 	return YES;
 }
 
@@ -260,9 +261,7 @@ returnCode contextInfo: (void *) contextInfo
     
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
-    
-    [self updateChangeCount:NSChangeDone];
-    
+        
     return YES;
 }
 
@@ -299,9 +298,7 @@ returnCode contextInfo: (void *) contextInfo
     
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
-    
-    [self updateChangeCount:NSChangeDone];
-    
+        
     return YES;
 }
 
@@ -374,6 +371,8 @@ returnCode contextInfo: (void *) contextInfo
         [[mp4File tracksToBeDeleted] addObject: track];
     [[mp4File tracksArray] removeObjectAtIndex:[fileTracksTable selectedRow]];
     [fileTracksTable reloadData];
+    
+    [self updateChangeCount:NSChangeDone];
 }
 
 @end
