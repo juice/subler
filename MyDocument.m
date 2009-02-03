@@ -67,6 +67,11 @@
     if ( outError != NULL ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
+    
+    [self setFileURL:absoluteURL];
+    [self setFileModificationDate:[[[NSFileManager defaultManager]  
+                                    fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
+                                   fileModificationDate]];
 	return YES;
 }
 

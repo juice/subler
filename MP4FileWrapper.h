@@ -13,7 +13,6 @@
 
 @interface MP4FileWrapper : NSObject {
 
-    /* libmp4v2 handle */
     MP4FileHandle fileHandle;
     
     NSMutableArray *tracksArray;
