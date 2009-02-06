@@ -430,6 +430,7 @@ returnCode contextInfo: (void *) contextInfo
     [super dealloc];
     [propertyView release];
     [mp4File release];
+    [languages release];
 }
 
 @end

@@ -44,6 +44,7 @@
             trackName[valueSize] = '\0';
             name = [[NSString stringWithCString: trackName] retain];
             free(trackName);
+            free(value);
         }
         else {
             const char* type = MP4GetTrackType(sourceHandle, Id);
