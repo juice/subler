@@ -52,3 +52,18 @@ int updateTracksCount(MP4FileHandle fileHandle)
     
     return MP4SetIntegerProperty(fileHandle, "moov.mvhd.nextTrackId", maxTrackId + 1);
 }
+
+uint64_t findChapterTrackId(MP4FileHandle fileHandle)
+{
+    MP4TrackId trackId = 0;
+    uint64_t trackRef;
+    int i;
+    for (i = 0; i< MP4GetNumberOfTracks( fileHandle, 0, 0); i++ ) {
+        trackId = MP4FindTrackId(fileHandle, i, 0, 0);
+        if (MP4HaveTrackAtom(fileHandle, trackId, "tref.chap")) {
+            MP4GetTrackIntegerProperty(fileHandle, trackId, "tref.chap.entries.trackId", &trackRef);
+            return trackRef;
+        }
+    }
+    return 0;
+}

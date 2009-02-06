@@ -316,6 +316,7 @@ returnCode contextInfo: (void *) contextInfo
         ![track.name isEqualToString:@"Audio Track"] &&
         ![track.name isEqualToString:@"Subtitle Track"] &&
         ![track.name isEqualToString:@"Text Track"] &&
+        ![track.name isEqualToString:@"Chapter Track"] &&
         track.name != nil) {
         if (MP4HaveTrackAtom(fileHandle, track.Id, "udta.name"))
             MP4SetTrackBytesProperty(fileHandle, track.Id,
