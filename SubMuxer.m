@@ -50,7 +50,8 @@ MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const 
     memcpy(nval, val, size);
     ptr32[7] = CFSwapInt32HostToBig( (video_height - subtitleHeight) * 0x10000);
 
-    MP4SetTrackBytesProperty(file,subtitle_track, "tkhd.matrix", nval, size);    
+    MP4SetTrackBytesProperty(file,subtitle_track, "tkhd.matrix", nval, size);
+    free(val);
 
     /* set the timescale to ms */
     MP4SetTrackTimeScale(file,subtitle_track, 1000);
