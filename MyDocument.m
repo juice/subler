@@ -42,6 +42,7 @@
     [langSelection selectItemWithTitle:@"English"];
     
     MovieViewController *controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
+    [controller setFile:mp4File];
     if (controller !=nil){
         propertyView = controller;
         [[propertyView view] setAutoresizingMask:( NSViewWidthSizable | NSViewHeightSizable )];
@@ -205,7 +206,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if (row == -1 )
     {
         MovieViewController *controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
-        //[controller setFile:mp4File andTrack:[[mp4File tracksArray] objectAtIndex:row]];
+        [controller setFile:mp4File];
         if (controller !=nil)
             propertyView = controller;
     }

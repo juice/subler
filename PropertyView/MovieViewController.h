@@ -7,10 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "MP4FileWrapper.h"
 
 
 @interface MovieViewController : NSViewController {
-
+    MP4FileWrapper  *mp4File;
 }
 
+- (void) setFile: (MP4FileWrapper *)file;
+ 
 @end

@@ -10,7 +10,13 @@
 
 
 @interface MP4Metadata : NSObject {
-
+    NSString        *sourcePath;
+    NSMutableDictionary    *tagsDict;
 }
+
+-(id) initWithSourcePath:(NSString *)source;
+-(void) readMetaData;
+
+@property(readonly) NSMutableDictionary    *tagsDict;
 
 @end

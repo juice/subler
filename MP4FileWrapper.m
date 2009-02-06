@@ -39,8 +39,9 @@
         }
 
         tracksToBeDeleted = [[NSMutableArray alloc] init];
+        metadata = [[MP4Metadata alloc] initWithSourcePath:mp4File];
+        MP4Close(fileHandle);
 	}
-    MP4Close(fileHandle);
     
 	return self;
 }
@@ -55,10 +56,12 @@
     [super dealloc];
     [tracksArray release];
     [tracksToBeDeleted release];
+    [metadata release];
 }
 
 @synthesize tracksArray;
 @synthesize tracksToBeDeleted;
+@synthesize metadata;
 
 
 @end

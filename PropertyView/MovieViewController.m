@@ -11,15 +11,30 @@
 
 @implementation MovieViewController
 
+- (void) setFile: (MP4FileWrapper *)file
+{
+    mp4File = file;
+}
+
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
-    return 0;
+    NSUInteger i = [[[mp4File metadata] tagsDict] count];
+    return i;
 }
 
 - (id) tableView:(NSTableView *)tableView 
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
+    NSDictionary *tags = [[mp4File metadata] tagsDict];
+    NSArray *tagsArray = [tags allKeys];
+
+    if ([tableColumn.identifier isEqualToString:@"name"])
+        return [tagsArray objectAtIndex:rowIndex];
+    
+    if ([tableColumn.identifier isEqualToString:@"value"])
+        return [tags objectForKey:[tagsArray objectAtIndex:rowIndex]];
+    
     return nil;
 }
 
