@@ -34,6 +34,9 @@
     IBOutlet NSToolbarItem  *deleteTrack;
     
     NSMutableArray          *languages;
+    
+    NSViewController        *propertyView;
+    IBOutlet NSView         *targetView;
 }
 
 - (IBAction) showSubititleWindow: (id) sender;

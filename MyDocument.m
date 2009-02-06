@@ -9,6 +9,8 @@
 #import "MyDocument.h"
 #import "SubMuxer.h"
 #import "MP4Utilities.h"
+#import "EmptyViewController.h"
+#import "ChapterViewController.h"
 #import "lang.h"
 
 @implementation MyDocument
@@ -26,8 +28,6 @@
 
 - (NSString *)windowNibName
 {
-    // Override returning the nib file name of the document
-    // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
     return @"MyDocument";
 }
 
@@ -39,6 +39,14 @@
 
     [langSelection addItemsWithTitles:languages];
     [langSelection selectItemWithTitle:@"English"];
+    
+    EmptyViewController *controller = [[EmptyViewController alloc] initWithNibName:@"EmptyView" bundle:nil];
+    if (controller !=nil){
+        propertyView = controller;
+        [[propertyView view] setAutoresizingMask:( NSViewWidthSizable | NSViewHeightSizable )];
+        [[propertyView view] setFrame:[targetView bounds]];
+        [targetView addSubview: [propertyView view]];
+    }
 }
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
@@ -180,6 +188,36 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             [self updateChangeCount:NSChangeDone];
         }
     }
+}
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
+{
+    if ([propertyView view] != nil)
+		[[propertyView view] removeFromSuperview];	// remove the current view
+    
+	if (propertyView != nil)
+		[propertyView release];		// remove the current view controller
+
+    NSInteger row = [fileTracksTable selectedRow];
+    if (row != -1 && [[[[mp4File tracksArray] objectAtIndex:row] name] isEqualToString:@"Chapter Track"])
+    {
+        ChapterViewController *controller = [[ChapterViewController alloc] initWithNibName:@"ChapterView" bundle:nil];
+        if (controller !=nil)
+            propertyView = controller;
+    }
+    else
+    {
+        EmptyViewController *controller = [[EmptyViewController alloc] initWithNibName:@"EmptyView" bundle:nil];
+        if (controller !=nil)
+                propertyView = controller;
+    }
+    
+    // embed the current view to our host view
+	[targetView addSubview: [propertyView view]];
+	
+	// make sure we automatically resize the controller's view to the current window size
+	[[propertyView view] setFrame: [targetView bounds]];
+    [[propertyView view] setAutoresizingMask:( NSViewWidthSizable | NSViewHeightSizable )];
 }
 
 /* NSComboBoxCell dataSource */
