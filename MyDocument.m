@@ -9,6 +9,7 @@
 #import "MyDocument.h"
 #import "SubMuxer.h"
 #import "MP4Utilities.h"
+#import "MovieViewController.h"
 #import "EmptyViewController.h"
 #import "ChapterViewController.h"
 #import "lang.h"
@@ -40,7 +41,7 @@
     [langSelection addItemsWithTitles:languages];
     [langSelection selectItemWithTitle:@"English"];
     
-    EmptyViewController *controller = [[EmptyViewController alloc] initWithNibName:@"EmptyView" bundle:nil];
+    MovieViewController *controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
     if (controller !=nil){
         propertyView = controller;
         [[propertyView view] setAutoresizingMask:( NSViewWidthSizable | NSViewHeightSizable )];
@@ -201,7 +202,14 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 		[propertyView release];		// remove the current view controller
 
     NSInteger row = [fileTracksTable selectedRow];
-    if (row != -1 && [[[[mp4File tracksArray] objectAtIndex:row] name] isEqualToString:@"Chapter Track"])
+    if (row == -1 )
+    {
+        MovieViewController *controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
+        //[controller setFile:mp4File andTrack:[[mp4File tracksArray] objectAtIndex:row]];
+        if (controller !=nil)
+            propertyView = controller;
+    }
+    else if (row != -1 && [[[[mp4File tracksArray] objectAtIndex:row] name] isEqualToString:@"Chapter Track"])
     {
         ChapterViewController *controller = [[ChapterViewController alloc] initWithNibName:@"ChapterView" bundle:nil];
         [controller setFile:mp4File andTrack:[[mp4File tracksArray] objectAtIndex:row]];
@@ -415,6 +423,13 @@ returnCode contextInfo: (void *) contextInfo
     [fileTracksTable reloadData];
     
     [self updateChangeCount:NSChangeDone];
+}
+
+-(void) dealloc
+{
+    [super dealloc];
+    [propertyView release];
+    [mp4File release];
 }
 
 @end

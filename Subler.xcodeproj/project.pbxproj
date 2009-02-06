@@ -29,6 +29,9 @@
 		A9FD5DA40F3C6F8100817716 /* EmptyView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FD5DA30F3C6F8100817716 /* EmptyView.xib */; };
 		A9FD5DA60F3C6F8A00817716 /* ChapterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FD5DA50F3C6F8A00817716 /* ChapterView.xib */; };
 		A9FD5E110F3C7BF400817716 /* MP4ChapterTrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5E100F3C7BF400817716 /* MP4ChapterTrackWrapper.m */; };
+		A9FD5EBF0F3C889C00817716 /* MP4Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5EBE0F3C889C00817716 /* MP4Metadata.m */; };
+		A9FD5EC70F3C8A4800817716 /* MovieView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FD5EC50F3C8A4800817716 /* MovieView.xib */; };
+		A9FD5ECF0F3C8AF100817716 /* MovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +107,11 @@
 		A9FD5D410F3C6A6300817716 /* EmptyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EmptyViewController.m; path = PropertyView/EmptyViewController.m; sourceTree = "<group>"; };
 		A9FD5E0F0F3C7BF400817716 /* MP4ChapterTrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4ChapterTrackWrapper.h; sourceTree = "<group>"; };
 		A9FD5E100F3C7BF400817716 /* MP4ChapterTrackWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4ChapterTrackWrapper.m; sourceTree = "<group>"; };
+		A9FD5EBD0F3C889C00817716 /* MP4Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4Metadata.h; sourceTree = "<group>"; };
+		A9FD5EBE0F3C889C00817716 /* MP4Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4Metadata.m; sourceTree = "<group>"; };
+		A9FD5EC60F3C8A4800817716 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/MovieView.xib; sourceTree = "<group>"; };
+		A9FD5ECD0F3C8AF100817716 /* MovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MovieViewController.h; path = PropertyView/MovieViewController.h; sourceTree = "<group>"; };
+		A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MovieViewController.m; path = PropertyView/MovieViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +209,7 @@
 				1DDD582A0DA1D0D100B32029 /* MainMenu.xib */,
 				A9FD5DA30F3C6F8100817716 /* EmptyView.xib */,
 				A9FD5DA50F3C6F8A00817716 /* ChapterView.xib */,
+				A9FD5EC50F3C8A4800817716 /* MovieView.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -227,6 +236,8 @@
 		A9FD5D150F3C692400817716 /* PropertyView */ = {
 			isa = PBXGroup;
 			children = (
+				A9FD5ECD0F3C8AF100817716 /* MovieViewController.h */,
+				A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */,
 				A9FD5D400F3C6A6300817716 /* EmptyViewController.h */,
 				A9FD5D410F3C6A6300817716 /* EmptyViewController.m */,
 				A9FD5D320F3C69BE00817716 /* ChapterViewController.h */,
@@ -246,6 +257,8 @@
 				A97CB37A0F347C6700CC1049 /* MP4SubtitleTrackWrapper.m */,
 				A9FD5E0F0F3C7BF400817716 /* MP4ChapterTrackWrapper.h */,
 				A9FD5E100F3C7BF400817716 /* MP4ChapterTrackWrapper.m */,
+				A9FD5EBD0F3C889C00817716 /* MP4Metadata.h */,
+				A9FD5EBE0F3C889C00817716 /* MP4Metadata.m */,
 			);
 			name = "mp4v2 wrapper";
 			sourceTree = "<group>";
@@ -330,6 +343,7 @@
 				1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */,
 				A9FD5DA40F3C6F8100817716 /* EmptyView.xib in Resources */,
 				A9FD5DA60F3C6F8A00817716 /* ChapterView.xib in Resources */,
+				A9FD5EC70F3C8A4800817716 /* MovieView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,6 +367,8 @@
 				A9FD5D340F3C69BE00817716 /* ChapterViewController.m in Sources */,
 				A9FD5D420F3C6A6300817716 /* EmptyViewController.m in Sources */,
 				A9FD5E110F3C7BF400817716 /* MP4ChapterTrackWrapper.m in Sources */,
+				A9FD5EBF0F3C889C00817716 /* MP4Metadata.m in Sources */,
+				A9FD5ECF0F3C8AF100817716 /* MovieViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +429,14 @@
 				A9FD5D380F3C69EE00817716 /* English */,
 			);
 			name = ChapterView.xib;
+			sourceTree = "<group>";
+		};
+		A9FD5EC50F3C8A4800817716 /* MovieView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9FD5EC60F3C8A4800817716 /* English */,
+			);
+			name = MovieView.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

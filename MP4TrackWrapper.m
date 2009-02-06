@@ -81,8 +81,7 @@
                                                        MP4_MSECS_TIME_SCALE) / 1000;
 		samplerate = MP4GetTrackTimeScale(sourceHandle, Id);
         
-        char* lang;
-        lang = malloc(sizeof(char)*4);
+        char* lang = malloc(sizeof(char)*4);
         MP4GetTrackLanguage( sourceHandle, Id, lang);
         language = [[NSString stringWithFormat:@"%s", lang_for_code2(lang)->eng_name] retain];
         free(lang);
@@ -90,8 +89,9 @@
 	}
 }
 
-- (void) dellaoc
+- (void) dealloc
 {
+    [super dealloc];
     [media release];
     [name release];
     [language release];

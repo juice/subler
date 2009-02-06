@@ -27,16 +27,24 @@
                        MP4ChapterTypeQt );
          
         int i = 1;
-        while( i <= chapter_count )
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        while (i <= chapter_count)
         {
             [chapters addObject:[NSString stringWithFormat:@"%s", chapter_list[i-1].title]];
             i++;
         }
-        
+        [pool release];
+        MP4Free(chapter_list);
         MP4Close(sourceHandle);
     }
     
     return self;
+}
+
+-(void) dealloc
+{
+    [super dealloc];
+    [chapters release];
 }
 
 @synthesize chapters;

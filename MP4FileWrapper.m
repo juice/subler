@@ -40,7 +40,8 @@
 
         tracksToBeDeleted = [[NSMutableArray alloc] init];
 	}
-
+    MP4Close(fileHandle);
+    
 	return self;
 }
 

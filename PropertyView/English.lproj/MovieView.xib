@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="12"/>
+			<integer value="10"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -80,7 +80,7 @@
 															<object class="_NSCornerView" key="NSCornerView" id="738579199">
 																<reference key="NSNextResponder" ref="86220922"/>
 																<int key="NSvFlags">-2147483392</int>
-																<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
+																<string key="NSFrame">{{-22, 0}, {12, 17}}</string>
 																<reference key="NSSuperview" ref="86220922"/>
 															</object>
 															<object class="NSMutableArray" key="NSTableColumns">
@@ -93,7 +93,7 @@
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628032</int>
 																		<int key="NSCellFlags2">0</int>
-																		<string key="NSContents">Time</string>
+																		<string key="NSContents">Annotation</string>
 																		<object class="NSFont" key="NSSupport" id="26">
 																			<string key="NSName">LucidaGrande</string>
 																			<double key="NSSize">1.100000e+01</double>
@@ -400,7 +400,7 @@
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628032</int>
 																		<int key="NSCellFlags2">0</int>
-																		<string key="NSContents">Title</string>
+																		<string key="NSContents">Value</string>
 																		<reference key="NSSupport" ref="26"/>
 																		<reference key="NSBackgroundColor" ref="120863768"/>
 																		<reference key="NSTextColor" ref="1034872520"/>
@@ -454,8 +454,9 @@
 												<object class="NSScroller" id="477814729">
 													<reference key="NSNextResponder" ref="86220922"/>
 													<int key="NSvFlags">-2147483392</int>
-													<string key="NSFrame">{{408, 17}, {15, 172}}</string>
+													<string key="NSFrame">{{412, 17}, {11, 176}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
+													<int key="NSsFlags">256</int>
 													<reference key="NSTarget" ref="86220922"/>
 													<string key="NSAction">_doScroller:</string>
 													<double key="NSCurValue">3.700000e+01</double>
@@ -464,9 +465,9 @@
 												<object class="NSScroller" id="827247503">
 													<reference key="NSNextResponder" ref="86220922"/>
 													<int key="NSvFlags">-2147483392</int>
-													<string key="NSFrame">{{1, 189}, {407, 15}}</string>
+													<string key="NSFrame">{{1, 193}, {411, 11}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
-													<int key="NSsFlags">1</int>
+													<int key="NSsFlags">257</int>
 													<reference key="NSTarget" ref="86220922"/>
 													<string key="NSAction">_doScroller:</string>
 													<double key="NSPercent">9.976360e-01</double>
@@ -502,7 +503,7 @@
 									<string key="NSFrame">{{10, 25}, {458, 229}}</string>
 									<reference key="NSSuperview" ref="980212840"/>
 								</object>
-								<string key="NSLabel">Chapters</string>
+								<string key="NSLabel">Tags</string>
 								<object class="NSColor" key="NSColor" id="117260690">
 									<int key="NSColorSpace">6</int>
 									<string key="NSCatalogName">System</string>
