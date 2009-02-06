@@ -142,21 +142,23 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
     MP4TrackWrapper *track = [mp4File.tracksArray objectAtIndex:rowIndex];
 
-    if(!track)
+    if (!track)
         return nil;
     
-    if( [tableColumn.identifier isEqualToString:@"trackId"] )
-       return [NSString stringWithFormat:@"%d", track.Id];
-
-    if( [tableColumn.identifier isEqualToString:@"trackName"] )
-    {
-        return track.name;
+    if ([tableColumn.identifier isEqualToString:@"trackId"]) {
+        if (track.Id == 0)
+            return @"na";
+        else
+            return [NSString stringWithFormat:@"%d", track.Id];
     }
 
-    if( [tableColumn.identifier isEqualToString:@"trackInfo"] )
+    if ([tableColumn.identifier isEqualToString:@"trackName"])
+        return track.name;
+
+    if ([tableColumn.identifier isEqualToString:@"trackInfo"])
         return track.format;
 
-    if( [tableColumn.identifier isEqualToString:@"trackDuration"] )
+    if ([tableColumn.identifier isEqualToString:@"trackDuration"])
         return [NSString stringWithFormat:@"%d:%d:%ds", (int) track.duration / 3600,
                                                         ((int)track.duration  % 3600 ) / 60,
                                                         (int) track.duration % 60];
@@ -202,6 +204,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if (row != -1 && [[[[mp4File tracksArray] objectAtIndex:row] name] isEqualToString:@"Chapter Track"])
     {
         ChapterViewController *controller = [[ChapterViewController alloc] initWithNibName:@"ChapterView" bundle:nil];
+        [controller setFile:mp4File andTrack:[[mp4File tracksArray] objectAtIndex:row]];
         if (controller !=nil)
             propertyView = controller;
     }

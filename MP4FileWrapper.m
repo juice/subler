@@ -7,6 +7,8 @@
 //
 
 #import "MP4FileWrapper.h"
+#import "MP4ChapterTrackWrapper.h"
+
 #include "MP4Utilities.h"
 
 @implementation MP4FileWrapper
@@ -25,32 +27,20 @@
         MP4TrackId chapterId = findChapterTrackId(fileHandle);
     
         for (i=0; i< tracksCount; i++) {
+            id track;
             MP4TrackId trackId = MP4FindTrackId( fileHandle, i, 0, 0);
-            MP4TrackWrapper *track = [[MP4TrackWrapper alloc] initWithSourcePath:mp4File trackID: trackId];
-            if(track.Id == chapterId)
-                track.name = @"Chapter Track";
+            if (trackId == chapterId)
+                track = [[MP4ChapterTrackWrapper alloc] initWithSourcePath:mp4File trackID: trackId];
+            else
+                track = [[MP4TrackWrapper alloc] initWithSourcePath:mp4File trackID: trackId];
+
             [tracksArray addObject:track];
             [track release];
         }
 
         tracksToBeDeleted = [[NSMutableArray alloc] init];
-
-        /*
-        MP4Chapter_t *chapter_list = NULL;
-        uint32_t      chapter_count;
-
-        MP4GetChapters( fileHandle, &chapter_list, &chapter_count, 
-                       MP4ChapterTypeQt );
-
-        i = 1;
-        while( i <= chapter_count )
-        {
-            NSLog(@"%s", chapter_list[i-1].title );
-            i++;
-        }
-        */
-
 	}
+
 	return self;
 }
 

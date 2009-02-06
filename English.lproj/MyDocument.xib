@@ -8,9 +8,9 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="100049"/>
-			<integer value="6"/>
+			<integer value="100044"/>
 			<integer value="100132"/>
+			<integer value="100049"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -356,7 +356,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 														<object class="NSTableView" id="355153569">
 															<reference key="NSNextResponder" ref="586671699"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{560, 153}</string>
+															<string key="NSFrameSize">{560, 133}</string>
 															<reference key="NSSuperview" ref="586671699"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="712811294">
@@ -640,7 +640,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 															<bool key="NSAllowsTypeSelect">YES</bool>
 														</object>
 													</object>
-													<string key="NSFrame">{{1, 17}, {560, 153}}</string>
+													<string key="NSFrame">{{1, 17}, {560, 133}}</string>
 													<reference key="NSSuperview" ref="287999566"/>
 													<reference key="NSNextKeyView" ref="355153569"/>
 													<reference key="NSDocView" ref="355153569"/>
@@ -682,7 +682,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 												</object>
 												<reference ref="98013410"/>
 											</object>
-											<string key="NSFrameSize">{562, 171}</string>
+											<string key="NSFrameSize">{562, 151}</string>
 											<reference key="NSSuperview" ref="374668425"/>
 											<reference key="NSNextKeyView" ref="586671699"/>
 											<int key="NSsFlags">562</int>
@@ -694,14 +694,14 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 											<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 										</object>
 									</object>
-									<string key="NSFrameSize">{562, 171}</string>
+									<string key="NSFrameSize">{562, 151}</string>
 									<reference key="NSSuperview" ref="168405590"/>
 									<string key="NSClassName">NSView</string>
 								</object>
 								<object class="NSCustomView" id="810902173">
 									<reference key="NSNextResponder" ref="168405590"/>
 									<int key="NSvFlags">264</int>
-									<string key="NSFrame">{{0, 180}, {562, 225}}</string>
+									<string key="NSFrame">{{0, 160}, {562, 245}}</string>
 									<reference key="NSSuperview" ref="168405590"/>
 									<string key="NSClassName">NSView</string>
 								</object>
@@ -1700,11 +1700,6 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<reference key="parent" ref="355153569"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">100124</int>
-						<reference key="object" ref="854393194"/>
-						<reference key="parent" ref="514942517"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">100040</int>
 						<reference key="object" ref="864585726"/>
 						<object class="NSMutableArray" key="children">
@@ -1745,6 +1740,11 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<int key="objectID">100134</int>
 						<reference key="object" ref="737106343"/>
 						<reference key="parent" ref="17041156"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">100124</int>
+						<reference key="object" ref="854393194"/>
+						<reference key="parent" ref="514942517"/>
 					</object>
 				</object>
 			</object>
@@ -1929,7 +1929,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">100142</int>
+			<int key="maxID">100145</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
