@@ -408,9 +408,11 @@ returnCode contextInfo: (void *) contextInfo
 
 - (void) reloadTable: (id) sender
 {
-    [mp4File release];
-    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
+    MP4FileWrapper * newFile = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
+    [mp4File autorelease];
+    mp4File = newFile;
     [fileTracksTable reloadData];
+    [self tableViewSelectionDidChange:nil];
 }
 
 - (IBAction) deleteTrack: (id) sender

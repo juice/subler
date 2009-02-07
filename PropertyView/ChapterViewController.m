@@ -36,4 +36,22 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     return nil;
 }
 
+- (void) tableView: (NSTableView *) tableView 
+    setObjectValue: (id) anObject 
+    forTableColumn: (NSTableColumn *) tableColumn 
+               row: (NSInteger) rowIndex
+{
+    SBChapter * chapter = [track.chapters objectAtIndex:rowIndex];
+
+    //if ([tableColumn.identifier isEqualToString:@"time"])
+
+    if ([tableColumn.identifier isEqualToString:@"title"]) {
+        if (![chapter.title isEqualToString:anObject]) {
+            chapter.title = anObject;
+            //track.hasChanged = YES;
+            //[self updateChangeCount:NSChangeDone];
+        }
+    }
+}
+
 @end
