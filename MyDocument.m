@@ -53,7 +53,7 @@
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
-    MP4SubtitleTrackWrapper *track;
+    MP4TrackWrapper *track;
 
     for (track in mp4File.tracksToBeDeleted)
             [self deleteSubtitleTrack: track];
@@ -62,8 +62,11 @@
     {
         if ([track.format isEqualToString:@"3GPP Text"])
             if (track.hasChanged && !track.muxed) {
-                [self muxSubtitleTrack:track];
+                [self muxSubtitleTrack:(MP4SubtitleTrackWrapper *)track];
             }
+        if ([track.format isEqualToString:@"Text"])
+            if (track.hasDataChanged)
+                [self muxChapterTrack:(MP4ChapterTrackWrapper *)track];
         if (track.hasChanged && track.Id != 0) {
             [self updateTrackLanguage:track];
             [self updateTrackName:track];
@@ -104,6 +107,7 @@
     mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
     
     [fileTracksTable reloadData];
+    [self tableViewSelectionDidChange:nil];
     [self updateChangeCount:NSChangeCleared];
 
     if ( outError != NULL || !mp4File ) {
@@ -310,6 +314,38 @@ returnCode contextInfo: (void *) contextInfo
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
         
+    return YES;
+}
+
+- (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track
+{
+    MP4FileHandle fileHandle;
+
+    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
+    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
+        printf("Error\n");
+        return NO;
+    }
+    
+    MP4Chapter_t * chapters = 0;
+    uint32_t chapterCount = 0, i = 0;
+    
+    // get the list of chapters
+    MP4GetChapters(fileHandle, &chapters, &chapterCount, MP4ChapterTypeQt);
+    for (i = 0; i<chapterCount; i++) {
+        strcpy(chapters[i].title, [[[track.chapters objectAtIndex:i] title] UTF8String]);
+    }
+    
+    MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
+    updateTracksCount(fileHandle);
+    MP4AddChapterTextTrack(fileHandle, 1, 1000);
+    MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeAny);
+    
+    MP4Close(fileHandle);
+    
+    [NSApp endSheet: addSubtitleWindow];
+    [addSubtitleWindow orderOut:self];
+    
     return YES;
 }
 

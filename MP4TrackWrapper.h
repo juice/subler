@@ -17,6 +17,7 @@
     NSString    *media;
     NSString    *language;
     BOOL        hasChanged;
+    BOOL        hasDataChanged;
     BOOL        muxed;
 	
 	int samplerate; 
@@ -35,6 +36,7 @@
 @property (readonly) double bitrate;
 @property (readonly) double duration;
 @property(readwrite) BOOL hasChanged;
+@property(readwrite) BOOL hasDataChanged;
 @property(readwrite) BOOL muxed;
 
 -(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;

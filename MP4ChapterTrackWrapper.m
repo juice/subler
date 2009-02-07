@@ -44,7 +44,7 @@
         while (i <= chapter_count)
         {
             SBChapter *chapter = [[SBChapter alloc] init];
-            chapter.title = [NSString stringWithFormat:@"%s", chapter_list[i-1].title];
+            chapter.title = [NSString stringWithCString:chapter_list[i-1].title encoding: NSUTF8StringEncoding];
             chapter.duration = sum;
             sum = chapter_list[i-1].duration + sum;
             [chapters addObject:chapter];

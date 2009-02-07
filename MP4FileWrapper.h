@@ -10,6 +10,7 @@
 #import "mp4v2/mp4v2.h"
 #import "MP4TrackWrapper.h"
 #import "MP4SubtitleTrackWrapper.h"
+#import "MP4ChapterTrackWrapper.h"
 #import "MP4Metadata.h"
 
 @interface MP4FileWrapper : NSObject {

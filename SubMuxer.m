@@ -93,17 +93,13 @@ int writeEmptySubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, MP4
 }
 
 int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay) {
-    MP4TrackId subtitleTrackId;
-    int i, videoTrack, videoWidth, videoHeight;
+    MP4TrackId subtitleTrackId, videoTrack;
+    int videoWidth, videoHeight;
     uint64_t hSpacing, vSpacing;
 
-    int trackNumber = MP4GetNumberOfTracks( fileHandle, 0, 0);
-    for (i = 0; i <= trackNumber; i++) {
-        videoTrack = MP4FindTrackId( fileHandle, i, 0, 0);
-        const char* trackType = MP4GetTrackType( fileHandle, videoTrack);
-        if (!strcmp(trackType, MP4_VIDEO_TRACK_TYPE))
-            break;
-    }
+    videoTrack = findFirstVideoTrack(fileHandle);
+    if (videoTrack == 0)
+        return 0;
 
     videoWidth = MP4GetTrackVideoWidth(fileHandle, videoTrack);
     videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
@@ -147,7 +143,7 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     [ss release];
     [pool release];
 
-    return 0;
+    return 1;
 }
 
 @end

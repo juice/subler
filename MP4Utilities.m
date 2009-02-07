@@ -90,3 +90,16 @@ uint64_t findChapterTrackId(MP4FileHandle fileHandle)
     }
     return 0;
 }
+
+MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle)
+{
+    MP4TrackId videoTrack = 0;
+    int i, trackNumber = MP4GetNumberOfTracks( fileHandle, 0, 0);
+    for (i = 0; i <= trackNumber; i++) {
+        videoTrack = MP4FindTrackId( fileHandle, i, 0, 0);
+        const char* trackType = MP4GetTrackType( fileHandle, videoTrack);
+        if (!strcmp(trackType, MP4_VIDEO_TRACK_TYPE))
+            return videoTrack;
+    }
+    return 0;
+}

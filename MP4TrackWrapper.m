@@ -18,6 +18,7 @@
 		sourcePath = source;
 		Id = trackID;
         hasChanged = NO;
+        hasDataChanged = NO;
         muxed = YES;
 	}
 	[self readTrackType];
@@ -109,6 +110,7 @@
 @synthesize bitrate;
 @synthesize duration;
 @synthesize hasChanged;
+@synthesize hasDataChanged;
 @synthesize muxed;
 
 @end

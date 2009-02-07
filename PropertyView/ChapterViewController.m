@@ -48,7 +48,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([tableColumn.identifier isEqualToString:@"title"]) {
         if (![chapter.title isEqualToString:anObject]) {
             chapter.title = anObject;
-            //track.hasChanged = YES;
+            track.hasDataChanged = YES;
             //[self updateChangeCount:NSChangeDone];
         }
     }

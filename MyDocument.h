@@ -43,6 +43,7 @@
 - (IBAction) closeSheet: (id) sender;
 - (IBAction) openBrowse: (id) sender;
 - (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track;
+- (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track;
 - (BOOL) deleteSubtitleTrack: (MP4TrackWrapper *)track;
 - (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track;
 - (BOOL) updateTrackName: (MP4TrackWrapper*) track;
