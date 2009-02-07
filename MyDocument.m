@@ -161,9 +161,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         return track.format;
 
     if ([tableColumn.identifier isEqualToString:@"trackDuration"])
-        return [NSString stringWithFormat:@"%d:%d:%ds", (int) track.duration / 3600,
-                                                        ((int)track.duration  % 3600 ) / 60,
-                                                        (int) track.duration % 60];
+        return SMPTEStringFromTime(track.duration, 1000);
 
     if( [tableColumn.identifier isEqualToString:@"trackLanguage"] )
         return track.language;

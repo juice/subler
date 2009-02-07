@@ -7,9 +7,8 @@
  *
  */
 
-#include "MP4Utilities.h"
-#include "mp4v2/mp4v2.h"
-#include <string.h>
+#import "MP4Utilities.h"
+#import <string.h>
 
 typedef enum {  TRACK_DISABLED = 0x0,
                 TRACK_ENABLED = 0x1,
@@ -18,6 +17,30 @@ typedef enum {  TRACK_DISABLED = 0x0,
                 TRACK_IN_POSTER = 0x8
 } track_header_flags;
 
+NSString *SMPTEStringFromTime( long long time, long timeScale )  
+{  
+    NSString *SMPTE_string;  
+    int days, hour, minute, second, frame;  
+    long long result;  
+    
+    // timeScale is fps * 100  
+    result = time / timeScale; // second  
+    frame = (time % timeScale) / 10;  
+    
+    second = result % 60;  
+    
+    result = result / 60; // minute  
+    minute = result % 60;  
+    
+    result = result / 60; // hour  
+    hour = result % 24;  
+    
+    days = result;  
+    
+    SMPTE_string = [NSString stringWithFormat:@"%02d:%02d:%02d:%02d", hour, minute, second, frame]; // hh:mm:ss:ff  
+    
+    return SMPTE_string;  
+}
 
 int enableTrack(MP4FileHandle fileHandle, MP4TrackId trackId) {
     return MP4SetTrackIntegerProperty(fileHandle, trackId, "tkhd.flags", (TRACK_ENABLED | TRACK_IN_MOVIE));

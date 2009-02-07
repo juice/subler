@@ -7,7 +7,7 @@
 //
 
 #import "ChapterViewController.h"
-
+#import "MP4Utilities.h"
 
 @implementation ChapterViewController
 
@@ -26,11 +26,12 @@
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
+    SBChapter * chapter = [track.chapters objectAtIndex:rowIndex];
     if ([tableColumn.identifier isEqualToString:@"time"])
-        return [NSString stringWithFormat:@"%d", rowIndex+1];
-    
+        return SMPTEStringFromTime(chapter.duration, 1000);  
+
     if ([tableColumn.identifier isEqualToString:@"title"])
-        return [track.chapters objectAtIndex:rowIndex];
+        return chapter.title;
     
     return nil;
 }

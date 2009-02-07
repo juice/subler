@@ -8,7 +8,9 @@
  */
 
 #include "mp4v2/mp4v2.h"
+#import <Cocoa/Cocoa.h>
 
+NSString *SMPTEStringFromTime(long long time, long timeScale);
 int enableFirstSubtitleTrack(MP4FileHandle fileHandle);
 int updateTracksCount(MP4FileHandle fileHandle);
 uint64_t findChapterTrackId(MP4FileHandle fileHandle);

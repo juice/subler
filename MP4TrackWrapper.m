@@ -79,7 +79,7 @@
 		bitrate = (double)MP4GetTrackBitRate(sourceHandle, Id) / 1024;
 		duration = (double)MP4ConvertFromTrackDuration(sourceHandle, Id,
                                                        MP4GetTrackDuration(sourceHandle, Id),
-                                                       MP4_MSECS_TIME_SCALE) / 1000;
+                                                       MP4_MSECS_TIME_SCALE);
 		samplerate = MP4GetTrackTimeScale(sourceHandle, Id);
         
         char* lang = malloc(sizeof(char)*4);

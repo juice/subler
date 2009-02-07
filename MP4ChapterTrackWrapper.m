@@ -8,6 +8,18 @@
 
 #import "MP4ChapterTrackWrapper.h"
 
+@implementation SBChapter
+
+-(void) dealloc
+{
+    [super dealloc];
+    [title release];
+}
+
+@synthesize duration;
+@synthesize title;
+
+@end
 
 @implementation MP4ChapterTrackWrapper
 
@@ -28,9 +40,15 @@
          
         int i = 1;
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        MP4Duration sum = 0;
         while (i <= chapter_count)
         {
-            [chapters addObject:[NSString stringWithFormat:@"%s", chapter_list[i-1].title]];
+            SBChapter *chapter = [[SBChapter alloc] init];
+            chapter.title = [NSString stringWithFormat:@"%s", chapter_list[i-1].title];
+            chapter.duration = sum;
+            sum = chapter_list[i-1].duration + sum;
+            [chapters addObject:chapter];
+            [chapter release];
             i++;
         }
         [pool release];
