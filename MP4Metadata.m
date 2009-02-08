@@ -34,6 +34,21 @@
 
     if (tags->artist)
         [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->artist] forKey: @"Artist"];
+    
+    if (tags->grouping)
+        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->grouping] forKey: @"Grouping"];
+    
+    if (tags->composer)
+        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->composer] forKey: @"Composer"];
+
+    if (tags->comments)
+        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->comments] forKey: @"Comments"];
+    
+    if (tags->genre)
+        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->genre] forKey: @"Genre"];
+    
+    if (tags->description)
+        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->description] forKey: @"Description"];
 
     if (tags->name)
         [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->name] forKey: @"Name"];

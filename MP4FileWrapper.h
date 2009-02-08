@@ -16,6 +16,7 @@
 @interface MP4FileWrapper : NSObject {
 
     MP4FileHandle fileHandle;
+    NSString       *filePath;
     
     NSMutableArray  *tracksArray;
     NSMutableArray  *tracksToBeDeleted;
@@ -26,8 +27,14 @@
 @property (readonly) NSMutableArray *tracksToBeDeleted;
 @property (readonly) MP4Metadata    *metadata;
 
--(id)initWithExistingMP4File:(NSString *)mp4File;
+- (id)initWithExistingMP4File:(NSString *)mp4File;
 - (int)tracksCount;
+- (BOOL) writeToFile;
+- (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track;
+- (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track;
+- (BOOL) deleteSubtitleTrack: (MP4TrackWrapper *)track;
+- (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track;
+- (BOOL) updateTrackName: (MP4TrackWrapper*) track;
 
 
 @end
