@@ -75,6 +75,8 @@
         }
     }
 
+    [metadata writeMetadata];
+
     return YES;
 }
 
@@ -121,7 +123,7 @@
     updateTracksCount(fileHandle);
 
     MP4AddChapterTextTrack(fileHandle, 1, 1000);
-    MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeAny);
+    MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeQt);
 
     MP4Close(fileHandle);
 

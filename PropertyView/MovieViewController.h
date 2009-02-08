@@ -11,9 +11,12 @@
 
 
 @interface MovieViewController : NSViewController {
-    MP4FileWrapper  *mp4File;
+    MP4FileWrapper          *mp4File;
+    IBOutlet NSPopUpButton  *tagList;
+    IBOutlet NSTableView    *tableView;
 }
 
 - (void) setFile: (MP4FileWrapper *)file;
- 
+- (IBAction) addTag: (id) sender;
+
 @end

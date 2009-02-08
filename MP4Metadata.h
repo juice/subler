@@ -16,6 +16,7 @@
 
 -(id) initWithSourcePath:(NSString *)source;
 -(void) readMetaData;
+- (BOOL) writeMetadata;
 
 @property(readonly) NSMutableDictionary    *tagsDict;
 
