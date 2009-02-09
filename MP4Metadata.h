@@ -12,6 +12,8 @@
 @interface MP4Metadata : NSObject {
     NSString        *sourcePath;
     NSMutableDictionary    *tagsDict;
+    
+    BOOL edited;
 }
 
 -(id) initWithSourcePath:(NSString *)source;
@@ -19,5 +21,6 @@
 - (BOOL) writeMetadata;
 
 @property(readonly) NSMutableDictionary    *tagsDict;
+@property(readwrite) BOOL    edited;
 
 @end

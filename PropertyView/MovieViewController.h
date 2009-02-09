@@ -14,6 +14,8 @@
     MP4FileWrapper          *mp4File;
     IBOutlet NSPopUpButton  *tagList;
     IBOutlet NSTableView    *tableView;
+    
+    NSDictionary* detailBoldAttr;
 }
 
 - (void) setFile: (MP4FileWrapper *)file;

@@ -19,7 +19,8 @@
         tagsDict = [[NSMutableDictionary alloc] init];
 	}
 	[self readMetaData];
-	
+	edited = NO;
+    
     return self;
 }
 
@@ -96,6 +97,8 @@
     
     return YES;
 }
+
+@synthesize edited;
 
 -(void) dealloc
 {

@@ -96,6 +96,20 @@
     return YES;
 }
 
+- (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
+{
+    SEL action = [anItem action];
+    
+    if (action == @selector(saveDocument:))
+        if ([self isDocumentEdited])
+            return YES;
+
+    if (action == @selector(revertDocumentToSaved:))
+        if ([self isDocumentEdited])
+            return YES;
+
+    return NO;
+}
 
 - (BOOL)validateToolbarItem: (NSToolbarItem *) toolbarItem
 {

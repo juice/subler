@@ -75,7 +75,8 @@
         }
     }
 
-    [metadata writeMetadata];
+    if (metadata.edited)
+        [metadata writeMetadata];
 
     return YES;
 }

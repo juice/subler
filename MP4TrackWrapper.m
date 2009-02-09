@@ -28,7 +28,6 @@
 
 -(void)readTrackType
 {
-	// Override to read type-specific info
 	MP4FileHandle *sourceHandle = MP4Read([sourcePath UTF8String], 0);
 	
 	if (sourceHandle != MP4_INVALID_FILE_HANDLE)
