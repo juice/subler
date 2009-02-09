@@ -37,7 +37,7 @@ NSString *SMPTEStringFromTime( long long time, long timeScale )
     
     days = result;  
     
-    SMPTE_string = [NSString stringWithFormat:@"%d:%02d:%02d:%02d", hour, minute, second, frame]; // hh:mm:ss:ff  
+    SMPTE_string = [NSString stringWithFormat:@"%d:%02d:%02d:%02d", hour, minute, second, frame]; // h:mm:ss:ff  
     
     return SMPTE_string;  
 }

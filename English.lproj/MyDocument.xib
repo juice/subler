@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="6"/>
+			<integer value="100127"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -354,7 +354,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 														<object class="NSTableView" id="355153569">
 															<reference key="NSNextResponder" ref="586671699"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{574, 112}</string>
+															<string key="NSFrameSize">{574, 96}</string>
 															<reference key="NSSuperview" ref="586671699"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="712811294">
@@ -634,7 +634,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 															<bool key="NSAllowsTypeSelect">YES</bool>
 														</object>
 													</object>
-													<string key="NSFrame">{{1, 17}, {574, 112}}</string>
+													<string key="NSFrame">{{1, 17}, {574, 96}}</string>
 													<reference key="NSSuperview" ref="287999566"/>
 													<reference key="NSNextKeyView" ref="355153569"/>
 													<reference key="NSDocView" ref="355153569"/>
@@ -676,7 +676,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 												</object>
 												<reference ref="98013410"/>
 											</object>
-											<string key="NSFrameSize">{576, 130}</string>
+											<string key="NSFrameSize">{576, 114}</string>
 											<reference key="NSSuperview" ref="374668425"/>
 											<reference key="NSNextKeyView" ref="586671699"/>
 											<int key="NSsFlags">562</int>
@@ -688,14 +688,14 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 											<bytes key="NSScrollAmts">QSAAAEEgAABBgAAAQYAAAA</bytes>
 										</object>
 									</object>
-									<string key="NSFrameSize">{576, 130}</string>
+									<string key="NSFrameSize">{576, 114}</string>
 									<reference key="NSSuperview" ref="168405590"/>
 									<string key="NSClassName">NSView</string>
 								</object>
 								<object class="NSCustomView" id="810902173">
 									<reference key="NSNextResponder" ref="168405590"/>
 									<int key="NSvFlags">264</int>
-									<string key="NSFrame">{{0, 139}, {576, 232}}</string>
+									<string key="NSFrame">{{0, 123}, {576, 248}}</string>
 									<reference key="NSSuperview" ref="168405590"/>
 									<string key="NSClassName">NSView</string>
 								</object>

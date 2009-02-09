@@ -13,7 +13,7 @@
 @interface MovieViewController : NSViewController {
     MP4FileWrapper          *mp4File;
     IBOutlet NSPopUpButton  *tagList;
-    IBOutlet NSTableView    *tableView;
+    IBOutlet NSTableView    *tagsTableView;
     
     NSDictionary* detailBoldAttr;
 }

@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1"/>
+			<integer value="19"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -401,8 +401,8 @@
 																		<reference key="NSTextColor" ref="1034872520"/>
 																	</object>
 																	<object class="NSTextFieldCell" key="NSDataCell" id="283838781">
-																		<int key="NSCellFlags">337772096</int>
-																		<int key="NSCellFlags2">133120</int>
+																		<int key="NSCellFlags">337772032</int>
+																		<int key="NSCellFlags2">131072</int>
 																		<string key="NSContents">Text Cell</string>
 																		<reference key="NSSupport" ref="26"/>
 																		<reference key="NSControlView" ref="999266526"/>
@@ -441,7 +441,6 @@
 													</object>
 													<string key="NSFrame">{{1, 17}, {422, 163}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
-													<reference key="NSNextKeyView" ref="999266526"/>
 													<reference key="NSDocView" ref="999266526"/>
 													<reference key="NSBGColor" ref="315001162"/>
 													<int key="NScvFlags">4</int>
@@ -476,7 +475,6 @@
 													</object>
 													<string key="NSFrame">{{1, 0}, {422, 17}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
-													<reference key="NSNextKeyView" ref="888415462"/>
 													<reference key="NSDocView" ref="888415462"/>
 													<reference key="NSBGColor" ref="315001162"/>
 													<int key="NScvFlags">4</int>
@@ -485,7 +483,6 @@
 											</object>
 											<string key="NSFrame">{{17, 42}, {424, 181}}</string>
 											<reference key="NSSuperview" ref="900859224"/>
-											<reference key="NSNextKeyView" ref="399023230"/>
 											<int key="NSsFlags">562</int>
 											<reference key="NSVScroller" ref="477814729"/>
 											<reference key="NSHScroller" ref="827247503"/>
@@ -631,11 +628,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">tableView</string>
+						<string key="label">tagsTableView</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="999266526"/>
 					</object>
-					<int key="connectionID">38</int>
+					<int key="connectionID">39</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -898,7 +895,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">38</int>
+			<int key="maxID">39</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -914,13 +911,13 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>tableView</string>
 							<string>tagList</string>
+							<string>tagsTableView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSTableView</string>
 							<string>NSPopUpButton</string>
+							<string>NSTableView</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

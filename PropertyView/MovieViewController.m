@@ -41,7 +41,7 @@
     if (![mp4File.metadata.tagsDict valueForKey:tagName]) {
         [mp4File.metadata.tagsDict setObject:@"Empty" forKey:tagName];
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-        [tableView reloadData];
+        [tagsTableView reloadData];
     }
 }
 
@@ -91,10 +91,39 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     }
 }
 
+- (CGFloat)tableView: (NSTableView *) tableView
+         heightOfRow: (NSInteger) rowIndex
+{
+    NSDictionary *tags = [[mp4File metadata] tagsDict];
+    NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+
+	// Get column you want - first in this case:
+	NSTableColumn *tabCol = [[tableView tableColumns] objectAtIndex:1];
+	CGFloat width = [tabCol width];
+	NSRect r = NSMakeRect(0,0,width,1000.0);
+	NSCell *cell = [tabCol dataCellForRow:rowIndex];	
+	NSString *content = [tags objectForKey:[tagsArray objectAtIndex:rowIndex]];	// or however you want to get the string
+	[cell setObjectValue:content];
+	CGFloat height = [cell cellSizeForBounds:r].height;
+	if (height <= 0) height = 14.0;	// Ensure miniumum height is 14.0
+    
+	return height;
+}
+
+- (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation
+{
+    return nil;
+}
+
+- (void)tableViewColumnDidResize: (NSNotification* )notification
+{
+    [tagsTableView reloadData];
+}
+
 - (void) dealloc
 {
-    [super dealloc];
     [detailBoldAttr release];
+    [super dealloc];
 }
 
 @end

@@ -30,32 +30,65 @@
     const MP4Tags* tags = MP4TagsAlloc();
     MP4TagsFetch( tags, sourceHandle );
 
-    if (tags->releaseDate)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->releaseDate] forKey: @"Date"];
+    if (tags->name)
+        [tagsDict setObject:[NSString stringWithCString:tags->name encoding: NSUTF8StringEncoding]
+                     forKey:@"Name"];
 
     if (tags->artist)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->artist] forKey: @"Artist"];
+        [tagsDict setObject:[NSString stringWithCString:tags->artist encoding: NSUTF8StringEncoding]
+                     forKey:@"Artist"];
 
-    if (tags->grouping)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->grouping] forKey: @"Grouping"];
-
-    if (tags->composer)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->composer] forKey: @"Composer"];
-
-    if (tags->comments)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->comments] forKey: @"Comments"];
-    
-    if (tags->genre)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->genre] forKey: @"Genre"];
-    
-    if (tags->description)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->description] forKey: @"Description"];
-
-    if (tags->name)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->name] forKey: @"Name"];
+    if (tags->albumArtist)
+        [tagsDict setObject:[NSString stringWithCString:tags->albumArtist encoding: NSUTF8StringEncoding]
+                     forKey:@"Album Artist"];
 
     if (tags->album)
-        [tagsDict setObject:[NSString stringWithFormat:@"%s", tags->album] forKey: @"Album"];
+        [tagsDict setObject:[NSString stringWithCString:tags->album encoding: NSUTF8StringEncoding]
+                     forKey:@"Album"];
+
+    if (tags->grouping)
+        [tagsDict setObject:[NSString stringWithCString:tags->grouping encoding: NSUTF8StringEncoding]
+                     forKey:@"Grouping"];
+
+    if (tags->composer)
+        [tagsDict setObject:[NSString stringWithCString:tags->composer encoding: NSUTF8StringEncoding]
+                     forKey:@"Composer"];
+
+    if (tags->comments)
+        [tagsDict setObject:[NSString stringWithCString:tags->comments encoding: NSUTF8StringEncoding]
+                     forKey:@"Comments"];
+
+    if (tags->genre)
+        [tagsDict setObject:[NSString stringWithCString:tags->genre encoding: NSUTF8StringEncoding]
+                     forKey:@"Genre"];
+
+    if (tags->releaseDate)
+        [tagsDict setObject:[NSString stringWithCString:tags->releaseDate encoding: NSUTF8StringEncoding]
+                     forKey:@"Date"];
+
+    if (tags->tvShow)
+        [tagsDict setObject:[NSString stringWithCString:tags->tvShow encoding: NSUTF8StringEncoding]
+                     forKey:@"TV Show"];
+
+    if (tags->tvEpisodeID)
+        [tagsDict setObject:[NSString stringWithCString:tags->tvEpisodeID encoding: NSUTF8StringEncoding]
+                     forKey:@"TV Episode ID"];
+
+    if (tags->description)
+        [tagsDict setObject:[NSString stringWithCString:tags->description encoding: NSUTF8StringEncoding]
+                     forKey:@"Description"];
+
+    if (tags->longDescription)
+        [tagsDict setObject:[NSString stringWithCString:tags->longDescription encoding: NSUTF8StringEncoding]
+                     forKey:@"Long Description"];
+    
+    if (tags->encodingTool)
+        [tagsDict setObject:[NSString stringWithCString:tags->encodingTool encoding: NSUTF8StringEncoding]
+                     forKey:@"Encoding Tool"];
+
+    if (tags->purchaseDate)
+        [tagsDict setObject:[NSString stringWithCString:tags->purchaseDate encoding: NSUTF8StringEncoding]
+                     forKey:@"Purchase Date"];
 
     MP4TagsFree( tags );
     MP4Close(sourceHandle);
