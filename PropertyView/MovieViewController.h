@@ -14,6 +14,7 @@
     MP4FileWrapper          *mp4File;
     IBOutlet NSPopUpButton  *tagList;
     IBOutlet NSTableView    *tagsTableView;
+    IBOutlet NSImageView    *imageView;
     
     NSDictionary* detailBoldAttr;
 }

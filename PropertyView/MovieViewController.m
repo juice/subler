@@ -13,7 +13,7 @@
 
 - (void) awakeFromNib
 {
-    NSArray *tags = [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album", @"Date", @"Genre", @"Composer", @"Grouping", @"Comments" , @"Description", nil];
+    NSArray *tags = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album", @"Date", @"Genre", @"Composer", @"Grouping", @"Comments" , @"Description", nil];
     id tag;
     for (tag in tags)
         [tagList addItemWithTitle:tag];
@@ -27,6 +27,8 @@
                       ps, NSParagraphStyleAttributeName,
                       [NSColor grayColor], NSForegroundColorAttributeName,
                        nil] retain];
+    
+    [imageView setImage:[mp4File.metadata artwork]];
 }
 
 - (void) setFile: (MP4FileWrapper *)file
@@ -91,8 +93,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     }
 }
 
-- (CGFloat)tableView: (NSTableView *) tableView
-         heightOfRow: (NSInteger) rowIndex
+- (CGFloat) tableView: (NSTableView *) tableView
+          heightOfRow: (NSInteger) rowIndex
 {
     NSDictionary *tags = [[mp4File metadata] tagsDict];
     NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
@@ -110,7 +112,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 	return height;
 }
 
-- (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation
+- (NSString *) tableView: (NSTableView *) aTableView 
+          toolTipForCell: (NSCell *) aCell 
+                    rect: (NSRectPointer) rect 
+             tableColumn: (NSTableColumn *) aTableColumn
+                     row: (NSInteger) row
+           mouseLocation: (NSPoint) mouseLocation
 {
     return nil;
 }

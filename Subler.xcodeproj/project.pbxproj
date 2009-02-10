@@ -181,8 +181,6 @@
 				A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */,
 				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
-				A91106490F323D450013D1E0 /* AppDelegate.h */,
-				A911064A0F323D450013D1E0 /* AppDelegate.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -190,6 +188,8 @@
 		2A37F4AFFDCFA73011CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A91106490F323D450013D1E0 /* AppDelegate.h */,
+				A911064A0F323D450013D1E0 /* AppDelegate.m */,
 				32DBCF750370BD2300C91783 /* Subler_Prefix.pch */,
 				A911049C0F321DFC0013D1E0 /* UniversalDetector.h */,
 				A9F5EBB00F32F31600C057E0 /* lang.h */,

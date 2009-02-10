@@ -189,10 +189,10 @@
 
 - (void) dealloc
 {   
-    [super dealloc];
     [tracksArray release];
     [tracksToBeDeleted release];
     [metadata release];
+    [super dealloc];
 }
 
 @synthesize tracksArray;

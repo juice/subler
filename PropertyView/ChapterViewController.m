@@ -22,9 +22,9 @@
     return [track.chapters count];
 }
 
-- (id) tableView:(NSTableView *)tableView 
-objectValueForTableColumn:(NSTableColumn *)tableColumn 
-             row:(NSInteger)rowIndex
+- (id)              tableView: (NSTableView *) tableView 
+    objectValueForTableColumn: (NSTableColumn *) tableColumn 
+                          row: (NSInteger) rowIndex
 {
     SBChapter * chapter = [track.chapters objectAtIndex:rowIndex];
     if ([tableColumn.identifier isEqualToString:@"time"])

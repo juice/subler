@@ -20,7 +20,7 @@
 	}
 	[self readMetaData];
 	edited = NO;
-    
+
     return self;
 }
 
@@ -32,7 +32,7 @@
 
     if (tags->name)
         [tagsDict setObject:[NSString stringWithCString:tags->name encoding: NSUTF8StringEncoding]
-                     forKey:@"Name"];
+                     forKey:@" Name"];
 
     if (tags->artist)
         [tagsDict setObject:[NSString stringWithCString:tags->artist encoding: NSUTF8StringEncoding]
@@ -74,6 +74,18 @@
         [tagsDict setObject:[NSString stringWithCString:tags->tvEpisodeID encoding: NSUTF8StringEncoding]
                      forKey:@"TV Episode ID"];
 
+    if (tags->tvSeason)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->tvSeason]
+                     forKey:@"TV Season"];
+
+    if (tags->tvEpisode)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->tvEpisode]
+                     forKey:@"TV Episode"];
+
+    if (tags->tvNetwork)
+        [tagsDict setObject:[NSString stringWithCString:tags->tvNetwork encoding: NSUTF8StringEncoding]
+                     forKey:@"TV Network"];
+
     if (tags->description)
         [tagsDict setObject:[NSString stringWithCString:tags->description encoding: NSUTF8StringEncoding]
                      forKey:@"Description"];
@@ -81,14 +93,39 @@
     if (tags->longDescription)
         [tagsDict setObject:[NSString stringWithCString:tags->longDescription encoding: NSUTF8StringEncoding]
                      forKey:@"Long Description"];
-    
+
+    //if (tags->lyrics)
+    //    [tagsDict setObject:[NSString stringWithCString:tags->lyrics encoding: NSUTF8StringEncoding]
+    //                 forKey:@"Lyrics"];
+
+    if (tags->copyright)
+        [tagsDict setObject:[NSString stringWithCString:tags->copyright encoding: NSUTF8StringEncoding]
+                     forKey:@"Copyright"];
+
     if (tags->encodingTool)
         [tagsDict setObject:[NSString stringWithCString:tags->encodingTool encoding: NSUTF8StringEncoding]
                      forKey:@"Encoding Tool"];
 
+    if (tags->encodedBy)
+        [tagsDict setObject:[NSString stringWithCString:tags->encodedBy encoding: NSUTF8StringEncoding]
+                     forKey:@"Encoded By"];
+
     if (tags->purchaseDate)
         [tagsDict setObject:[NSString stringWithCString:tags->purchaseDate encoding: NSUTF8StringEncoding]
                      forKey:@"Purchase Date"];
+
+    if (tags->iTunesAccount)
+        [tagsDict setObject:[NSString stringWithCString:tags->iTunesAccount encoding: NSUTF8StringEncoding]
+                     forKey:@"iTunes Account"];
+
+    if (tags->artwork) {
+        NSData *imageData = [NSData dataWithBytes:tags->artwork->data length:tags->artwork->size];
+        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+        if (imageRep != nil) {
+            artwork = [[NSImage alloc] initWithSize:[imageRep size]];
+            [artwork addRepresentation:imageRep];
+        }
+    }
 
     MP4TagsFree( tags );
     MP4Close(sourceHandle);
@@ -99,9 +136,9 @@
     MP4FileHandle *fileHandle = MP4Modify( [sourcePath UTF8String], MP4_DETAILS_ERROR, 0 );
     const MP4Tags* tags = MP4TagsAlloc();
     MP4TagsFetch( tags, fileHandle );
-    
+
     if ([tagsDict valueForKey:@"Name"])
-        MP4TagsSetName( tags, [[tagsDict valueForKey:@"Name"] UTF8String] );
+        MP4TagsSetName( tags, [[tagsDict valueForKey:@" Name"] UTF8String] );
 
     if ([tagsDict valueForKey:@"Artist"])
         MP4TagsSetArtist( tags, [[tagsDict valueForKey:@"Artist"] UTF8String] );
@@ -127,16 +164,18 @@
     MP4TagsStore( tags, fileHandle );
     MP4TagsFree( tags );
     MP4Close( fileHandle );
-    
+
     return YES;
 }
 
 @synthesize edited;
+@synthesize artwork;
 
 -(void) dealloc
 {
-    [super dealloc];
+    [artwork release];
     [tagsDict release];
+    [super dealloc];
 }
 
 @synthesize tagsDict;
