@@ -55,12 +55,11 @@
 
     [self updateChangeCount:NSChangeCleared];
     [self reloadTable:self];
-    
 
     if ( outError != NULL ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
-    
+
     [self setFileURL:absoluteURL];
     [self setFileModificationDate:[[[NSFileManager defaultManager]  
                                     fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
@@ -74,7 +73,7 @@
     filePath = [absoluteURL path];
 
     mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
-    
+
     if ( outError != NULL || !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
@@ -85,7 +84,7 @@
 {
     [mp4File release];
     mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
-    
+
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
     [self updateChangeCount:NSChangeCleared];
@@ -265,7 +264,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 }
 
 - (void) openBrowseDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
-returnCode contextInfo: (void *) contextInfo
+    returnCode contextInfo: (void *) contextInfo
 {
     if( returnCode != NSOKButton ) {
         if ([subtitleFilePath stringValue] == nil)

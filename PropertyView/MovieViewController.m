@@ -13,7 +13,7 @@
 
 - (void) awakeFromNib
 {
-    NSArray *tags = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album", @"Date", @"Genre", @"Composer", @"Grouping", @"Comments" , @"Description", nil];
+    NSArray *tags = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Date" , @"TV Episode", @"Genre", @"Description" , @"Long Description", @"Copyright", @"Encoding Tool", @"Encoded By", nil];
     id tag;
     for (tag in tags)
         [tagList addItemWithTitle:tag];
@@ -47,6 +47,20 @@
     }
 }
 
+- (IBAction) removeTag: (id) sender {
+    NSInteger rowIndex = [tagsTableView selectedRow];
+    if (rowIndex != -1) {
+        NSDictionary *tags = [[mp4File metadata] tagsDict];
+        NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+
+        NSString *tagName = [tagsArray objectAtIndex:rowIndex];
+        [mp4File.metadata.tagsDict removeObjectForKey:tagName];
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+        mp4File.metadata.edited = YES;
+        [tagsTableView reloadData];
+    }
+}
+
 - (NSAttributedString *) nameColumnString: (NSString *) string
 {
     return [[[NSAttributedString alloc] initWithString:string attributes:detailBoldAttr] autorelease];
@@ -54,8 +68,7 @@
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
-    NSUInteger i = [[[mp4File metadata] tagsDict] count];
-    return i;
+    return [[[mp4File metadata] tagsDict] count];
 }
 
 - (id) tableView:(NSTableView *)tableView 
@@ -125,6 +138,20 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (void)tableViewColumnDidResize: (NSNotification* )notification
 {
     [tagsTableView reloadData];
+}
+
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+    NSLog(@"lalala");
+    [tagsTableView reloadData];
+}
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
+{
+    if ([tagsTableView selectedRow] != -1)
+        [removeTag setEnabled:YES];
+    else
+        [removeTag setEnabled:NO];
 }
 
 - (void) dealloc

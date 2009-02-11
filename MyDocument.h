@@ -15,7 +15,7 @@
 {
     MP4FileHandle   readOnlyFile;
     NSString       *filePath;
-    
+
     MP4FileWrapper  *mp4File;
 
     IBOutlet NSTextField    *subtitleFilePath;
@@ -32,9 +32,9 @@
 
     IBOutlet NSToolbarItem  *addTrackToolBar;
     IBOutlet NSToolbarItem  *deleteTrack;
-    
+
     NSMutableArray          *languages;
-    
+
     NSViewController        *propertyView;
     IBOutlet NSView         *targetView;
 }

@@ -137,29 +137,39 @@
     const MP4Tags* tags = MP4TagsAlloc();
     MP4TagsFetch( tags, fileHandle );
 
-    if ([tagsDict valueForKey:@"Name"])
-        MP4TagsSetName( tags, [[tagsDict valueForKey:@" Name"] UTF8String] );
+    MP4TagsSetName( tags, [[tagsDict valueForKey:@" Name"] UTF8String] );
 
-    if ([tagsDict valueForKey:@"Artist"])
-        MP4TagsSetArtist( tags, [[tagsDict valueForKey:@"Artist"] UTF8String] );
+    MP4TagsSetArtist( tags, [[tagsDict valueForKey:@"Artist"] UTF8String] );
 
-    if ([tagsDict valueForKey:@"Album"])
-        MP4TagsSetAlbum( tags, [[tagsDict valueForKey:@"Album"] UTF8String] );
+    MP4TagsSetAlbumArtist( tags, [[tagsDict valueForKey:@"Album Artist"] UTF8String] );
 
-    if ([tagsDict valueForKey:@"Date"])
-        MP4TagsSetReleaseDate( tags, [[tagsDict valueForKey:@"Date"] UTF8String] );
+    MP4TagsSetAlbum( tags, [[tagsDict valueForKey:@"Album"] UTF8String] );
 
-    if ([tagsDict valueForKey:@"Comments"])
-        MP4TagsSetComments( tags, [[tagsDict valueForKey:@"Comments"] UTF8String] );
+    MP4TagsSetGrouping( tags, [[tagsDict valueForKey:@"Grouping"] UTF8String] );
 
-    if ([tagsDict valueForKey:@"Description"])
-        MP4TagsSetDescription( tags, [[tagsDict valueForKey:@"Description"] UTF8String] );
+    MP4TagsSetComposer( tags, [[tagsDict valueForKey:@"Composer"] UTF8String] );
 
-    if ([tagsDict valueForKey:@"Genre"])
-        MP4TagsSetGenre( tags, [[tagsDict valueForKey:@"Genre"] UTF8String] );
+    MP4TagsSetComments( tags, [[tagsDict valueForKey:@"Comments"] UTF8String] );
 
-    if ([tagsDict valueForKey:@"Composer"])
-        MP4TagsSetComposer( tags, [[tagsDict valueForKey:@"Composer"] UTF8String] );
+    MP4TagsSetGenre( tags, [[tagsDict valueForKey:@"Genre"] UTF8String] );
+
+    MP4TagsSetReleaseDate( tags, [[tagsDict valueForKey:@"Date"] UTF8String] );
+
+    const uint32_t i = [[tagsDict valueForKey:@"TV Episode"] integerValue];
+    if ( [tagsDict valueForKey:@"TV Episode"] )
+        MP4TagsSetTVEpisode( tags, &i );
+    else
+        MP4TagsSetTVEpisode( tags, NULL );
+
+    MP4TagsSetDescription( tags, [[tagsDict valueForKey:@"Description"] UTF8String] );
+
+    MP4TagsSetLongDescription( tags, [[tagsDict valueForKey:@"Long Description"] UTF8String] );
+
+    MP4TagsSetCopyright( tags, [[tagsDict valueForKey:@"Copyright"] UTF8String] );
+
+    MP4TagsSetEncodingTool( tags, [[tagsDict valueForKey:@"Encoding Tool"] UTF8String] );
+
+    MP4TagsSetEncodedBy( tags, [[tagsDict valueForKey:@"Encoded By"] UTF8String] );
 
     MP4TagsStore( tags, fileHandle );
     MP4TagsFree( tags );

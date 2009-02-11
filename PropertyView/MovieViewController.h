@@ -16,10 +16,12 @@
     IBOutlet NSTableView    *tagsTableView;
     IBOutlet NSImageView    *imageView;
     
+    IBOutlet NSButton       *removeTag;
     NSDictionary* detailBoldAttr;
 }
 
 - (void) setFile: (MP4FileWrapper *)file;
 - (IBAction) addTag: (id) sender;
+- (IBAction) removeTag: (id) sender;
 
 @end
