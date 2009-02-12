@@ -16,10 +16,12 @@
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		A91103E40F321DBA0013D1E0 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A91103930F321CF60013D1E0 /* libuniversaldetector.a */; };
 		A911064B0F323D450013D1E0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A911064A0F323D450013D1E0 /* AppDelegate.m */; };
-		A96AAE920F33888000BD6D64 /* MP4Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A96AAE910F33888000BD6D64 /* MP4Utilities.m */; };
-		A97CB16A0F3467F400CC1049 /* MP4FileWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A97CB1690F3467F400CC1049 /* MP4FileWrapper.m */; };
-		A97CB1850F34689400CC1049 /* MP4TrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A97CB1840F34689400CC1049 /* MP4TrackWrapper.m */; };
-		A97CB37B0F347C6700CC1049 /* MP4SubtitleTrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A97CB37A0F347C6700CC1049 /* MP4SubtitleTrackWrapper.m */; };
+		A95A60270F441EF900767D87 /* MP4ChapterTrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A601B0F441EF900767D87 /* MP4ChapterTrackWrapper.m */; };
+		A95A60280F441EF900767D87 /* MP4FileWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A601D0F441EF900767D87 /* MP4FileWrapper.m */; };
+		A95A60290F441EF900767D87 /* MP4Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A601F0F441EF900767D87 /* MP4Metadata.m */; };
+		A95A602A0F441EF900767D87 /* MP4SubtitleTrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60210F441EF900767D87 /* MP4SubtitleTrackWrapper.m */; };
+		A95A602B0F441EF900767D87 /* MP4TrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60230F441EF900767D87 /* MP4TrackWrapper.m */; };
+		A95A602C0F441EF900767D87 /* MP4Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60250F441EF900767D87 /* MP4Utilities.m */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
 		A9C1EB2F0F31FF24003A08F3 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */; };
 		A9F5EA800F32E55000C057E0 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */; };
@@ -28,8 +30,6 @@
 		A9FD5D420F3C6A6300817716 /* EmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5D410F3C6A6300817716 /* EmptyViewController.m */; };
 		A9FD5DA40F3C6F8100817716 /* EmptyView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FD5DA30F3C6F8100817716 /* EmptyView.xib */; };
 		A9FD5DA60F3C6F8A00817716 /* ChapterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FD5DA50F3C6F8A00817716 /* ChapterView.xib */; };
-		A9FD5E110F3C7BF400817716 /* MP4ChapterTrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5E100F3C7BF400817716 /* MP4ChapterTrackWrapper.m */; };
-		A9FD5EBF0F3C889C00817716 /* MP4Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5EBE0F3C889C00817716 /* MP4Metadata.m */; };
 		A9FD5EC70F3C8A4800817716 /* MovieView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FD5EC50F3C8A4800817716 /* MovieView.xib */; };
 		A9FD5ECF0F3C8AF100817716 /* MovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */; };
 /* End PBXBuildFile section */
@@ -84,14 +84,18 @@
 		A911049C0F321DFC0013D1E0 /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = UniversalDetector/UniversalDetector.h; sourceTree = "<group>"; };
 		A91106490F323D450013D1E0 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A911064A0F323D450013D1E0 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		A96AAE900F33888000BD6D64 /* MP4Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4Utilities.h; sourceTree = "<group>"; };
-		A96AAE910F33888000BD6D64 /* MP4Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4Utilities.m; sourceTree = "<group>"; };
-		A97CB1680F3467F400CC1049 /* MP4FileWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4FileWrapper.h; sourceTree = "<group>"; };
-		A97CB1690F3467F400CC1049 /* MP4FileWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4FileWrapper.m; sourceTree = "<group>"; };
-		A97CB1830F34689400CC1049 /* MP4TrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4TrackWrapper.h; sourceTree = "<group>"; };
-		A97CB1840F34689400CC1049 /* MP4TrackWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4TrackWrapper.m; sourceTree = "<group>"; };
-		A97CB3790F347C6700CC1049 /* MP4SubtitleTrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4SubtitleTrackWrapper.h; sourceTree = "<group>"; };
-		A97CB37A0F347C6700CC1049 /* MP4SubtitleTrackWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4SubtitleTrackWrapper.m; sourceTree = "<group>"; };
+		A95A601B0F441EF900767D87 /* MP4ChapterTrackWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4ChapterTrackWrapper.m; path = "mp4v2 wrapper/MP4ChapterTrackWrapper.m"; sourceTree = "<group>"; };
+		A95A601C0F441EF900767D87 /* MP4FileWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4FileWrapper.h; path = "mp4v2 wrapper/MP4FileWrapper.h"; sourceTree = "<group>"; };
+		A95A601D0F441EF900767D87 /* MP4FileWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4FileWrapper.m; path = "mp4v2 wrapper/MP4FileWrapper.m"; sourceTree = "<group>"; };
+		A95A601E0F441EF900767D87 /* MP4Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4Metadata.h; path = "mp4v2 wrapper/MP4Metadata.h"; sourceTree = "<group>"; };
+		A95A601F0F441EF900767D87 /* MP4Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4Metadata.m; path = "mp4v2 wrapper/MP4Metadata.m"; sourceTree = "<group>"; };
+		A95A60200F441EF900767D87 /* MP4SubtitleTrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4SubtitleTrackWrapper.h; path = "mp4v2 wrapper/MP4SubtitleTrackWrapper.h"; sourceTree = "<group>"; };
+		A95A60210F441EF900767D87 /* MP4SubtitleTrackWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4SubtitleTrackWrapper.m; path = "mp4v2 wrapper/MP4SubtitleTrackWrapper.m"; sourceTree = "<group>"; };
+		A95A60220F441EF900767D87 /* MP4TrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4TrackWrapper.h; path = "mp4v2 wrapper/MP4TrackWrapper.h"; sourceTree = "<group>"; };
+		A95A60230F441EF900767D87 /* MP4TrackWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4TrackWrapper.m; path = "mp4v2 wrapper/MP4TrackWrapper.m"; sourceTree = "<group>"; };
+		A95A60240F441EF900767D87 /* MP4Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4Utilities.h; path = "mp4v2 wrapper/MP4Utilities.h"; sourceTree = "<group>"; };
+		A95A60250F441EF900767D87 /* MP4Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4Utilities.m; path = "mp4v2 wrapper/MP4Utilities.m"; sourceTree = "<group>"; };
+		A95A60260F441EF900767D87 /* MP4ChapterTrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4ChapterTrackWrapper.h; path = "mp4v2 wrapper/MP4ChapterTrackWrapper.h"; sourceTree = "<group>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9C1EB2D0F31FF24003A08F3 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
 		A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMuxer.m; sourceTree = "<group>"; };
@@ -105,10 +109,6 @@
 		A9FD5D380F3C69EE00817716 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/ChapterView.xib; sourceTree = "<group>"; };
 		A9FD5D400F3C6A6300817716 /* EmptyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EmptyViewController.h; path = PropertyView/EmptyViewController.h; sourceTree = "<group>"; };
 		A9FD5D410F3C6A6300817716 /* EmptyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EmptyViewController.m; path = PropertyView/EmptyViewController.m; sourceTree = "<group>"; };
-		A9FD5E0F0F3C7BF400817716 /* MP4ChapterTrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4ChapterTrackWrapper.h; sourceTree = "<group>"; };
-		A9FD5E100F3C7BF400817716 /* MP4ChapterTrackWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4ChapterTrackWrapper.m; sourceTree = "<group>"; };
-		A9FD5EBD0F3C889C00817716 /* MP4Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4Metadata.h; sourceTree = "<group>"; };
-		A9FD5EBE0F3C889C00817716 /* MP4Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4Metadata.m; sourceTree = "<group>"; };
 		A9FD5EC60F3C8A4800817716 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/MovieView.xib; sourceTree = "<group>"; };
 		A9FD5ECD0F3C8AF100817716 /* MovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MovieViewController.h; path = PropertyView/MovieViewController.h; sourceTree = "<group>"; };
 		A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MovieViewController.m; path = PropertyView/MovieViewController.m; sourceTree = "<group>"; };
@@ -173,8 +173,6 @@
 			children = (
 				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
-				A96AAE900F33888000BD6D64 /* MP4Utilities.h */,
-				A96AAE910F33888000BD6D64 /* MP4Utilities.m */,
 				A9F5EA7E0F32E55000C057E0 /* SubUtilities.h */,
 				A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */,
 				A9C1EB2D0F31FF24003A08F3 /* SubMuxer.h */,
@@ -249,16 +247,18 @@
 		A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */ = {
 			isa = PBXGroup;
 			children = (
-				A97CB1680F3467F400CC1049 /* MP4FileWrapper.h */,
-				A97CB1690F3467F400CC1049 /* MP4FileWrapper.m */,
-				A97CB1830F34689400CC1049 /* MP4TrackWrapper.h */,
-				A97CB1840F34689400CC1049 /* MP4TrackWrapper.m */,
-				A97CB3790F347C6700CC1049 /* MP4SubtitleTrackWrapper.h */,
-				A97CB37A0F347C6700CC1049 /* MP4SubtitleTrackWrapper.m */,
-				A9FD5E0F0F3C7BF400817716 /* MP4ChapterTrackWrapper.h */,
-				A9FD5E100F3C7BF400817716 /* MP4ChapterTrackWrapper.m */,
-				A9FD5EBD0F3C889C00817716 /* MP4Metadata.h */,
-				A9FD5EBE0F3C889C00817716 /* MP4Metadata.m */,
+				A95A601C0F441EF900767D87 /* MP4FileWrapper.h */,
+				A95A601D0F441EF900767D87 /* MP4FileWrapper.m */,
+				A95A601E0F441EF900767D87 /* MP4Metadata.h */,
+				A95A601F0F441EF900767D87 /* MP4Metadata.m */,
+				A95A60220F441EF900767D87 /* MP4TrackWrapper.h */,
+				A95A60230F441EF900767D87 /* MP4TrackWrapper.m */,
+				A95A60200F441EF900767D87 /* MP4SubtitleTrackWrapper.h */,
+				A95A60210F441EF900767D87 /* MP4SubtitleTrackWrapper.m */,
+				A95A60260F441EF900767D87 /* MP4ChapterTrackWrapper.h */,
+				A95A601B0F441EF900767D87 /* MP4ChapterTrackWrapper.m */,
+				A95A60240F441EF900767D87 /* MP4Utilities.h */,
+				A95A60250F441EF900767D87 /* MP4Utilities.m */,
 			);
 			name = "mp4v2 wrapper";
 			sourceTree = "<group>";
@@ -360,15 +360,15 @@
 				A911064B0F323D450013D1E0 /* AppDelegate.m in Sources */,
 				A9F5EA800F32E55000C057E0 /* SubUtilities.m in Sources */,
 				A9F5EBAE0F32F2DB00C057E0 /* lang.c in Sources */,
-				A96AAE920F33888000BD6D64 /* MP4Utilities.m in Sources */,
-				A97CB16A0F3467F400CC1049 /* MP4FileWrapper.m in Sources */,
-				A97CB1850F34689400CC1049 /* MP4TrackWrapper.m in Sources */,
-				A97CB37B0F347C6700CC1049 /* MP4SubtitleTrackWrapper.m in Sources */,
 				A9FD5D340F3C69BE00817716 /* ChapterViewController.m in Sources */,
 				A9FD5D420F3C6A6300817716 /* EmptyViewController.m in Sources */,
-				A9FD5E110F3C7BF400817716 /* MP4ChapterTrackWrapper.m in Sources */,
-				A9FD5EBF0F3C889C00817716 /* MP4Metadata.m in Sources */,
 				A9FD5ECF0F3C8AF100817716 /* MovieViewController.m in Sources */,
+				A95A60270F441EF900767D87 /* MP4ChapterTrackWrapper.m in Sources */,
+				A95A60280F441EF900767D87 /* MP4FileWrapper.m in Sources */,
+				A95A60290F441EF900767D87 /* MP4Metadata.m in Sources */,
+				A95A602A0F441EF900767D87 /* MP4SubtitleTrackWrapper.m in Sources */,
+				A95A602B0F441EF900767D87 /* MP4TrackWrapper.m in Sources */,
+				A95A602C0F441EF900767D87 /* MP4Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

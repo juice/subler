@@ -11,10 +11,28 @@
 
 @implementation ChapterViewController
 
+- (void) awakeFromNib
+{
+    NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+    [ps setHeadIndent: -10.0];
+    [ps setAlignment:NSRightTextAlignment];
+    
+    detailBoldAttr = [[NSDictionary dictionaryWithObjectsAndKeys:
+                       [NSFont boldSystemFontOfSize:11.0], NSFontAttributeName,
+                       ps, NSParagraphStyleAttributeName,
+                       [NSColor grayColor], NSForegroundColorAttributeName,
+                       nil] retain];
+}
+
 - (void) setFile: (MP4FileWrapper *)file andTrack:(MP4ChapterTrackWrapper *) chapterTrack
 {
     mp4File = file;
     track = chapterTrack;
+}
+
+- (NSAttributedString *) boldString: (NSString *) string
+{
+    return [[[NSAttributedString alloc] initWithString:string attributes:detailBoldAttr] autorelease];
 }
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
@@ -28,7 +46,7 @@
 {
     SBChapter * chapter = [track.chapters objectAtIndex:rowIndex];
     if ([tableColumn.identifier isEqualToString:@"time"])
-        return SMPTEStringFromTime(chapter.duration, 1000);  
+        return [self boldString:SMPTEStringFromTime(chapter.duration, 1000)];  
 
     if ([tableColumn.identifier isEqualToString:@"title"])
         return chapter.title;
@@ -50,6 +68,12 @@
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
     }
+}
+
+- (void) dealloc
+{
+    [detailBoldAttr release];
+    [super dealloc];
 }
 
 @end

@@ -14,6 +14,7 @@
     MP4FileWrapper  *mp4File;
     MP4ChapterTrackWrapper *track;
     
+    NSDictionary* detailBoldAttr;
 }
 
 - (void) setFile: (MP4FileWrapper *)mp4File andTrack:(MP4ChapterTrackWrapper *)track;

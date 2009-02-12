@@ -61,7 +61,7 @@
     }
 }
 
-- (NSAttributedString *) nameColumnString: (NSString *) string
+- (NSAttributedString *) boldString: (NSString *) string
 {
     return [[[NSAttributedString alloc] initWithString:string attributes:detailBoldAttr] autorelease];
 }
@@ -79,7 +79,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
     if ([tableColumn.identifier isEqualToString:@"name"])
-        return [self nameColumnString:[tagsArray objectAtIndex:rowIndex]];
+        return [self boldString:[tagsArray objectAtIndex:rowIndex]];
 
     if ([tableColumn.identifier isEqualToString:@"value"])
         return [tags objectForKey:[tagsArray objectAtIndex:rowIndex]];
