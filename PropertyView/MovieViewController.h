@@ -14,14 +14,21 @@
     MP4FileWrapper          *mp4File;
     IBOutlet NSPopUpButton  *tagList;
     IBOutlet NSTableView    *tagsTableView;
+
     IBOutlet NSImageView    *imageView;
+    IBOutlet NSPopUpButton  *mediaKind;
+    IBOutlet NSPopUpButton  *contentRating;
+    IBOutlet NSButton       *hdVideo;
+    IBOutlet NSButton       *gapless;
     
     IBOutlet NSButton       *removeTag;
-    NSDictionary* detailBoldAttr;
+    NSDictionary            *detailBoldAttr;
 }
 
 - (void) setFile: (MP4FileWrapper *)file;
 - (IBAction) addTag: (id) sender;
 - (IBAction) removeTag: (id) sender;
+
+- (IBAction) changeMediaKind: (id) sender;
 
 @end

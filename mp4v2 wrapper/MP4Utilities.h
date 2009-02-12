@@ -7,7 +7,7 @@
  *
  */
 
-#include "mp4v2/mp4v2.h"
+#include "mp4v2.h"
 #import <Cocoa/Cocoa.h>
 
 NSString *SMPTEStringFromTime(long long time, long timeScale);

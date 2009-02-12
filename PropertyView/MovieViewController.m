@@ -13,7 +13,7 @@
 
 - (void) awakeFromNib
 {
-    NSArray *tags = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Date" , @"TV Episode", @"Genre", @"Description" , @"Long Description", @"Copyright", @"Encoding Tool", @"Encoded By", nil];
+    NSArray *tags = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Date" , @"TV Show", @"TV Episode", @"TV Network", @"TV Episode ID", @"TV Season", @"TV Episode", @"Genre", @"Description" , @"Long Description", @"Copyright", @"Encoding Tool", @"Encoded By", nil];
     id tag;
     for (tag in tags)
         [tagList addItemWithTitle:tag];
@@ -29,6 +29,11 @@
                        nil] retain];
     
     [imageView setImage:[mp4File.metadata artwork]];
+    
+    [mediaKind selectItemWithTag:[mp4File.metadata mediaKind]];
+    [contentRating selectItemWithTag:[mp4File.metadata contentRating]];
+    [hdVideo setState:[mp4File.metadata hdVideo]];
+    [gapless setState:[mp4File.metadata gapless]];
 }
 
 - (void) setFile: (MP4FileWrapper *)file
@@ -44,6 +49,17 @@
         [mp4File.metadata.tagsDict setObject:@"Empty" forKey:tagName];
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         [tagsTableView reloadData];
+    }
+}
+
+- (IBAction) changeMediaKind: (id) sender
+{
+    uint8_t tagName = [[sender selectedItem] tag];
+    
+    if (mp4File.metadata.mediaKind != tagName) {
+        mp4File.metadata.mediaKind = tagName;
+        mp4File.metadata.edited = YES;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
 

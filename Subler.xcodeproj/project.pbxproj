@@ -96,6 +96,7 @@
 		A95A60240F441EF900767D87 /* MP4Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4Utilities.h; path = "mp4v2 wrapper/MP4Utilities.h"; sourceTree = "<group>"; };
 		A95A60250F441EF900767D87 /* MP4Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4Utilities.m; path = "mp4v2 wrapper/MP4Utilities.m"; sourceTree = "<group>"; };
 		A95A60260F441EF900767D87 /* MP4ChapterTrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4ChapterTrackWrapper.h; path = "mp4v2 wrapper/MP4ChapterTrackWrapper.h"; sourceTree = "<group>"; };
+		A95A60470F4422DB00767D87 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mp4v2.h; path = mp4v2/mp4v2.h; sourceTree = "<group>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9C1EB2D0F31FF24003A08F3 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
 		A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMuxer.m; sourceTree = "<group>"; };
@@ -190,6 +191,7 @@
 				A911064A0F323D450013D1E0 /* AppDelegate.m */,
 				32DBCF750370BD2300C91783 /* Subler_Prefix.pch */,
 				A911049C0F321DFC0013D1E0 /* UniversalDetector.h */,
+				A95A60470F4422DB00767D87 /* mp4v2.h */,
 				A9F5EBB00F32F31600C057E0 /* lang.h */,
 				A9F5EBAD0F32F2DB00C057E0 /* lang.c */,
 				2A37F4B0FDCFA73011CA2CEA /* main.mm */,

@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "mp4v2/mp4v2.h"
+#import "mp4v2.h"
 #import "MP4TrackWrapper.h"
 #import "MP4SubtitleTrackWrapper.h"
 #import "MP4ChapterTrackWrapper.h"

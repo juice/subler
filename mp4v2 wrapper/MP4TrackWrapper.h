@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "mp4v2/mp4v2.h"
+#import "mp4v2.h"
 
 @interface MP4TrackWrapper : NSObject {
     MP4TrackId  Id;

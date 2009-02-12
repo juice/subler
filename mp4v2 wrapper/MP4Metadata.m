@@ -109,6 +109,19 @@
     if (tags->encodedBy)
         [tagsDict setObject:[NSString stringWithCString:tags->encodedBy encoding: NSUTF8StringEncoding]
                      forKey:@"Encoded By"];
+    
+    if (tags->hdVideo)
+        hdVideo = *tags->hdVideo;
+
+    if (tags->mediaType)
+        mediaKind = *tags->mediaType;
+    
+    if (tags->contentRating)
+        contentRating = *tags->contentRating;
+    
+    if (tags->gapless)
+        gapless = *tags->gapless;
+
 
     if (tags->purchaseDate)
         [tagsDict setObject:[NSString stringWithCString:tags->purchaseDate encoding: NSUTF8StringEncoding]
@@ -155,9 +168,23 @@
 
     MP4TagsSetReleaseDate( tags, [[tagsDict valueForKey:@"Date"] UTF8String] );
 
-    const uint32_t i = [[tagsDict valueForKey:@"TV Episode"] integerValue];
-    if ( [tagsDict valueForKey:@"TV Episode"] )
+    MP4TagsSetTVShow( tags, [[tagsDict valueForKey:@"TV Show"] UTF8String] );
+    
+    MP4TagsSetTVNetwork( tags, [[tagsDict valueForKey:@"TV Network"] UTF8String] );
+    
+    MP4TagsSetTVEpisodeID( tags, [[tagsDict valueForKey:@"TV Episode ID"] UTF8String] );
+    
+    if ( [tagsDict valueForKey:@"TV Season"] ) {
+        const uint32_t i = [[tagsDict valueForKey:@"TV Season"] integerValue];
+        MP4TagsSetTVSeason( tags, &i );
+    }
+    else
+        MP4TagsSetTVSeason( tags, NULL );
+    
+    if ( [tagsDict valueForKey:@"TV Episode"] ) {
+        const uint32_t i = [[tagsDict valueForKey:@"TV Episode"] integerValue];
         MP4TagsSetTVEpisode( tags, &i );
+    }
     else
         MP4TagsSetTVEpisode( tags, NULL );
 
@@ -170,6 +197,8 @@
     MP4TagsSetEncodingTool( tags, [[tagsDict valueForKey:@"Encoding Tool"] UTF8String] );
 
     MP4TagsSetEncodedBy( tags, [[tagsDict valueForKey:@"Encoded By"] UTF8String] );
+    
+    MP4TagsSetMediaType(tags, &mediaKind);
 
     MP4TagsStore( tags, fileHandle );
     MP4TagsFree( tags );
@@ -180,6 +209,12 @@
 
 @synthesize edited;
 @synthesize artwork;
+@synthesize mediaKind;
+@synthesize contentRating;
+@synthesize hdVideo;
+@synthesize gapless;
+@synthesize artwork;
+
 
 -(void) dealloc
 {
