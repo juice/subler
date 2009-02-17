@@ -11,7 +11,7 @@
 #import "MovieViewController.h"
 #import "EmptyViewController.h"
 #import "ChapterViewController.h"
-#import "ChapsUtilities.h"
+#import "SubUtilities.h"
 
 @implementation MyDocument
 
@@ -115,7 +115,6 @@
         return YES;
 
     if (action == @selector(deleteTrack:))
-        //if ([self isDocumentEdited])
         return YES;
     
     

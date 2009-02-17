@@ -8,7 +8,7 @@
 
 #import "ChapterViewController.h"
 #import "MP4Utilities.h"
-#import "ChapsUtilities.h"
+#import "SubUtilities.h"
 
 @implementation ChapterViewController
 

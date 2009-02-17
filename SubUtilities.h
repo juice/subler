@@ -8,6 +8,17 @@
 
 #import <Cocoa/Cocoa.h>
 #import "UniversalDetector.h"
+#import "mp4v2.h"
+
+@interface SBChapter : NSObject {
+    MP4Duration duration;
+    NSString *title;
+}
+
+@property(readwrite, retain) NSString *title;
+@property(readwrite) MP4Duration duration;
+
+@end
 
 @interface SubLine : NSObject
 {
@@ -31,7 +42,7 @@
 -(BOOL)isEmpty;
 @end
 
-unsigned ParseSubTime(const char *time, unsigned secondScale, BOOL hasSign);
 NSMutableString *STStandardizeStringNewlines(NSString *str);
 extern NSString *STLoadFileWithUnknownEncoding(NSString *path);
 void LoadSRTFromPath(NSString *path, SubSerializer *ss);
+void LoadChaptersFromPath(NSString *path, NSMutableArray *ss);

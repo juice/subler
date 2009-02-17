@@ -22,7 +22,6 @@
 		A95A602A0F441EF900767D87 /* MP4SubtitleTrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60210F441EF900767D87 /* MP4SubtitleTrackWrapper.m */; };
 		A95A602B0F441EF900767D87 /* MP4TrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60230F441EF900767D87 /* MP4TrackWrapper.m */; };
 		A95A602C0F441EF900767D87 /* MP4Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60250F441EF900767D87 /* MP4Utilities.m */; };
-		A9AEB5E80F4B40C700C5B6A8 /* ChapsUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9AEB5E70F4B40C700C5B6A8 /* ChapsUtilities.m */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
 		A9C1EB2F0F31FF24003A08F3 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */; };
 		A9F5EA800F32E55000C057E0 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */; };
@@ -98,8 +97,6 @@
 		A95A60250F441EF900767D87 /* MP4Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4Utilities.m; path = "mp4v2 wrapper/MP4Utilities.m"; sourceTree = "<group>"; };
 		A95A60260F441EF900767D87 /* MP4ChapterTrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4ChapterTrackWrapper.h; path = "mp4v2 wrapper/MP4ChapterTrackWrapper.h"; sourceTree = "<group>"; };
 		A95A60470F4422DB00767D87 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mp4v2.h; path = mp4v2/mp4v2.h; sourceTree = "<group>"; };
-		A9AEB5E60F4B40C700C5B6A8 /* ChapsUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChapsUtilities.h; path = "mp4v2 wrapper/ChapsUtilities.h"; sourceTree = "<group>"; };
-		A9AEB5E70F4B40C700C5B6A8 /* ChapsUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChapsUtilities.m; path = "mp4v2 wrapper/ChapsUtilities.m"; sourceTree = "<group>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9C1EB2D0F31FF24003A08F3 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
 		A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMuxer.m; sourceTree = "<group>"; };
@@ -264,8 +261,6 @@
 				A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */,
 				A9C1EB2D0F31FF24003A08F3 /* SubMuxer.h */,
 				A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */,
-				A9AEB5E60F4B40C700C5B6A8 /* ChapsUtilities.h */,
-				A9AEB5E70F4B40C700C5B6A8 /* ChapsUtilities.m */,
 			);
 			name = "mp4v2 wrapper";
 			sourceTree = "<group>";
@@ -376,7 +371,6 @@
 				A95A602A0F441EF900767D87 /* MP4SubtitleTrackWrapper.m in Sources */,
 				A95A602B0F441EF900767D87 /* MP4TrackWrapper.m in Sources */,
 				A95A602C0F441EF900767D87 /* MP4Utilities.m in Sources */,
-				A9AEB5E80F4B40C700C5B6A8 /* ChapsUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
