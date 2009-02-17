@@ -66,6 +66,14 @@
         [tagsDict setObject:[NSString stringWithCString:tags->releaseDate encoding: NSUTF8StringEncoding]
                      forKey:@"Date"];
 
+    if (tags->track)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d of %d", tags->track->index, tags->track->total]
+                     forKey:@"Track #"];
+    
+    if (tags->disk)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d of %d", tags->disk->index, tags->disk->total]
+                     forKey:@"Disk #"];
+
     if (tags->tvShow)
         [tagsDict setObject:[NSString stringWithCString:tags->tvShow encoding: NSUTF8StringEncoding]
                      forKey:@"TV Show"];
@@ -140,7 +148,7 @@
         }
     }
 
-    MP4TagsFree( tags );
+    MP4TagsFree(tags);
     MP4Close(sourceHandle);
 }
 
@@ -199,6 +207,10 @@
     MP4TagsSetEncodedBy( tags, [[tagsDict valueForKey:@"Encoded By"] UTF8String] );
     
     MP4TagsSetMediaType(tags, &mediaKind);
+    
+    MP4TagsSetHDVideo(tags, &hdVideo);
+    
+    MP4TagsSetGapless(tags, &gapless);
 
     MP4TagsStore( tags, fileHandle );
     MP4TagsFree( tags );
@@ -214,7 +226,6 @@
 @synthesize hdVideo;
 @synthesize gapless;
 @synthesize artwork;
-
 
 -(void) dealloc
 {

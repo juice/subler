@@ -106,7 +106,15 @@
     if (action == @selector(revertDocumentToSaved:))
         if ([self isDocumentEdited])
             return YES;
+    
+    if (action == @selector(showSubititleWindow:))
+            return YES;
 
+    if (action == @selector(deleteTrack:))
+        //if ([self isDocumentEdited])
+        return YES;
+    
+    
     return NO;
 }
 
@@ -119,7 +127,10 @@
         if ([fileTracksTable selectedRow] != -1 && [NSApp isActive])
             if ([[[mp4File.tracksArray objectAtIndex:[fileTracksTable selectedRow]] format]
                     isEqualToString:@"3GPP Text"])
+            {
+                //[[toolbarItem view] setEnabled:NO];
                 return YES;
+            }
     }
     return NO;
 }
@@ -319,6 +330,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (IBAction) deleteTrack: (id) sender
 {
+    if ([fileTracksTable selectedRow] == -1)
+        return;
+
     MP4TrackWrapper *track = [[mp4File tracksArray] objectAtIndex:[fileTracksTable selectedRow]];
     if (track.muxed)
         [[mp4File tracksToBeDeleted] addObject: track];

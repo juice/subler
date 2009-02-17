@@ -63,6 +63,28 @@
     }
 }
 
+- (IBAction) changeGapless: (id) sender
+{
+    uint8_t newValue = [sender state];
+
+    if (mp4File.metadata.gapless != newValue) {
+        mp4File.metadata.gapless = newValue;
+        mp4File.metadata.edited = YES;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
+}
+
+- (IBAction) changehdVideo: (id) sender
+{
+    uint8_t newValue = [sender state];
+    
+    if (mp4File.metadata.hdVideo != newValue) {
+        mp4File.metadata.hdVideo = newValue;
+        mp4File.metadata.edited = YES;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
+}
+
 - (IBAction) removeTag: (id) sender {
     NSInteger rowIndex = [tagsTableView selectedRow];
     if (rowIndex != -1) {
