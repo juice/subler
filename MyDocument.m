@@ -286,6 +286,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     }
 
     [subtitleFilePath setStringValue: [sheet.filenames objectAtIndex: 0]];
+    [addTrack setEnabled:YES];
 }
 
 /* Select chapter file */
