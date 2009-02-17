@@ -263,7 +263,7 @@ restart:
 
 @end
 
-static unsigned ParseSubTime(const char *time, unsigned secondScale, BOOL hasSign)
+unsigned ParseSubTime(const char *time, unsigned secondScale, BOOL hasSign)
 {
 	unsigned hour, minute, second, subsecond, timeval;
 	char separator;

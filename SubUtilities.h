@@ -31,4 +31,7 @@
 -(BOOL)isEmpty;
 @end
 
+unsigned ParseSubTime(const char *time, unsigned secondScale, BOOL hasSign);
+NSMutableString *STStandardizeStringNewlines(NSString *str);
+extern NSString *STLoadFileWithUnknownEncoding(NSString *path);
 void LoadSRTFromPath(NSString *path, SubSerializer *ss);

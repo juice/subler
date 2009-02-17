@@ -59,7 +59,7 @@
             else
                 name = NSLocalizedString(@"Unknown Track", @"Unknown Track");
         }
-        
+
         const char* dataName = MP4GetTrackMediaDataName(sourceHandle, Id);
         if (!strcmp(dataName, "avc1"))
             format = @"H.264";

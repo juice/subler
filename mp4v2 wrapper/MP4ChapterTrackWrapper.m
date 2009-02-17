@@ -7,37 +7,24 @@
 //
 
 #import "MP4ChapterTrackWrapper.h"
-
-@implementation SBChapter
-
--(void) dealloc
-{
-    [super dealloc];
-    [title release];
-}
-
-@synthesize duration;
-@synthesize title;
-
-@end
+#import "ChapsUtilities.h"
 
 @implementation MP4ChapterTrackWrapper
 
 -(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID
 {
-    if ((self = [super initWithSourcePath:source trackID:trackID]))
+    if (self = [super initWithSourcePath:source trackID:trackID])
     {
         name = @"Chapter Track";
         chapters = [[NSMutableArray alloc] init];
-        
 
         MP4Chapter_t *chapter_list = NULL;
         uint32_t      chapter_count;
-         
+
         MP4FileHandle *sourceHandle = MP4Read([sourcePath UTF8String], 0);
         MP4GetChapters( sourceHandle, &chapter_list, &chapter_count, 
                        MP4ChapterTypeQt );
-         
+
         int i = 1;
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         MP4Duration sum = 0;
@@ -55,7 +42,7 @@
         MP4Free(chapter_list);
         MP4Close(sourceHandle);
     }
-    
+
     return self;
 }
 

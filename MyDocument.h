@@ -43,6 +43,7 @@
 - (IBAction) closeSheet: (id) sender;
 - (IBAction) openBrowse: (id) sender;
 - (IBAction) addSubtitleTrack: (id) sender;
+- (IBAction) selectChapterFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 
 - (void) reloadTable: (id) sender;

@@ -11,6 +11,7 @@
 #import "MovieViewController.h"
 #import "EmptyViewController.h"
 #import "ChapterViewController.h"
+#import "ChapsUtilities.h"
 
 @implementation MyDocument
 
@@ -109,6 +110,9 @@
     
     if (action == @selector(showSubititleWindow:))
             return YES;
+    
+    if (action == @selector(selectChapterFile:))
+        return YES;
 
     if (action == @selector(deleteTrack:))
         //if ([self isDocumentEdited])
@@ -135,9 +139,7 @@
     return NO;
 }
 
-/***********************************************************************
- * Tableview datasource methods
- **********************************************************************/
+// Tableview datasource methods
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
     if( !mp4File )
@@ -171,7 +173,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([tableColumn.identifier isEqualToString:@"trackDuration"])
         return SMPTEStringFromTime(track.duration, 1000);
 
-    if( [tableColumn.identifier isEqualToString:@"trackLanguage"] )
+    if ([tableColumn.identifier isEqualToString:@"trackLanguage"])
         return track.language;
 
     return nil;
@@ -284,10 +286,54 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     }
 
     [subtitleFilePath setStringValue: [sheet.filenames objectAtIndex: 0]];
-    [addTrack setEnabled:YES];
 }
 
-/* Track methods */
+/* Select chapter file */
+
+- (void) addChapterTrack: (NSString *) path
+{
+    MP4ChapterTrackWrapper *track = [[MP4ChapterTrackWrapper alloc] init];
+    track.sourcePath = path;
+    track.language = [[langSelection selectedItem] title];
+    track.format = @"Text";
+    track.name = @"Chapter Track";
+    track.hasChanged = YES;
+    track.muxed = NO;
+
+    NSMutableArray * chapters = [[NSMutableArray alloc] init];
+    LoadChaptersFromPath(path, chapters);
+    track.chapters = chapters;
+    [mp4File.tracksArray addObject:track];
+    [track release];
+
+    [fileTracksTable reloadData];
+
+    [self updateChangeCount:NSChangeDone];
+}
+
+- (IBAction) selectChapterFile: (id) sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.allowsMultipleSelection = NO;
+    panel.canChooseFiles = YES;
+    panel.canChooseDirectories = YES;
+
+    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObject:@"txt"]
+                   modalForWindow: documentWindow modalDelegate: self
+                   didEndSelector: @selector( selectChapterFileDidEnd:returnCode:contextInfo: )
+                      contextInfo: nil];                                                      
+}
+
+- (void) selectChapterFileDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
+returnCode contextInfo: (void *) contextInfo
+{
+    if (returnCode != NSOKButton)
+        return;
+    
+    [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
+}
+
+/* Tracks methods */
 
 - (IBAction) closeSheet: (id) sender
 {
@@ -307,6 +353,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     track.hasChanged = YES;
     track.muxed = NO;
 
+    
     [mp4File.tracksArray addObject:track];
     [track release];
 
