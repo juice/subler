@@ -16,5 +16,4 @@
 
 @property (readwrite, retain) NSMutableArray * chapters;
 
-
 @end

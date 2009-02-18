@@ -112,19 +112,45 @@
     }
 
     MP4Chapter_t * chapters = 0;
-    uint32_t chapterCount = 0, i = 0;
+    uint32_t i, chapterCount = 0;
 
     // get the list of chapters
     MP4GetChapters(fileHandle, &chapters, &chapterCount, MP4ChapterTypeQt);
-    for (i = 0; i<chapterCount; i++) {
-        strcpy(chapters[i].title, [[[track.chapters objectAtIndex:i] title] UTF8String]);
-    }
-
+    
     MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
     updateTracksCount(fileHandle);
+    
+    if (chapterCount) {
+        for (i = 0; i<chapterCount; i++)
+            strcpy(chapters[i].title, [[[track.chapters objectAtIndex:i] title] UTF8String]);
+        
+        MP4AddChapterTextTrack(fileHandle, 1, 1000);
+        MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeQt);
+    }
+    else {
+        chapterCount = [track.chapters count];
+        chapters = malloc(sizeof(MP4Chapter_t)*chapterCount);
 
-    MP4AddChapterTextTrack(fileHandle, 1, 1000);
-    MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeQt);
+        for (i = 0; i < chapterCount; i++) {
+            SBChapter * chapter = [track.chapters objectAtIndex:i];
+            if ( i+1 < chapterCount) {
+                SBChapter * nextChapter = [track.chapters objectAtIndex:i+1];
+                chapters[i].duration = nextChapter.duration - chapter.duration;;
+            }
+            else
+            {
+                chapters[i].duration = (double)MP4ConvertFromTrackDuration(fileHandle, 1,
+                                                                                      MP4GetTrackDuration(fileHandle, 1),
+                                                                                      MP4_MSECS_TIME_SCALE) - chapter.duration;
+            }
+            strcpy(chapters[i].title, [[chapter title] UTF8String]);
+        }
+
+        MP4AddChapterTextTrack(fileHandle, 1, 1000);
+        MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeQt);
+
+        free(chapters);
+    }
 
     MP4Close(fileHandle);
 

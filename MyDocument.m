@@ -307,12 +307,17 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void) addChapterTrack: (NSString *) path
 {
+    for (MP4TrackWrapper* previousTrack in mp4File.tracksArray)
+        if([previousTrack.name isEqualToString:@"Chapter Track"])
+            [mp4File.tracksArray removeObject:previousTrack];
+
     MP4ChapterTrackWrapper *track = [[MP4ChapterTrackWrapper alloc] init];
     track.sourcePath = path;
     track.language = [[langSelection selectedItem] title];
     track.format = @"Text";
     track.name = @"Chapter Track";
     track.hasChanged = YES;
+    track.hasDataChanged = YES;
     track.muxed = NO;
 
     NSMutableArray * chapters = [[NSMutableArray alloc] init];
