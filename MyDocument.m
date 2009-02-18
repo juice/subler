@@ -61,12 +61,23 @@
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
 
+    NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSCreatorCode,
+                                    [NSNumber numberWithUnsignedInt:0], NSFileHFSTypeCode,
+                                    nil];    
+
+    [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
     [self setFileURL:absoluteURL];
     [self setFileModificationDate:[[[NSFileManager defaultManager]  
                                     fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
                                    fileModificationDate]];
 
 	return YES;
+}
+
+-(void) saveAndOptimize: (id)sender
+{
+    NSLog(@"lalala");
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
@@ -105,6 +116,10 @@
             return YES;
 
     if (action == @selector(revertDocumentToSaved:))
+        if ([self isDocumentEdited])
+            return YES;
+    
+    if (action == @selector(saveAndOptimize:))
         if ([self isDocumentEdited])
             return YES;
     
