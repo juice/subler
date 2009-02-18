@@ -62,8 +62,8 @@
 	}
 
     NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSCreatorCode,
-                                    [NSNumber numberWithUnsignedInt:0], NSFileHFSTypeCode,
+                                    [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
+                                    [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
                                     nil];    
 
     [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
