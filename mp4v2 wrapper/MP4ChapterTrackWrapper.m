@@ -32,7 +32,7 @@
         {
             SBChapter *chapter = [[SBChapter alloc] init];
             chapter.title = [NSString stringWithCString:chapter_list[i-1].title encoding: NSUTF8StringEncoding];
-            chapter.duration = sum;
+            chapter.timestamp = sum;
             sum = chapter_list[i-1].duration + sum;
             [chapters addObject:chapter];
             [chapter release];

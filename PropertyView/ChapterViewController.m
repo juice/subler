@@ -47,7 +47,7 @@
 {
     SBChapter * chapter = [track.chapters objectAtIndex:rowIndex];
     if ([tableColumn.identifier isEqualToString:@"time"])
-        return [self boldString:SMPTEStringFromTime(chapter.duration, 1000)];  
+        return [self boldString:SMPTEStringFromTime(chapter.timestamp, 1000)];  
 
     if ([tableColumn.identifier isEqualToString:@"title"])
         return chapter.title;

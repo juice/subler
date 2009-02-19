@@ -16,7 +16,7 @@
     [title release];
 }
 
-@synthesize duration;
+@synthesize timestamp;
 @synthesize title;
 
 @end
@@ -463,7 +463,7 @@ void LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
                     [sc scanString:@"\n" intoString:nil];
 
                     SBChapter *chapter = [[SBChapter alloc] init];
-                    chapter.duration = time;
+                    chapter.timestamp = time;
                     chapter.title = res;
                     [ss addObject:chapter];
                     [chapter release];
@@ -488,7 +488,7 @@ void LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
                     [sc scanString:@"\n" intoString:nil];
                     
                     SBChapter *chapter = [[SBChapter alloc] init];
-                    chapter.duration = time;
+                    chapter.timestamp = time;
                     chapter.title = res;
                     [ss addObject:chapter];
                     [chapter release];

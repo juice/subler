@@ -112,7 +112,7 @@
     }
 
     MP4Chapter_t * chapters = 0;
-    uint32_t i, chapterCount = 0;
+    uint32_t i, refTrackDuration, sum = 0, chapterCount = 0;
 
     // get the list of chapters
     MP4GetChapters(fileHandle, &chapters, &chapterCount, MP4ChapterTypeQt);
@@ -120,39 +120,51 @@
     MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
     updateTracksCount(fileHandle);
     
-    if (chapterCount) {
+    MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
+    if (!refTrack)
+        refTrack = 1;
+    
+    if (chapterCount && track.muxed) {
         for (i = 0; i<chapterCount; i++)
             strcpy(chapters[i].title, [[[track.chapters objectAtIndex:i] title] UTF8String]);
-        
-        MP4AddChapterTextTrack(fileHandle, 1, 1000);
+
+        MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
         MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeQt);
     }
     else {
         chapterCount = [track.chapters count];
         chapters = malloc(sizeof(MP4Chapter_t)*chapterCount);
+        refTrackDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                       refTrack,
+                                                       MP4GetTrackDuration(fileHandle, refTrack),
+                                                       MP4_MSECS_TIME_SCALE);
 
         for (i = 0; i < chapterCount; i++) {
             SBChapter * chapter = [track.chapters objectAtIndex:i];
-            if ( i+1 < chapterCount) {
+            strcpy(chapters[i].title, [[chapter title] UTF8String]);
+
+            if (i+1 < chapterCount && sum < refTrackDuration) {
                 SBChapter * nextChapter = [track.chapters objectAtIndex:i+1];
-                chapters[i].duration = nextChapter.duration - chapter.duration;;
+                chapters[i].duration = nextChapter.timestamp - chapter.timestamp;
+                sum = nextChapter.timestamp;
             }
             else
-            {
-                chapters[i].duration = (double)MP4ConvertFromTrackDuration(fileHandle,
-                                                                           1,
-                                                                           MP4GetTrackDuration(fileHandle, 1),
-                                                                           MP4_MSECS_TIME_SCALE) - chapter.duration;
+                chapters[i].duration = refTrackDuration - chapter.timestamp;
+
+            if (sum > refTrackDuration) {
+                chapters[i].duration = refTrackDuration - chapter.timestamp;
+                i++;
+                break;
             }
-            strcpy(chapters[i].title, [[chapter title] UTF8String]);
         }
 
-        MP4AddChapterTextTrack(fileHandle, 1, 1000);
-        MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeQt);
+        MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
+        MP4SetChapters(fileHandle, chapters, i, MP4ChapterTypeQt);
 
         free(chapters);
     }
 
+    track.Id = findChapterTrackId(fileHandle);
     MP4Close(fileHandle);
 
     return YES;

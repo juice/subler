@@ -11,12 +11,12 @@
 #import "mp4v2.h"
 
 @interface SBChapter : NSObject {
-    MP4Duration duration;
+    MP4Duration timestamp;
     NSString *title;
 }
 
 @property(readwrite, retain) NSString *title;
-@property(readwrite) MP4Duration duration;
+@property(readwrite) MP4Duration timestamp;
 
 @end
 
