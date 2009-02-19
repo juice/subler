@@ -15,7 +15,7 @@
 {
 	if ((self = [super init]))
 	{
-		sourcePath = source;
+		sourcePath = [source retain];
 		Id = trackID;
         hasChanged = NO;
         hasDataChanged = NO;
@@ -93,6 +93,7 @@
 - (void) dealloc
 {
     [super dealloc];
+    [sourcePath release];
     [media release];
     [name release];
     [language release];

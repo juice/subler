@@ -19,7 +19,7 @@
     BOOL        hasChanged;
     BOOL        hasDataChanged;
     BOOL        muxed;
-	
+
 	int samplerate; 
 	double bitrate;     // kbit/sec
 	double duration;    // seconds

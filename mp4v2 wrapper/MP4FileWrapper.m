@@ -116,7 +116,7 @@
 
     // get the list of chapters
     MP4GetChapters(fileHandle, &chapters, &chapterCount, MP4ChapterTypeQt);
-    
+
     MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
     updateTracksCount(fileHandle);
     
@@ -139,9 +139,10 @@
             }
             else
             {
-                chapters[i].duration = (double)MP4ConvertFromTrackDuration(fileHandle, 1,
-                                                                                      MP4GetTrackDuration(fileHandle, 1),
-                                                                                      MP4_MSECS_TIME_SCALE) - chapter.duration;
+                chapters[i].duration = (double)MP4ConvertFromTrackDuration(fileHandle,
+                                                                           1,
+                                                                           MP4GetTrackDuration(fileHandle, 1),
+                                                                           MP4_MSECS_TIME_SCALE) - chapter.duration;
             }
             strcpy(chapters[i].title, [[chapter title] UTF8String]);
         }

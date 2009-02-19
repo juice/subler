@@ -86,7 +86,7 @@
 
     mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
 
-    if ( outError != NULL || !mp4File ) {
+    if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
     return YES;
@@ -101,7 +101,7 @@
     [self tableViewSelectionDidChange:nil];
     [self updateChangeCount:NSChangeCleared];
 
-    if ( outError != NULL || !mp4File ) {
+    if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
     return YES;
