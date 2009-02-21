@@ -8,8 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="5"/>
-			<integer value="100175"/>
+			<integer value="100031"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -366,7 +365,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 															<object class="_NSCornerView" key="NSCornerView" id="98013410">
 																<reference key="NSNextResponder" ref="287999566"/>
 																<int key="NSvFlags">-2147483392</int>
-																<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
+																<string key="NSFrame">{{606, 0}, {16, 17}}</string>
 																<reference key="NSSuperview" ref="287999566"/>
 															</object>
 															<object class="NSMutableArray" key="NSTableColumns">
@@ -427,7 +426,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 																</object>
 																<object class="NSTableColumn" id="769290179">
 																	<string key="NSIdentifier">trackName</string>
-																	<double key="NSWidth">1.500000e+02</double>
+																	<double key="NSWidth">1.700000e+02</double>
 																	<double key="NSMinWidth">4.000000e+01</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -454,7 +453,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 																</object>
 																<object class="NSTableColumn" id="18787711">
 																	<string key="NSIdentifier">trackDuration</string>
-																	<double key="NSWidth">9.000000e+01</double>
+																	<double key="NSWidth">9.200000e+01</double>
 																	<double key="NSMinWidth">1.000000e+01</double>
 																	<double key="NSMaxWidth">3.402823e+38</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -493,7 +492,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 																</object>
 																<object class="NSTableColumn" id="514942517">
 																	<string key="NSIdentifier">trackLanguage</string>
-																	<double key="NSWidth">1.400000e+02</double>
+																	<double key="NSWidth">1.300000e+02</double>
 																	<double key="NSMinWidth">1.000000e+01</double>
 																	<double key="NSMaxWidth">3.402823e+38</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -596,7 +595,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 																</object>
 																<object class="NSTableColumn" id="864585726">
 																	<string key="NSIdentifier">trackInfo</string>
-																	<double key="NSWidth">1.880000e+02</double>
+																	<double key="NSWidth">1.760000e+02</double>
 																	<double key="NSMinWidth">8.000000e+01</double>
 																	<double key="NSMaxWidth">3.402823e+38</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -643,7 +642,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 												<object class="NSScroller" id="510924531">
 													<reference key="NSNextResponder" ref="287999566"/>
 													<int key="NSvFlags">-2147483392</int>
-													<string key="NSFrame">{{560, 17}, {15, 81}}</string>
+													<string key="NSFrame">{{606, 17}, {15, 99}}</string>
 													<reference key="NSSuperview" ref="287999566"/>
 													<reference key="NSTarget" ref="287999566"/>
 													<string key="NSAction">_doScroller:</string>
@@ -652,12 +651,12 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 												<object class="NSScroller" id="28717454">
 													<reference key="NSNextResponder" ref="287999566"/>
 													<int key="NSvFlags">-2147483392</int>
-													<string key="NSFrame">{{1, 98}, {559, 15}}</string>
+													<string key="NSFrame">{{1, 116}, {605, 15}}</string>
 													<reference key="NSSuperview" ref="287999566"/>
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="287999566"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSPercent">9.982609e-01</double>
+													<double key="NSPercent">9.983897e-01</double>
 												</object>
 												<object class="NSClipView" id="529458845">
 													<reference key="NSNextResponder" ref="287999566"/>
@@ -1071,7 +1070,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<object class="NSView" key="NSWindowView" id="838636882">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1103,7 +1102,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{240, 89}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>

@@ -75,7 +75,7 @@
         [fileManager removeFileAtPath:filePath handler:nil];
         [fileManager movePath:tempPath toPath:filePath handler:nil];
     }
-    
+
     [self performSelectorOnMainThread:@selector(optimizeComplete:) withObject:nil waitUntilDone:NO];
     [pool release];
 }

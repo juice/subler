@@ -67,11 +67,11 @@
                      forKey:@"Date"];
 
     if (tags->track)
-        [tagsDict setObject:[NSString stringWithFormat:@"%d of %d", tags->track->index, tags->track->total]
+        [tagsDict setObject:[NSString stringWithFormat:@"%d/%d", tags->track->index, tags->track->total]
                      forKey:@"Track #"];
     
     if (tags->disk)
-        [tagsDict setObject:[NSString stringWithFormat:@"%d of %d", tags->disk->index, tags->disk->total]
+        [tagsDict setObject:[NSString stringWithFormat:@"%d/%d", tags->disk->index, tags->disk->total]
                      forKey:@"Disk #"];
 
     if (tags->tvShow)
