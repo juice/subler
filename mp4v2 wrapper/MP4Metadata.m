@@ -102,9 +102,9 @@
         [tagsDict setObject:[NSString stringWithCString:tags->longDescription encoding: NSUTF8StringEncoding]
                      forKey:@"Long Description"];
 
-    //if (tags->lyrics)
-    //    [tagsDict setObject:[NSString stringWithCString:tags->lyrics encoding: NSUTF8StringEncoding]
-    //                 forKey:@"Lyrics"];
+    if (tags->lyrics)
+        [tagsDict setObject:[NSString stringWithCString:tags->lyrics encoding: NSUTF8StringEncoding]
+                     forKey:@"Lyrics"];
 
     if (tags->copyright)
         [tagsDict setObject:[NSString stringWithCString:tags->copyright encoding: NSUTF8StringEncoding]
@@ -117,7 +117,7 @@
     if (tags->encodedBy)
         [tagsDict setObject:[NSString stringWithCString:tags->encodedBy encoding: NSUTF8StringEncoding]
                      forKey:@"Encoded By"];
-    
+
     if (tags->hdVideo)
         hdVideo = *tags->hdVideo;
 
@@ -138,6 +138,10 @@
     if (tags->iTunesAccount)
         [tagsDict setObject:[NSString stringWithCString:tags->iTunesAccount encoding: NSUTF8StringEncoding]
                      forKey:@"iTunes Account"];
+    
+    if (tags->cnID)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->cnID]
+                     forKey:@"cnID"];
 
     if (tags->artwork) {
         NSData *imageData = [NSData dataWithBytes:tags->artwork->data length:tags->artwork->size];

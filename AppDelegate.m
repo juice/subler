@@ -12,5 +12,11 @@
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
     return NO;
-}    
+}
+
+- (IBAction) donate:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL: [NSURL
+                                             URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YKZHVC6HG6AFQ&lc=IT&item_name=Subler&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"]];
+}
 @end

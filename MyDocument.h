@@ -23,6 +23,7 @@
 
     IBOutlet NSTableView    *fileTracksTable;
     IBOutlet NSWindow       *addSubtitleWindow;
+    IBOutlet NSWindow       *savingWindow;
     IBOutlet NSWindow       *documentWindow;
 
     IBOutlet NSPopUpButton  *langSelection;

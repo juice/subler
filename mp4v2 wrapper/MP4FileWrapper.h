@@ -30,6 +30,7 @@
 - (id)initWithExistingMP4File:(NSString *)mp4File;
 - (int)tracksCount;
 - (BOOL) writeToFile;
+- (BOOL) optimize;
 - (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track;
 - (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track;
 - (BOOL) deleteSubtitleTrack: (MP4TrackWrapper *)track;

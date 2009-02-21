@@ -52,19 +52,22 @@
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
+    [NSApp beginSheet:savingWindow modalForWindow:documentWindow
+        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+
     [mp4File writeToFile];
 
     [self updateChangeCount:NSChangeCleared];
     [self reloadTable:self];
 
-    if ( outError != NULL ) {
+    if (outError != NULL) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 	}
 
     NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                     [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
                                     [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
-                                    nil];    
+                                    nil];
 
     [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
     [self setFileURL:absoluteURL];
@@ -72,12 +75,26 @@
                                     fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
                                    fileModificationDate]];
 
+    [NSApp endSheet: savingWindow];
+    [savingWindow orderOut:self];
+
 	return YES;
 }
 
 -(void) saveAndOptimize: (id)sender
 {
-    NSLog(@"lalala");
+    if ([self isDocumentEdited])
+        [self saveDocument:sender];
+    
+    [NSApp beginSheet:savingWindow modalForWindow:documentWindow
+        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+
+    [mp4File optimize];
+
+    [self reloadTable:self];
+
+    [NSApp endSheet: savingWindow];
+    [savingWindow orderOut:self];
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
@@ -120,7 +137,6 @@
             return YES;
     
     if (action == @selector(saveAndOptimize:))
-        if ([self isDocumentEdited])
             return YES;
     
     if (action == @selector(showSubititleWindow:))

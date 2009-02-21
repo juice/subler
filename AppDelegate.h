@@ -13,4 +13,6 @@
 
 }
 
+- (IBAction) donate:(id)sender;
+
 @end

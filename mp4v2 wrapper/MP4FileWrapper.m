@@ -53,6 +53,26 @@
     return [tracksArray count];
 }
 
+- (BOOL) optimize
+{
+    BOOL noErr;
+    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
+    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
+        printf("Error\n");
+        return NO;
+    }
+    
+    noErr = MP4Optimize([filePath UTF8String], [[NSString stringWithFormat:@"%@%@", filePath, @".tmp"] UTF8String], MP4_DETAILS_ERROR);
+    MP4Close(fileHandle);
+    
+    if (noErr) {
+        remove( [filePath UTF8String] );
+        rename( [[NSString stringWithFormat:@"%@%@", filePath, @".tmp"] UTF8String], [filePath UTF8String] );
+    }
+    
+    return YES;
+}
+
 - (BOOL) writeToFile
 {
     MP4TrackWrapper *track;
