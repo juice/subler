@@ -79,16 +79,17 @@
 
     for (track in tracksToBeDeleted)
         [self deleteSubtitleTrack: track];
-    
+
     for (track in tracksArray)
     {
-        if ([track.format isEqualToString:@"3GPP Text"])
-            if (track.hasChanged && !track.muxed) {
+        if ([track isMemberOfClass:[MP4SubtitleTrackWrapper class]])
+            if (track.hasChanged && !track.muxed)
                 [self muxSubtitleTrack:(MP4SubtitleTrackWrapper *)track];
-            }
-        if ([track.format isEqualToString:@"Text"])
+
+        if ([track isMemberOfClass:[MP4ChapterTrackWrapper class]])
             if (track.hasDataChanged)
                 [self muxChapterTrack:(MP4ChapterTrackWrapper *)track];
+
         if (track.hasChanged && track.Id != 0) {
             [self updateTrackLanguage:track];
             [self updateTrackName:track];
@@ -115,9 +116,8 @@
                      track.sourcePath,
                      lang->iso639_2,
                      track.height,
-                     track.delay
-                     );
-    
+                     track.delay);
+
     MP4Close(fileHandle);
 
     return YES;

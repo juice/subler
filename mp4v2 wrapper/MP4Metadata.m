@@ -215,6 +215,13 @@
     MP4TagsSetHDVideo(tags, &hdVideo);
     
     MP4TagsSetGapless(tags, &gapless);
+    
+    if ( [tagsDict valueForKey:@"cnID"] ) {
+        const uint32_t i = [[tagsDict valueForKey:@"cnID"] integerValue];
+        MP4TagsSetCNID( tags, &i );
+    }
+    else
+        MP4TagsSetCNID( tags, NULL );
 
     MP4TagsStore( tags, fileHandle );
     MP4TagsFree( tags );
