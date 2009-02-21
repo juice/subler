@@ -91,6 +91,11 @@
 {
     [self reloadTable:self];
     
+    [self setFileURL: [self fileURL]];
+    [self setFileModificationDate:[[[NSFileManager defaultManager]  
+                                    fileAttributesAtPath:[[self fileURL] path] traverseLink:YES]  
+                                   fileModificationDate]];
+    
     [NSApp endSheet: savingWindow];
     [savingWindow orderOut:self];
 
