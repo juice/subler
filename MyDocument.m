@@ -52,9 +52,6 @@
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
-    [NSApp beginSheet:savingWindow modalForWindow:documentWindow
-        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
-
     [mp4File writeToFile];
 
     [self updateChangeCount:NSChangeCleared];
@@ -75,9 +72,6 @@
                                     fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
                                    fileModificationDate]];
 
-    [NSApp endSheet: savingWindow];
-    [savingWindow orderOut:self];
-
 	return YES;
 }
 
@@ -88,20 +82,26 @@
     
     [NSApp beginSheet:savingWindow modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+    [optBar startAnimation:sender];
 
     [mp4File optimize];
+}
 
+- (void) optimizeDidComplete
+{
     [self reloadTable:self];
-
+    
     [NSApp endSheet: savingWindow];
     [savingWindow orderOut:self];
+
+    [optBar stopAnimation:nil];
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
     filePath = [absoluteURL path];
 
-    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
+    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath andDelegate:self];
 
     if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
@@ -112,7 +112,7 @@
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
     [mp4File release];
-    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
+    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath andDelegate:self];
 
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
@@ -404,7 +404,7 @@ returnCode contextInfo: (void *) contextInfo
 
 - (void) reloadTable: (id) sender
 {
-    MP4FileWrapper * newFile = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath];
+    MP4FileWrapper * newFile = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath andDelegate:self];
     [mp4File autorelease];
     mp4File = newFile;
     [fileTracksTable reloadData];

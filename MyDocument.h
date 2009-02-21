@@ -38,6 +38,8 @@
 
     NSViewController        *propertyView;
     IBOutlet NSView         *targetView;
+    
+    IBOutlet NSProgressIndicator *optBar;
 }
 
 - (IBAction) showSubititleWindow: (id) sender;

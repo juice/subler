@@ -9,6 +9,7 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="5"/>
+			<integer value="100175"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1070,20 +1071,20 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<object class="NSView" key="NSWindowView" id="838636882">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSTextField" id="664835239">
 							<reference key="NSNextResponder" ref="838636882"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{17, 52}, {58, 17}}</string>
+							<string key="NSFrame">{{17, 52}, {88, 17}}</string>
 							<reference key="NSSuperview" ref="838636882"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="555766235">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">272630784</int>
-								<string type="base64-UTF8" key="NSContents">U2F2aW5n4oCmA</string>
+								<string type="base64-UTF8" key="NSContents">T3B0aW1pemluZ+KApg</string>
 								<reference key="NSSupport" ref="871642454"/>
 								<reference key="NSControlView" ref="664835239"/>
 								<reference key="NSBackgroundColor" ref="289450487"/>
@@ -1102,6 +1103,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{240, 89}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
@@ -1285,6 +1287,14 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="159535561"/>
 					</object>
 					<int key="connectionID">100180</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">optBar</string>
+						<reference key="source" ref="512844837"/>
+						<reference key="destination" ref="938438898"/>
+					</object>
+					<int key="connectionID">100181</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2054,7 +2064,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">100180</int>
+			<int key="maxID">100181</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2098,6 +2108,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>fileTracksTable</string>
 							<string>label</string>
 							<string>langSelection</string>
+							<string>optBar</string>
 							<string>savingWindow</string>
 							<string>subtitleFilePath</string>
 							<string>targetView</string>
@@ -2114,6 +2125,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>NSTableView</string>
 							<string>NSTextField</string>
 							<string>NSPopUpButton</string>
+							<string>NSProgressIndicator</string>
 							<string>NSWindow</string>
 							<string>NSTextField</string>
 							<string>NSView</string>
@@ -2123,6 +2135,13 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">MyDocument.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">mp4v2 wrapper/MP4FileWrapper.h</string>
 					</object>
 				</object>
 			</object>

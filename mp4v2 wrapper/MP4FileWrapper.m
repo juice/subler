@@ -15,10 +15,12 @@
 
 @implementation MP4FileWrapper
 
--(id)initWithExistingMP4File:(NSString *)mp4File
+- (id)initWithExistingMP4File:(NSString *)mp4File andDelegate:(id)del;
 {
     if ((self = [super init]))
 	{
+        delegate = del;
+        
 		fileHandle = MP4Read([mp4File UTF8String], 0);
         filePath = mp4File;
 		if (!fileHandle)
@@ -27,7 +29,7 @@
         tracksArray = [[NSMutableArray alloc] init];
         int i, tracksCount = MP4GetNumberOfTracks( fileHandle, 0, 0);
         MP4TrackId chapterId = findChapterTrackId(fileHandle);
-    
+
         for (i=0; i< tracksCount; i++) {
             id track;
             MP4TrackId trackId = MP4FindTrackId( fileHandle, i, 0, 0);
@@ -53,24 +55,34 @@
     return [tracksArray count];
 }
 
-- (BOOL) optimize
+- (void) optimizeComplete: (id) sender;
 {
+    if ([delegate respondsToSelector:@selector(optimizeDidComplete)]) 
+        [delegate optimizeDidComplete];
+}
+
+- (void) _optimize: (id) sender
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     BOOL noErr;
-    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        printf("Error\n");
-        return NO;
-    }
-    
-    noErr = MP4Optimize([filePath UTF8String], [[NSString stringWithFormat:@"%@%@", filePath, @".tmp"] UTF8String], MP4_DETAILS_ERROR);
-    MP4Close(fileHandle);
-    
+    NSString * tempPath = [NSString stringWithFormat:@"%@%@", filePath, @".tmp"];
+
+    noErr = MP4Optimize([filePath UTF8String], [tempPath UTF8String], MP4_DETAILS_ERROR);
+
     if (noErr) {
-        remove( [filePath UTF8String] );
-        rename( [[NSString stringWithFormat:@"%@%@", filePath, @".tmp"] UTF8String], [filePath UTF8String] );
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+
+        [fileManager removeFileAtPath:filePath handler:nil];
+        [fileManager movePath:tempPath toPath:filePath handler:nil];
     }
     
-    return YES;
+    [self performSelectorOnMainThread:@selector(optimizeComplete:) withObject:nil waitUntilDone:NO];
+    [pool release];
+}
+
+- (void) optimize
+{
+    [NSThread detachNewThreadSelector:@selector(_optimize:) toTarget:self withObject:nil];
 }
 
 - (BOOL) writeToFile
@@ -106,7 +118,7 @@
 {
     iso639_lang_t *lang = lang_for_english([track.language UTF8String]);
 
-    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
+    fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
         printf("Error\n");
         return NO;
@@ -139,11 +151,11 @@
 
     MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
     updateTracksCount(fileHandle);
-    
+
     MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
     if (!refTrack)
         refTrack = 1;
-    
+
     if (chapterCount && track.muxed) {
         for (i = 0; i<chapterCount; i++)
             strcpy(chapters[i].title, [[[track.chapters objectAtIndex:i] title] UTF8String]);
@@ -240,7 +252,7 @@
                                      "udta.name.value",
                                      (const uint8_t*) [track.name UTF8String], strlen([track.name UTF8String]));
     }
-    
+
     MP4Close(fileHandle);
 
     return YES;
@@ -257,6 +269,5 @@
 @synthesize tracksArray;
 @synthesize tracksToBeDeleted;
 @synthesize metadata;
-
 
 @end
