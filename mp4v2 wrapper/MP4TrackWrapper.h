@@ -16,6 +16,8 @@
     NSString    *name;
     NSString    *media;
     NSString    *language;
+
+
     BOOL        hasChanged;
     BOOL        hasDataChanged;
     BOOL        muxed;

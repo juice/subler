@@ -365,7 +365,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 															<object class="_NSCornerView" key="NSCornerView" id="98013410">
 																<reference key="NSNextResponder" ref="287999566"/>
 																<int key="NSvFlags">-2147483392</int>
-																<string key="NSFrame">{{606, 0}, {16, 17}}</string>
+																<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
 																<reference key="NSSuperview" ref="287999566"/>
 															</object>
 															<object class="NSMutableArray" key="NSTableColumns">

@@ -22,6 +22,9 @@
 		A95A602A0F441EF900767D87 /* MP4SubtitleTrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60210F441EF900767D87 /* MP4SubtitleTrackWrapper.m */; };
 		A95A602B0F441EF900767D87 /* MP4TrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60230F441EF900767D87 /* MP4TrackWrapper.m */; };
 		A95A602C0F441EF900767D87 /* MP4Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A95A60250F441EF900767D87 /* MP4Utilities.m */; };
+		A984DB4B0F52D644001A20B2 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A984DB4A0F52D644001A20B2 /* Sparkle.framework */; };
+		A984DB530F52D679001A20B2 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A984DB4A0F52D644001A20B2 /* Sparkle.framework */; };
+		A984DB740F52DD4B001A20B2 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = A984DB730F52DD4B001A20B2 /* dsa_pub.pem */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
 		A9C1EB2F0F31FF24003A08F3 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */; };
 		A9F5EA800F32E55000C057E0 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */; };
@@ -65,6 +68,19 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		A984DB5E0F52D68E001A20B2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A984DB530F52D679001A20B2 /* Sparkle.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -97,6 +113,8 @@
 		A95A60250F441EF900767D87 /* MP4Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4Utilities.m; path = "mp4v2 wrapper/MP4Utilities.m"; sourceTree = "<group>"; };
 		A95A60260F441EF900767D87 /* MP4ChapterTrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4ChapterTrackWrapper.h; path = "mp4v2 wrapper/MP4ChapterTrackWrapper.h"; sourceTree = "<group>"; };
 		A95A60470F4422DB00767D87 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mp4v2.h; path = mp4v2/mp4v2.h; sourceTree = "<group>"; };
+		A984DB4A0F52D644001A20B2 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
+		A984DB730F52DD4B001A20B2 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9C1EB2D0F31FF24003A08F3 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
 		A9C1EB2E0F31FF24003A08F3 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMuxer.m; sourceTree = "<group>"; };
@@ -123,6 +141,7 @@
 				A91103E40F321DBA0013D1E0 /* libuniversaldetector.a in Frameworks */,
 				A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */,
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
+				A984DB4B0F52D644001A20B2 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +151,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A984DB4A0F52D644001A20B2 /* Sparkle.framework */,
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -198,6 +218,7 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A984DB730F52DD4B001A20B2 /* dsa_pub.pem */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
@@ -275,6 +296,7 @@
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
+				A984DB5E0F52D68E001A20B2 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -346,6 +368,7 @@
 				A9FD5DA40F3C6F8100817716 /* EmptyView.xib in Resources */,
 				A9FD5DA60F3C6F8A00817716 /* ChapterView.xib in Resources */,
 				A9FD5EC70F3C8A4800817716 /* MovieView.xib in Resources */,
+				A984DB740F52DD4B001A20B2 /* dsa_pub.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,6 +472,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -470,6 +497,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Subler_Prefix.pch;

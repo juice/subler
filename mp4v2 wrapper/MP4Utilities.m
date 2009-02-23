@@ -17,36 +17,38 @@ typedef enum {  TRACK_DISABLED = 0x0,
                 TRACK_IN_POSTER = 0x8
 } track_header_flags;
 
-NSString *SMPTEStringFromTime( long long time, long timeScale )  
-{  
-    NSString *SMPTE_string;  
-    int days, hour, minute, second, frame;  
-    long long result;  
-    
-    // timeScale is fps * 100  
-    result = time / timeScale; // second  
-    frame = (time % timeScale) / 10;  
-    
-    second = result % 60;  
-    
-    result = result / 60; // minute  
-    minute = result % 60;  
-    
-    result = result / 60; // hour  
-    hour = result % 24;  
-    
-    days = result;  
-    
-    SMPTE_string = [NSString stringWithFormat:@"%d:%02d:%02d:%02d", hour, minute, second, frame]; // h:mm:ss:ff  
-    
-    return SMPTE_string;  
+NSString *SMPTEStringFromTime( long long time, long timeScale )
+{
+    NSString *SMPTE_string;
+    int days, hour, minute, second, frame;
+    long long result;
+
+    // timeScale is fps * 100
+    result = time / timeScale; // second
+    frame = (time % timeScale) / 10;
+
+    second = result % 60;
+
+    result = result / 60; // minute
+    minute = result % 60;
+
+    result = result / 60; // hour
+    hour = result % 24;
+
+    days = result;
+
+    SMPTE_string = [NSString stringWithFormat:@"%d:%02d:%02d:%02d", hour, minute, second, frame]; // h:mm:ss:ff
+
+    return SMPTE_string;
 }
 
-int enableTrack(MP4FileHandle fileHandle, MP4TrackId trackId) {
+int enableTrack(MP4FileHandle fileHandle, MP4TrackId trackId)
+{
     return MP4SetTrackIntegerProperty(fileHandle, trackId, "tkhd.flags", (TRACK_ENABLED | TRACK_IN_MOVIE));
 }
 
-int disableTrack(MP4FileHandle fileHandle, MP4TrackId trackId) {
+int disableTrack(MP4FileHandle fileHandle, MP4TrackId trackId)
+{
     return MP4SetTrackIntegerProperty(fileHandle, trackId, "tkhd.flags", (TRACK_DISABLED | TRACK_IN_MOVIE));
 }
 
@@ -72,7 +74,7 @@ int updateTracksCount(MP4FileHandle fileHandle)
     for (i = 0; i< MP4GetNumberOfTracks( fileHandle, 0, 0); i++ )
         if (MP4FindTrackId(fileHandle, i, 0, 0) > maxTrackId)
             maxTrackId = MP4FindTrackId(fileHandle, i, 0, 0);
-    
+
     return MP4SetIntegerProperty(fileHandle, "moov.mvhd.nextTrackId", maxTrackId + 1);
 }
 
