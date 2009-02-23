@@ -235,7 +235,7 @@
         MP4SetMetadataTrack(fileHandle, trackNum, totalTrackNum);
     }
     else
-        MP4SetMetadataTrack(fileHandle, 0, 0);
+        MP4DeleteMetadataTrack(fileHandle);
 
     if ([tagsDict valueForKey:@"Disk #"]) {
         int diskNum = 0, totalDiskNum = 0;
@@ -244,7 +244,7 @@
         MP4SetMetadataDisk(fileHandle, diskNum, totalDiskNum);
     }
     else
-        MP4SetMetadataDisk(fileHandle, 0, 0);
+        MP4DeleteMetadataDisk(fileHandle);
 
     MP4Close( fileHandle );
 
