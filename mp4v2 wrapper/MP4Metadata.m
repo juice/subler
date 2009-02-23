@@ -181,11 +181,11 @@
     MP4TagsSetReleaseDate( tags, [[tagsDict valueForKey:@"Date"] UTF8String] );
 
     MP4TagsSetTVShow( tags, [[tagsDict valueForKey:@"TV Show"] UTF8String] );
-    
+
     MP4TagsSetTVNetwork( tags, [[tagsDict valueForKey:@"TV Network"] UTF8String] );
-    
+
     MP4TagsSetTVEpisodeID( tags, [[tagsDict valueForKey:@"TV Episode ID"] UTF8String] );
-    
+
     if ( [tagsDict valueForKey:@"TV Season"] ) {
         const uint32_t i = [[tagsDict valueForKey:@"TV Season"] integerValue];
         MP4TagsSetTVSeason( tags, &i );
@@ -209,13 +209,13 @@
     MP4TagsSetEncodingTool( tags, [[tagsDict valueForKey:@"Encoding Tool"] UTF8String] );
 
     MP4TagsSetEncodedBy( tags, [[tagsDict valueForKey:@"Encoded By"] UTF8String] );
-    
+
     MP4TagsSetMediaType(tags, &mediaKind);
-    
+
     MP4TagsSetHDVideo(tags, &hdVideo);
-    
+
     MP4TagsSetGapless(tags, &gapless);
-    
+
     if ( [tagsDict valueForKey:@"cnID"] ) {
         const uint32_t i = [[tagsDict valueForKey:@"cnID"] integerValue];
         MP4TagsSetCNID( tags, &i );
@@ -225,6 +225,23 @@
 
     MP4TagsStore( tags, fileHandle );
     MP4TagsFree( tags );
+
+    // Tags settable only with old style api
+
+    if ([tagsDict valueForKey:@"Track #"]) {
+        int trackNum = 0, totalTrackNum = 0;
+        char separator;
+        sscanf([[tagsDict valueForKey:@"Track #"] UTF8String],"%u%[/- ]%u",&trackNum,&separator,&totalTrackNum);
+        MP4SetMetadataTrack(fileHandle, trackNum, totalTrackNum);
+    }
+    
+    if ([tagsDict valueForKey:@"Disk #"]) {
+        int diskNum = 0, totalDiskNum = 0;
+        char separator;
+        sscanf([[tagsDict valueForKey:@"Disk #"] UTF8String],"%u%[/- ]%u",&diskNum,&separator,&totalDiskNum);
+        MP4SetMetadataDisk(fileHandle, diskNum, totalDiskNum);
+    }
+
     MP4Close( fileHandle );
 
     return YES;
