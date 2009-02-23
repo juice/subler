@@ -234,13 +234,17 @@
         sscanf([[tagsDict valueForKey:@"Track #"] UTF8String],"%u%[/- ]%u",&trackNum,&separator,&totalTrackNum);
         MP4SetMetadataTrack(fileHandle, trackNum, totalTrackNum);
     }
-    
+    else
+        MP4SetMetadataTrack(fileHandle, 0, 0);
+
     if ([tagsDict valueForKey:@"Disk #"]) {
         int diskNum = 0, totalDiskNum = 0;
         char separator;
         sscanf([[tagsDict valueForKey:@"Disk #"] UTF8String],"%u%[/- ]%u",&diskNum,&separator,&totalDiskNum);
         MP4SetMetadataDisk(fileHandle, diskNum, totalDiskNum);
     }
+    else
+        MP4SetMetadataDisk(fileHandle, 0, 0);
 
     MP4Close( fileHandle );
 

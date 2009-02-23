@@ -51,7 +51,7 @@
 
     if ([tableColumn.identifier isEqualToString:@"title"])
         return chapter.title;
-    
+
     return nil;
 }
 
