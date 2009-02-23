@@ -108,7 +108,7 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>http://www.andymatuschak.org/files/sparkletestcast.xml</string>
+	<string>http://subler.googlecode.com/svn/doc/appcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 </dict>
