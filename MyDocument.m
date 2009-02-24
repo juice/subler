@@ -165,7 +165,7 @@
 
     else if (toolbarItem == deleteTrack) {
         if ([fileTracksTable selectedRow] != -1 && [NSApp isActive])
-            if ([[[mp4File.tracksArray objectAtIndex:[fileTracksTable selectedRow]] format]
+            if ([[[mp4File trackAtIndex:[fileTracksTable selectedRow]] format]
                     isEqualToString:@"3GPP Text"])
             {
                 //[[toolbarItem view] setEnabled:NO];
@@ -188,7 +188,7 @@
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
-    MP4TrackWrapper *track = [mp4File.tracksArray objectAtIndex:rowIndex];
+    MP4TrackWrapper *track = [mp4File trackAtIndex:rowIndex];
 
     if (!track)
         return nil;
@@ -220,7 +220,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     forTableColumn: (NSTableColumn *) tableColumn 
                row: (NSInteger) rowIndex
 {
-    MP4TrackWrapper *track = [mp4File.tracksArray objectAtIndex:rowIndex];
+    MP4TrackWrapper *track = [mp4File trackAtIndex:rowIndex];
     
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"]) {
         if (![track.language isEqualToString:anObject]) {
@@ -254,10 +254,10 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         if (controller !=nil)
             propertyView = controller;
     }
-    else if (row != -1 && [[[[mp4File tracksArray] objectAtIndex:row] name] isEqualToString:@"Chapter Track"])
+    else if (row != -1 && [[mp4File trackAtIndex:row] isMemberOfClass:[MP4ChapterTrackWrapper class]])
     {
         ChapterViewController *controller = [[ChapterViewController alloc] initWithNibName:@"ChapterView" bundle:nil];
-        [controller setFile:mp4File andTrack:[[mp4File tracksArray] objectAtIndex:row]];
+        [controller setFile:mp4File andTrack:[mp4File trackAtIndex:row]];
         if (controller !=nil)
             propertyView = controller;
     }
@@ -422,7 +422,7 @@ returnCode contextInfo: (void *) contextInfo
     if ([fileTracksTable selectedRow] == -1)
         return;
 
-    MP4TrackWrapper *track = [[mp4File tracksArray] objectAtIndex:[fileTracksTable selectedRow]];
+    MP4TrackWrapper *track = [mp4File trackAtIndex:[fileTracksTable selectedRow]];
     if (track.muxed)
         [[mp4File tracksToBeDeleted] addObject: track];
     [[mp4File tracksArray] removeObjectAtIndex:[fileTracksTable selectedRow]];

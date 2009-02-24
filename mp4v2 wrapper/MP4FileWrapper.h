@@ -31,6 +31,7 @@
 
 - (id)initWithExistingMP4File:(NSString *)mp4File andDelegate:(id)del;
 - (int)tracksCount;
+- (id)trackAtIndex:(NSUInteger) index;
 - (BOOL) writeToFile;
 - (void) optimize;
 - (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track;

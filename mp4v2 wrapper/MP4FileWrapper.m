@@ -55,6 +55,11 @@
     return [tracksArray count];
 }
 
+- (id)trackAtIndex:(NSUInteger) index
+{
+    return [tracksArray objectAtIndex:index];
+}
+
 - (void) optimizeComplete: (id) sender;
 {
     if ([delegate respondsToSelector:@selector(optimizeDidComplete)]) 

@@ -203,6 +203,8 @@
     MP4TagsSetDescription( tags, [[tagsDict valueForKey:@"Description"] UTF8String] );
 
     MP4TagsSetLongDescription( tags, [[tagsDict valueForKey:@"Long Description"] UTF8String] );
+    
+    MP4TagsSetLyrics( tags, [[tagsDict valueForKey:@"Lyrics"] UTF8String] );
 
     MP4TagsSetCopyright( tags, [[tagsDict valueForKey:@"Copyright"] UTF8String] );
 

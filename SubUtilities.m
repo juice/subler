@@ -347,6 +347,9 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 	float conf;
 	NSString *enc_str;
 	BOOL latin2;
+    
+    if (!data)
+        return nil;
 	
 	[ud analyzeData:data];
 	
