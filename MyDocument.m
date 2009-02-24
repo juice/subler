@@ -7,6 +7,7 @@
 //
 
 #import "MyDocument.h"
+#import "MP4FileWrapper.h"
 #import "MP4Utilities.h"
 #import "MovieViewController.h"
 #import "EmptyViewController.h"
@@ -105,9 +106,7 @@
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    filePath = [absoluteURL path];
-
-    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath andDelegate:self];
+    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:[absoluteURL path] andDelegate:self];
 
     if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
@@ -118,7 +117,7 @@
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
     [mp4File release];
-    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath andDelegate:self];
+    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:[absoluteURL path] andDelegate:self];
 
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
@@ -133,7 +132,7 @@
 - (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
 {
     SEL action = [anItem action];
-    
+
     if (action == @selector(saveDocument:))
         if ([self isDocumentEdited])
             return YES;
@@ -141,20 +140,19 @@
     if (action == @selector(revertDocumentToSaved:))
         if ([self isDocumentEdited])
             return YES;
-    
+
     if (action == @selector(saveAndOptimize:))
             return YES;
-    
+
     if (action == @selector(showSubititleWindow:))
             return YES;
-    
+
     if (action == @selector(selectChapterFile:))
         return YES;
 
     if (action == @selector(deleteTrack:))
         return YES;
-    
-    
+
     return NO;
 }
 
@@ -345,7 +343,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     NSMutableArray * chapters = [[NSMutableArray alloc] init];
     LoadChaptersFromPath(path, chapters);
     track.chapters = chapters;
-    [mp4File.tracksArray addObject:track];
+    [mp4File addTrack:track];
     [track release];
 
     [fileTracksTable reloadData];
@@ -395,8 +393,7 @@ returnCode contextInfo: (void *) contextInfo
     track.hasChanged = YES;
     track.muxed = NO;
 
-    
-    [mp4File.tracksArray addObject:track];
+    [mp4File addTrack:track];
     [track release];
 
     [fileTracksTable reloadData];
@@ -407,10 +404,9 @@ returnCode contextInfo: (void *) contextInfo
     [self updateChangeCount:NSChangeDone];
 }
 
-
 - (void) reloadTable: (id) sender
 {
-    MP4FileWrapper * newFile = [[MP4FileWrapper alloc] initWithExistingMP4File:filePath andDelegate:self];
+    MP4FileWrapper * newFile = [[MP4FileWrapper alloc] initWithExistingMP4File:[[self fileURL] path] andDelegate:self];
     [mp4File autorelease];
     mp4File = newFile;
     [fileTracksTable reloadData];
@@ -422,12 +418,9 @@ returnCode contextInfo: (void *) contextInfo
     if ([fileTracksTable selectedRow] == -1)
         return;
 
-    MP4TrackWrapper *track = [mp4File trackAtIndex:[fileTracksTable selectedRow]];
-    if (track.muxed)
-        [[mp4File tracksToBeDeleted] addObject: track];
-    [[mp4File tracksArray] removeObjectAtIndex:[fileTracksTable selectedRow]];
+    [mp4File removeTrackAtIndex:[fileTracksTable selectedRow]];
+
     [fileTracksTable reloadData];
-    
     [self updateChangeCount:NSChangeDone];
 }
 

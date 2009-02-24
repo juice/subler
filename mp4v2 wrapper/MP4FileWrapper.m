@@ -13,6 +13,16 @@
 
 #include "MP4Utilities.h"
 
+@interface MP4FileWrapper (Private)
+
+- (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track;
+- (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track;
+- (void) removeMuxedTrack: (MP4TrackWrapper *)track;
+- (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track;
+- (BOOL) updateTrackName: (MP4TrackWrapper*) track;
+
+@end
+
 @implementation MP4FileWrapper
 
 - (id)initWithExistingMP4File:(NSString *)mp4File andDelegate:(id)del;
@@ -20,7 +30,7 @@
     if ((self = [super init]))
 	{
         delegate = del;
-        
+
 		fileHandle = MP4Read([mp4File UTF8String], 0);
         filePath = mp4File;
 		if (!fileHandle)
@@ -46,7 +56,7 @@
         metadata = [[MP4Metadata alloc] initWithSourcePath:mp4File];
         MP4Close(fileHandle);
 	}
-    
+
 	return self;
 }
 
@@ -58,6 +68,19 @@
 - (id)trackAtIndex:(NSUInteger) index
 {
     return [tracksArray objectAtIndex:index];
+}
+
+- (void)addTrack:(id) track
+{
+    [tracksArray addObject:track];
+}
+
+- (void)removeTrackAtIndex:(NSUInteger) index
+{
+    MP4TrackWrapper *track = [tracksArray objectAtIndex:index];
+    if (track.muxed)
+        [tracksToBeDeleted addObject:track];
+    [tracksArray removeObjectAtIndex:index];
 }
 
 - (void) optimizeComplete: (id) sender;
@@ -94,8 +117,14 @@
 {
     MP4TrackWrapper *track;
 
+    fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
+    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
+        NSLog(@"Fatal Error");
+        return NO;
+    }
+
     for (track in tracksToBeDeleted)
-        [self deleteSubtitleTrack: track];
+        [self removeMuxedTrack:track];
 
     for (track in tracksArray)
     {
@@ -114,39 +143,31 @@
     }
 
     if (metadata.edited)
-        [metadata writeMetadata];
+        [metadata writeMetadataWithFileHandle:fileHandle];
 
+    MP4Close(fileHandle);
     return YES;
 }
 
 - (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track
 {
-    iso639_lang_t *lang = lang_for_english([track.language UTF8String]);
-
-    fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
-    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        printf("Error\n");
+    BOOL err;
+    if (!fileHandle)
         return NO;
-    }
 
-    muxSubtitleTrack(fileHandle,
-                     track.sourcePath,
-                     lang->iso639_2,
-                     track.height,
-                     track.delay);
+    err = muxSubtitleTrack(fileHandle,
+                           track.sourcePath,
+                           lang_for_english([track.language UTF8String])->iso639_2,
+                           track.height,
+                           track.delay);
 
-    MP4Close(fileHandle);
-
-    return YES;
+    return err;
 }
 
 - (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track
 {
-    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        printf("Error\n");
+    if (!fileHandle)
         return NO;
-    }
 
     MP4Chapter_t * chapters = 0;
     uint32_t i, refTrackDuration, sum = 0, chapterCount = 0;
@@ -202,49 +223,37 @@
     }
 
     track.Id = findChapterTrackId(fileHandle);
-    MP4Close(fileHandle);
 
     return YES;
 }
 
-- (BOOL) deleteSubtitleTrack: (MP4TrackWrapper *)track
-{  
-    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    MP4TrackId trackId = track.Id;
-    MP4DeleteTrack( fileHandle, trackId);
+- (void) removeMuxedTrack: (MP4TrackWrapper *)track
+{
+    if (!fileHandle)
+        return;
+
+    MP4DeleteTrack(fileHandle, track.Id);
 
     updateTracksCount(fileHandle);
-    enableFirstSubtitleTrack(fileHandle);
-
-    MP4Close(fileHandle);
-
-    return YES;
+    if ([track isMemberOfClass:[MP4SubtitleTrackWrapper class]])
+        enableFirstSubtitleTrack(fileHandle);
 }
 
 - (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track
 {
-    iso639_lang_t *lang = lang_for_english([track.language UTF8String]);
-
-    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        printf("Error\n");
+    BOOL err;
+    if (!fileHandle)
         return NO;
-    }
 
-    MP4SetTrackLanguage(fileHandle, track.Id, lang->iso639_2);
+    err = MP4SetTrackLanguage(fileHandle, track.Id, lang_for_english([track.language UTF8String])->iso639_2);
 
-    MP4Close(fileHandle);
-
-    return YES;
+    return err;
 }
 
 - (BOOL) updateTrackName: (MP4TrackWrapper*) track
-{   
-    fileHandle = MP4Modify( [filePath UTF8String], MP4_DETAILS_ERROR, 0 );
-    if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        printf("Error\n");
+{
+    if (!fileHandle)
         return NO;
-    }
 
     if (![track.name isEqualToString:@"Video Track"] &&
         ![track.name isEqualToString:@"Audio Track"] &&
@@ -258,8 +267,6 @@
                                      (const uint8_t*) [track.name UTF8String], strlen([track.name UTF8String]));
     }
 
-    MP4Close(fileHandle);
-
     return YES;
 }
 
@@ -272,7 +279,6 @@
 }
 
 @synthesize tracksArray;
-@synthesize tracksToBeDeleted;
 @synthesize metadata;
 
 @end

@@ -156,9 +156,11 @@
     MP4Close(sourceHandle);
 }
 
-- (BOOL) writeMetadata
+- (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *)fileHandle
 {
-    MP4FileHandle *fileHandle = MP4Modify( [sourcePath UTF8String], MP4_DETAILS_ERROR, 0 );
+    if (!fileHandle)
+        return NO;
+
     const MP4Tags* tags = MP4TagsAlloc();
     MP4TagsFetch( tags, fileHandle );
 
@@ -247,8 +249,6 @@
     }
     else
         MP4DeleteMetadataDisk(fileHandle);
-
-    MP4Close( fileHandle );
 
     return YES;
 }

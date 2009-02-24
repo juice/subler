@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+#import "mp4v2.h"
 
 @interface MP4Metadata : NSObject {
     NSString                *sourcePath;
@@ -21,9 +21,9 @@
     BOOL edited;
 }
 
--(id) initWithSourcePath:(NSString *)source;
--(void) readMetaData;
-- (BOOL) writeMetadata;
+- (id) initWithSourcePath:(NSString *)source;
+- (void) readMetaData;
+- (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *) fileHandle;
 
 @property(readonly) NSMutableDictionary    *tagsDict;
 @property(readonly) NSImage                 *artwork;

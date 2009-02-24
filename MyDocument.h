@@ -6,16 +6,12 @@
 //  Copyright __MyCompanyName__ 2009 . All rights reserved.
 //
 
-
 #import <Cocoa/Cocoa.h>
-#import "mp4v2/mp4v2.h"
-#import "MP4FileWrapper.h"
+
+@class MP4FileWrapper;
 
 @interface MyDocument : NSDocument
 {
-    MP4FileHandle   readOnlyFile;
-    NSString       *filePath;
-
     MP4FileWrapper  *mp4File;
 
     IBOutlet NSTextField    *subtitleFilePath;
@@ -38,7 +34,7 @@
 
     NSViewController        *propertyView;
     IBOutlet NSView         *targetView;
-    
+
     IBOutlet NSProgressIndicator *optBar;
 }
 
@@ -50,6 +46,5 @@
 - (IBAction) deleteTrack: (id) sender;
 
 - (void) reloadTable: (id) sender;
-
 
 @end

@@ -94,7 +94,6 @@
 {
     [super dealloc];
     [sourcePath release];
-    [media release];
     [name release];
     [language release];
 }
@@ -103,7 +102,6 @@
 @synthesize Id;
 @synthesize format;
 @synthesize name;
-@synthesize media;
 @synthesize language;
 
 @synthesize samplerate;

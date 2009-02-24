@@ -14,7 +14,6 @@
 	NSString    *sourcePath;
 	NSString    *format;
     NSString    *name;
-    NSString    *media;
     NSString    *language;
 
 
@@ -31,7 +30,6 @@
 @property (readwrite) MP4TrackId Id;
 @property (readwrite, retain) NSString *format;
 @property (readwrite, retain) NSString *name;
-@property (readwrite, retain) NSString *media;
 @property (readwrite, retain) NSString *language;
 
 @property (readonly) int samplerate;

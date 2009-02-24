@@ -17,32 +17,29 @@
 
     MP4FileHandle fileHandle;
     NSString       *filePath;
-    
+
     NSMutableArray  *tracksArray;
     NSMutableArray  *tracksToBeDeleted;
     MP4Metadata     *metadata;
-    
+
     id delegate;
 }
 
-@property (readonly) NSMutableArray *tracksArray;
-@property (readonly) NSMutableArray *tracksToBeDeleted;
-@property (readonly) MP4Metadata    *metadata;
+@property(readonly) NSMutableArray *tracksArray;
+@property(readonly) MP4Metadata    *metadata;
 
-- (id)initWithExistingMP4File:(NSString *)mp4File andDelegate:(id)del;
-- (int)tracksCount;
-- (id)trackAtIndex:(NSUInteger) index;
+- (id)   initWithExistingMP4File:(NSString *) mp4File andDelegate:(id) del;
+- (int)  tracksCount;
+- (id)   trackAtIndex:(NSUInteger) index;
+- (void) addTrack:(id) track;
+- (void) removeTrackAtIndex:(NSUInteger) index;
+
 - (BOOL) writeToFile;
 - (void) optimize;
-- (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track;
-- (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track;
-- (BOOL) deleteSubtitleTrack: (MP4TrackWrapper *)track;
-- (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track;
-- (BOOL) updateTrackName: (MP4TrackWrapper*) track;
 
 @end
 
-@interface NSObject (MP4FileWrapperDelegateMethod) 
-- (void)optimizeDidComplete; 
+@interface NSObject (MP4FileWrapperDelegateMethod)
+- (void)optimizeDidComplete;
 
-@end 
+@end
