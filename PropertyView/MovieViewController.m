@@ -56,7 +56,9 @@
 {
     mp4File.metadata.artwork = [imageView image];
     [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-    mp4File.metadata.edited = YES;
+    mp4File.metadata.isEdited = YES;
+    mp4File.metadata.isArtworkEdited = YES;
+
 }
 
 - (IBAction) changeMediaKind: (id) sender
@@ -65,7 +67,7 @@
     
     if (mp4File.metadata.mediaKind != tagName) {
         mp4File.metadata.mediaKind = tagName;
-        mp4File.metadata.edited = YES;
+        mp4File.metadata.isEdited = YES;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
@@ -76,7 +78,7 @@
 
     if (mp4File.metadata.gapless != newValue) {
         mp4File.metadata.gapless = newValue;
-        mp4File.metadata.edited = YES;
+        mp4File.metadata.isEdited = YES;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
@@ -87,7 +89,7 @@
     
     if (mp4File.metadata.hdVideo != newValue) {
         mp4File.metadata.hdVideo = newValue;
-        mp4File.metadata.edited = YES;
+        mp4File.metadata.isEdited = YES;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
@@ -101,7 +103,7 @@
         NSString *tagName = [tagsArray objectAtIndex:rowIndex];
         [mp4File.metadata.tagsDict removeObjectForKey:tagName];
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-        mp4File.metadata.edited = YES;
+        mp4File.metadata.isEdited = YES;
         [tagsTableView reloadData];
     }
 }
@@ -145,7 +147,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([tableColumn.identifier isEqualToString:@"value"]) {
         if (![[tags valueForKey:tagName] isEqualToString:anObject]) {
             [tags setValue:anObject forKey:tagName];
-            mp4File.metadata.edited = YES;
+            mp4File.metadata.isEdited = YES;
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
     }

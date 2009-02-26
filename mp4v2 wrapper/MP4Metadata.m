@@ -19,7 +19,8 @@
         tagsDict = [[NSMutableDictionary alloc] init];
 	}
 	[self readMetaData];
-	edited = NO;
+	isEdited = NO;
+    isArtworkEdited = NO;
 
     return self;
 }
@@ -228,7 +229,7 @@
     else
         MP4TagsSetCNID(tags, NULL);
 
-    if (artwork) {
+    if (artwork && isArtworkEdited) {
         MP4TagArtwork newArtwork;
         NSArray *representations;
         NSData *bitmapData;
@@ -246,11 +247,11 @@
         else
             MP4TagsSetArtwork(tags, 0, &newArtwork);
     }
-    else if (tags->artworkCount)
+    else if (tags->artworkCount && isArtworkEdited)
         MP4TagsRemoveArtwork(tags, 0);
 
-    MP4TagsStore( tags, fileHandle );
-    MP4TagsFree( tags );
+    MP4TagsStore(tags, fileHandle);
+    MP4TagsFree(tags);
 
     // Tags settable only with old style api
 
@@ -275,7 +276,8 @@
     return YES;
 }
 
-@synthesize edited;
+@synthesize isEdited;
+@synthesize isArtworkEdited;
 @synthesize artwork;
 @synthesize mediaKind;
 @synthesize contentRating;

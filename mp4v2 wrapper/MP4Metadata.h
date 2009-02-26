@@ -18,7 +18,8 @@
     uint8_t contentRating;
     uint8_t hdVideo;
     uint8_t gapless;
-    BOOL edited;
+    BOOL isEdited;
+    BOOL isArtworkEdited;
 }
 
 - (id) initWithSourcePath:(NSString *)source;
@@ -31,6 +32,7 @@
 @property(readwrite) uint8_t    contentRating;
 @property(readwrite) uint8_t    hdVideo;
 @property(readwrite) uint8_t    gapless;
-@property(readwrite) BOOL    edited;
+@property(readwrite) BOOL       isEdited;
+@property(readwrite) BOOL       isArtworkEdited;
 
 @end

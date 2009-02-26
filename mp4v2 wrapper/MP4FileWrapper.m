@@ -142,7 +142,7 @@
         }
     }
 
-    if (metadata.edited)
+    if (metadata.isEdited)
         [metadata writeMetadataWithFileHandle:fileHandle];
 
     MP4Close(fileHandle);
