@@ -25,9 +25,8 @@
                        nil] retain];
 }
 
-- (void) setFile: (MP42File *)file andTrack:(MP42ChapterTrack *) chapterTrack
+- (void) setTrack:(MP42ChapterTrack *) chapterTrack
 {
-    mp4File = file;
     track = chapterTrack;
 }
 
@@ -65,7 +64,7 @@
     if ([tableColumn.identifier isEqualToString:@"title"]) {
         if (![chapter.title isEqualToString:anObject]) {
             chapter.title = anObject;
-            track.hasDataChanged = YES;
+            track.isDataEdited = YES;
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
     }

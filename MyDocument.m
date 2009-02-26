@@ -9,8 +9,9 @@
 #import "MyDocument.h"
 #import "MP42File.h"
 #import "MP42Utilities.h"
-#import "MovieViewController.h"
 #import "EmptyViewController.h"
+#import "MovieViewController.h"
+#import "VideoViewController.h"
 #import "ChapterViewController.h"
 #import "SubUtilities.h"
 
@@ -223,14 +224,14 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"]) {
         if (![track.language isEqualToString:anObject]) {
             track.language = anObject;
-            track.hasChanged = YES;
+            track.isEdited = YES;
             [self updateChangeCount:NSChangeDone];
         }
     }
     if ([tableColumn.identifier isEqualToString:@"trackName"]) {
         if (![track.name isEqualToString:anObject]) {
             track.name = anObject;
-            track.hasChanged = YES;
+            track.isEdited = YES;
             [self updateChangeCount:NSChangeDone];
         }
     }
@@ -255,7 +256,14 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     else if (row != -1 && [[mp4File trackAtIndex:row] isMemberOfClass:[MP42ChapterTrack class]])
     {
         ChapterViewController *controller = [[ChapterViewController alloc] initWithNibName:@"ChapterView" bundle:nil];
-        [controller setFile:mp4File andTrack:[mp4File trackAtIndex:row]];
+        [controller setTrack:[mp4File trackAtIndex:row]];
+        if (controller !=nil)
+            propertyView = controller;
+    }
+    else if (row != -1 && [[mp4File trackAtIndex:row] isMemberOfClass:[MP42SubtitleTrack class]])
+    {
+        VideoViewController *controller = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
+        //[controller setFile:mp4File andTrack:[mp4File trackAtIndex:row]];
         if (controller !=nil)
             propertyView = controller;
     }
@@ -336,8 +344,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     track.language = [[langSelection selectedItem] title];
     track.format = @"Text";
     track.name = @"Chapter Track";
-    track.hasChanged = YES;
-    track.hasDataChanged = YES;
+    track.isEdited = YES;
+    track.isDataEdited = YES;
     track.muxed = NO;
 
     NSMutableArray * chapters = [[NSMutableArray alloc] init];
@@ -390,7 +398,7 @@ returnCode contextInfo: (void *) contextInfo
     track.name = @"Subtitle Track";
     track.delay = [[delay stringValue] integerValue];
     track.height = [[trackHeight stringValue] integerValue];
-    track.hasChanged = YES;
+    track.isEdited = YES;
     track.muxed = NO;
 
     [mp4File addTrack:track];

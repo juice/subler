@@ -16,9 +16,8 @@
     NSString    *name;
     NSString    *language;
 
-
-    BOOL        hasChanged;
-    BOOL        hasDataChanged;
+    BOOL        isEdited;
+    BOOL        isDataEdited;
     BOOL        muxed;
 
 	int samplerate; 
@@ -35,8 +34,8 @@
 @property (readonly) int samplerate;
 @property (readonly) double bitrate;
 @property (readonly) double duration;
-@property(readwrite) BOOL hasChanged;
-@property(readwrite) BOOL hasDataChanged;
+@property(readwrite) BOOL isEdited;
+@property(readwrite) BOOL isDataEdited;
 @property(readwrite) BOOL muxed;
 
 -(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;

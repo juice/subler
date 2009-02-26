@@ -28,7 +28,7 @@
 @property(readonly) NSMutableArray *tracksArray;
 @property(readonly) MP42Metadata    *metadata;
 
-- (id)   initWithExistingFile:(NSString *) MP42File andDelegate:(id) del;
+- (id)   initWithExistingFile:(NSString *) path andDelegate:(id) del;
 - (int)  tracksCount;
 - (id)   trackAtIndex:(NSUInteger) index;
 - (void) addTrack:(id) track;

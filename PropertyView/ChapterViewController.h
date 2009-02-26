@@ -11,12 +11,11 @@
 #import "MP42ChapterTrack.h"
 
 @interface ChapterViewController : NSViewController {
-    MP42File  *mp4File;
     MP42ChapterTrack *track;
     
     NSDictionary* detailBoldAttr;
 }
 
-- (void) setFile: (MP42File *)file andTrack:(MP42ChapterTrack *)track;
+- (void) setTrack:(MP42ChapterTrack *)track;
 
 @end

@@ -17,8 +17,8 @@
 	{
 		sourcePath = [source retain];
 		Id = trackID;
-        hasChanged = NO;
-        hasDataChanged = NO;
+        isEdited = NO;
+        isDataEdited = NO;
         muxed = YES;
 	}
 	[self readTrackType];
@@ -107,8 +107,8 @@
 @synthesize samplerate;
 @synthesize bitrate;
 @synthesize duration;
-@synthesize hasChanged;
-@synthesize hasDataChanged;
+@synthesize isEdited;
+@synthesize isDataEdited;
 @synthesize muxed;
 
 @end
