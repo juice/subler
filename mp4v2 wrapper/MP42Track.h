@@ -1,5 +1,5 @@
 //
-//  MP4TrackWrapper.h
+//  MP42Track.h
 //  Subler
 //
 //  Created by Damiano Galassi on 31/01/09.
@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "mp4v2.h"
 
-@interface MP4TrackWrapper : NSObject {
+@interface MP42Track : NSObject {
     MP4TrackId  Id;
 	NSString    *sourcePath;
 	NSString    *format;

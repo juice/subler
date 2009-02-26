@@ -7,8 +7,8 @@
 //
 
 #import "MyDocument.h"
-#import "MP4FileWrapper.h"
-#import "MP4Utilities.h"
+#import "MP42File.h"
+#import "MP42Utilities.h"
 #import "MovieViewController.h"
 #import "EmptyViewController.h"
 #import "ChapterViewController.h"
@@ -106,7 +106,7 @@
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:[absoluteURL path] andDelegate:self];
+    mp4File = [[MP42File alloc] initWithExistingFile:[absoluteURL path] andDelegate:self];
 
     if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
@@ -117,7 +117,7 @@
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
     [mp4File release];
-    mp4File = [[MP4FileWrapper alloc] initWithExistingMP4File:[absoluteURL path] andDelegate:self];
+    mp4File = [[MP42File alloc] initWithExistingFile:[absoluteURL path] andDelegate:self];
 
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
@@ -186,7 +186,7 @@
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
-    MP4TrackWrapper *track = [mp4File trackAtIndex:rowIndex];
+    MP42Track *track = [mp4File trackAtIndex:rowIndex];
 
     if (!track)
         return nil;
@@ -218,7 +218,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     forTableColumn: (NSTableColumn *) tableColumn 
                row: (NSInteger) rowIndex
 {
-    MP4TrackWrapper *track = [mp4File trackAtIndex:rowIndex];
+    MP42Track *track = [mp4File trackAtIndex:rowIndex];
     
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"]) {
         if (![track.language isEqualToString:anObject]) {
@@ -252,7 +252,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         if (controller !=nil)
             propertyView = controller;
     }
-    else if (row != -1 && [[mp4File trackAtIndex:row] isMemberOfClass:[MP4ChapterTrackWrapper class]])
+    else if (row != -1 && [[mp4File trackAtIndex:row] isMemberOfClass:[MP42ChapterTrack class]])
     {
         ChapterViewController *controller = [[ChapterViewController alloc] initWithNibName:@"ChapterView" bundle:nil];
         [controller setFile:mp4File andTrack:[mp4File trackAtIndex:row]];
@@ -327,11 +327,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void) addChapterTrack: (NSString *) path
 {
-    for (MP4TrackWrapper* previousTrack in mp4File.tracksArray)
+    for (MP42Track* previousTrack in mp4File.tracksArray)
         if([previousTrack.name isEqualToString:@"Chapter Track"])
             [mp4File.tracksArray removeObject:previousTrack];
 
-    MP4ChapterTrackWrapper *track = [[MP4ChapterTrackWrapper alloc] init];
+    MP42ChapterTrack *track = [[MP42ChapterTrack alloc] init];
     track.sourcePath = path;
     track.language = [[langSelection selectedItem] title];
     track.format = @"Text";
@@ -383,7 +383,7 @@ returnCode contextInfo: (void *) contextInfo
 
 - (IBAction) addSubtitleTrack: (id) sender
 {
-    MP4SubtitleTrackWrapper *track = [[MP4SubtitleTrackWrapper alloc] init];
+    MP42SubtitleTrack *track = [[MP42SubtitleTrack alloc] init];
     track.sourcePath = [subtitleFilePath stringValue];
     track.language = [[langSelection selectedItem] title];
     track.format = @"3GPP Text";
@@ -406,7 +406,7 @@ returnCode contextInfo: (void *) contextInfo
 
 - (void) reloadTable: (id) sender
 {
-    MP4FileWrapper * newFile = [[MP4FileWrapper alloc] initWithExistingMP4File:[[self fileURL] path] andDelegate:self];
+    MP42File *newFile = [[MP42File alloc] initWithExistingFile:[[self fileURL] path] andDelegate:self];
     [mp4File autorelease];
     mp4File = newFile;
     [fileTracksTable reloadData];

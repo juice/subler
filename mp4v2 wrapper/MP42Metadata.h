@@ -1,5 +1,5 @@
 //
-//  MP4Metadata.h
+//  MP42Metadata.h
 //  Subler
 //
 //  Created by Damiano Galassi on 06/02/09.
@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "mp4v2.h"
 
-@interface MP4Metadata : NSObject {
+@interface MP42Metadata : NSObject {
     NSString                *sourcePath;
     NSMutableDictionary     *tagsDict;
     NSImage                 *artwork;

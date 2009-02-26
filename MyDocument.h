@@ -8,11 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class MP4FileWrapper;
+@class MP42File;
 
 @interface MyDocument : NSDocument
 {
-    MP4FileWrapper  *mp4File;
+    MP42File  *mp4File;
 
     IBOutlet NSTextField    *subtitleFilePath;
     IBOutlet NSTextField    *label;

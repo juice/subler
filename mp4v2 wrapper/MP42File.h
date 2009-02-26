@@ -1,5 +1,5 @@
 //
-//  MP4FileWrapper.h
+//  MP42File.h
 //  Subler
 //
 //  Created by Damiano Galassi on 31/01/09.
@@ -8,27 +8,27 @@
 
 #import <Cocoa/Cocoa.h>
 #import "mp4v2.h"
-#import "MP4TrackWrapper.h"
-#import "MP4SubtitleTrackWrapper.h"
-#import "MP4ChapterTrackWrapper.h"
-#import "MP4Metadata.h"
+#import "MP42Track.h"
+#import "MP42SubtitleTrack.h"
+#import "MP42ChapterTrack.h"
+#import "MP42Metadata.h"
 
-@interface MP4FileWrapper : NSObject {
+@interface MP42File : NSObject {
 
     MP4FileHandle fileHandle;
     NSString       *filePath;
 
     NSMutableArray  *tracksArray;
     NSMutableArray  *tracksToBeDeleted;
-    MP4Metadata     *metadata;
+    MP42Metadata     *metadata;
 
     id delegate;
 }
 
 @property(readonly) NSMutableArray *tracksArray;
-@property(readonly) MP4Metadata    *metadata;
+@property(readonly) MP42Metadata    *metadata;
 
-- (id)   initWithExistingMP4File:(NSString *) mp4File andDelegate:(id) del;
+- (id)   initWithExistingFile:(NSString *) MP42File andDelegate:(id) del;
 - (int)  tracksCount;
 - (id)   trackAtIndex:(NSUInteger) index;
 - (void) addTrack:(id) track;
@@ -39,7 +39,7 @@
 
 @end
 
-@interface NSObject (MP4FileWrapperDelegateMethod)
+@interface NSObject (MP42FileDelegateMethod)
 - (void)optimizeDidComplete;
 
 @end

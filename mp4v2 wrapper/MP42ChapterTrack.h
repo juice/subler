@@ -1,5 +1,5 @@
 //
-//  MP4ChapterTrackWrapper.h
+//  MP42ChapterTrack.h
 //  Subler
 //
 //  Created by Damiano Galassi on 06/02/09.
@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "MP4TrackWrapper.h"
+#import "MP42Track.h"
 
-@interface MP4ChapterTrackWrapper : MP4TrackWrapper {
+@interface MP42ChapterTrack : MP42Track {
     NSMutableArray *chapters;
 }
 -(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;

@@ -1,5 +1,5 @@
 /*
- *  MP4Utilities.c
+ *  MP42Utilities.c
  *  Subler
  *
  *  Created by Damiano Galassi on 30/01/09.
@@ -7,7 +7,7 @@
  *
  */
 
-#import "MP4Utilities.h"
+#import "MP42Utilities.h"
 #import <string.h>
 
 typedef enum {  TRACK_DISABLED = 0x0,

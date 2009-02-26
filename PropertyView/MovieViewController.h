@@ -7,11 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "MP4FileWrapper.h"
+#import "MP42File.h"
 
 
 @interface MovieViewController : NSViewController {
-    MP4FileWrapper          *mp4File;
+    MP42File          *mp4File;
     IBOutlet NSPopUpButton  *tagList;
     IBOutlet NSTableView    *tagsTableView;
 
@@ -25,7 +25,7 @@
     NSDictionary            *detailBoldAttr;
 }
 
-- (void) setFile: (MP4FileWrapper *)file;
+- (void) setFile: (MP42File *)file;
 - (IBAction) addTag: (id) sender;
 - (IBAction) removeTag: (id) sender;
 

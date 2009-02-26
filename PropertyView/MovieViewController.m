@@ -36,7 +36,7 @@
     [gapless setState:[mp4File.metadata gapless]];
 }
 
-- (void) setFile: (MP4FileWrapper *)file
+- (void) setFile: (MP42File *)file
 {
     mp4File = file;
 }

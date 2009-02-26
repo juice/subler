@@ -1,15 +1,15 @@
 //
-//  MP4ChapterTrackWrapper.m
+//  MP42ChapterTrack.m
 //  Subler
 //
 //  Created by Damiano Galassi on 06/02/09.
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "MP4ChapterTrackWrapper.h"
+#import "MP42ChapterTrack.h"
 #import "SubUtilities.h"
 
-@implementation MP4ChapterTrackWrapper
+@implementation MP42ChapterTrack
 
 -(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID
 {

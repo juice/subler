@@ -1,15 +1,15 @@
 //
-//  MP4Metadata.m
+//  MP42Metadata.m
 //  Subler
 //
 //  Created by Damiano Galassi on 06/02/09.
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "MP4Metadata.h"
-#import "MP4Utilities.h"
+#import "MP42Metadata.h"
+#import "MP42Utilities.h"
 
-@implementation MP4Metadata
+@implementation MP42Metadata
 
 -(id)initWithSourcePath:(NSString *)source
 {

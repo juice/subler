@@ -1,59 +1,71 @@
 //
-//  MP4FileWrapper.m
+//  MP42File.m
 //  Subler
 //
 //  Created by Damiano Galassi on 31/01/09.
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "MP4FileWrapper.h"
-#import "MP4ChapterTrackWrapper.h"
+#import "MP42File.h"
+#import "MP42ChapterTrack.h"
 #import "SubMuxer.h"
 #import "lang.h"
 
-#include "MP4Utilities.h"
+#include "MP42Utilities.h"
 
-@interface MP4FileWrapper (Private)
+@interface MP42File (Private)
 
-- (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track;
-- (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track;
-- (void) removeMuxedTrack: (MP4TrackWrapper *)track;
-- (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track;
-- (BOOL) updateTrackName: (MP4TrackWrapper*) track;
+- (BOOL) muxSubtitleTrack: (MP42SubtitleTrack*) track;
+- (BOOL) muxChapterTrack: (MP42ChapterTrack*) track;
+- (void) removeMuxedTrack: (MP42Track *)track;
+- (BOOL) updateTrackLanguage: (MP42Track*) track;
+- (BOOL) updateTrackName: (MP42Track*) track;
 
 @end
 
-@implementation MP4FileWrapper
+@implementation MP42File
 
-- (id)initWithExistingMP4File:(NSString *)mp4File andDelegate:(id)del;
+- (id)initWithExistingFile:(NSString *)MP42File andDelegate:(id)del;
 {
-    if ((self = [super init]))
+    if (self = [super init])
 	{
         delegate = del;
 
-		fileHandle = MP4Read([mp4File UTF8String], 0);
-        filePath = mp4File;
+		fileHandle = MP4Read([MP42File UTF8String], 0);
+        filePath = MP42File;
 		if (!fileHandle)
 			return nil;
 
         tracksArray = [[NSMutableArray alloc] init];
-        int i, tracksCount = MP4GetNumberOfTracks( fileHandle, 0, 0);
+        int i, tracksCount = MP4GetNumberOfTracks(fileHandle, 0, 0);
         MP4TrackId chapterId = findChapterTrackId(fileHandle);
 
         for (i=0; i< tracksCount; i++) {
             id track;
-            MP4TrackId trackId = MP4FindTrackId( fileHandle, i, 0, 0);
-            if (trackId == chapterId)
-                track = [[MP4ChapterTrackWrapper alloc] initWithSourcePath:mp4File trackID: trackId];
+            MP4TrackId trackId = MP4FindTrackId(fileHandle, i, 0, 0);
+            const char* type = MP4GetTrackType(fileHandle, trackId);
+
+            if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
+                track = [[MP42Track alloc] initWithSourcePath:MP42File trackID: trackId];
+            else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
+                track = [[MP42Track alloc] initWithSourcePath:MP42File trackID: trackId];
+            else if (!strcmp(type, MP4_TEXT_TRACK_TYPE)) {
+                if (trackId == chapterId)
+                    track = [[MP42ChapterTrack alloc] initWithSourcePath:MP42File trackID: trackId];
+                else
+                    track = [[MP42Track alloc] initWithSourcePath:MP42File trackID: trackId];
+            }
+            else if (!strcmp(type, "sbtl"))
+                track = [[MP42SubtitleTrack alloc] initWithSourcePath:MP42File trackID: trackId];
             else
-                track = [[MP4TrackWrapper alloc] initWithSourcePath:mp4File trackID: trackId];
+                track = [[MP42Track alloc] initWithSourcePath:MP42File trackID: trackId];
 
             [tracksArray addObject:track];
             [track release];
         }
 
         tracksToBeDeleted = [[NSMutableArray alloc] init];
-        metadata = [[MP4Metadata alloc] initWithSourcePath:mp4File];
+        metadata = [[MP42Metadata alloc] initWithSourcePath:MP42File];
         MP4Close(fileHandle);
 	}
 
@@ -77,7 +89,7 @@
 
 - (void)removeTrackAtIndex:(NSUInteger) index
 {
-    MP4TrackWrapper *track = [tracksArray objectAtIndex:index];
+    MP42Track *track = [tracksArray objectAtIndex:index];
     if (track.muxed)
         [tracksToBeDeleted addObject:track];
     [tracksArray removeObjectAtIndex:index];
@@ -115,7 +127,7 @@
 
 - (BOOL) writeToFile
 {
-    MP4TrackWrapper *track;
+    MP42Track *track;
 
     fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
@@ -128,13 +140,13 @@
 
     for (track in tracksArray)
     {
-        if ([track isMemberOfClass:[MP4SubtitleTrackWrapper class]])
+        if ([track isMemberOfClass:[MP42SubtitleTrack class]])
             if (track.hasChanged && !track.muxed)
-                [self muxSubtitleTrack:(MP4SubtitleTrackWrapper *)track];
+                [self muxSubtitleTrack:(MP42SubtitleTrack *)track];
 
-        if ([track isMemberOfClass:[MP4ChapterTrackWrapper class]])
+        if ([track isMemberOfClass:[MP42ChapterTrack class]])
             if (track.hasDataChanged)
-                [self muxChapterTrack:(MP4ChapterTrackWrapper *)track];
+                [self muxChapterTrack:(MP42ChapterTrack *)track];
 
         if (track.hasChanged && track.Id) {
             [self updateTrackLanguage:track];
@@ -149,7 +161,7 @@
     return YES;
 }
 
-- (BOOL) muxSubtitleTrack: (MP4SubtitleTrackWrapper*) track
+- (BOOL) muxSubtitleTrack: (MP42SubtitleTrack*) track
 {
     BOOL err;
     if (!fileHandle)
@@ -164,7 +176,7 @@
     return err;
 }
 
-- (BOOL) muxChapterTrack: (MP4ChapterTrackWrapper*) track
+- (BOOL) muxChapterTrack: (MP42ChapterTrack*) track
 {
     if (!fileHandle)
         return NO;
@@ -227,7 +239,7 @@
     return YES;
 }
 
-- (void) removeMuxedTrack: (MP4TrackWrapper *)track
+- (void) removeMuxedTrack: (MP42Track *)track
 {
     if (!fileHandle)
         return;
@@ -235,11 +247,11 @@
     MP4DeleteTrack(fileHandle, track.Id);
 
     updateTracksCount(fileHandle);
-    if ([track isMemberOfClass:[MP4SubtitleTrackWrapper class]])
+    if ([track isMemberOfClass:[MP42SubtitleTrack class]])
         enableFirstSubtitleTrack(fileHandle);
 }
 
-- (BOOL) updateTrackLanguage: (MP4TrackWrapper*) track
+- (BOOL) updateTrackLanguage: (MP42Track*) track
 {
     BOOL err;
     if (!fileHandle)
@@ -250,7 +262,7 @@
     return err;
 }
 
-- (BOOL) updateTrackName: (MP4TrackWrapper*) track
+- (BOOL) updateTrackName: (MP42Track*) track
 {
     if (!fileHandle)
         return NO;

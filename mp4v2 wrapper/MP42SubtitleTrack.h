@@ -1,5 +1,5 @@
 //
-//  MP4SubtitleTrackWrapper.h
+//  MP42SubtitleTrack.h
 //  Subler
 //
 //  Created by Damiano Galassi on 31/01/09.
@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "MP4TrackWrapper.h"
+#import "MP42Track.h"
 
-@interface MP4SubtitleTrackWrapper : MP4TrackWrapper {
+@interface MP42SubtitleTrack : MP42Track {
     int delay;
     int height;
 }

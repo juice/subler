@@ -7,7 +7,7 @@
 //
 
 #import "ChapterViewController.h"
-#import "MP4Utilities.h"
+#import "MP42Utilities.h"
 #import "SubUtilities.h"
 
 @implementation ChapterViewController
@@ -25,7 +25,7 @@
                        nil] retain];
 }
 
-- (void) setFile: (MP4FileWrapper *)file andTrack:(MP4ChapterTrackWrapper *) chapterTrack
+- (void) setFile: (MP42File *)file andTrack:(MP42ChapterTrack *) chapterTrack
 {
     mp4File = file;
     track = chapterTrack;

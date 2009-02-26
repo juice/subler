@@ -7,16 +7,16 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "MP4FileWrapper.h"
-#import "MP4ChapterTrackWrapper.h"
+#import "MP42File.h"
+#import "MP42ChapterTrack.h"
 
 @interface ChapterViewController : NSViewController {
-    MP4FileWrapper  *mp4File;
-    MP4ChapterTrackWrapper *track;
+    MP42File  *mp4File;
+    MP42ChapterTrack *track;
     
     NSDictionary* detailBoldAttr;
 }
 
-- (void) setFile: (MP4FileWrapper *)mp4File andTrack:(MP4ChapterTrackWrapper *)track;
+- (void) setFile: (MP42File *)file andTrack:(MP42ChapterTrack *)track;
 
 @end

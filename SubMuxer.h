@@ -8,6 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SubUtilities.h"
-#include "MP4Utilities.h"
+#include "MP42Utilities.h"
 
 int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay);
