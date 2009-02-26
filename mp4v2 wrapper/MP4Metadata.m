@@ -75,6 +75,10 @@
         [tagsDict setObject:[NSString stringWithFormat:@"%d/%d", tags->disk->index, tags->disk->total]
                      forKey:@"Disk #"];
 
+    if (tags->tempo)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->tempo]
+                     forKey:@"Tempo"];
+
     if (tags->tvShow)
         [tagsDict setObject:[NSString stringWithCString:tags->tvShow encoding: NSUTF8StringEncoding]
                      forKey:@"TV Show"];
@@ -164,57 +168,64 @@
 
     const MP4Tags* tags = MP4TagsAlloc();
 
-    MP4TagsFetch( tags, fileHandle );
+    MP4TagsFetch(tags, fileHandle);
 
-    MP4TagsSetName( tags, [[tagsDict valueForKey:@" Name"] UTF8String] );
+    MP4TagsSetName(tags, [[tagsDict valueForKey:@" Name"] UTF8String]);
 
-    MP4TagsSetArtist( tags, [[tagsDict valueForKey:@"Artist"] UTF8String] );
+    MP4TagsSetArtist(tags, [[tagsDict valueForKey:@"Artist"] UTF8String]);
 
-    MP4TagsSetAlbumArtist( tags, [[tagsDict valueForKey:@"Album Artist"] UTF8String] );
+    MP4TagsSetAlbumArtist(tags, [[tagsDict valueForKey:@"Album Artist"] UTF8String]);
 
-    MP4TagsSetAlbum( tags, [[tagsDict valueForKey:@"Album"] UTF8String] );
+    MP4TagsSetAlbum(tags, [[tagsDict valueForKey:@"Album"] UTF8String]);
 
-    MP4TagsSetGrouping( tags, [[tagsDict valueForKey:@"Grouping"] UTF8String] );
+    MP4TagsSetGrouping(tags, [[tagsDict valueForKey:@"Grouping"] UTF8String]);
 
-    MP4TagsSetComposer( tags, [[tagsDict valueForKey:@"Composer"] UTF8String] );
+    MP4TagsSetComposer(tags, [[tagsDict valueForKey:@"Composer"] UTF8String]);
 
-    MP4TagsSetComments( tags, [[tagsDict valueForKey:@"Comments"] UTF8String] );
+    MP4TagsSetComments(tags, [[tagsDict valueForKey:@"Comments"] UTF8String]);
 
-    MP4TagsSetGenre( tags, [[tagsDict valueForKey:@"Genre"] UTF8String] );
+    MP4TagsSetGenre(tags, [[tagsDict valueForKey:@"Genre"] UTF8String]);
 
-    MP4TagsSetReleaseDate( tags, [[tagsDict valueForKey:@"Date"] UTF8String] );
+    MP4TagsSetReleaseDate(tags, [[tagsDict valueForKey:@"Date"] UTF8String]);
+    
+    if ([tagsDict valueForKey:@"Tempo"]) {
+        const uint16_t i = [[tagsDict valueForKey:@"Tempo"] integerValue];
+        MP4TagsSetTempo(tags, &i);
+    }
+    else
+        MP4TagsSetTempo(tags, NULL);
 
-    MP4TagsSetTVShow( tags, [[tagsDict valueForKey:@"TV Show"] UTF8String] );
+    MP4TagsSetTVShow(tags, [[tagsDict valueForKey:@"TV Show"] UTF8String]);
 
-    MP4TagsSetTVNetwork( tags, [[tagsDict valueForKey:@"TV Network"] UTF8String] );
+    MP4TagsSetTVNetwork(tags, [[tagsDict valueForKey:@"TV Network"] UTF8String]);
 
-    MP4TagsSetTVEpisodeID( tags, [[tagsDict valueForKey:@"TV Episode ID"] UTF8String] );
+    MP4TagsSetTVEpisodeID(tags, [[tagsDict valueForKey:@"TV Episode ID"] UTF8String]);
 
-    if ( [tagsDict valueForKey:@"TV Season"] ) {
+    if ([tagsDict valueForKey:@"TV Season"]) {
         const uint32_t i = [[tagsDict valueForKey:@"TV Season"] integerValue];
-        MP4TagsSetTVSeason( tags, &i );
+        MP4TagsSetTVSeason(tags, &i);
     }
     else
-        MP4TagsSetTVSeason( tags, NULL );
+        MP4TagsSetTVSeason(tags, NULL);
     
-    if ( [tagsDict valueForKey:@"TV Episode"] ) {
+    if ([tagsDict valueForKey:@"TV Episode"]) {
         const uint32_t i = [[tagsDict valueForKey:@"TV Episode"] integerValue];
-        MP4TagsSetTVEpisode( tags, &i );
+        MP4TagsSetTVEpisode(tags, &i);
     }
     else
-        MP4TagsSetTVEpisode( tags, NULL );
+        MP4TagsSetTVEpisode(tags, NULL);
 
-    MP4TagsSetDescription( tags, [[tagsDict valueForKey:@"Description"] UTF8String] );
+    MP4TagsSetDescription(tags, [[tagsDict valueForKey:@"Description"] UTF8String]);
 
-    MP4TagsSetLongDescription( tags, [[tagsDict valueForKey:@"Long Description"] UTF8String] );
+    MP4TagsSetLongDescription(tags, [[tagsDict valueForKey:@"Long Description"] UTF8String]);
     
-    MP4TagsSetLyrics( tags, [[tagsDict valueForKey:@"Lyrics"] UTF8String] );
+    MP4TagsSetLyrics(tags, [[tagsDict valueForKey:@"Lyrics"] UTF8String]);
 
-    MP4TagsSetCopyright( tags, [[tagsDict valueForKey:@"Copyright"] UTF8String] );
+    MP4TagsSetCopyright(tags, [[tagsDict valueForKey:@"Copyright"] UTF8String]);
 
-    MP4TagsSetEncodingTool( tags, [[tagsDict valueForKey:@"Encoding Tool"] UTF8String] );
+    MP4TagsSetEncodingTool(tags, [[tagsDict valueForKey:@"Encoding Tool"] UTF8String]);
 
-    MP4TagsSetEncodedBy( tags, [[tagsDict valueForKey:@"Encoded By"] UTF8String] );
+    MP4TagsSetEncodedBy(tags, [[tagsDict valueForKey:@"Encoded By"] UTF8String]);
 
     MP4TagsSetMediaType(tags, &mediaKind);
 
@@ -222,7 +233,7 @@
 
     MP4TagsSetGapless(tags, &gapless);
 
-    if ( [tagsDict valueForKey:@"cnID"] ) {
+    if ([tagsDict valueForKey:@"cnID"]) {
         const uint32_t i = [[tagsDict valueForKey:@"cnID"] integerValue];
         MP4TagsSetCNID(tags, &i);
     }

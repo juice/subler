@@ -13,7 +13,7 @@
     NSString                *sourcePath;
     NSMutableDictionary     *tagsDict;
     NSImage                 *artwork;
-    
+
     uint8_t mediaKind;
     uint8_t contentRating;
     uint8_t hdVideo;
