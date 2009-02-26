@@ -29,6 +29,8 @@
 - (IBAction) addTag: (id) sender;
 - (IBAction) removeTag: (id) sender;
 
+- (IBAction) updateArtwork: (id) sender;
+
 - (IBAction) changeMediaKind: (id) sender;
 - (IBAction) changeGapless: (id) sender;
 - (IBAction) changehdVideo: (id) sender;

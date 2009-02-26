@@ -162,6 +162,7 @@
         return NO;
 
     const MP4Tags* tags = MP4TagsAlloc();
+
     MP4TagsFetch( tags, fileHandle );
 
     MP4TagsSetName( tags, [[tagsDict valueForKey:@" Name"] UTF8String] );
@@ -222,10 +223,31 @@
 
     if ( [tagsDict valueForKey:@"cnID"] ) {
         const uint32_t i = [[tagsDict valueForKey:@"cnID"] integerValue];
-        MP4TagsSetCNID( tags, &i );
+        MP4TagsSetCNID(tags, &i);
     }
     else
-        MP4TagsSetCNID( tags, NULL );
+        MP4TagsSetCNID(tags, NULL);
+
+    if (artwork) {
+        MP4TagArtwork newArtwork;
+        NSArray *representations;
+        NSData *bitmapData;
+
+        representations = [artwork representations];
+
+        bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations 
+                                                               usingType:NSPNGFileType properties:nil];
+
+        newArtwork.data = [bitmapData bytes];
+        newArtwork.size = [bitmapData length];
+        newArtwork.type = MP4_ART_PNG;
+        if (!tags->artworkCount)
+            MP4TagsAddArtwork(tags, &newArtwork);
+        else
+            MP4TagsSetArtwork(tags, 0, &newArtwork);
+    }
+    else if (tags->artworkCount)
+        MP4TagsRemoveArtwork(tags, 0);
 
     MP4TagsStore( tags, fileHandle );
     MP4TagsFree( tags );
@@ -249,7 +271,7 @@
     }
     else
         MP4DeleteMetadataDisk(fileHandle);
-
+    
     return YES;
 }
 

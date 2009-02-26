@@ -52,6 +52,13 @@
     }
 }
 
+- (IBAction) updateArtwork: (id) sender
+{
+    mp4File.metadata.artwork = [imageView image];
+    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    mp4File.metadata.edited = YES;
+}
+
 - (IBAction) changeMediaKind: (id) sender
 {
     uint8_t tagName = [[sender selectedItem] tag];

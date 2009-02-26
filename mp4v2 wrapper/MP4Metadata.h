@@ -26,7 +26,7 @@
 - (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *) fileHandle;
 
 @property(readonly) NSMutableDictionary    *tagsDict;
-@property(readonly) NSImage                 *artwork;
+@property(readwrite, retain) NSImage                 *artwork;
 @property(readwrite) uint8_t    mediaKind;
 @property(readwrite) uint8_t    contentRating;
 @property(readwrite) uint8_t    hdVideo;

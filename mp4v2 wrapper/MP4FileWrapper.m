@@ -136,7 +136,7 @@
             if (track.hasDataChanged)
                 [self muxChapterTrack:(MP4ChapterTrackWrapper *)track];
 
-        if (track.hasChanged && track.Id != 0) {
+        if (track.hasChanged && track.Id) {
             [self updateTrackLanguage:track];
             [self updateTrackName:track];
         }
