@@ -197,10 +197,10 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
-				A9FD5D150F3C692400817716 /* PropertyView */,
 				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
+				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
+				A9FD5D150F3C692400817716 /* PropertyView */,
 			);
 			name = Classes;
 			sourceTree = "<group>";

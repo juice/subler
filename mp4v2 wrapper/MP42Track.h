@@ -16,24 +16,25 @@
     NSString    *name;
     NSString    *language;
 
-    BOOL        isEdited;
-    BOOL        isDataEdited;
-    BOOL        muxed;
+    BOOL    isEdited;
+    BOOL    isDataEdited;
+    BOOL    muxed;
 
-	int samplerate; 
-	double bitrate;     // kbit/sec
-	double duration;    // seconds
+	int     samplerate; 
+	double  bitrate; // kbit/sec
+	double  duration;    // seconds
 }
 
-@property (readwrite, retain) NSString * sourcePath;
-@property (readwrite) MP4TrackId Id;
-@property (readwrite, retain) NSString *format;
-@property (readwrite, retain) NSString *name;
-@property (readwrite, retain) NSString *language;
+@property(readwrite, retain) NSString * sourcePath;
+@property(readwrite) MP4TrackId Id;
+@property(readwrite, retain) NSString *format;
+@property(readwrite, retain) NSString *name;
+@property(readwrite, retain) NSString *language;
 
-@property (readonly) int samplerate;
-@property (readonly) double bitrate;
-@property (readonly) double duration;
+@property(readonly) int samplerate;
+@property(readonly) double bitrate;
+@property(readonly) double duration;
+
 @property(readwrite) BOOL isEdited;
 @property(readwrite) BOOL isDataEdited;
 @property(readwrite) BOOL muxed;

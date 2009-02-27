@@ -12,7 +12,8 @@
 @interface MP42ChapterTrack : MP42Track {
     NSMutableArray *chapters;
 }
--(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;
+- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;
++ (id) chapterTrackFromFile:(NSString *)filePath;
 
 @property (readwrite, retain) NSMutableArray * chapters;
 

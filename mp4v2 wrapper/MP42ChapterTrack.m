@@ -11,11 +11,12 @@
 
 @implementation MP42ChapterTrack
 
--(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID
+- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID
 {
     if (self = [super initWithSourcePath:source trackID:trackID])
     {
         name = @"Chapter Track";
+        format = @"Text";
         chapters = [[NSMutableArray alloc] init];
 
         MP4Chapter_t *chapter_list = NULL;
@@ -46,7 +47,31 @@
     return self;
 }
 
--(void) dealloc
+- (id) initWithTextFile:(NSString *)filePath
+{
+    if (self = [super init])
+    {
+        name = @"Chapter Track";
+        format = @"Text";
+        sourcePath = [filePath retain];
+        language = @"English";
+        isEdited = YES;
+        isDataEdited = YES;
+        muxed = NO;
+
+        chapters = [[NSMutableArray alloc] init];
+        LoadChaptersFromPath(filePath, chapters);        
+    }
+
+    return self;
+}
+
++ (id) chapterTrackFromFile:(NSString *)filePath
+{
+    return [[[MP42ChapterTrack alloc] initWithTextFile:filePath] autorelease];
+}
+
+- (void) dealloc
 {
     [super dealloc];
     [chapters release];

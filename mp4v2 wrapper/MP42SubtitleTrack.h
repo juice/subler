@@ -11,10 +11,15 @@
 
 @interface MP42SubtitleTrack : MP42Track {
     int delay;
-    int height;
+    unsigned int height;
 }
 
++ (id) subtitleTrackFromFile:(NSString *)filePath
+                       delay:(int)subDelay
+                      height:(unsigned int)subHeight
+                    language:(NSString *)subLanguage;
+
 @property(readwrite) int delay;
-@property(readwrite) int height;
+@property(readwrite) unsigned int height;
 
 @end

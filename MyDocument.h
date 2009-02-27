@@ -45,6 +45,6 @@
 - (IBAction) selectChapterFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 
-- (void) reloadTable: (id) sender;
+- (void) reloadFile: (id) sender;
 
 @end

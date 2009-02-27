@@ -7,6 +7,7 @@
 //
 
 #import "SubMuxer.h"
+#import "SubUtilities.h"
 
 MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const char* language_iso639_2,
                                uint16_t video_width, uint16_t video_height, uint16_t subtitleHeight)

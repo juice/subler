@@ -15,12 +15,12 @@
 
 @interface MP42File : NSObject {
 
-    MP4FileHandle fileHandle;
-    NSString       *filePath;
+    MP4FileHandle  fileHandle;
+    NSString      *filePath;
 
     NSMutableArray  *tracksArray;
     NSMutableArray  *tracksToBeDeleted;
-    MP42Metadata     *metadata;
+    MP42Metadata    *metadata;
 
     id delegate;
 }

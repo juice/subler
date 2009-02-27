@@ -9,6 +9,7 @@
 #import "MP42File.h"
 #import "MP42ChapterTrack.h"
 #import "SubMuxer.h"
+#import "SubUtilities.h"
 #import "lang.h"
 
 #include "MP42Utilities.h"

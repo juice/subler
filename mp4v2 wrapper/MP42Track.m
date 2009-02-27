@@ -34,7 +34,7 @@
 	{
         u_int8_t    *value;
         u_int32_t   valueSize;
-    
+
         if (MP4GetTrackBytesProperty(sourceHandle, Id,
                                      "udta.name.value",
                                      &value, &valueSize)) {
@@ -81,7 +81,7 @@
                                                        MP4GetTrackDuration(sourceHandle, Id),
                                                        MP4_MSECS_TIME_SCALE);
 		samplerate = MP4GetTrackTimeScale(sourceHandle, Id);
-        
+
         char* lang = malloc(sizeof(char)*4);
         MP4GetTrackLanguage( sourceHandle, Id, lang);
         language = [[NSString stringWithFormat:@"%s", lang_for_code2(lang)->eng_name] retain];

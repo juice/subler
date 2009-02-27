@@ -13,7 +13,6 @@
 #import "MovieViewController.h"
 #import "VideoViewController.h"
 #import "ChapterViewController.h"
-#import "SubUtilities.h"
 
 @implementation MyDocument
 
@@ -57,7 +56,7 @@
     [mp4File writeToFile];
 
     [self updateChangeCount:NSChangeCleared];
-    [self reloadTable:self];
+    [self reloadFile:self];
 
     if (outError != NULL) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
@@ -77,7 +76,7 @@
 	return YES;
 }
 
--(void) saveAndOptimize: (id)sender
+- (void) saveAndOptimize: (id)sender
 {
     if ([self isDocumentEdited])
         [self saveDocument:sender];
@@ -92,7 +91,7 @@
 
 - (void) optimizeDidComplete
 {
-    [self reloadTable:self];
+    [self reloadFile:self];
 
     [self setFileURL: [self fileURL]];
     [self setFileModificationDate:[[[NSFileManager defaultManager]  
@@ -246,7 +245,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 		[propertyView release];		// remove the current view controller
 
     NSInteger row = [fileTracksTable selectedRow];
-    if (row == -1 )
+    if (row == -1)
     {
         MovieViewController *controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
         [controller setFile:mp4File];
@@ -339,20 +338,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         if([previousTrack.name isEqualToString:@"Chapter Track"])
             [mp4File.tracksArray removeObject:previousTrack];
 
-    MP42ChapterTrack *track = [[MP42ChapterTrack alloc] init];
-    track.sourcePath = path;
-    track.language = [[langSelection selectedItem] title];
-    track.format = @"Text";
-    track.name = @"Chapter Track";
-    track.isEdited = YES;
-    track.isDataEdited = YES;
-    track.muxed = NO;
-
-    NSMutableArray * chapters = [[NSMutableArray alloc] init];
-    LoadChaptersFromPath(path, chapters);
-    track.chapters = chapters;
+    MP42ChapterTrack *track = [MP42ChapterTrack chapterTrackFromFile:path];
     [mp4File addTrack:track];
-    [track release];
 
     [fileTracksTable reloadData];
 
@@ -377,7 +364,7 @@ returnCode contextInfo: (void *) contextInfo
 {
     if (returnCode != NSOKButton)
         return;
-    
+
     [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
 }
 
@@ -391,28 +378,21 @@ returnCode contextInfo: (void *) contextInfo
 
 - (IBAction) addSubtitleTrack: (id) sender
 {
-    MP42SubtitleTrack *track = [[MP42SubtitleTrack alloc] init];
-    track.sourcePath = [subtitleFilePath stringValue];
-    track.language = [[langSelection selectedItem] title];
-    track.format = @"3GPP Text";
-    track.name = @"Subtitle Track";
-    track.delay = [[delay stringValue] integerValue];
-    track.height = [[trackHeight stringValue] integerValue];
-    track.isEdited = YES;
-    track.muxed = NO;
+    MP42SubtitleTrack *track = [MP42SubtitleTrack subtitleTrackFromFile:[subtitleFilePath stringValue]
+                                                                  delay:[[delay stringValue] integerValue]
+                                                                 height:[[trackHeight stringValue] integerValue]
+                                                               language:[[langSelection selectedItem] title]];
 
     [mp4File addTrack:track];
-    [track release];
 
     [fileTracksTable reloadData];
+    [self updateChangeCount:NSChangeDone];
 
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
-
-    [self updateChangeCount:NSChangeDone];
 }
 
-- (void) reloadTable: (id) sender
+- (void) reloadFile: (id) sender
 {
     MP42File *newFile = [[MP42File alloc] initWithExistingFile:[[self fileURL] path] andDelegate:self];
     [mp4File autorelease];
