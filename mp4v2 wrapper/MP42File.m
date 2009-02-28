@@ -37,7 +37,7 @@
 		if (!fileHandle)
 			return nil;
 
-        tracksArray = [[NSMutableArray alloc] init];
+        tracks = [[NSMutableArray alloc] init];
         int i, tracksCount = MP4GetNumberOfTracks(fileHandle, 0, 0);
         MP4TrackId chapterId = findChapterTrackId(fileHandle);
 
@@ -61,7 +61,7 @@
             else
                 track = [[MP42Track alloc] initWithSourcePath:filePath trackID: trackId];
 
-            [tracksArray addObject:track];
+            [tracks addObject:track];
             [track release];
         }
 
@@ -75,25 +75,25 @@
 
 - (NSInteger)tracksCount
 {
-    return [tracksArray count];
+    return [tracks count];
 }
 
 - (id)trackAtIndex:(NSUInteger) index
 {
-    return [tracksArray objectAtIndex:index];
+    return [tracks objectAtIndex:index];
 }
 
 - (void)addTrack:(id) track
 {
-    [tracksArray addObject:track];
+    [tracks addObject:track];
 }
 
 - (void)removeTrackAtIndex:(NSUInteger) index
 {
-    MP42Track *track = [tracksArray objectAtIndex:index];
+    MP42Track *track = [tracks objectAtIndex:index];
     if (track.muxed)
         [tracksToBeDeleted addObject:track];
-    [tracksArray removeObjectAtIndex:index];
+    [tracks removeObjectAtIndex:index];
 }
 
 - (void) optimizeComplete: (id) sender;
@@ -139,7 +139,7 @@
     for (track in tracksToBeDeleted)
         [self removeMuxedTrack:track];
 
-    for (track in tracksArray)
+    for (track in tracks)
     {
         if ([track isMemberOfClass:[MP42SubtitleTrack class]])
             if (track.isEdited && !track.muxed)
@@ -285,13 +285,13 @@
 
 - (void) dealloc
 {   
-    [tracksArray release];
+    [tracks release];
     [tracksToBeDeleted release];
     [metadata release];
     [super dealloc];
 }
 
-@synthesize tracksArray;
+@synthesize tracks;
 @synthesize metadata;
 
 @end

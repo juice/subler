@@ -51,6 +51,15 @@
     }
 }
 
+- (void) reloadFile: (id) sender
+{
+    MP42File *newFile = [[MP42File alloc] initWithExistingFile:[[self fileURL] path] andDelegate:self];
+    [mp4File autorelease];
+    mp4File = newFile;
+    [fileTracksTable reloadData];
+    [self tableViewSelectionDidChange:nil];
+}
+
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
 {
     [mp4File writeToFile];
@@ -296,53 +305,21 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     return [languages indexOfObject: string];
 }
 
-- (IBAction) showSubititleWindow: (id) sender;
-{
-    [NSApp beginSheet:addSubtitleWindow modalForWindow:documentWindow
-        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
-}
-
-/* Open file window */
-
-- (IBAction) openBrowse: (id) sender
-{
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = YES;
-    panel.canChooseDirectories = YES;
-    
-    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObject:@"srt"]
-                   modalForWindow: addSubtitleWindow modalDelegate: self
-                   didEndSelector: @selector( openBrowseDidEnd:returnCode:contextInfo: )
-                      contextInfo: nil];                                                      
-}
-
-- (void) openBrowseDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
-    returnCode contextInfo: (void *) contextInfo
-{
-    if( returnCode != NSOKButton ) {
-        if ([subtitleFilePath stringValue] == nil)
-            [addTrack setEnabled:NO];
-        return;
-    }
-
-    [subtitleFilePath setStringValue: [sheet.filenames objectAtIndex: 0]];
-    [addTrack setEnabled:YES];
-}
 
 /* Select chapter file */
 
 - (void) addChapterTrack: (NSString *) path
 {
-    for (MP42Track* previousTrack in mp4File.tracksArray)
-        if([previousTrack.name isEqualToString:@"Chapter Track"])
-            [mp4File.tracksArray removeObject:previousTrack];
+    for (id previousTrack in mp4File.tracks)
+        if ([previousTrack isMemberOfClass:[MP42ChapterTrack class]]) {
+            [mp4File.tracks removeObject:previousTrack];
+            break;
+        }
 
     MP42ChapterTrack *track = [MP42ChapterTrack chapterTrackFromFile:path];
     [mp4File addTrack:track];
 
     [fileTracksTable reloadData];
-
     [self updateChangeCount:NSChangeDone];
 }
 
@@ -368,7 +345,39 @@ returnCode contextInfo: (void *) contextInfo
     [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
 }
 
-/* Tracks methods */
+/* Subtitle methods */
+
+- (IBAction) showSubititleWindow: (id) sender;
+{
+    [NSApp beginSheet:addSubtitleWindow modalForWindow:documentWindow
+        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+}
+
+- (IBAction) openBrowse: (id) sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.allowsMultipleSelection = NO;
+    panel.canChooseFiles = YES;
+    panel.canChooseDirectories = YES;
+
+    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObject:@"srt"]
+                   modalForWindow: addSubtitleWindow modalDelegate: self
+                   didEndSelector: @selector( openBrowseDidEnd:returnCode:contextInfo: )
+                      contextInfo: nil];                                                      
+}
+
+- (void) openBrowseDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
+returnCode contextInfo: (void *) contextInfo
+{
+    if( returnCode != NSOKButton ) {
+        if ([subtitleFilePath stringValue] == nil)
+            [addTrack setEnabled:NO];
+        return;
+    }
+    
+    [subtitleFilePath setStringValue: [sheet.filenames objectAtIndex: 0]];
+    [addTrack setEnabled:YES];
+}
 
 - (IBAction) closeSheet: (id) sender
 {
@@ -390,15 +399,6 @@ returnCode contextInfo: (void *) contextInfo
 
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
-}
-
-- (void) reloadFile: (id) sender
-{
-    MP42File *newFile = [[MP42File alloc] initWithExistingFile:[[self fileURL] path] andDelegate:self];
-    [mp4File autorelease];
-    mp4File = newFile;
-    [fileTracksTable reloadData];
-    [self tableViewSelectionDidChange:nil];
 }
 
 - (IBAction) deleteTrack: (id) sender

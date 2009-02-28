@@ -18,14 +18,14 @@
     MP4FileHandle  fileHandle;
     NSString      *filePath;
 
-    NSMutableArray  *tracksArray;
+    NSMutableArray  *tracks;
     NSMutableArray  *tracksToBeDeleted;
     MP42Metadata    *metadata;
 
     id delegate;
 }
 
-@property(readonly) NSMutableArray *tracksArray;
+@property(readonly) NSMutableArray *tracks;
 @property(readonly) MP42Metadata    *metadata;
 
 - (id)   initWithExistingFile:(NSString *) path andDelegate:(id) del;

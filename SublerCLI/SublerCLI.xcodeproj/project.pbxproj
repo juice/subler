@@ -1,0 +1,399 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8DD76F9A0486AA7600D96B5E /* SublerCLI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* SublerCLI.mm */; settings = {ATTRIBUTES = (); }; };
+		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* SublerCLI.1 */; };
+		A98ED2FD0F59E00E00885A49 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED2F90F59E00E00885A49 /* SubMuxer.m */; };
+		A98ED2FE0F59E00E00885A49 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED2FC0F59E00E00885A49 /* SubUtilities.m */; };
+		A98ED30C0F59E01400885A49 /* MP42ChapterTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */; };
+		A98ED30D0F59E01400885A49 /* MP42File.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3030F59E01400885A49 /* MP42File.m */; };
+		A98ED30E0F59E01400885A49 /* MP42Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3050F59E01400885A49 /* MP42Metadata.m */; };
+		A98ED30F0F59E01400885A49 /* MP42SubtitleTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */; };
+		A98ED3100F59E01400885A49 /* MP42Track.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3090F59E01400885A49 /* MP42Track.m */; };
+		A98ED3110F59E01400885A49 /* MP42Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED30B0F59E01400885A49 /* MP42Utilities.m */; };
+		A98ED3140F59E02300885A49 /* lang.c in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3130F59E02300885A49 /* lang.c */; };
+		A98ED3330F59E08D00885A49 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3240F59E08D00885A49 /* libmp4v2.a */; };
+		A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3550F59E17A00885A49 /* libuniversaldetector.a */; };
+		A98ED4030F59E28300885A49 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED4020F59E28300885A49 /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A98ED3500F59E17A00885A49 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* UniversalDetector.framework */;
+			remoteInfo = UniversalDetector;
+		};
+		A98ED3520F59E17A00885A49 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1B0DDCAB0A2D0AD10009B697 /* DetectorTest */;
+			remoteInfo = DetectorTest;
+		};
+		A98ED3540F59E17A00885A49 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3DBF4F570BCD396800DA401A /* libuniversaldetector.a */;
+			remoteInfo = universaldetector;
+		};
+		A98ED3FA0F59E23E00885A49 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 3DBF4F560BCD396800DA401A /* universaldetector */;
+			remoteInfo = universaldetector;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F9E0486AA7600D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		08FB7796FE84155DC02AAC07 /* SublerCLI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SublerCLI.mm; sourceTree = "<group>"; };
+		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SublerCLI_Prefix.pch; sourceTree = "<group>"; };
+		8DD76FA10486AA7600D96B5E /* SublerCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SublerCLI; sourceTree = BUILT_PRODUCTS_DIR; };
+		A98ED2F90F59E00E00885A49 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubMuxer.m; path = ../SubMuxer.m; sourceTree = SOURCE_ROOT; };
+		A98ED2FA0F59E00E00885A49 /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubUtilities.h; path = ../SubUtilities.h; sourceTree = SOURCE_ROOT; };
+		A98ED2FB0F59E00E00885A49 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubMuxer.h; path = ../SubMuxer.h; sourceTree = SOURCE_ROOT; };
+		A98ED2FC0F59E00E00885A49 /* SubUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubUtilities.m; path = ../SubUtilities.m; sourceTree = SOURCE_ROOT; };
+		A98ED3000F59E01400885A49 /* MP42ChapterTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42ChapterTrack.h; sourceTree = "<group>"; };
+		A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42ChapterTrack.m; sourceTree = "<group>"; };
+		A98ED3020F59E01400885A49 /* MP42File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42File.h; sourceTree = "<group>"; };
+		A98ED3030F59E01400885A49 /* MP42File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42File.m; sourceTree = "<group>"; };
+		A98ED3040F59E01400885A49 /* MP42Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Metadata.h; sourceTree = "<group>"; };
+		A98ED3050F59E01400885A49 /* MP42Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Metadata.m; sourceTree = "<group>"; };
+		A98ED3060F59E01400885A49 /* MP42SubtitleTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42SubtitleTrack.h; sourceTree = "<group>"; };
+		A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42SubtitleTrack.m; sourceTree = "<group>"; };
+		A98ED3080F59E01400885A49 /* MP42Track.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Track.h; sourceTree = "<group>"; };
+		A98ED3090F59E01400885A49 /* MP42Track.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Track.m; sourceTree = "<group>"; };
+		A98ED30A0F59E01400885A49 /* MP42Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Utilities.h; sourceTree = "<group>"; };
+		A98ED30B0F59E01400885A49 /* MP42Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Utilities.m; sourceTree = "<group>"; };
+		A98ED3120F59E02300885A49 /* lang.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lang.h; path = ../lang.h; sourceTree = SOURCE_ROOT; };
+		A98ED3130F59E02300885A49 /* lang.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lang.c; path = ../lang.c; sourceTree = SOURCE_ROOT; };
+		A98ED3150F59E03300885A49 /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = ../UniversalDetector/UniversalDetector.h; sourceTree = SOURCE_ROOT; };
+		A98ED3240F59E08D00885A49 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp4v2.a; sourceTree = "<group>"; };
+		A98ED3320F59E08D00885A49 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mp4v2.h; sourceTree = "<group>"; };
+		A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = UniversalDetector.xcodeproj; path = ../UniversalDetector/UniversalDetector.xcodeproj; sourceTree = SOURCE_ROOT; };
+		A98ED4020F59E28300885A49 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		C6859EA3029092ED04C91782 /* SublerCLI.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SublerCLI.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F9B0486AA7600D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
+				A98ED3330F59E08D00885A49 /* libmp4v2.a in Frameworks */,
+				A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */,
+				A98ED4030F59E28300885A49 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* SublerCLI */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859EA2029092E104C91782 /* Documentation */,
+				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+				A98ED4020F59E28300885A49 /* Cocoa.framework */,
+			);
+			name = SublerCLI;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				A98ED3150F59E03300885A49 /* UniversalDetector.h */,
+				A98ED3120F59E02300885A49 /* lang.h */,
+				A98ED3130F59E02300885A49 /* lang.c */,
+				A98ED2FF0F59E01400885A49 /* mp4v2 wrapper */,
+				A98ED2F90F59E00E00885A49 /* SubMuxer.m */,
+				A98ED2FA0F59E00E00885A49 /* SubUtilities.h */,
+				A98ED2FB0F59E00E00885A49 /* SubMuxer.h */,
+				A98ED2FC0F59E00E00885A49 /* SubUtilities.m */,
+				32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */,
+				08FB7796FE84155DC02AAC07 /* SublerCLI.mm */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */,
+				A98ED3230F59E08D00885A49 /* mp4v2 */,
+				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76FA10486AA7600D96B5E /* SublerCLI */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A98ED2FF0F59E01400885A49 /* mp4v2 wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				A98ED3000F59E01400885A49 /* MP42ChapterTrack.h */,
+				A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */,
+				A98ED3020F59E01400885A49 /* MP42File.h */,
+				A98ED3030F59E01400885A49 /* MP42File.m */,
+				A98ED3040F59E01400885A49 /* MP42Metadata.h */,
+				A98ED3050F59E01400885A49 /* MP42Metadata.m */,
+				A98ED3060F59E01400885A49 /* MP42SubtitleTrack.h */,
+				A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */,
+				A98ED3080F59E01400885A49 /* MP42Track.h */,
+				A98ED3090F59E01400885A49 /* MP42Track.m */,
+				A98ED30A0F59E01400885A49 /* MP42Utilities.h */,
+				A98ED30B0F59E01400885A49 /* MP42Utilities.m */,
+			);
+			name = "mp4v2 wrapper";
+			path = "../mp4v2 wrapper";
+			sourceTree = SOURCE_ROOT;
+		};
+		A98ED3230F59E08D00885A49 /* mp4v2 */ = {
+			isa = PBXGroup;
+			children = (
+				A98ED3240F59E08D00885A49 /* libmp4v2.a */,
+				A98ED3320F59E08D00885A49 /* mp4v2.h */,
+			);
+			name = mp4v2;
+			path = ../mp4v2;
+			sourceTree = SOURCE_ROOT;
+		};
+		A98ED34B0F59E17A00885A49 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A98ED3510F59E17A00885A49 /* UniversalDetector.framework */,
+				A98ED3530F59E17A00885A49 /* DetectorTest */,
+				A98ED3550F59E17A00885A49 /* libuniversaldetector.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6859EA2029092E104C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859EA3029092ED04C91782 /* SublerCLI.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F960486AA7600D96B5E /* SublerCLI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "SublerCLI" */;
+			buildPhases = (
+				8DD76F990486AA7600D96B5E /* Sources */,
+				8DD76F9B0486AA7600D96B5E /* Frameworks */,
+				8DD76F9E0486AA7600D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A98ED3FB0F59E23E00885A49 /* PBXTargetDependency */,
+			);
+			name = SublerCLI;
+			productInstallPath = "$(HOME)/bin";
+			productName = SublerCLI;
+			productReference = 8DD76FA10486AA7600D96B5E /* SublerCLI */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "SublerCLI" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* SublerCLI */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = A98ED34B0F59E17A00885A49 /* Products */;
+					ProjectRef = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				8DD76F960486AA7600D96B5E /* SublerCLI */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		A98ED3510F59E17A00885A49 /* UniversalDetector.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = UniversalDetector.framework;
+			remoteRef = A98ED3500F59E17A00885A49 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A98ED3530F59E17A00885A49 /* DetectorTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = DetectorTest;
+			remoteRef = A98ED3520F59E17A00885A49 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A98ED3550F59E17A00885A49 /* libuniversaldetector.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libuniversaldetector.a;
+			remoteRef = A98ED3540F59E17A00885A49 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F990486AA7600D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DD76F9A0486AA7600D96B5E /* SublerCLI.mm in Sources */,
+				A98ED2FD0F59E00E00885A49 /* SubMuxer.m in Sources */,
+				A98ED2FE0F59E00E00885A49 /* SubUtilities.m in Sources */,
+				A98ED30C0F59E01400885A49 /* MP42ChapterTrack.m in Sources */,
+				A98ED30D0F59E01400885A49 /* MP42File.m in Sources */,
+				A98ED30E0F59E01400885A49 /* MP42Metadata.m in Sources */,
+				A98ED30F0F59E01400885A49 /* MP42SubtitleTrack.m in Sources */,
+				A98ED3100F59E01400885A49 /* MP42Track.m in Sources */,
+				A98ED3110F59E01400885A49 /* MP42Utilities.m in Sources */,
+				A98ED3140F59E02300885A49 /* lang.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A98ED3FB0F59E23E00885A49 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = universaldetector;
+			targetProxy = A98ED3FA0F59E23E00885A49 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB927508733DD40010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = SublerCLI_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../mp4v2\"",
+				);
+				PRODUCT_NAME = SublerCLI;
+			};
+			name = Debug;
+		};
+		1DEB927608733DD40010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = SublerCLI_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../mp4v2\"",
+				);
+				PRODUCT_NAME = SublerCLI;
+			};
+			name = Release;
+		};
+		1DEB927908733DD40010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../mp4v2\"";
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB927A08733DD40010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../mp4v2\"";
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "SublerCLI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB927508733DD40010E9CD /* Debug */,
+				1DEB927608733DD40010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "SublerCLI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB927908733DD40010E9CD /* Debug */,
+				1DEB927A08733DD40010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

@@ -56,6 +56,11 @@
                                                    language:subLanguage] autorelease];
 }
 
+- (void) dealloc
+{
+    [super dealloc];
+}
+
 @synthesize delay;
 @synthesize height;
 
