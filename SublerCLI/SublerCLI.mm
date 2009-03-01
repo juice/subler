@@ -7,6 +7,7 @@ void print_help()
     printf("\t\t-i set input file\n");
     printf("\t\t-s set subtitle input file\n");
     printf("\t\t-d set delay in ms\n");
+    printf("\t\t-a set height in pixel\n");
     printf("\t\t-h print this help information\n");
     printf("\t\t-l print version\n");
 }
