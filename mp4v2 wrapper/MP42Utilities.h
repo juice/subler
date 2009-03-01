@@ -7,8 +7,8 @@
  *
  */
 
+#import <Foundation/Foundation.h>
 #include "mp4v2.h"
-#import <Cocoa/Cocoa.h>
 
 NSString* SMPTEStringFromTime(long long time, long timeScale);
 int enableFirstSubtitleTrack(MP4FileHandle fileHandle);

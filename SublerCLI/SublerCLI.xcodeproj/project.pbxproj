@@ -29,28 +29,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* UniversalDetector.framework */;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = UniversalDetector;
 		};
 		A98ED3520F59E17A00885A49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 1B0DDCAB0A2D0AD10009B697 /* DetectorTest */;
+			remoteGlobalIDString = 1B0DDCAB0A2D0AD10009B697;
 			remoteInfo = DetectorTest;
 		};
 		A98ED3540F59E17A00885A49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 3DBF4F570BCD396800DA401A /* libuniversaldetector.a */;
+			remoteGlobalIDString = 3DBF4F570BCD396800DA401A;
 			remoteInfo = universaldetector;
 		};
 		A98ED3FA0F59E23E00885A49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 3DBF4F560BCD396800DA401A /* universaldetector */;
+			remoteGlobalIDString = 3DBF4F560BCD396800DA401A;
 			remoteInfo = universaldetector;
 		};
 /* End PBXContainerItemProxy section */
@@ -121,7 +121,6 @@
 				C6859EA2029092E104C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
-				A98ED4020F59E28300885A49 /* Cocoa.framework */,
 			);
 			name = SublerCLI;
 			sourceTree = "<group>";
@@ -133,10 +132,6 @@
 				A98ED3120F59E02300885A49 /* lang.h */,
 				A98ED3130F59E02300885A49 /* lang.c */,
 				A98ED2FF0F59E01400885A49 /* mp4v2 wrapper */,
-				A98ED2F90F59E00E00885A49 /* SubMuxer.m */,
-				A98ED2FA0F59E00E00885A49 /* SubUtilities.h */,
-				A98ED2FB0F59E00E00885A49 /* SubMuxer.h */,
-				A98ED2FC0F59E00E00885A49 /* SubUtilities.m */,
 				32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* SublerCLI.mm */,
 			);
@@ -148,6 +143,7 @@
 			children = (
 				A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */,
 				A98ED3230F59E08D00885A49 /* mp4v2 */,
+				A98ED4020F59E28300885A49 /* Cocoa.framework */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 			);
 			name = "External Frameworks and Libraries";
@@ -176,6 +172,10 @@
 				A98ED3090F59E01400885A49 /* MP42Track.m */,
 				A98ED30A0F59E01400885A49 /* MP42Utilities.h */,
 				A98ED30B0F59E01400885A49 /* MP42Utilities.m */,
+				A98ED2FB0F59E00E00885A49 /* SubMuxer.h */,
+				A98ED2F90F59E00E00885A49 /* SubMuxer.m */,
+				A98ED2FA0F59E00E00885A49 /* SubUtilities.h */,
+				A98ED2FC0F59E00E00885A49 /* SubUtilities.m */,
 			);
 			name = "mp4v2 wrapper";
 			path = "../mp4v2 wrapper";
