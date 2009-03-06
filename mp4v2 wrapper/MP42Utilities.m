@@ -105,3 +105,24 @@ MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle)
     }
     return 0;
 }
+
+uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId videoTrack)
+{
+    uint16_t videoWidth;
+    uint64_t hSpacing, vSpacing;
+
+    videoWidth = MP4GetTrackVideoWidth(fileHandle, videoTrack);
+
+    if (MP4HaveTrackAtom(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp")) {
+        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.hSpacing", &hSpacing);
+        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.vSpacing", &vSpacing);
+        return (float) videoWidth / vSpacing * hSpacing;
+    }
+    else if (MP4HaveTrackAtom(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp")) {
+        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.hSpacing", &hSpacing);
+        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.vSpacing", &vSpacing);
+        return (float) videoWidth / vSpacing * hSpacing;
+    }
+    
+    return videoWidth;
+}

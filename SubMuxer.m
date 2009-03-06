@@ -92,26 +92,14 @@ int writeEmptySubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, MP4
 
 int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay) {
     MP4TrackId subtitleTrackId, videoTrack;
-    int videoWidth, videoHeight;
-    uint64_t hSpacing, vSpacing;
+    uint16_t videoWidth, videoHeight;
 
     videoTrack = findFirstVideoTrack(fileHandle);
     if (videoTrack == 0)
         return 0;
 
-    videoWidth = MP4GetTrackVideoWidth(fileHandle, videoTrack);
+    videoWidth = getFixedVideoWidth(fileHandle, videoTrack);
     videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
-
-    if (MP4HaveTrackAtom(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp")) {
-        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.hSpacing", &hSpacing);
-        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.vSpacing", &vSpacing);
-        videoWidth = (float) videoWidth / vSpacing * hSpacing;
-    }
-    else if (MP4HaveTrackAtom(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp")) {
-        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.hSpacing", &hSpacing);
-        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.vSpacing", &vSpacing);
-        videoWidth = (float) videoWidth / vSpacing * hSpacing;
-    }
 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
