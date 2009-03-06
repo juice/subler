@@ -17,7 +17,7 @@
     id tag;
     for (tag in tags)
         [tagList addItemWithTitle:tag];
-    
+
     NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
     [ps setHeadIndent: -10.0];
     [ps setAlignment:NSRightTextAlignment];
@@ -27,9 +27,9 @@
                       ps, NSParagraphStyleAttributeName,
                       [NSColor grayColor], NSForegroundColorAttributeName,
                        nil] retain];
-    
+
     [imageView setImage:[mp4File.metadata artwork]];
-    
+
     [mediaKind selectItemWithTag:[mp4File.metadata mediaKind]];
     [contentRating selectItemWithTag:[mp4File.metadata contentRating]];
     [hdVideo setState:[mp4File.metadata hdVideo]];
@@ -64,7 +64,7 @@
 - (IBAction) changeMediaKind: (id) sender
 {
     uint8_t tagName = [[sender selectedItem] tag];
-    
+
     if (mp4File.metadata.mediaKind != tagName) {
         mp4File.metadata.mediaKind = tagName;
         mp4File.metadata.isEdited = YES;
@@ -86,7 +86,7 @@
 - (IBAction) changehdVideo: (id) sender
 {
     uint8_t newValue = [sender state];
-    
+
     if (mp4File.metadata.hdVideo != newValue) {
         mp4File.metadata.hdVideo = newValue;
         mp4File.metadata.isEdited = YES;

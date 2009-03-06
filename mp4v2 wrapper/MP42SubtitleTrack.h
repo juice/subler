@@ -7,11 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MP42Track.h"
+#import "MP42VideoTrack.h"
 
-@interface MP42SubtitleTrack : MP42Track {
+@interface MP42SubtitleTrack : MP42VideoTrack {
     int delay;
-    unsigned int height;
 }
 
 + (id) subtitleTrackFromFile:(NSString *)filePath
@@ -20,6 +19,5 @@
                     language:(NSString *)subLanguage;
 
 @property(readwrite) int delay;
-@property(readwrite) unsigned int height;
 
 @end

@@ -17,7 +17,7 @@
         name = @"Subtitle Track";
         format = @"3GPP Text";
     }
-    
+
     return self;
 }
 
@@ -41,7 +41,7 @@
         isDataEdited = YES;
         muxed = NO;
     }
-    
+
     return self;
 }
 
@@ -62,6 +62,5 @@
 }
 
 @synthesize delay;
-@synthesize height;
 
 @end

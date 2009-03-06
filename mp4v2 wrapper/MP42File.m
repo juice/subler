@@ -8,11 +8,11 @@
 
 #import "MP42File.h"
 #import "MP42ChapterTrack.h"
+#import "MP42Utilities.h"
 #import "SubMuxer.h"
 #import "SubUtilities.h"
 #import "lang.h"
 
-#include "MP42Utilities.h"
 
 @interface MP42File (Private)
 
@@ -49,7 +49,7 @@
             if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
                 track = [[MP42Track alloc] initWithSourcePath:filePath trackID: trackId];
             else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
-                track = [[MP42Track alloc] initWithSourcePath:filePath trackID: trackId];
+                track = [[MP42VideoTrack alloc] initWithSourcePath:filePath trackID: trackId];
             else if (!strcmp(type, MP4_TEXT_TRACK_TYPE)) {
                 if (trackId == chapterId)
                     track = [[MP42ChapterTrack alloc] initWithSourcePath:filePath trackID: trackId];

@@ -199,7 +199,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     if (!track)
         return nil;
-    
+
     if ([tableColumn.identifier isEqualToString:@"trackId"]) {
         if (track.Id == 0)
             return @"na";
@@ -268,7 +268,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         if (controller !=nil)
             propertyView = controller;
     }
-    else if (row != -1 && [[mp4File trackAtIndex:row] isMemberOfClass:[MP42SubtitleTrack class]])
+    else if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42VideoTrack class]])
     {
         VideoViewController *controller = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
         //[controller setFile:mp4File andTrack:[mp4File trackAtIndex:row]];
@@ -281,10 +281,10 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         if (controller !=nil)
                 propertyView = controller;
     }
-    
+
     // embed the current view to our host view
 	[targetView addSubview: [propertyView view]];
-	
+
 	// make sure we automatically resize the controller's view to the current window size
 	[[propertyView view] setFrame: [targetView bounds]];
     [[propertyView view] setAutoresizingMask:( NSViewWidthSizable | NSViewHeightSizable )];
@@ -374,7 +374,7 @@ returnCode contextInfo: (void *) contextInfo
             [addTrack setEnabled:NO];
         return;
     }
-    
+
     [subtitleFilePath setStringValue: [sheet.filenames objectAtIndex: 0]];
     [addTrack setEnabled:YES];
 }
