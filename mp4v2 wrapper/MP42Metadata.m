@@ -65,7 +65,7 @@
 
     if (tags->releaseDate)
         [tagsDict setObject:[NSString stringWithCString:tags->releaseDate encoding: NSUTF8StringEncoding]
-                     forKey:@"Date"];
+                     forKey:@"Release Date"];
 
     if (tags->track)
         [tagsDict setObject:[NSString stringWithFormat:@"%d/%d", tags->track->index, tags->track->total]
@@ -93,7 +93,7 @@
 
     if (tags->tvEpisode)
         [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->tvEpisode]
-                     forKey:@"TV Episode"];
+                     forKey:@"TV Episode #"];
 
     if (tags->tvNetwork)
         [tagsDict setObject:[NSString stringWithCString:tags->tvNetwork encoding: NSUTF8StringEncoding]
@@ -186,7 +186,7 @@
 
     MP4TagsSetGenre(tags, [[tagsDict valueForKey:@"Genre"] UTF8String]);
 
-    MP4TagsSetReleaseDate(tags, [[tagsDict valueForKey:@"Date"] UTF8String]);
+    MP4TagsSetReleaseDate(tags, [[tagsDict valueForKey:@"Release Date"] UTF8String]);
     
     if ([tagsDict valueForKey:@"Tempo"]) {
         const uint16_t i = [[tagsDict valueForKey:@"Tempo"] integerValue];
@@ -209,7 +209,7 @@
         MP4TagsSetTVSeason(tags, NULL);
     
     if ([tagsDict valueForKey:@"TV Episode"]) {
-        const uint32_t i = [[tagsDict valueForKey:@"TV Episode"] integerValue];
+        const uint32_t i = [[tagsDict valueForKey:@"TV Episode #"] integerValue];
         MP4TagsSetTVEpisode(tags, &i);
     }
     else

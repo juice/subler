@@ -15,3 +15,4 @@ int enableFirstSubtitleTrack(MP4FileHandle fileHandle);
 int updateTracksCount(MP4FileHandle fileHandle);
 uint64_t findChapterTrackId(MP4FileHandle fileHandle);
 MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle);
+uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId videoTrack);
