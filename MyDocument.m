@@ -53,7 +53,7 @@
 - (void) reloadFile: (id) sender
 {
     MP42File *newFile = [[MP42File alloc] initWithExistingFile:[[self fileURL] path] andDelegate:self];
-    [mp4File release];
+    [mp4File autorelease];
     mp4File = newFile;
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
@@ -64,7 +64,6 @@
     [mp4File writeToFile];
 
     [self updateChangeCount:NSChangeCleared];
-    [self reloadFile:self];
 
     if (outError != NULL) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
@@ -80,6 +79,8 @@
     [self setFileModificationDate:[[[NSFileManager defaultManager]  
                                     fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
                                    fileModificationDate]];
+    
+    [self reloadFile:self];
 
 	return YES;
 }
@@ -413,10 +414,10 @@ returnCode contextInfo: (void *) contextInfo
 
 -(void) dealloc
 {
-    [super dealloc];
     [propertyView release];
     [mp4File release];
     [languages release];
+    [super dealloc];
 }
 
 @end
