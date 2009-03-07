@@ -73,8 +73,8 @@
 
 - (void) dealloc
 {
-    [super dealloc];
     [chapters release];
+    [super dealloc];
 }
 
 @synthesize chapters;

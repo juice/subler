@@ -94,10 +94,10 @@
 
 - (void) dealloc
 {
-    [super dealloc];
     [sourcePath release];
     [name release];
     [language release];
+    [super dealloc];
 }
 
 - (NSString *) SMPTETimeString
