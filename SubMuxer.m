@@ -61,9 +61,9 @@ MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const 
 
 int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId,const char* string, MP4Duration duration)
 {
+    int Err;
     const size_t stringLength = strlen(string);
     u_int8_t buffer[1024];
-    int Err;
     memcpy(buffer+2, string, strlen(string)); // strlen > 1024 -> booom?
     buffer[0] = (stringLength >> 8) & 0xff;
     buffer[1] = stringLength & 0xff;
@@ -95,7 +95,7 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     uint16_t videoWidth, videoHeight;
 
     videoTrack = findFirstVideoTrack(fileHandle);
-    if (videoTrack == 0)
+    if (!videoTrack)
         return 0;
 
     videoWidth = getFixedVideoWidth(fileHandle, videoTrack);
@@ -107,7 +107,8 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     LoadSRTFromPath(subtitlePath, ss);
     [ss setFinished:YES];
 
-    subtitleTrackId = createSubtitleTrack(fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight);
+    if (!(subtitleTrackId = createSubtitleTrack(fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight)))
+        return 0;
 
     int firstSub = 0;
     while (![ss isEmpty]) {
@@ -115,16 +116,20 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
 		const char *str = [sl->line UTF8String];
         if (firstSub == 0) {
             firstSub++;
-            writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->begin_time + delay);
+            if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->begin_time + delay))
+                return 0;
         }
         if ([sl->line isEqualToString:@"\n"]) {
-            writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->end_time - sl->begin_time);
+            if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->end_time - sl->begin_time))
+                return 0;
             continue;
         }
-        writeSubtitleSample(fileHandle, subtitleTrackId, str, sl->end_time - sl->begin_time);
+        if (!writeSubtitleSample(fileHandle, subtitleTrackId, str, sl->end_time - sl->begin_time))
+            return 0;
 	}
 
-    writeEmptySubtitleSample(fileHandle, subtitleTrackId, 100);
+    if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, 100))
+        return 0;
 
     [ss release];
     [pool release];

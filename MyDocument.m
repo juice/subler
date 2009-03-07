@@ -8,7 +8,6 @@
 
 #import "MyDocument.h"
 #import "MP42File.h"
-#import "MP42Utilities.h"
 #import "EmptyViewController.h"
 #import "MovieViewController.h"
 #import "VideoViewController.h"
@@ -54,7 +53,7 @@
 - (void) reloadFile: (id) sender
 {
     MP42File *newFile = [[MP42File alloc] initWithExistingFile:[[self fileURL] path] andDelegate:self];
-    [mp4File autorelease];
+    [mp4File release];
     mp4File = newFile;
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
@@ -214,7 +213,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         return track.format;
 
     if ([tableColumn.identifier isEqualToString:@"trackDuration"])
-        return SMPTEStringFromTime(track.duration, 1000);
+        return [track SMPTETimeString];
 
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"])
         return track.language;

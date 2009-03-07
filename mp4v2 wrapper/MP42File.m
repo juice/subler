@@ -143,7 +143,10 @@
     {
         if ([track isMemberOfClass:[MP42SubtitleTrack class]])
             if (track.isEdited && !track.muxed)
-                [self muxSubtitleTrack:(MP42SubtitleTrack *)track];
+                if (![self muxSubtitleTrack:(MP42SubtitleTrack *)track]) {
+                    NSLog(@"Error writing subtitles");
+                    break;
+                }
 
         if ([track isMemberOfClass:[MP42ChapterTrack class]])
             if (track.isDataEdited)

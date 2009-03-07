@@ -29,7 +29,7 @@
 @property(readonly) MP42Metadata    *metadata;
 
 - (id)   initWithExistingFile:(NSString *) path andDelegate:(id) del;
-- (int)  tracksCount;
+- (NSInteger)  tracksCount;
 - (id)   trackAtIndex:(NSUInteger) index;
 - (void) addTrack:(id) track;
 - (void) removeTrackAtIndex:(NSUInteger) index;

@@ -39,7 +39,10 @@
 @property(readwrite) BOOL isDataEdited;
 @property(readwrite) BOOL muxed;
 
--(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;
--(void)readTrackType;
+
+- (id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;
+- (void)readTrackType;
+
+- (NSString *) SMPTETimeString;
 
 @end

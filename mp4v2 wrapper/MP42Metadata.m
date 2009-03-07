@@ -208,7 +208,7 @@
     else
         MP4TagsSetTVSeason(tags, NULL);
     
-    if ([tagsDict valueForKey:@"TV Episode"]) {
+    if ([tagsDict valueForKey:@"TV Episode #"]) {
         const uint32_t i = [[tagsDict valueForKey:@"TV Episode #"] integerValue];
         MP4TagsSetTVEpisode(tags, &i);
     }

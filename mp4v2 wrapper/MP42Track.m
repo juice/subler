@@ -7,6 +7,8 @@
 //
 
 #import "MP42Track.h"
+#import "MP42Utilities.h"
+
 #include "lang.h"
 
 @implementation MP42Track
@@ -96,6 +98,11 @@
     [sourcePath release];
     [name release];
     [language release];
+}
+
+- (NSString *) SMPTETimeString
+{
+    return SMPTEStringFromTime(duration, 1000);
 }
 
 @synthesize sourcePath;
