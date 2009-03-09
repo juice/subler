@@ -9,25 +9,31 @@
 #import "MP42Metadata.h"
 #import "MP42Utilities.h"
 
+@interface MP42Metadata (Private)
+
+-(void) readMetaDataFromFileHandle:(MP4FileHandle)fileHandle;
+
+@end
+
 @implementation MP42Metadata
 
--(id)initWithSourcePath:(NSString *)source
+
+-(id)initWithSourcePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle
 {
 	if ((self = [super init]))
 	{
 		sourcePath = source;
         tagsDict = [[NSMutableDictionary alloc] init];
 	}
-	[self readMetaData];
+	[self readMetaDataFromFileHandle: fileHandle];
 	isEdited = NO;
     isArtworkEdited = NO;
 
     return self;
 }
 
--(void) readMetaData
+-(void) readMetaDataFromFileHandle:(MP4FileHandle)sourceHandle
 {
-    MP4FileHandle *sourceHandle = MP4Read([sourcePath UTF8String], 0);
     const MP4Tags* tags = MP4TagsAlloc();
     MP4TagsFetch( tags, sourceHandle );
 
@@ -158,7 +164,6 @@
     }
 
     MP4TagsFree(tags);
-    MP4Close(sourceHandle);
 }
 
 - (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *)fileHandle

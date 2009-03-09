@@ -271,7 +271,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     else if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42VideoTrack class]])
     {
         VideoViewController *controller = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
-        //[controller setFile:mp4File andTrack:[mp4File trackAtIndex:row]];
+        [controller setTrack:[mp4File trackAtIndex:row]];
         if (controller !=nil)
             propertyView = controller;
     }

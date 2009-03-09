@@ -47,26 +47,27 @@
             const char* type = MP4GetTrackType(fileHandle, trackId);
 
             if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
-                track = [[MP42Track alloc] initWithSourcePath:filePath trackID: trackId];
+                track = [MP42Track alloc];
             else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
-                track = [[MP42VideoTrack alloc] initWithSourcePath:filePath trackID: trackId];
+                track = [MP42VideoTrack alloc];
             else if (!strcmp(type, MP4_TEXT_TRACK_TYPE)) {
                 if (trackId == chapterId)
-                    track = [[MP42ChapterTrack alloc] initWithSourcePath:filePath trackID: trackId];
+                    track = [MP42ChapterTrack alloc];
                 else
-                    track = [[MP42Track alloc] initWithSourcePath:filePath trackID: trackId];
+                    track = [MP42Track alloc];
             }
             else if (!strcmp(type, "sbtl"))
-                track = [[MP42SubtitleTrack alloc] initWithSourcePath:filePath trackID: trackId];
+                track = [MP42SubtitleTrack alloc];
             else
-                track = [[MP42Track alloc] initWithSourcePath:filePath trackID: trackId];
+                track = [MP42Track alloc];
 
+            [track initWithSourcePath:filePath trackID: trackId fileHandle:fileHandle];
             [tracks addObject:track];
             [track release];
         }
 
         tracksToBeDeleted = [[NSMutableArray alloc] init];
-        metadata = [[MP42Metadata alloc] initWithSourcePath:filePath];
+        metadata = [[MP42Metadata alloc] initWithSourcePath:filePath fileHandle:fileHandle];
         MP4Close(fileHandle);
 	}
 

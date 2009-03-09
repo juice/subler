@@ -11,9 +11,17 @@
 
 @interface MP42VideoTrack : MP42Track {
     uint16_t width, height;
+    float trackWidth, trackHeight;
+    uint32_t offsetX, offsetY;
 }
 
 @property(readwrite) uint16_t width;
 @property(readwrite) uint16_t height;
+
+@property(readwrite) float trackWidth;
+@property(readwrite) float trackHeight;
+
+@property(readwrite) uint32_t offsetX;
+@property(readwrite) uint32_t offsetY;
 
 @end

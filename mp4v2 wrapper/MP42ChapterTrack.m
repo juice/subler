@@ -11,9 +11,9 @@
 
 @implementation MP42ChapterTrack
 
-- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID
+- (id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if (self = [super initWithSourcePath:source trackID:trackID])
+    if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
     {
         name = @"Chapter Track";
         format = @"Text";
@@ -22,8 +22,7 @@
         MP4Chapter_t *chapter_list = NULL;
         uint32_t      chapter_count;
 
-        MP4FileHandle *sourceHandle = MP4Read([sourcePath UTF8String], 0);
-        MP4GetChapters(sourceHandle, &chapter_list, &chapter_count, MP4ChapterTypeQt);
+        MP4GetChapters(fileHandle, &chapter_list, &chapter_count, MP4ChapterTypeQt);
 
         int i = 1;
         MP4Duration sum = 0;
@@ -38,7 +37,6 @@
             i++;
         }
         MP4Free(chapter_list);
-        MP4Close(sourceHandle);
     }
 
     return self;

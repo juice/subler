@@ -22,8 +22,7 @@
     BOOL isArtworkEdited;
 }
 
-- (id) initWithSourcePath:(NSString *)source;
-- (void) readMetaData;
+- (id) initWithSourcePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle;
 - (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *) fileHandle;
 
 @property(readonly) NSMutableDictionary    *tagsDict;

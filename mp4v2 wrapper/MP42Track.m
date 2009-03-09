@@ -12,7 +12,7 @@
 
 @implementation MP42Track
 
--(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID
+-(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
 	if ((self = [super init]))
 	{
@@ -21,17 +21,25 @@
         isEdited = NO;
         isDataEdited = NO;
         muxed = YES;
+
+        if (fileHandle) {
+            format = getHumanReadableTrackMediaDataName(fileHandle, Id);
+            name = [getTrackName(fileHandle, Id) retain];
+            language = [getHumanReadableTrackLanguage(fileHandle, Id) retain];
+            bitrate = MP4GetTrackBitRate(fileHandle, Id);
+            duration = MP4GetTrackDuration(fileHandle, Id),
+            timescale = MP4GetTrackTimeScale(fileHandle, Id);
+        }
 	}
-	[self readTrackType];
 	
     return self;
 }
 
 -(void)readTrackType
 {
-	MP4FileHandle *sourceHandle = MP4Read([sourcePath UTF8String], 0);
+    MP4FileHandle *sourceHandle = MP4Read([sourcePath UTF8String], 0);
 
-	if (!sourceHandle)
+    if (!sourceHandle)
         return;
 
     format = getHumanReadableTrackMediaDataName(sourceHandle, Id);
@@ -40,7 +48,7 @@
     bitrate = MP4GetTrackBitRate(sourceHandle, Id);
     duration = MP4GetTrackDuration(sourceHandle, Id),
     timescale = MP4GetTrackTimeScale(sourceHandle, Id);
-
+    
     MP4Close(sourceHandle);
 }
 

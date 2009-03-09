@@ -431,14 +431,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">sampleWidth</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="136134567"/>
-					</object>
-					<int key="connectionID">79</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">trackWidth</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="780345623"/>
@@ -468,6 +460,22 @@
 						<reference key="destination" ref="1002286936"/>
 					</object>
 					<int key="connectionID">83</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">sampleWidth</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="1031087418"/>
+					</object>
+					<int key="connectionID">84</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">sampleHeight</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="136134567"/>
+					</object>
+					<int key="connectionID">85</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -902,7 +910,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">83</int>
+			<int key="maxID">85</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

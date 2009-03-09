@@ -40,7 +40,7 @@
 @property(readwrite) BOOL muxed;
 
 
-- (id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID;
+- (id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;
 - (void)readTrackType;
 
 - (NSString *) SMPTETimeString;

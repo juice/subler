@@ -266,8 +266,8 @@
 				A9FD5D410F3C6A6300817716 /* EmptyViewController.m */,
 				A9FD5ECD0F3C8AF100817716 /* MovieViewController.h */,
 				A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */,
-				A9629D080F56FB36001D6A75 /* VideoViewController.m */,
 				A9629D090F56FB36001D6A75 /* VideoViewController.h */,
+				A9629D080F56FB36001D6A75 /* VideoViewController.m */,
 				A9FD5D320F3C69BE00817716 /* ChapterViewController.h */,
 				A9FD5D330F3C69BE00817716 /* ChapterViewController.m */,
 			);

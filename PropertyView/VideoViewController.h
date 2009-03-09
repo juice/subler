@@ -7,9 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "MP42VideoTrack.h"
 
 
 @interface VideoViewController : NSViewController {
+    MP42VideoTrack *track;
+    
     IBOutlet NSTextField *sampleWidth;
     IBOutlet NSTextField *sampleHeight;
     
@@ -19,5 +22,7 @@
     IBOutlet NSTextField *offsetX;
     IBOutlet NSTextField *offsetY;
 }
+
+- (void) setTrack:(MP42VideoTrack *) videoTrack;
 
 @end
