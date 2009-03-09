@@ -170,15 +170,11 @@
     if (toolbarItem == addTrackToolBar)
             return YES;
 
-    else if (toolbarItem == deleteTrack) {
+    else if (toolbarItem == deleteTrack)
         if ([fileTracksTable selectedRow] != -1 && [NSApp isActive])
-            if ([[[mp4File trackAtIndex:[fileTracksTable selectedRow]] format]
-                    isEqualToString:@"3GPP Text"])
-            {
                 //[[toolbarItem view] setEnabled:NO];
                 return YES;
-            }
-    }
+
     return NO;
 }
 
@@ -304,7 +300,6 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (NSUInteger)comboBoxCell:(NSComboBoxCell *)comboBoxCell indexOfItemWithStringValue:(NSString *)string {
     return [languages indexOfObject: string];
 }
-
 
 /* Select chapter file */
 

@@ -27,11 +27,13 @@
             name = [getTrackName(fileHandle, Id) retain];
             language = [getHumanReadableTrackLanguage(fileHandle, Id) retain];
             bitrate = MP4GetTrackBitRate(fileHandle, Id);
-            duration = MP4GetTrackDuration(fileHandle, Id),
+            duration = MP4ConvertFromTrackDuration(fileHandle, Id,
+                                                   MP4GetTrackDuration(fileHandle, Id),
+                                                   MP4_MSECS_TIME_SCALE);
             timescale = MP4GetTrackTimeScale(fileHandle, Id);
         }
 	}
-	
+
     return self;
 }
 
@@ -46,7 +48,9 @@
     name = [getTrackName(sourceHandle, Id) retain];
     language = [getHumanReadableTrackLanguage(sourceHandle, Id) retain];
     bitrate = MP4GetTrackBitRate(sourceHandle, Id);
-    duration = MP4GetTrackDuration(sourceHandle, Id),
+    duration = MP4ConvertFromTrackDuration(sourceHandle, Id,
+                                          MP4GetTrackDuration(sourceHandle, Id),
+                                          MP4_MSECS_TIME_SCALE);
     timescale = MP4GetTrackTimeScale(sourceHandle, Id);
     
     MP4Close(sourceHandle);
@@ -62,7 +66,7 @@
 
 - (NSString *) SMPTETimeString
 {
-    return SMPTEStringFromTime(duration, timescale);
+    return SMPTEStringFromTime(duration, 1000);
 }
 
 @synthesize sourcePath;

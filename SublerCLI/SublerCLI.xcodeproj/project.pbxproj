@@ -22,6 +22,7 @@
 		A98ED3330F59E08D00885A49 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3240F59E08D00885A49 /* libmp4v2.a */; };
 		A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3550F59E17A00885A49 /* libuniversaldetector.a */; };
 		A98ED4030F59E28300885A49 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED4020F59E28300885A49 /* Cocoa.framework */; };
+		A99530FA0F65699A00EC456B /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A99530F80F65699A00EC456B /* MP42VideoTrack.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,8 @@
 		A98ED3320F59E08D00885A49 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mp4v2.h; sourceTree = "<group>"; };
 		A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = UniversalDetector.xcodeproj; path = ../UniversalDetector/UniversalDetector.xcodeproj; sourceTree = SOURCE_ROOT; };
 		A98ED4020F59E28300885A49 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		A99530F80F65699A00EC456B /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42VideoTrack.m; sourceTree = "<group>"; };
+		A99530F90F65699A00EC456B /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42VideoTrack.h; sourceTree = "<group>"; };
 		C6859EA3029092ED04C91782 /* SublerCLI.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SublerCLI.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -166,6 +169,8 @@
 				A98ED3030F59E01400885A49 /* MP42File.m */,
 				A98ED3040F59E01400885A49 /* MP42Metadata.h */,
 				A98ED3050F59E01400885A49 /* MP42Metadata.m */,
+				A99530F80F65699A00EC456B /* MP42VideoTrack.m */,
+				A99530F90F65699A00EC456B /* MP42VideoTrack.h */,
 				A98ED3060F59E01400885A49 /* MP42SubtitleTrack.h */,
 				A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */,
 				A98ED3080F59E01400885A49 /* MP42Track.h */,
@@ -293,6 +298,7 @@
 				A98ED3100F59E01400885A49 /* MP42Track.m in Sources */,
 				A98ED3110F59E01400885A49 /* MP42Utilities.m in Sources */,
 				A98ED3140F59E02300885A49 /* lang.c in Sources */,
+				A99530FA0F65699A00EC456B /* MP42VideoTrack.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

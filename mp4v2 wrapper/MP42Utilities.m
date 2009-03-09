@@ -24,7 +24,6 @@ NSString *SMPTEStringFromTime( long long time, long timeScale )
     int days, hour, minute, second, frame;
     long long result;
 
-    // timeScale is fps * 100
     result = time / timeScale; // second
     frame = (time % timeScale) / 10;
 

@@ -11,7 +11,8 @@
 
 
 @interface MovieViewController : NSViewController {
-    MP42File          *mp4File;
+    MP42Metadata            *metadata;
+
     IBOutlet NSPopUpButton  *tagList;
     IBOutlet NSTableView    *tagsTableView;
 
@@ -20,7 +21,7 @@
     IBOutlet NSPopUpButton  *contentRating;
     IBOutlet NSButton       *hdVideo;
     IBOutlet NSButton       *gapless;
-    
+
     IBOutlet NSButton       *removeTag;
     NSDictionary            *detailBoldAttr;
 }

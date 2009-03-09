@@ -28,25 +28,25 @@
                       [NSColor grayColor], NSForegroundColorAttributeName,
                        nil] retain];
 
-    [imageView setImage:[mp4File.metadata artwork]];
+    [imageView setImage:[metadata artwork]];
 
-    [mediaKind selectItemWithTag:[mp4File.metadata mediaKind]];
-    [contentRating selectItemWithTag:[mp4File.metadata contentRating]];
-    [hdVideo setState:[mp4File.metadata hdVideo]];
-    [gapless setState:[mp4File.metadata gapless]];
+    [mediaKind selectItemWithTag:metadata.mediaKind];
+    [contentRating selectItemWithTag:metadata.contentRating];
+    [hdVideo setState:metadata.hdVideo];
+    [gapless setState:metadata.gapless];
 }
 
 - (void) setFile: (MP42File *)file
 {
-    mp4File = file;
+    metadata = file.metadata;
 }
 
 - (IBAction) addTag: (id) sender
 {
     NSString *tagName = [[sender selectedItem] title];
 
-    if (![mp4File.metadata.tagsDict valueForKey:tagName]) {
-        [mp4File.metadata.tagsDict setObject:@"Empty" forKey:tagName];
+    if (![metadata.tagsDict valueForKey:tagName]) {
+        [metadata.tagsDict setObject:@"Empty" forKey:tagName];
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         [tagsTableView reloadData];
     }
@@ -54,10 +54,10 @@
 
 - (IBAction) updateArtwork: (id) sender
 {
-    mp4File.metadata.artwork = [imageView image];
+    metadata.artwork = [imageView image];
     [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-    mp4File.metadata.isEdited = YES;
-    mp4File.metadata.isArtworkEdited = YES;
+    metadata.isEdited = YES;
+    metadata.isArtworkEdited = YES;
 
 }
 
@@ -65,9 +65,9 @@
 {
     uint8_t tagName = [[sender selectedItem] tag];
 
-    if (mp4File.metadata.mediaKind != tagName) {
-        mp4File.metadata.mediaKind = tagName;
-        mp4File.metadata.isEdited = YES;
+    if (metadata.mediaKind != tagName) {
+        metadata.mediaKind = tagName;
+        metadata.isEdited = YES;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
@@ -76,9 +76,9 @@
 {
     uint8_t newValue = [sender state];
 
-    if (mp4File.metadata.gapless != newValue) {
-        mp4File.metadata.gapless = newValue;
-        mp4File.metadata.isEdited = YES;
+    if (metadata.gapless != newValue) {
+        metadata.gapless = newValue;
+        metadata.isEdited = YES;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
@@ -87,9 +87,9 @@
 {
     uint8_t newValue = [sender state];
 
-    if (mp4File.metadata.hdVideo != newValue) {
-        mp4File.metadata.hdVideo = newValue;
-        mp4File.metadata.isEdited = YES;
+    if (metadata.hdVideo != newValue) {
+        metadata.hdVideo = newValue;
+        metadata.isEdited = YES;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
@@ -97,13 +97,13 @@
 - (IBAction) removeTag: (id) sender {
     NSInteger rowIndex = [tagsTableView selectedRow];
     if (rowIndex != -1) {
-        NSDictionary *tags = [[mp4File metadata] tagsDict];
+        NSDictionary *tags = [metadata tagsDict];
         NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
         NSString *tagName = [tagsArray objectAtIndex:rowIndex];
-        [mp4File.metadata.tagsDict removeObjectForKey:tagName];
+        [metadata.tagsDict removeObjectForKey:tagName];
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-        mp4File.metadata.isEdited = YES;
+        metadata.isEdited = YES;
         [tagsTableView reloadData];
     }
 }
@@ -115,14 +115,14 @@
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
-    return [[[mp4File metadata] tagsDict] count];
+    return [[metadata tagsDict] count];
 }
 
 - (id) tableView:(NSTableView *)tableView 
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
-    NSDictionary *tags = [[mp4File metadata] tagsDict];
+    NSDictionary *tags = [metadata tagsDict];
     NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
     if ([tableColumn.identifier isEqualToString:@"name"])
@@ -139,7 +139,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     forTableColumn: (NSTableColumn *) tableColumn 
                row: (NSInteger) rowIndex
 {
-    NSDictionary *tags = [[mp4File metadata] tagsDict];
+    NSDictionary *tags = [metadata tagsDict];
     NSArray *tagsArray =  [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
     NSString *tagName = [tagsArray objectAtIndex:rowIndex];
@@ -147,7 +147,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([tableColumn.identifier isEqualToString:@"value"]) {
         if (![[tags valueForKey:tagName] isEqualToString:anObject]) {
             [tags setValue:anObject forKey:tagName];
-            mp4File.metadata.isEdited = YES;
+            metadata.isEdited = YES;
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
     }
@@ -156,7 +156,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (CGFloat) tableView: (NSTableView *) tableView
           heightOfRow: (NSInteger) rowIndex
 {
-    NSDictionary *tags = [[mp4File metadata] tagsDict];
+    NSDictionary *tags = [metadata tagsDict];
     NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
 	// Get column you want - first in this case:

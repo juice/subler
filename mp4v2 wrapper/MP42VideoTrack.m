@@ -10,7 +10,7 @@
 
 @implementation MP42VideoTrack
 
-- (id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
+- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
     if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
     {
@@ -20,7 +20,7 @@
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.width", &trackWidth);
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.height", &trackHeight);
 
-        uint8_t* val;
+        uint8_t *val;
         uint8_t nval[36];
         uint32_t *ptr32 = (uint32_t*) nval;
         uint32_t size;
