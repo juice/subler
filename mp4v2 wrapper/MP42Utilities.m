@@ -9,6 +9,7 @@
 
 #import "MP42Utilities.h"
 #import <string.h>
+#include "lang.h"
 
 typedef enum {  TRACK_DISABLED = 0x0,
                 TRACK_ENABLED = 0x1,
@@ -125,4 +126,68 @@ uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId videoTrack)
     }
     
     return videoWidth;
+}
+
+NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
+{
+    NSString    *name;
+    u_int8_t    *value;
+    u_int32_t    valueSize;
+
+    if (MP4GetTrackBytesProperty(fileHandle, videoTrack,
+                                 "udta.name.value",
+                                 &value, &valueSize)) {
+        char * trackName;
+        trackName = malloc(valueSize +2);
+        memcpy(trackName, value, valueSize);
+        trackName[valueSize] = '\0';
+        name = [NSString stringWithCString: trackName];
+        free(trackName);
+        free(value);
+
+        return name;
+    }
+    else {
+        const char* type = MP4GetTrackType(fileHandle, videoTrack);
+        if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
+            return NSLocalizedString(@"Audio Track", @"Audio Track");
+        else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
+            return NSLocalizedString(@"Video Track", @"Video Track");
+        else if (!strcmp(type, MP4_TEXT_TRACK_TYPE))
+            return NSLocalizedString(@"Text Track", @"Text Track");
+        else if (!strcmp(type, "sbtl"))
+            return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
+        else
+            return NSLocalizedString(@"Unknown Track", @"Unknown Track");
+    }
+}
+
+NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
+{
+    const char* dataName = MP4GetTrackMediaDataName(fileHandle, videoTrack);
+    if (!strcmp(dataName, "avc1"))
+        return @"H.264";
+    else if (!strcmp(dataName, "mp4a"))
+        return @"AAC";
+    else if (!strcmp(dataName, "ac-3"))
+        return @"AC-3", @"AC-3";
+    else if (!strcmp(dataName, "mp4v"))
+        return @"MPEG-4 Visual";
+    else if (!strcmp(dataName, "text"))
+        return @"Text";
+    else if (!strcmp(dataName, "tx3g"))
+        return @"3GPP Text";
+    else
+        return NSLocalizedString(@"Unknown", @"Unknown");
+}
+
+NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId videoTrack)
+{
+    NSString *language;
+    char* lang = malloc(sizeof(char)*4);
+    MP4GetTrackLanguage(fileHandle, videoTrack, lang);
+    language = [NSString stringWithFormat:@"%s", lang_for_code2(lang)->eng_name];
+    free(lang);
+    
+    return language;
 }

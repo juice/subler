@@ -23,11 +23,9 @@
         uint32_t      chapter_count;
 
         MP4FileHandle *sourceHandle = MP4Read([sourcePath UTF8String], 0);
-        MP4GetChapters( sourceHandle, &chapter_list, &chapter_count, 
-                       MP4ChapterTypeQt );
+        MP4GetChapters(sourceHandle, &chapter_list, &chapter_count, MP4ChapterTypeQt);
 
         int i = 1;
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         MP4Duration sum = 0;
         while (i <= chapter_count)
         {
@@ -39,7 +37,6 @@
             [chapter release];
             i++;
         }
-        [pool release];
         MP4Free(chapter_list);
         MP4Close(sourceHandle);
     }

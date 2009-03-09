@@ -12,8 +12,8 @@
 
 -(void) dealloc
 {
-    [super dealloc];
     [title release];
+    [super dealloc];
 }
 
 @synthesize timestamp;

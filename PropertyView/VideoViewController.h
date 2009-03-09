@@ -10,6 +10,14 @@
 
 
 @interface VideoViewController : NSViewController {
+    IBOutlet NSTextField *sampleWidth;
+    IBOutlet NSTextField *sampleHeight;
+    
+    IBOutlet NSTextField *trackWidth;
+    IBOutlet NSTextField *trackHeight;
+    
+    IBOutlet NSTextField *offsetX;
+    IBOutlet NSTextField *offsetY;
 }
 
 @end

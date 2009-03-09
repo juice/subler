@@ -10,7 +10,7 @@
 #import "mp4v2.h"
 
 @interface MP42Track : NSObject {
-    MP4TrackId  Id;
+    MP4TrackId   Id;
 	NSString    *sourcePath;
 	NSString    *format;
     NSString    *name;
@@ -20,20 +20,20 @@
     BOOL    isDataEdited;
     BOOL    muxed;
 
-	int     samplerate; 
-	double  bitrate; // kbit/sec
-	double  duration;    // seconds
+	uint32_t    timescale; 
+	uint32_t    bitrate; 
+	MP4Duration duration;
 }
 
-@property(readwrite, retain) NSString * sourcePath;
 @property(readwrite) MP4TrackId Id;
-@property(readwrite, retain) NSString *format;
+@property(readonly) NSString *sourcePath;
+@property(readonly) NSString *format;
 @property(readwrite, retain) NSString *name;
 @property(readwrite, retain) NSString *language;
 
-@property(readonly) int samplerate;
-@property(readonly) double bitrate;
-@property(readonly) double duration;
+@property(readonly) uint32_t timescale;
+@property(readonly) uint32_t bitrate;
+@property(readonly) MP4Duration duration;
 
 @property(readwrite) BOOL isEdited;
 @property(readwrite) BOOL isDataEdited;
