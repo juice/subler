@@ -13,15 +13,15 @@
 
 - (void) awakeFromNib
 {
-    NSArray *tags = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"TV Episode", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+    NSArray *tagsMenu = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"TV Episode", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
     id tag;
-    for (tag in tags)
+    for (tag in tagsMenu)
         [tagList addItemWithTitle:tag];
 
     NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
     [ps setHeadIndent: -10.0];
     [ps setAlignment:NSRightTextAlignment];
-    
+
     detailBoldAttr = [[NSDictionary dictionaryWithObjectsAndKeys:
                       [NSFont boldSystemFontOfSize:11.0], NSFontAttributeName,
                       ps, NSParagraphStyleAttributeName,
@@ -34,11 +34,21 @@
     [contentRating selectItemWithTag:metadata.contentRating];
     [hdVideo setState:metadata.hdVideo];
     [gapless setState:metadata.gapless];
+
+    tabCol = [[[tagsTableView tableColumns] objectAtIndex:1] retain];
 }
 
 - (void) setFile: (MP42File *)file
 {
     metadata = file.metadata;
+    tags = metadata.tagsDict;
+    tagsArray = [[[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
+}
+
+- (void) updateTagsArray
+{
+    [tagsArray autorelease];
+    tagsArray = [[[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
 }
 
 - (IBAction) addTag: (id) sender
@@ -47,6 +57,7 @@
 
     if (![metadata.tagsDict valueForKey:tagName]) {
         [metadata.tagsDict setObject:@"Empty" forKey:tagName];
+        [self updateTagsArray];
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         [tagsTableView reloadData];
     }
@@ -55,10 +66,10 @@
 - (IBAction) updateArtwork: (id) sender
 {
     metadata.artwork = [imageView image];
-    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     metadata.isEdited = YES;
     metadata.isArtworkEdited = YES;
 
+    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
 }
 
 - (IBAction) changeMediaKind: (id) sender
@@ -96,14 +107,14 @@
 
 - (IBAction) removeTag: (id) sender {
     NSInteger rowIndex = [tagsTableView selectedRow];
-    if (rowIndex != -1) {
-        NSDictionary *tags = [metadata tagsDict];
-        NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
+    if (rowIndex != -1) {
         NSString *tagName = [tagsArray objectAtIndex:rowIndex];
         [metadata.tagsDict removeObjectForKey:tagName];
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         metadata.isEdited = YES;
+        [self updateTagsArray];
+        
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         [tagsTableView reloadData];
     }
 }
@@ -122,9 +133,6 @@
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
-    NSDictionary *tags = [metadata tagsDict];
-    NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-
     if ([tableColumn.identifier isEqualToString:@"name"])
         return [self boldString:[tagsArray objectAtIndex:rowIndex]];
 
@@ -139,16 +147,17 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     forTableColumn: (NSTableColumn *) tableColumn 
                row: (NSInteger) rowIndex
 {
-    NSDictionary *tags = [metadata tagsDict];
-    NSArray *tagsArray =  [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-
     NSString *tagName = [tagsArray objectAtIndex:rowIndex];
 
     if ([tableColumn.identifier isEqualToString:@"value"]) {
         if (![[tags valueForKey:tagName] isEqualToString:anObject]) {
             [tags setValue:anObject forKey:tagName];
+
             metadata.isEdited = YES;
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+
+            [tagsTableView noteHeightOfRowsWithIndexesChanged:
+             [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(rowIndex, rowIndex)]];
         }
     }
 }
@@ -156,19 +165,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (CGFloat) tableView: (NSTableView *) tableView
           heightOfRow: (NSInteger) rowIndex
 {
-    NSDictionary *tags = [metadata tagsDict];
-    NSArray *tagsArray = [[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-
-	// Get column you want - first in this case:
-	NSTableColumn *tabCol = [[tableView tableColumns] objectAtIndex:1];
-	CGFloat width = [tabCol width];
 	NSRect r = NSMakeRect(0,0,width,1000.0);
-	NSCell *cell = [tabCol dataCellForRow:rowIndex];	
-	NSString *content = [tags objectForKey:[tagsArray objectAtIndex:rowIndex]];	// or however you want to get the string
-	[cell setObjectValue:content];
-	CGFloat height = [cell cellSizeForBounds:r].height;
-	if (height <= 0) height = 14.0;	// Ensure miniumum height is 14.0
-    
+	NSTextFieldCell *cell = [tabCol dataCellForRow:rowIndex];	
+	[cell setObjectValue:[tags objectForKey:[tagsArray objectAtIndex:rowIndex]]];
+	CGFloat height = [cell cellSizeForBounds:r].height; // Slow
+	if (height <= 0)
+        height = 14.0; // Ensure miniumum height is 14.0
+
 	return height;
 }
 
@@ -184,13 +187,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void)tableViewColumnDidResize: (NSNotification* )notification
 {
-    [tagsTableView reloadData];
-}
-
-- (void)textDidEndEditing:(NSNotification *)aNotification
-{
-    NSLog(@"lalala");
-    [tagsTableView reloadData];
+    width = [tabCol width];
+    [tagsTableView noteHeightOfRowsWithIndexesChanged:
+     [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [tagsTableView numberOfRows])]];
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification
@@ -203,6 +202,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void) dealloc
 {
+    [tagsArray release];
+    [tabCol release];
     [detailBoldAttr release];
     [super dealloc];
 }

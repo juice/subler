@@ -23,7 +23,14 @@
     IBOutlet NSButton       *gapless;
 
     IBOutlet NSButton       *removeTag;
-    NSDictionary            *detailBoldAttr;
+    
+    NSDictionary    *tags;
+    NSArray         *tagsArray;
+    NSDictionary    *detailBoldAttr;
+    NSDictionary    *fAttributes;
+    
+    NSTableColumn *tabCol;
+    CGFloat width;
 }
 
 - (void) setFile: (MP42File *)file;

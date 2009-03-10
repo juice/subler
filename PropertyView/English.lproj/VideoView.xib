@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="36"/>
+			<integer value="1"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -43,7 +43,7 @@
 					<object class="NSTabView" id="919391344">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">18</int>
-						<string key="NSFrame">{{1, 0}, {478, 267}}</string>
+						<string key="NSFrame">{{-11, -12}, {502, 279}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<object class="NSMutableArray" key="NSTabViewItems">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -373,7 +373,7 @@
 													<reference key="NSSuperview" ref="615482790"/>
 												</object>
 											</object>
-											<string key="NSFrame">{{21, 2}, {416, 223}}</string>
+											<string key="NSFrame">{{33, 13}, {416, 223}}</string>
 											<reference key="NSSuperview" ref="936155568"/>
 											<string key="NSOffsets">{0, 0}</string>
 											<object class="NSTextFieldCell" key="NSTitleCell">
@@ -394,7 +394,7 @@
 											<bool key="NSTransparent">NO</bool>
 										</object>
 									</object>
-									<string key="NSFrame">{{10, 25}, {458, 229}}</string>
+									<string key="NSFrame">{{10, 25}, {482, 241}}</string>
 									<reference key="NSSuperview" ref="919391344"/>
 								</object>
 								<string key="NSLabel">Visual Settings</string>

@@ -43,7 +43,7 @@
 					<object class="NSTabView" id="980212840">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">18</int>
-						<string key="NSFrame">{{1, 0}, {478, 267}}</string>
+						<string key="NSFrame">{{-11, -12}, {502, 279}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<object class="NSMutableArray" key="NSTabViewItems">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -67,13 +67,13 @@
 														<object class="NSTableView" id="999266526">
 															<reference key="NSNextResponder" ref="399023230"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{422, 163}</string>
+															<string key="NSFrameSize">{446, 175}</string>
 															<reference key="NSSuperview" ref="399023230"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="888415462">
 																<reference key="NSNextResponder" ref="188370008"/>
 																<int key="NSvFlags">256</int>
-																<string key="NSFrameSize">{422, 17}</string>
+																<string key="NSFrameSize">{446, 17}</string>
 																<reference key="NSSuperview" ref="188370008"/>
 																<reference key="NSTableView" ref="999266526"/>
 															</object>
@@ -389,7 +389,7 @@
 																</object>
 																<object class="NSTableColumn" id="729273205">
 																	<string key="NSIdentifier">value</string>
-																	<double key="NSWidth">3.120000e+02</double>
+																	<double key="NSWidth">3.360000e+02</double>
 																	<double key="NSMinWidth">4.000000e+01</double>
 																	<double key="NSMaxWidth">2.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -439,7 +439,7 @@
 															<bool key="NSAllowsTypeSelect">YES</bool>
 														</object>
 													</object>
-													<string key="NSFrame">{{1, 17}, {422, 163}}</string>
+													<string key="NSFrame">{{1, 17}, {446, 175}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
 													<reference key="NSNextKeyView" ref="999266526"/>
 													<reference key="NSDocView" ref="999266526"/>
@@ -474,7 +474,7 @@
 														<bool key="EncodedWithXMLCoder">YES</bool>
 														<reference ref="888415462"/>
 													</object>
-													<string key="NSFrame">{{1, 0}, {422, 17}}</string>
+													<string key="NSFrame">{{1, 0}, {446, 17}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
 													<reference key="NSNextKeyView" ref="888415462"/>
 													<reference key="NSDocView" ref="888415462"/>
@@ -483,7 +483,7 @@
 												</object>
 												<reference ref="738579199"/>
 											</object>
-											<string key="NSFrame">{{17, 42}, {424, 181}}</string>
+											<string key="NSFrame">{{17, 42}, {448, 193}}</string>
 											<reference key="NSSuperview" ref="900859224"/>
 											<reference key="NSNextKeyView" ref="399023230"/>
 											<int key="NSsFlags">562</int>
@@ -548,7 +548,7 @@
 										<object class="NSButton" id="6773204">
 											<reference key="NSNextResponder" ref="900859224"/>
 											<int key="NSvFlags">289</int>
-											<string key="NSFrame">{{350, 10}, {96, 28}}</string>
+											<string key="NSFrame">{{374, 10}, {96, 28}}</string>
 											<reference key="NSSuperview" ref="900859224"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="751441864">
@@ -566,7 +566,7 @@
 											</object>
 										</object>
 									</object>
-									<string key="NSFrame">{{10, 25}, {458, 229}}</string>
+									<string key="NSFrame">{{10, 25}, {482, 241}}</string>
 									<reference key="NSSuperview" ref="980212840"/>
 								</object>
 								<string key="NSLabel">Tags</string>
@@ -600,7 +600,7 @@
 													<string>NeXT TIFF v4.0 pasteboard type</string>
 												</object>
 											</object>
-											<string key="NSFrame">{{14, 14}, {430, 212}}</string>
+											<string key="NSFrame">{{85, 14}, {312, 224}}</string>
 											<reference key="NSSuperview" ref="538505228"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSImageCell" key="NSCell" id="733185797">
@@ -614,7 +614,7 @@
 											<bool key="NSEditable">YES</bool>
 										</object>
 									</object>
-									<string key="NSFrame">{{10, 25}, {458, 229}}</string>
+									<string key="NSFrame">{{10, 25}, {482, 241}}</string>
 								</object>
 								<string key="NSLabel">Artwork</string>
 								<reference key="NSColor" ref="117260690"/>
@@ -902,7 +902,7 @@
 													<reference key="NSSuperview" ref="369627558"/>
 												</object>
 											</object>
-											<string key="NSFrame">{{83, 27}, {291, 174}}</string>
+											<string key="NSFrame">{{95, 33}, {291, 174}}</string>
 											<reference key="NSSuperview" ref="944020088"/>
 											<string key="NSOffsets">{0, 0}</string>
 											<object class="NSTextFieldCell" key="NSTitleCell">
@@ -928,7 +928,7 @@
 											<bool key="NSTransparent">NO</bool>
 										</object>
 									</object>
-									<string key="NSFrame">{{10, 25}, {458, 229}}</string>
+									<string key="NSFrame">{{10, 25}, {482, 241}}</string>
 								</object>
 								<string key="NSLabel">Other Settings</string>
 								<reference key="NSColor" ref="117260690"/>
@@ -1572,7 +1572,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilderKit</string>
 					<string>com.apple.InterfaceBuilderKit</string>
-					<string>{{443, 461}, {480, 272}}</string>
+					<string>{{467, 385}, {480, 272}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="NO" id="6"/>
 					<reference ref="6"/>
@@ -1711,7 +1711,7 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">mp4v2 wrapper/MP4FileWrapper.h</string>
+						<string key="minorKey">mp4v2 wrapper/MP42File.h</string>
 					</object>
 				</object>
 			</object>
