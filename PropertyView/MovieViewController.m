@@ -12,7 +12,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-    if ([theEvent keyCode] == 0x24)
+    if ([theEvent keyCode] == 0x24 || [theEvent keyCode] == 0x4C)
         [self editColumn:1 row:[self selectedRow] withEvent:nil select:YES];
     else
         [super keyDown:theEvent];
