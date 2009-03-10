@@ -24,7 +24,7 @@
 
 - (void) awakeFromNib
 {
-    NSArray *tagsMenu = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"TV Episode", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+    NSArray *tagsMenu = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
     id tag;
     for (tag in tagsMenu)
         [tagList addItemWithTitle:tag];
@@ -168,7 +168,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
 
             [tagsTableView noteHeightOfRowsWithIndexesChanged:
-             [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(rowIndex, rowIndex)]];
+             [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [tagsTableView numberOfRows])]];
         }
     }
 }
