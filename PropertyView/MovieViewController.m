@@ -22,11 +22,25 @@
 
 @implementation MovieViewController
 
+static NSInteger sortFunction (id ldict, id rdict, void *context) {
+    NSComparisonResult rc;
+
+    NSInteger right = [(NSArray*) context indexOfObject:rdict];
+    NSInteger left = [(NSArray*) context indexOfObject:ldict];
+    
+    if (right < left) {
+        rc = NSOrderedDescending;
+    } else {
+        rc = NSOrderedAscending;
+    }
+
+    return rc;
+}
+
 - (void) awakeFromNib
 {
-    NSArray *tagsMenu = [NSArray arrayWithObjects:  @" Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
-    id tag;
-    for (tag in tagsMenu)
+    tagsMenu = [[NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil] retain];
+    for (id tag in tagsMenu)
         [tagList addItemWithTitle:tag];
 
     NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
@@ -47,19 +61,20 @@
     [gapless setState:metadata.gapless];
 
     tabCol = [[[tagsTableView tableColumns] objectAtIndex:1] retain];
+    
+    tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:tagsMenu] retain];
 }
 
 - (void) setFile: (MP42File *)file
 {
     metadata = file.metadata;
     tags = metadata.tagsDict;
-    tagsArray = [[[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
 }
 
 - (void) updateTagsArray
 {
     [tagsArray autorelease];
-    tagsArray = [[[tags allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
+    tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:tagsMenu] retain];
 }
 
 - (IBAction) addTag: (id) sender
@@ -214,6 +229,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (void) dealloc
 {
     [tagsArray release];
+    [tagsMenu release];
     [tabCol release];
     [detailBoldAttr release];
     [super dealloc];

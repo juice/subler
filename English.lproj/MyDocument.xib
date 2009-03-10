@@ -8,8 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="100031"/>
-			<integer value="100176"/>
+			<integer value="100040"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -366,16 +365,16 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 															<object class="_NSCornerView" key="NSCornerView" id="98013410">
 																<reference key="NSNextResponder" ref="287999566"/>
 																<int key="NSvFlags">-2147483392</int>
-																<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
+																<string key="NSFrame">{{606, 0}, {16, 17}}</string>
 																<reference key="NSSuperview" ref="287999566"/>
 															</object>
 															<object class="NSMutableArray" key="NSTableColumns">
 																<bool key="EncodedWithXMLCoder">YES</bool>
 																<object class="NSTableColumn" id="282497856">
 																	<string key="NSIdentifier">trackId</string>
-																	<double key="NSWidth">3.700000e+01</double>
+																	<double key="NSWidth">3.600000e+01</double>
 																	<double key="NSMinWidth">3.000000e+01</double>
-																	<double key="NSMaxWidth">1.000000e+03</double>
+																	<double key="NSMaxWidth">3.800000e+01</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628032</int>
 																		<int key="NSCellFlags2">0</int>
@@ -427,8 +426,8 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 																</object>
 																<object class="NSTableColumn" id="769290179">
 																	<string key="NSIdentifier">trackName</string>
-																	<double key="NSWidth">1.700000e+02</double>
-																	<double key="NSMinWidth">4.000000e+01</double>
+																	<double key="NSWidth">1.690000e+02</double>
+																	<double key="NSMinWidth">1.000000e+02</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628032</int>
@@ -455,8 +454,8 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 																<object class="NSTableColumn" id="18787711">
 																	<string key="NSIdentifier">trackDuration</string>
 																	<double key="NSWidth">9.200000e+01</double>
-																	<double key="NSMinWidth">1.000000e+01</double>
-																	<double key="NSMaxWidth">3.402823e+38</double>
+																	<double key="NSMinWidth">9.200000e+01</double>
+																	<double key="NSMaxWidth">9.200000e+01</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628032</int>
 																		<int key="NSCellFlags2">67108864</int>
@@ -493,9 +492,9 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 																</object>
 																<object class="NSTableColumn" id="514942517">
 																	<string key="NSIdentifier">trackLanguage</string>
-																	<double key="NSWidth">1.300000e+02</double>
-																	<double key="NSMinWidth">1.000000e+01</double>
-																	<double key="NSMaxWidth">3.402823e+38</double>
+																	<double key="NSWidth">1.340000e+02</double>
+																	<double key="NSMinWidth">1.300000e+02</double>
+																	<double key="NSMaxWidth">1.500000e+02</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628032</int>
 																		<int key="NSCellFlags2">67108864</int>
@@ -596,9 +595,9 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 																</object>
 																<object class="NSTableColumn" id="864585726">
 																	<string key="NSIdentifier">trackInfo</string>
-																	<double key="NSWidth">1.760000e+02</double>
+																	<double key="NSWidth">1.740000e+02</double>
 																	<double key="NSMinWidth">8.000000e+01</double>
-																	<double key="NSMaxWidth">3.402823e+38</double>
+																	<double key="NSMaxWidth">4.400000e+02</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628032</int>
 																		<int key="NSCellFlags2">67108864</int>
@@ -626,8 +625,8 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 															<reference key="NSBackgroundColor" ref="656377004"/>
 															<reference key="NSGridColor" ref="766659546"/>
 															<double key="NSRowHeight">1.700000e+01</double>
-															<int key="NSTvFlags">-692060160</int>
-															<int key="NSColumnAutoresizingStyle">4</int>
+															<int key="NSTvFlags">-692027392</int>
+															<int key="NSColumnAutoresizingStyle">1</int>
 															<int key="NSDraggingSourceMaskForLocal">15</int>
 															<int key="NSDraggingSourceMaskForNonLocal">0</int>
 															<bool key="NSAllowsTypeSelect">YES</bool>
@@ -1071,7 +1070,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<object class="NSView" key="NSWindowView" id="838636882">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1103,7 +1102,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{240, 88}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
@@ -2080,13 +2078,11 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>closeSheet:</string>
 							<string>deleteTrack:</string>
 							<string>openBrowse:</string>
-							<string>reloadTable:</string>
 							<string>selectChapterFile:</string>
 							<string>showSubititleWindow:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2141,7 +2137,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">mp4v2 wrapper/MP4FileWrapper.h</string>
+						<string key="minorKey">mp4v2 wrapper/MP42File.h</string>
 					</object>
 				</object>
 			</object>

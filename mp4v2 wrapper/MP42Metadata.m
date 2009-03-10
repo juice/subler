@@ -39,7 +39,7 @@
 
     if (tags->name)
         [tagsDict setObject:[NSString stringWithCString:tags->name encoding: NSUTF8StringEncoding]
-                     forKey:@" Name"];
+                     forKey:@"Name"];
 
     if (tags->artist)
         [tagsDict setObject:[NSString stringWithCString:tags->artist encoding: NSUTF8StringEncoding]
@@ -175,7 +175,7 @@
 
     MP4TagsFetch(tags, fileHandle);
 
-    MP4TagsSetName(tags, [[tagsDict valueForKey:@" Name"] UTF8String]);
+    MP4TagsSetName(tags, [[tagsDict valueForKey:@"Name"] UTF8String]);
 
     MP4TagsSetArtist(tags, [[tagsDict valueForKey:@"Artist"] UTF8String]);
 

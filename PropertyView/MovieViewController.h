@@ -31,6 +31,7 @@
     
     NSDictionary    *tags;
     NSArray         *tagsArray;
+    NSArray         *tagsMenu;
     NSDictionary    *detailBoldAttr;
     NSDictionary    *fAttributes;
     
