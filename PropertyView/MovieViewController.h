@@ -9,12 +9,17 @@
 #import <Cocoa/Cocoa.h>
 #import "MP42File.h"
 
+// Custom class for capturing return key
+@interface TagsTableView : NSTableView {
+}
+- (void)keyDown:(NSEvent *)theEvent;
+@end
 
 @interface MovieViewController : NSViewController {
     MP42Metadata            *metadata;
 
     IBOutlet NSPopUpButton  *tagList;
-    IBOutlet NSTableView    *tagsTableView;
+    IBOutlet TagsTableView    *tagsTableView;
 
     IBOutlet NSImageView    *imageView;
     IBOutlet NSPopUpButton  *mediaKind;
@@ -42,6 +47,5 @@
 - (IBAction) changeMediaKind: (id) sender;
 - (IBAction) changeGapless: (id) sender;
 - (IBAction) changehdVideo: (id) sender;
-
 
 @end

@@ -8,6 +8,17 @@
 
 #import "MovieViewController.h"
 
+@implementation TagsTableView
+
+- (void)keyDown:(NSEvent *)theEvent
+{
+    if ([theEvent keyCode] == 0x24)
+        [self editColumn:1 row:[self selectedRow] withEvent:nil select:YES];
+    else
+        [super keyDown:theEvent];
+}
+
+@end
 
 @implementation MovieViewController
 
