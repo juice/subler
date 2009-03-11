@@ -10,13 +10,13 @@
 #import "MP42Track.h"
 
 @interface MP42VideoTrack : MP42Track {
-    uint16_t width, height;
+    uint64_t width, height;
     float trackWidth, trackHeight;
     uint32_t offsetX, offsetY;
 }
 
-@property(readwrite) uint16_t width;
-@property(readwrite) uint16_t height;
+@property(readwrite) uint64_t width;
+@property(readwrite) uint64_t height;
 
 @property(readwrite) float trackWidth;
 @property(readwrite) float trackHeight;

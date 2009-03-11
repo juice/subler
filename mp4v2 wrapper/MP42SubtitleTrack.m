@@ -10,6 +10,17 @@
 
 @implementation MP42SubtitleTrack
 
+- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
+{
+    if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
+    {
+        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", &height);
+        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", &width);
+    }
+    
+    return self;
+}
+
 -(id) init
 {
     if (self = [super init])

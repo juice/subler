@@ -36,7 +36,7 @@
         i = [trackWidth integerValue];
         if (track.trackWidth != i) {
             track.trackWidth = i;
-            
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
         }
@@ -45,7 +45,7 @@
         i = [trackHeight integerValue];
         if (track.trackHeight != i) {
             track.trackHeight = i;
-        
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
         }
@@ -54,7 +54,7 @@
         i = [offsetX integerValue];
         if (track.offsetX != i) {
             track.offsetX = i;
-            
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
         }
@@ -63,7 +63,7 @@
         i = [offsetY integerValue];
         if (track.offsetY != i) {
             track.offsetY = i;
-            
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
         }

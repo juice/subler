@@ -21,7 +21,7 @@
 - (void) removeMuxedTrack: (MP42Track *)track;
 - (BOOL) updateTrackLanguage: (MP42Track*) track;
 - (BOOL) updateTrackName: (MP42Track*) track;
-- (BOOL) updateTrackSize: (MP42Track*) track;
+- (BOOL) updateTrackSize: (MP42VideoTrack*) track;
 
 @end
 
@@ -156,7 +156,7 @@
 
         if (track.isEdited && track.Id) {
             if ([track isKindOfClass:[MP42VideoTrack class]])
-                [self updateTrackSize:track];
+                [self updateTrackSize:(MP42VideoTrack *)track];
             [self updateTrackLanguage:track];
             [self updateTrackName:track];
         }
@@ -307,6 +307,11 @@
     MP4SetTrackBytesProperty(fileHandle, track.Id, "tkhd.matrix", nval, size);
 
     free(val);
+    
+    if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
+        MP4SetTrackIntegerProperty(fileHandle, track.Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", track.trackHeight);
+        MP4SetTrackIntegerProperty(fileHandle, track.Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", track.trackWidth);
+    }
 
     return YES;
 }
