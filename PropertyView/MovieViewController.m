@@ -27,12 +27,11 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
     NSInteger right = [(NSArray*) context indexOfObject:rdict];
     NSInteger left = [(NSArray*) context indexOfObject:ldict];
-    
-    if (right < left) {
+
+    if (right < left)
         rc = NSOrderedDescending;
-    } else {
+    else
         rc = NSOrderedAscending;
-    }
 
     return rc;
 }

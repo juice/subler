@@ -24,5 +24,6 @@
 }
 
 - (void) setTrack:(MP42VideoTrack *) videoTrack;
+- (IBAction) setSize: (id) sender;
 
 @end

@@ -21,6 +21,7 @@
 - (void) removeMuxedTrack: (MP42Track *)track;
 - (BOOL) updateTrackLanguage: (MP42Track*) track;
 - (BOOL) updateTrackName: (MP42Track*) track;
+- (BOOL) updateTrackSize: (MP42Track*) track;
 
 @end
 
@@ -56,7 +57,7 @@
                 else
                     track = [MP42Track alloc];
             }
-            else if (!strcmp(type, "sbtl"))
+            else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
                 track = [MP42SubtitleTrack alloc];
             else
                 track = [MP42Track alloc];
@@ -154,6 +155,8 @@
                 [self muxChapterTrack:(MP42ChapterTrack *)track];
 
         if (track.isEdited && track.Id) {
+            if ([track isKindOfClass:[MP42VideoTrack class]])
+                [self updateTrackSize:track];
             [self updateTrackLanguage:track];
             [self updateTrackName:track];
         }
@@ -283,6 +286,27 @@
                                      "udta.name.value",
                                      (const uint8_t*) [track.name UTF8String], strlen([track.name UTF8String]));
     }
+
+    return YES;
+}
+
+- (BOOL) updateTrackSize: (MP42VideoTrack*) track
+{
+    MP4SetTrackFloatProperty(fileHandle, track.Id, "tkhd.width", track.trackWidth);
+    MP4SetTrackFloatProperty(fileHandle, track.Id, "tkhd.height", track.trackHeight);
+
+    uint8_t *val;
+    uint8_t nval[36];
+    uint32_t *ptr32 = (uint32_t*) nval;
+    uint32_t size;
+
+    MP4GetTrackBytesProperty(fileHandle ,track.Id, "tkhd.matrix", &val, &size);
+    memcpy(nval, val, size);
+    ptr32[6] = CFSwapInt32HostToBig(track.offsetX * 0x10000);
+    ptr32[7] = CFSwapInt32HostToBig(track.offsetY * 0x10000);
+    MP4SetTrackBytesProperty(fileHandle, track.Id, "tkhd.matrix", nval, size);
+
+    free(val);
 
     return YES;
 }

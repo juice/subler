@@ -28,4 +28,46 @@
     track = videoTrack;
 }
 
+- (IBAction) setSize: (id) sender
+{
+    NSInteger i;
+
+    if (sender == trackWidth) {
+        i = [trackWidth integerValue];
+        if (track.trackWidth != i) {
+            track.trackWidth = i;
+            
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+            track.isEdited = YES;
+        }
+    }
+    else if (sender == trackHeight) {
+        i = [trackHeight integerValue];
+        if (track.trackHeight != i) {
+            track.trackHeight = i;
+        
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+            track.isEdited = YES;
+        }
+    }
+    else if (sender == offsetX) {
+        i = [offsetX integerValue];
+        if (track.offsetX != i) {
+            track.offsetX = i;
+            
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+            track.isEdited = YES;
+        }
+    }
+    else if (sender == offsetY) {
+        i = [offsetY integerValue];
+        if (track.offsetY != i) {
+            track.offsetY = i;
+            
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+            track.isEdited = YES;
+        }
+    }
+}
+
 @end

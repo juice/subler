@@ -58,7 +58,7 @@ int enableFirstSubtitleTrack(MP4FileHandle fileHandle)
     for (i = 0; i < MP4GetNumberOfTracks( fileHandle, 0, 0); i++) {
         const char* trackType = MP4GetTrackType( fileHandle, MP4FindTrackId( fileHandle, i, 0, 0));
         
-        if (!strcmp(trackType, "sbtl"))
+        if (!strcmp(trackType, MP4_SUBTITLE_TRACK_TYPE))
             if (firstTrack++ == 0)
                 enableTrack(fileHandle, MP4FindTrackId( fileHandle, i, 0, 0));
             else
@@ -154,7 +154,7 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
             return NSLocalizedString(@"Video Track", @"Video Track");
         else if (!strcmp(type, MP4_TEXT_TRACK_TYPE))
             return NSLocalizedString(@"Text Track", @"Text Track");
-        else if (!strcmp(type, "sbtl"))
+        else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
             return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
         else
             return NSLocalizedString(@"Unknown Track", @"Unknown Track");
