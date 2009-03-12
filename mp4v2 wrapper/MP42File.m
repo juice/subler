@@ -35,8 +35,10 @@
 
 		fileHandle = MP4Read([path UTF8String], 0);
         filePath = path;
-		if (!fileHandle)
+		if (!fileHandle) {
+            [self release];
 			return nil;
+        }
 
         tracks = [[NSMutableArray alloc] init];
         int i, tracksCount = MP4GetNumberOfTracks(fileHandle, 0, 0);

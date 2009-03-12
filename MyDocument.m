@@ -119,6 +119,8 @@
 
     if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
+
+        return NO;
 	}
     return YES;
 }
@@ -133,7 +135,9 @@
     [self updateChangeCount:NSChangeCleared];
 
     if ( outError != NULL && !mp4File ) {
-		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
+		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];   
+        
+        return NO;
 	}
     return YES;
 }

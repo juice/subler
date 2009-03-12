@@ -133,9 +133,10 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
     u_int8_t    *value;
     u_int32_t    valueSize;
 
-    if (MP4GetTrackBytesProperty(fileHandle, videoTrack,
+    if (MP4HaveTrackAtom(fileHandle, videoTrack, "udta.name")) {
+        MP4GetTrackBytesProperty(fileHandle, videoTrack,
                                  "udta.name.value",
-                                 &value, &valueSize)) {
+                                 &value, &valueSize);
         char * trackName;
         trackName = malloc(valueSize +2);
         memcpy(trackName, value, valueSize);
