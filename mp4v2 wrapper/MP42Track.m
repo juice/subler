@@ -76,7 +76,7 @@
                                      (const uint8_t*) [name UTF8String], strlen([name UTF8String]));
     }
 
-    return YES;
+    return err;
 }
 
 - (void) dealloc

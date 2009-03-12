@@ -77,7 +77,7 @@
         uint32_t i, refTrackDuration, sum = 0, chapterCount = 0;
 
         // get the list of chapters
-        MP4GetChapters(fileHandle, &fileChapters, &chapterCount, MP4ChapterTypeAny);
+        MP4GetChapters(fileHandle, &fileChapters, &chapterCount, MP4ChapterTypeQt);
 
         MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, Id);
         updateTracksCount(fileHandle);
@@ -90,8 +90,7 @@
             for (i = 0; i<chapterCount; i++)
                 strcpy(fileChapters[i].title, [[[chapters objectAtIndex:i] title] UTF8String]);
             
-            MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
-            MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeQt);
+            MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeAny);
         }
         else {
             chapterCount = [chapters count];
@@ -121,11 +120,11 @@
             }
 
             MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
-            MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeQt);
+            MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeAny);
             
-            free(fileChapters);
         }
 
+        free(fileChapters);
         Id = findChapterTrackId(fileHandle);
     }
 
