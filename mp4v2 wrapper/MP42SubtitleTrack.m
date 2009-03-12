@@ -7,6 +7,9 @@
 //
 
 #import "MP42SubtitleTrack.h"
+#import "SubMuxer.h"
+#import "SubUtilities.h"
+#import "lang.h"
 
 @implementation MP42SubtitleTrack
 
@@ -65,6 +68,31 @@
                                                       delay:subDelay
                                                      height:subHeight
                                                    language:subLanguage] autorelease];
+}
+
+- (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
+{
+    BOOL err;
+    if (!fileHandle)
+        return NO;
+
+    if (isEdited && !muxed)
+    {
+        err = muxSubtitleTrack(fileHandle,
+                               sourcePath,
+                               lang_for_english([language UTF8String])->iso639_2,
+                               height,
+                               delay);
+    
+        return err;
+    }
+    else
+        [super writeToFile:fileHandle error:outError];
+
+    MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", trackHeight);
+    MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", trackWidth);
+
+    return YES;
 }
 
 - (void) dealloc

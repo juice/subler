@@ -8,7 +8,7 @@
 
 #import "MP42Track.h"
 #import "MP42Utilities.h"
-
+#import "lang.h"
 
 @implementation MP42Track
 
@@ -54,6 +54,29 @@
     timescale = MP4GetTrackTimeScale(sourceHandle, Id);
     
     MP4Close(sourceHandle);
+}
+
+- (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
+{
+    BOOL err;
+    if (!fileHandle || !Id)
+        return NO;
+
+    err = MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
+
+    if (![name isEqualToString:@"Video Track"] &&
+        ![name isEqualToString:@"Audio Track"] &&
+        ![name isEqualToString:@"Subtitle Track"] &&
+        ![name isEqualToString:@"Text Track"] &&
+        ![name isEqualToString:@"Chapter Track"] &&
+        name != nil) {
+        if (MP4HaveTrackAtom(fileHandle, Id, "udta.name"))
+            MP4SetTrackBytesProperty(fileHandle, Id,
+                                     "udta.name.value",
+                                     (const uint8_t*) [name UTF8String], strlen([name UTF8String]));
+    }
+
+    return YES;
 }
 
 - (void) dealloc

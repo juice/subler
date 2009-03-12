@@ -177,6 +177,11 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
         return @"Text";
     else if (!strcmp(dataName, "tx3g"))
         return @"3GPP Text";
+    else if (!strcmp(dataName, "samr"))
+        return @"AMR Narrow Band";
+    else if (!strcmp(dataName, "rtp "))
+        return @"Hint";
+
     else
         return NSLocalizedString(@"Unknown", @"Unknown");
 }

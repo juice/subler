@@ -575,7 +575,6 @@
 											<int key="NSBoxType">0</int>
 											<int key="NSTitlePosition">0</int>
 											<bool key="NSTransparent">NO</bool>
-											<real value="0.000000e+00" key="NSBorderWidth2"/>
 										</object>
 									</object>
 									<string key="NSFrame">{{10, 25}, {482, 241}}</string>

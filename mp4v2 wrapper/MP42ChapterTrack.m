@@ -8,6 +8,7 @@
 
 #import "MP42ChapterTrack.h"
 #import "SubUtilities.h"
+#import "MP42Utilities.h"
 
 @implementation MP42ChapterTrack
 
@@ -64,6 +65,73 @@
 + (id) chapterTrackFromFile:(NSString *)filePath
 {
     return [[[MP42ChapterTrack alloc] initWithTextFile:filePath] autorelease];
+}
+
+- (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
+{
+    if (!fileHandle)
+        return NO;
+
+    if (isDataEdited) {
+        MP4Chapter_t * fileChapters = 0;
+        uint32_t i, refTrackDuration, sum = 0, chapterCount = 0;
+
+        // get the list of chapters
+        MP4GetChapters(fileHandle, &fileChapters, &chapterCount, MP4ChapterTypeQt);
+
+        MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, Id);
+        updateTracksCount(fileHandle);
+
+        MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
+        if (!refTrack)
+            refTrack = 1;
+
+        if (chapterCount && muxed) {
+            for (i = 0; i<chapterCount; i++)
+                strcpy(fileChapters[i].title, [[[chapters objectAtIndex:i] title] UTF8String]);
+            
+            MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
+            MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeQt);
+        }
+        else {
+            chapterCount = [chapters count];
+            fileChapters = malloc(sizeof(MP4Chapter_t)*chapterCount);
+            refTrackDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                           refTrack,
+                                                           MP4GetTrackDuration(fileHandle, refTrack),
+                                                           MP4_MSECS_TIME_SCALE);
+            
+            for (i = 0; i < chapterCount; i++) {
+                SBChapter * chapter = [chapters objectAtIndex:i];
+                strcpy(fileChapters[i].title, [[chapter title] UTF8String]);
+                
+                if (i+1 < chapterCount && sum < refTrackDuration) {
+                    SBChapter * nextChapter = [chapters objectAtIndex:i+1];
+                    fileChapters[i].duration = nextChapter.timestamp - chapter.timestamp;
+                    sum = nextChapter.timestamp;
+                }
+                else
+                    fileChapters[i].duration = refTrackDuration - chapter.timestamp;
+
+                if (sum > refTrackDuration) {
+                    fileChapters[i].duration = refTrackDuration - chapter.timestamp;
+                    i++;
+                    break;
+                }
+            }
+
+            MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
+            MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeQt);
+            
+            free(fileChapters);
+        }
+
+        Id = findChapterTrackId(fileHandle);
+    }
+
+    [super writeToFile:fileHandle error:outError];
+
+    return YES;
 }
 
 - (void) dealloc

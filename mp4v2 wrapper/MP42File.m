@@ -7,21 +7,11 @@
 //
 
 #import "MP42File.h"
-#import "MP42ChapterTrack.h"
 #import "MP42Utilities.h"
-#import "SubMuxer.h"
-#import "SubUtilities.h"
-#import "lang.h"
-
 
 @interface MP42File (Private)
 
-- (BOOL) muxSubtitleTrack: (MP42SubtitleTrack*) track;
-- (BOOL) muxChapterTrack: (MP42ChapterTrack*) track;
 - (void) removeMuxedTrack: (MP42Track *)track;
-- (BOOL) updateTrackLanguage: (MP42Track*) track;
-- (BOOL) updateTrackName: (MP42Track*) track;
-- (BOOL) updateTrackSize: (MP42VideoTrack*) track;
 
 @end
 
@@ -133,6 +123,7 @@
 - (BOOL) writeToFile
 {
     MP42Track *track;
+    NSError *theError;
 
     fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
@@ -144,108 +135,13 @@
         [self removeMuxedTrack:track];
 
     for (track in tracks)
-    {
-        if ([track isMemberOfClass:[MP42SubtitleTrack class]])
-            if (track.isEdited && !track.muxed)
-                if (![self muxSubtitleTrack:(MP42SubtitleTrack *)track]) {
-                    NSLog(@"Error writing subtitles");
-                    break;
-                }
-
-        if ([track isMemberOfClass:[MP42ChapterTrack class]])
-            if (track.isDataEdited)
-                [self muxChapterTrack:(MP42ChapterTrack *)track];
-
-        if (track.isEdited && track.Id) {
-            if ([track isKindOfClass:[MP42VideoTrack class]])
-                [self updateTrackSize:(MP42VideoTrack *)track];
-            [self updateTrackLanguage:track];
-            [self updateTrackName:track];
-        }
-    }
+        if (track.isEdited)
+            [track writeToFile:fileHandle error:&theError];
 
     if (metadata.isEdited)
         [metadata writeMetadataWithFileHandle:fileHandle];
 
     MP4Close(fileHandle);
-    return YES;
-}
-
-- (BOOL) muxSubtitleTrack: (MP42SubtitleTrack*) track
-{
-    BOOL err;
-    if (!fileHandle)
-        return NO;
-
-    err = muxSubtitleTrack(fileHandle,
-                           track.sourcePath,
-                           lang_for_english([track.language UTF8String])->iso639_2,
-                           track.height,
-                           track.delay);
-
-    return err;
-}
-
-- (BOOL) muxChapterTrack: (MP42ChapterTrack*) track
-{
-    if (!fileHandle)
-        return NO;
-
-    MP4Chapter_t * chapters = 0;
-    uint32_t i, refTrackDuration, sum = 0, chapterCount = 0;
-
-    // get the list of chapters
-    MP4GetChapters(fileHandle, &chapters, &chapterCount, MP4ChapterTypeQt);
-
-    MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
-    updateTracksCount(fileHandle);
-
-    MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
-    if (!refTrack)
-        refTrack = 1;
-
-    if (chapterCount && track.muxed) {
-        for (i = 0; i<chapterCount; i++)
-            strcpy(chapters[i].title, [[[track.chapters objectAtIndex:i] title] UTF8String]);
-
-        MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
-        MP4SetChapters(fileHandle, chapters, chapterCount, MP4ChapterTypeQt);
-    }
-    else {
-        chapterCount = [track.chapters count];
-        chapters = malloc(sizeof(MP4Chapter_t)*chapterCount);
-        refTrackDuration = MP4ConvertFromTrackDuration(fileHandle,
-                                                       refTrack,
-                                                       MP4GetTrackDuration(fileHandle, refTrack),
-                                                       MP4_MSECS_TIME_SCALE);
-
-        for (i = 0; i < chapterCount; i++) {
-            SBChapter * chapter = [track.chapters objectAtIndex:i];
-            strcpy(chapters[i].title, [[chapter title] UTF8String]);
-
-            if (i+1 < chapterCount && sum < refTrackDuration) {
-                SBChapter * nextChapter = [track.chapters objectAtIndex:i+1];
-                chapters[i].duration = nextChapter.timestamp - chapter.timestamp;
-                sum = nextChapter.timestamp;
-            }
-            else
-                chapters[i].duration = refTrackDuration - chapter.timestamp;
-
-            if (sum > refTrackDuration) {
-                chapters[i].duration = refTrackDuration - chapter.timestamp;
-                i++;
-                break;
-            }
-        }
-
-        MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
-        MP4SetChapters(fileHandle, chapters, i, MP4ChapterTypeQt);
-
-        free(chapters);
-    }
-
-    track.Id = findChapterTrackId(fileHandle);
-
     return YES;
 }
 
@@ -259,63 +155,6 @@
     updateTracksCount(fileHandle);
     if ([track isMemberOfClass:[MP42SubtitleTrack class]])
         enableFirstSubtitleTrack(fileHandle);
-}
-
-- (BOOL) updateTrackLanguage: (MP42Track*) track
-{
-    BOOL err;
-    if (!fileHandle)
-        return NO;
-
-    err = MP4SetTrackLanguage(fileHandle, track.Id, lang_for_english([track.language UTF8String])->iso639_2);
-
-    return err;
-}
-
-- (BOOL) updateTrackName: (MP42Track*) track
-{
-    if (!fileHandle)
-        return NO;
-
-    if (![track.name isEqualToString:@"Video Track"] &&
-        ![track.name isEqualToString:@"Audio Track"] &&
-        ![track.name isEqualToString:@"Subtitle Track"] &&
-        ![track.name isEqualToString:@"Text Track"] &&
-        ![track.name isEqualToString:@"Chapter Track"] &&
-        track.name != nil) {
-        if (MP4HaveTrackAtom(fileHandle, track.Id, "udta.name"))
-            MP4SetTrackBytesProperty(fileHandle, track.Id,
-                                     "udta.name.value",
-                                     (const uint8_t*) [track.name UTF8String], strlen([track.name UTF8String]));
-    }
-
-    return YES;
-}
-
-- (BOOL) updateTrackSize: (MP42VideoTrack*) track
-{
-    MP4SetTrackFloatProperty(fileHandle, track.Id, "tkhd.width", track.trackWidth);
-    MP4SetTrackFloatProperty(fileHandle, track.Id, "tkhd.height", track.trackHeight);
-
-    uint8_t *val;
-    uint8_t nval[36];
-    uint32_t *ptr32 = (uint32_t*) nval;
-    uint32_t size;
-
-    MP4GetTrackBytesProperty(fileHandle ,track.Id, "tkhd.matrix", &val, &size);
-    memcpy(nval, val, size);
-    ptr32[6] = CFSwapInt32HostToBig(track.offsetX * 0x10000);
-    ptr32[7] = CFSwapInt32HostToBig(track.offsetY * 0x10000);
-    MP4SetTrackBytesProperty(fileHandle, track.Id, "tkhd.matrix", nval, size);
-
-    free(val);
-    
-    if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
-        MP4SetTrackIntegerProperty(fileHandle, track.Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", track.trackHeight);
-        MP4SetTrackIntegerProperty(fileHandle, track.Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", track.trackWidth);
-    }
-
-    return YES;
 }
 
 - (void) dealloc

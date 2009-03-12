@@ -46,6 +46,34 @@
     return self;
 }
 
+- (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
+{
+    //BOOL err;
+    if (!fileHandle || !Id)
+        return NO;
+
+    [super writeToFile:fileHandle error:outError];
+
+    MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.width", trackWidth);
+    MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.height", trackHeight);
+
+    uint8_t *val;
+    uint8_t nval[36];
+    uint32_t *ptr32 = (uint32_t*) nval;
+    uint32_t size;
+
+    MP4GetTrackBytesProperty(fileHandle ,Id, "tkhd.matrix", &val, &size);
+    memcpy(nval, val, size);
+    ptr32[6] = CFSwapInt32HostToBig(offsetX * 0x10000);
+    ptr32[7] = CFSwapInt32HostToBig(offsetY * 0x10000);
+    MP4SetTrackBytesProperty(fileHandle, Id, "tkhd.matrix", nval, size);
+
+    free(val);
+
+    return YES;
+}
+
+
 - (void) dealloc
 {
     [super dealloc];
