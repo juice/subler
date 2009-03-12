@@ -65,6 +65,7 @@
         if (![chapter.title isEqualToString:anObject]) {
             chapter.title = anObject;
             track.isDataEdited = YES;
+            track.isEdited = YES;
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
     }

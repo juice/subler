@@ -77,7 +77,7 @@
         uint32_t i, refTrackDuration, sum = 0, chapterCount = 0;
 
         // get the list of chapters
-        MP4GetChapters(fileHandle, &fileChapters, &chapterCount, MP4ChapterTypeQt);
+        MP4GetChapters(fileHandle, &fileChapters, &chapterCount, MP4ChapterTypeAny);
 
         MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, Id);
         updateTracksCount(fileHandle);
@@ -100,7 +100,7 @@
                                                            refTrack,
                                                            MP4GetTrackDuration(fileHandle, refTrack),
                                                            MP4_MSECS_TIME_SCALE);
-            
+
             for (i = 0; i < chapterCount; i++) {
                 SBChapter * chapter = [chapters objectAtIndex:i];
                 strcpy(fileChapters[i].title, [[chapter title] UTF8String]);
