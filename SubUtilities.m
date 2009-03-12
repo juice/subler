@@ -141,7 +141,7 @@ static bool isinrange(unsigned base, unsigned test_s, unsigned test_e)
 	for (int i=0;i < num*2; i++) {
 		if (i > 0 && times[i-1] == times[i]) continue;
 		NSMutableString *accum = nil;
-		unsigned start = times[i], last_end = start, next_start=times[num*2-1], end = start;
+		unsigned start = times[i], last_end = start, next_start=times[num*2-1], end;
 		bool finishedOutput = false, is_last_line = false;
 		
 		// Add on packets until we find one that marks it ending (by starting later)
@@ -341,27 +341,24 @@ static BOOL DifferentiateLatin12(const unsigned char *data, int length)
 extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 {
 	NSData *data = [NSData dataWithContentsOfMappedFile:path];
+    if (!data)
+        return nil;
+
 	UniversalDetector *ud = [[UniversalDetector alloc] init];
 	NSString *res = nil;
 	NSStringEncoding enc;
-	float conf;
 	NSString *enc_str;
 	BOOL latin2;
-    
-    if (!data)
-        return nil;
-	
+
 	[ud analyzeData:data];
 	
 	enc = [ud encoding];
-	conf = [ud confidence];
 	enc_str = [ud MIMECharset];
 	latin2 = [enc_str isEqualToString:@"windows-1250"];
 	
 	if (latin2) {
 		if (DifferentiateLatin12([data bytes], [data length])) { // seems to actually be latin1
 			enc = NSWindowsCP1252StringEncoding;
-			enc_str = @"windows-1252";
 		}
 	}
 	

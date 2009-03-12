@@ -299,7 +299,6 @@
 @synthesize contentRating;
 @synthesize hdVideo;
 @synthesize gapless;
-@synthesize artwork;
 
 -(void) dealloc
 {

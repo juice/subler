@@ -107,29 +107,26 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     LoadSRTFromPath(subtitlePath, ss);
     [ss setFinished:YES];
 
-    if (!(subtitleTrackId = createSubtitleTrack(fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight)))
-        return 0;
-
-    int firstSub = 0;
-    while (![ss isEmpty]) {
-        SubLine *sl = [ss getSerializedPacket];
-		const char *str = [sl->line UTF8String];
-        if (firstSub == 0) {
-            firstSub++;
-            if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->begin_time + delay))
-                return 0;
+    if ((subtitleTrackId = createSubtitleTrack(fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight))) {
+        int firstSub = 0;
+        while (![ss isEmpty]) {
+            SubLine *sl = [ss getSerializedPacket];
+            const char *str = [sl->line UTF8String];
+            if (firstSub == 0) {
+                firstSub++;
+                if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->begin_time + delay))
+                    break;
+            }
+            if ([sl->line isEqualToString:@"\n"]) {
+                if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->end_time - sl->begin_time))
+                    break;
+                continue;
+            }
+            if (!writeSubtitleSample(fileHandle, subtitleTrackId, str, sl->end_time - sl->begin_time))
+                break;
         }
-        if ([sl->line isEqualToString:@"\n"]) {
-            if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->end_time - sl->begin_time))
-                return 0;
-            continue;
-        }
-        if (!writeSubtitleSample(fileHandle, subtitleTrackId, str, sl->end_time - sl->begin_time))
-            return 0;
-	}
-
-    if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, 100))
-        return 0;
+        writeEmptySubtitleSample(fileHandle, subtitleTrackId, 100);
+    }
 
     [ss release];
     [pool release];
