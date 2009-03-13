@@ -70,24 +70,6 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     tags = metadata.tagsDict;
 }
 
-- (void) updateTagsArray
-{
-    [tagsArray autorelease];
-    tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:tagsMenu] retain];
-}
-
-- (IBAction) addTag: (id) sender
-{
-    NSString *tagName = [[sender selectedItem] title];
-
-    if (![metadata.tagsDict valueForKey:tagName]) {
-        [metadata.tagsDict setObject:@"Empty" forKey:tagName];
-        [self updateTagsArray];
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-        [tagsTableView reloadData];
-    }
-}
-
 - (IBAction) updateArtwork: (id) sender
 {
     metadata.artwork = [imageView image];
@@ -127,6 +109,24 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         metadata.hdVideo = newValue;
         metadata.isEdited = YES;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
+}
+
+- (void) updateTagsArray
+{
+    [tagsArray autorelease];
+    tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:tagsMenu] retain];
+}
+
+- (IBAction) addTag: (id) sender
+{
+    NSString *tagName = [[sender selectedItem] title];
+
+    if (![metadata.tagsDict valueForKey:tagName]) {
+        [metadata.tagsDict setObject:@"Empty" forKey:tagName];
+        [self updateTagsArray];
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+        [tagsTableView reloadData];
     }
 }
 

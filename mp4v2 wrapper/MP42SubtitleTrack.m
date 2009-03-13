@@ -84,13 +84,14 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
                                height,
                                delay);
     
-        if (!success) {
+        if ((!success) && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Failed to mux subtitle into mp4 file" forKey:NSLocalizedDescriptionKey];
+            [errorDetail setValue:@"Failed to mux subtitles into mp4 file" forKey:NSLocalizedDescriptionKey];
             *outError = [NSError errorWithDomain:@"MP42Error"
                                             code:110
                                         userInfo:errorDetail];
         }
+
         return success;
     }
     else
@@ -213,7 +214,7 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     if (success) {
         int firstSub = 0;
 
-        subtitleTrackId = createSubtitleTrack(fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight);
+        success = subtitleTrackId = createSubtitleTrack(fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight);
 
         while (![ss isEmpty]) {
             SubLine *sl = [ss getSerializedPacket];
@@ -237,5 +238,5 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
     [ss release];
     [pool release];
 
-    return subtitleTrackId && success;
+    return success;
 }

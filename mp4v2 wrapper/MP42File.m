@@ -127,11 +127,13 @@
 
     fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        [errorDetail setValue:@"Failed to open mp4 file" forKey:NSLocalizedDescriptionKey];
-        *outError = [NSError errorWithDomain:@"MP42Error"
-                                        code:100
-                                    userInfo:errorDetail];
+        if ( outError != NULL) {
+            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+            [errorDetail setValue:@"Failed to open mp4 file" forKey:NSLocalizedDescriptionKey];
+            *outError = [NSError errorWithDomain:@"MP42Error"
+                                            code:100
+                                        userInfo:errorDetail];
+        }
         return NO;
     }
 

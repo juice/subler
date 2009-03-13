@@ -103,7 +103,6 @@
     return success;
 }
 
-
 - (void) saveAndOptimize: (id)sender
 {
     if ([self isDocumentEdited])
