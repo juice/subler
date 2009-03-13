@@ -120,14 +120,18 @@
     [NSThread detachNewThreadSelector:@selector(_optimize:) toTarget:self withObject:nil];
 }
 
-- (BOOL) writeToFile
+- (BOOL) updateMP4File:(NSError **)outError
 {
+    BOOL success = YES;
     MP42Track *track;
-    NSError *theError;
 
     fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        NSLog(@"Fatal Error");
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failed to open mp4 file" forKey:NSLocalizedDescriptionKey];
+        *outError = [NSError errorWithDomain:@"MP42Error"
+                                        code:100
+                                    userInfo:errorDetail];
         return NO;
     }
 
@@ -135,14 +139,18 @@
         [self removeMuxedTrack:track];
 
     for (track in tracks)
-        if (track.isEdited)
-            [track writeToFile:fileHandle error:&theError];
+        if (track.isEdited) {
+            success = [track writeToFile:fileHandle error:outError];
+            if (!success)
+                break;
+        }
 
-    if (metadata.isEdited)
+    if (metadata.isEdited && success)
         [metadata writeMetadataWithFileHandle:fileHandle];
 
     MP4Close(fileHandle);
-    return YES;
+
+    return success;
 }
 
 - (void) removeMuxedTrack: (MP42Track *)track

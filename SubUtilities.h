@@ -44,5 +44,5 @@
 
 NSMutableString *STStandardizeStringNewlines(NSString *str);
 extern NSString *STLoadFileWithUnknownEncoding(NSString *path);
-void LoadSRTFromPath(NSString *path, SubSerializer *ss);
-void LoadChaptersFromPath(NSString *path, NSMutableArray *ss);
+int LoadSRTFromPath(NSString *path, SubSerializer *ss);
+int LoadChaptersFromPath(NSString *path, NSMutableArray *ss);

@@ -69,8 +69,7 @@
 
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
-    if (!fileHandle)
-        return NO;
+    BOOL success = YES;
 
     if (isDataEdited) {
         MP4Chapter_t * fileChapters = 0;
@@ -90,7 +89,7 @@
             for (i = 0; i<chapterCount; i++)
                 strcpy(fileChapters[i].title, [[[chapters objectAtIndex:i] title] UTF8String]);
             
-            MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeAny);
+            success = MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeAny);
         }
         else {
             chapterCount = [chapters count];
@@ -119,7 +118,7 @@
                 }
             }
 
-            MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
+            success = MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
             MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeAny);
             
         }
@@ -127,10 +126,18 @@
         free(fileChapters);
         Id = findChapterTrackId(fileHandle);
     }
+    
+    if (!success) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failed to mux chapters into mp4 file" forKey:NSLocalizedDescriptionKey];
+        *outError = [[NSError errorWithDomain:@"MP42Error"
+                                         code:120
+                                     userInfo:errorDetail] retain];
+    }
+    else
+        success = [super writeToFile:fileHandle error:outError];
 
-    [super writeToFile:fileHandle error:outError];
-
-    return YES;
+    return success;
 }
 
 - (void) dealloc

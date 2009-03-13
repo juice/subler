@@ -59,31 +59,50 @@
     [self tableViewSelectionDidChange:nil];
 }
 
-- (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
+- (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName 
+        forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError;
 {
-    [mp4File writeToFile];
+    BOOL success = NO;
 
-    [self updateChangeCount:NSChangeCleared];
+	switch (saveOperation)
+	{
+		case NSSaveOperation:
+		{
+            // movie file already exists, so we'll just update
+            // the movie resource
+            success = [mp4File updateMP4File:outError];
+            if (!success && outError)
+                [self presentError:*outError
+                    modalForWindow:documentWindow
+                          delegate:nil
+                didPresentSelector:NULL
+                       contextInfo:NULL];
+            else
+                [self reloadFile:self];
+            
+            NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                            [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
+                                            [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
+                                            nil];
+            
+            [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
+            [self setFileURL:absoluteURL];
+            [self setFileModificationDate:[[[NSFileManager defaultManager]  
+                                            fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
+                                           fileModificationDate]];
+		}
+            break;
 
-    if (outError != NULL) {
-		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
+		case NSSaveAsOperation:
+		case NSSaveToOperation:
+            // not implemented
+            return NO;
+            break;
 	}
 
-    NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
-                                    [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
-                                    nil];
-
-    [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
-    [self setFileURL:absoluteURL];
-    [self setFileModificationDate:[[[NSFileManager defaultManager]  
-                                    fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
-                                   fileModificationDate]];
-    
-    [self reloadFile:self];
-
-	return YES;
+    return success;
 }
+
 
 - (void) saveAndOptimize: (id)sender
 {

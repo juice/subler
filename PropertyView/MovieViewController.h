@@ -33,7 +33,6 @@
     NSArray         *tagsArray;
     NSArray         *tagsMenu;
     NSDictionary    *detailBoldAttr;
-    NSDictionary    *fAttributes;
     
     NSTableColumn *tabCol;
     CGFloat width;

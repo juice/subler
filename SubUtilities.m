@@ -375,10 +375,10 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 	return res;
 }
 
-void LoadSRTFromPath(NSString *path, SubSerializer *ss)
+int LoadSRTFromPath(NSString *path, SubSerializer *ss)
 {
 	NSMutableString *srt = STStandardizeStringNewlines(STLoadFileWithUnknownEncoding(path));
-	if (!srt) return;
+	if (!srt) return 0;
     
 	if ([srt characterAtIndex:0] == 0xFEFF) [srt deleteCharactersInRange:NSMakeRange(0,1)];
 	if ([srt characterAtIndex:[srt length]-1] != '\n') [srt appendFormat:@"%c",'\n'];
@@ -423,12 +423,14 @@ void LoadSRTFromPath(NSString *path, SubSerializer *ss)
 				break;
 		};
 	} while (![sc isAtEnd]);
+    
+    return 1;
 }
 
-void LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
+int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
 {
 	NSMutableString *srt = STStandardizeStringNewlines(STLoadFileWithUnknownEncoding(path));
-	if (!srt) return;
+	if (!srt) return 0;
 
 	if ([srt characterAtIndex:0] == 0xFEFF) [srt deleteCharactersInRange:NSMakeRange(0,1)];
 	if ([srt characterAtIndex:[srt length]-1] != '\n') [srt appendFormat:@"%c",'\n'];
@@ -497,4 +499,6 @@ void LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
             };
         } while (![sc isAtEnd]);
     }
+    
+    return 1;
 }

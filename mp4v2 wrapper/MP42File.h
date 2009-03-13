@@ -14,18 +14,19 @@
 #import "MP42Metadata.h"
 
 @interface MP42File : NSObject {
-
+@private
     MP4FileHandle  fileHandle;
     NSString      *filePath;
-
-    NSMutableArray  *tracks;
-    NSMutableArray  *tracksToBeDeleted;
-    MP42Metadata    *metadata;
-
     id delegate;
+
+    NSMutableArray  *tracksToBeDeleted;
+
+@protected
+    NSMutableArray  *tracks;
+    MP42Metadata    *metadata;
 }
 
-@property(readonly) NSMutableArray *tracks;
+@property(readonly) NSMutableArray  *tracks;
 @property(readonly) MP42Metadata    *metadata;
 
 - (id)   initWithExistingFile:(NSString *) path andDelegate:(id) del;
@@ -34,7 +35,7 @@
 - (void) addTrack:(id) track;
 - (void) removeTrackAtIndex:(NSUInteger) index;
 
-- (BOOL) writeToFile;
+- (BOOL) updateMP4File:(NSError **)outError;
 - (void) optimize;
 
 @end

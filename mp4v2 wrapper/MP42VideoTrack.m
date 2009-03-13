@@ -48,7 +48,6 @@
 
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
-    //BOOL err;
     if (!fileHandle || !Id)
         return NO;
 
