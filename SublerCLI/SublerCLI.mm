@@ -66,6 +66,7 @@ int main (int argc, const char * argv[]) {
 
     if (input_file && input_sub)
     {
+        NSError *outError;
         MP42File *mp4File;
         mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:input_file encoding:NSUTF8StringEncoding]
                                              andDelegate:nil];
@@ -77,7 +78,11 @@ int main (int argc, const char * argv[]) {
                                                                        language:[NSString stringWithCString:language
                                                                                                    encoding:NSUTF8StringEncoding]];
         [mp4File addTrack:subTrack];
-        [mp4File writeToFile];
+
+        if (![mp4File updateMP4File:&outError]) {
+            printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
+            return -1;
+        }
 
         [mp4File release];
     }

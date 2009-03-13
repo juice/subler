@@ -10,7 +10,6 @@
 		8DD76F9A0486AA7600D96B5E /* SublerCLI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* SublerCLI.mm */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* SublerCLI.1 */; };
-		A98ED2FD0F59E00E00885A49 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED2F90F59E00E00885A49 /* SubMuxer.m */; };
 		A98ED2FE0F59E00E00885A49 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED2FC0F59E00E00885A49 /* SubUtilities.m */; };
 		A98ED30C0F59E01400885A49 /* MP42ChapterTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */; };
 		A98ED30D0F59E01400885A49 /* MP42File.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3030F59E01400885A49 /* MP42File.m */; };
@@ -74,9 +73,7 @@
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SublerCLI_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* SublerCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SublerCLI; sourceTree = BUILT_PRODUCTS_DIR; };
-		A98ED2F90F59E00E00885A49 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubMuxer.m; path = ../SubMuxer.m; sourceTree = SOURCE_ROOT; };
 		A98ED2FA0F59E00E00885A49 /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubUtilities.h; path = ../SubUtilities.h; sourceTree = SOURCE_ROOT; };
-		A98ED2FB0F59E00E00885A49 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubMuxer.h; path = ../SubMuxer.h; sourceTree = SOURCE_ROOT; };
 		A98ED2FC0F59E00E00885A49 /* SubUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubUtilities.m; path = ../SubUtilities.m; sourceTree = SOURCE_ROOT; };
 		A98ED3000F59E01400885A49 /* MP42ChapterTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42ChapterTrack.h; sourceTree = "<group>"; };
 		A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42ChapterTrack.m; sourceTree = "<group>"; };
@@ -177,8 +174,6 @@
 				A98ED3090F59E01400885A49 /* MP42Track.m */,
 				A98ED30A0F59E01400885A49 /* MP42Utilities.h */,
 				A98ED30B0F59E01400885A49 /* MP42Utilities.m */,
-				A98ED2FB0F59E00E00885A49 /* SubMuxer.h */,
-				A98ED2F90F59E00E00885A49 /* SubMuxer.m */,
 				A98ED2FA0F59E00E00885A49 /* SubUtilities.h */,
 				A98ED2FC0F59E00E00885A49 /* SubUtilities.m */,
 			);
@@ -289,7 +284,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9A0486AA7600D96B5E /* SublerCLI.mm in Sources */,
-				A98ED2FD0F59E00E00885A49 /* SubMuxer.m in Sources */,
 				A98ED2FE0F59E00E00885A49 /* SubUtilities.m in Sources */,
 				A98ED30C0F59E01400885A49 /* MP42ChapterTrack.m in Sources */,
 				A98ED30D0F59E01400885A49 /* MP42File.m in Sources */,
