@@ -87,9 +87,9 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
         if (!success) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
             [errorDetail setValue:@"Failed to mux subtitle into mp4 file" forKey:NSLocalizedDescriptionKey];
-            *outError = [[NSError errorWithDomain:@"MP42Error"
+            *outError = [NSError errorWithDomain:@"MP42Error"
                                             code:110
-                                        userInfo:errorDetail] retain];
+                                        userInfo:errorDetail];
         }
         return success;
     }
