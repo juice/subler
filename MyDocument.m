@@ -8,6 +8,7 @@
 
 #import "MyDocument.h"
 #import "MP42File.h"
+#import "MP42Utilities.h"
 #import "EmptyViewController.h"
 #import "MovieViewController.h"
 #import "VideoViewController.h"
@@ -380,7 +381,7 @@ returnCode contextInfo: (void *) contextInfo
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = YES;
 
-    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObject:@"srt"]
+    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"srt", nil]
                    modalForWindow: addSubtitleWindow modalDelegate: self
                    didEndSelector: @selector( openBrowseDidEnd:returnCode:contextInfo: )
                       contextInfo: nil];                                                      
@@ -396,6 +397,7 @@ returnCode contextInfo: (void *) contextInfo
     }
 
     [subtitleFilePath setStringValue: [sheet.filenames objectAtIndex: 0]];
+    [langSelection selectItemWithTitle:getFilenameLanguage((CFStringRef)[sheet.filenames objectAtIndex: 0])];
     [addTrack setEnabled:YES];
 }
 
@@ -405,12 +407,16 @@ returnCode contextInfo: (void *) contextInfo
     [addSubtitleWindow orderOut:self];
 }
 
-- (IBAction) addSubtitleTrack: (id) sender
+- (void) addSubtitleTrack:(NSString *)filePath
+                    delay:(int)subDelay
+                   height:(unsigned int)subHeight
+                 language:(NSString *)subLanguage
+
 {
-    MP42SubtitleTrack *track = [MP42SubtitleTrack subtitleTrackFromFile:[subtitleFilePath stringValue]
-                                                                  delay:[[delay stringValue] integerValue]
-                                                                 height:[[trackHeight stringValue] integerValue]
-                                                               language:[[langSelection selectedItem] title]];
+    MP42SubtitleTrack *track = [MP42SubtitleTrack subtitleTrackFromFile:filePath
+                                                                  delay:subDelay
+                                                                 height:subHeight
+                                                               language:subLanguage];
 
     [mp4File addTrack:track];
 
@@ -419,6 +425,14 @@ returnCode contextInfo: (void *) contextInfo
 
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
+}
+
+- (IBAction) addSubtitleTrack: (id) sender
+{
+    [self addSubtitleTrack:[subtitleFilePath stringValue]
+                     delay:[[delay stringValue] integerValue]
+                    height:[[trackHeight stringValue] integerValue]
+                  language:[[langSelection selectedItem] title]];
 }
 
 - (IBAction) deleteTrack: (id) sender
@@ -435,12 +449,9 @@ returnCode contextInfo: (void *) contextInfo
 // Drag & Drop
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    NSPasteboard *pboard;
-    NSDragOperation sourceDragMask;
-    
-    sourceDragMask = [sender draggingSourceOperationMask];
-    pboard = [sender draggingPasteboard];
-    
+    NSPasteboard *pboard = [sender draggingPasteboard];
+    NSDragOperation sourceDragMask = [sender draggingSourceOperationMask];
+
     if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
          if (sourceDragMask & NSDragOperationCopy) {
             return NSDragOperationCopy;
@@ -450,12 +461,8 @@ returnCode contextInfo: (void *) contextInfo
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
-    NSPasteboard *pboard;
-    NSDragOperation sourceDragMask;
-    
-    sourceDragMask = [sender draggingSourceOperationMask];
-    pboard = [sender draggingPasteboard];
-    
+    NSPasteboard *pboard = [sender draggingPasteboard];
+
     if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
         NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
         for (NSString * file in files)
@@ -466,8 +473,10 @@ returnCode contextInfo: (void *) contextInfo
             }
             else if ([[file pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame)
             {
-                [subtitleFilePath setStringValue:file];
-                [self addSubtitleTrack:self];
+                [self addSubtitleTrack:file
+                                 delay:0
+                                height:60
+                              language:getFilenameLanguage((CFStringRef)file)];
             }
         }
         return YES;

@@ -196,3 +196,48 @@ NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId vid
     
     return language;
 }
+
+// if the subtitle filename is something like title.en.srt or movie.fre.srt
+// this function detects it and returns the subtitle language
+NSString* getFilenameLanguage(CFStringRef filename)
+{
+	CFRange findResult;
+	CFStringRef baseName = NULL;
+	CFStringRef langStr = NULL;
+	NSString *lang = @"English";
+	
+	// find and strip the extension
+	findResult = CFStringFind(filename, CFSTR("."), kCFCompareBackwards);
+	findResult.length = findResult.location;
+	findResult.location = 0;
+	baseName = CFStringCreateWithSubstring(NULL, filename, findResult);
+	
+	// then find the previous period
+	findResult = CFStringFind(baseName, CFSTR("."), kCFCompareBackwards);
+	findResult.location++;
+	findResult.length = CFStringGetLength(baseName) - findResult.location;
+	
+	// check for 3 char language code
+	if (findResult.length == 3) {
+		char langCStr[4] = "";
+		
+		langStr = CFStringCreateWithSubstring(NULL, baseName, findResult);
+		CFStringGetCString(langStr, langCStr, 4, kCFStringEncodingASCII);
+        lang = [NSString stringWithFormat:@"%s", lang_for_code2(langCStr)->eng_name];
+		
+		CFRelease(langStr);
+		
+		// and for a 2 char language code
+	} else if (findResult.length == 2) {
+		char langCStr[3] = "";
+		
+		langStr = CFStringCreateWithSubstring(NULL, baseName, findResult);
+		CFStringGetCString(langStr, langCStr, 3, kCFStringEncodingASCII);
+        lang = [NSString stringWithFormat:@"%s", lang_for_code2(langCStr)->eng_name];
+		
+		CFRelease(langStr);
+	}
+	
+	CFRelease(baseName);
+	return lang;
+}

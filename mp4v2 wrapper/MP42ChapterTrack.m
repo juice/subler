@@ -88,7 +88,7 @@
         if (chapterCount && muxed) {
             for (i = 0; i<chapterCount; i++)
                 strcpy(fileChapters[i].title, [[[chapters objectAtIndex:i] title] UTF8String]);
-            
+
             success = MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeAny);
         }
         else {
@@ -120,7 +120,6 @@
 
             success = MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
             MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeAny);
-            
         }
 
         free(fileChapters);

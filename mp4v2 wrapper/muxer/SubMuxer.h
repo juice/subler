@@ -1,0 +1,13 @@
+//
+//  MP42SubtitleTrack.h
+//  Subler
+//
+//  Created by Damiano Galassi on 31/01/09.
+//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "mp4v2.h"
+
+int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay);
+int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sourceTrackId);
