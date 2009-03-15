@@ -39,7 +39,7 @@
             const char* type = MP4GetTrackType(fileHandle, trackId);
 
             if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
-                track = [MP42Track alloc];
+                track = [MP42AudioTrack alloc];
             else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
                 track = [MP42VideoTrack alloc];
             else if (!strcmp(type, MP4_TEXT_TRACK_TYPE)) {

@@ -10,6 +10,7 @@
 #import "mp4v2.h"
 #import "MP42Track.h"
 #import "MP42VideoTrack.h"
+#import "MP42AudioTrack.h"
 #import "MP42SubtitleTrack.h"
 #import "MP42ChapterTrack.h"
 #import "MP42Metadata.h"
