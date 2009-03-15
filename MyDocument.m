@@ -487,16 +487,14 @@ returnCode contextInfo: (void *) contextInfo
     if (tracksToBeImported) {
         for (id track in tracksToBeImported)
             [mp4File addTrack:track];
-     
+
+        [self updateChangeCount:NSChangeDone];
         [fileTracksTable reloadData];
     }
 
     [NSApp endSheet:[importWindow window]];
     [[importWindow window] orderOut:self];
     [importWindow release];
-
-    [self updateChangeCount:NSChangeDone];
-
 }
 
 // Drag & Drop

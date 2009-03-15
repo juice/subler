@@ -8,7 +8,6 @@
 
 #import "FileImport.h"
 
-
 @implementation FileImport
 
 - (id)initWithDelegate:(id)del andFile: (NSString *)path
