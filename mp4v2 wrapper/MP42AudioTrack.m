@@ -39,8 +39,8 @@
     if (isEdited && !muxed && sourceId) {
         Id = muxMP4AudioTrack(fileHandle, sourcePath, sourceId);
     }
-
-    [super writeToFile:fileHandle error:outError];
+    if (Id)
+        [super writeToFile:fileHandle error:outError];
 
     return YES;
 }

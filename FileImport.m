@@ -21,7 +21,7 @@
 
         NSInteger i = [sourceFile tracksCount];
         while (i) {
-            [importCheckArray addObject: [NSNumber numberWithBool:YES]];
+            [importCheckArray addObject: [NSNumber numberWithBool:NO]];
             i--;
         }
     }

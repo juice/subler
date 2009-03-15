@@ -189,10 +189,9 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
 NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId videoTrack)
 {
     NSString *language;
-    char* lang = malloc(sizeof(char)*4);
+    char lang[4] = "";
     MP4GetTrackLanguage(fileHandle, videoTrack, lang);
     language = [NSString stringWithFormat:@"%s", lang_for_code2(lang)->eng_name];
-    free(lang);
     
     return language;
 }

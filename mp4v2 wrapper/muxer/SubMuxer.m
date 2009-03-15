@@ -142,15 +142,109 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
 
 int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sourceTrackId)
 {
-    BOOL success = YES;
     MP4FileHandle sourceFileHandle;
+    MP4TrackId videoTrack;
+    float width, height;
+    uint32_t offsetX, offsetY;
+    char lang[4] = "";
+    uint8_t *val;
+    uint8_t nval[36];
+    uint32_t *ptr32 = (uint32_t*) nval;
+    uint32_t size;
 
-    sourceFileHandle = MP4Read([filePath UTF8String], MP4_DETAILS_ERROR);
-    MP4TrackId subtitleTrackId;
+    videoTrack = findFirstVideoTrack(fileHandle);
+    if (!videoTrack)
+        return 0;
+    
+    sourceFileHandle = MP4Read([filePath UTF8String], MP4_DETAILS_ERROR || MP4_DETAILS_READ);
 
-    success = subtitleTrackId = MP4CopyTrack(sourceFileHandle, sourceTrackId, fileHandle, YES, MP4_INVALID_TRACK_ID);
+    MP4GetTrackLanguage(sourceFileHandle, sourceTrackId, lang);
+    MP4GetTrackFloatProperty(sourceFileHandle, sourceTrackId, "tkhd.width", &width);
+    MP4GetTrackFloatProperty(sourceFileHandle, sourceTrackId, "tkhd.height", &height);
+    MP4GetTrackBytesProperty(sourceFileHandle ,sourceTrackId, "tkhd.matrix", &val, &size);
+    memcpy(nval, val, size);
+    offsetX = CFSwapInt32HostToBig(ptr32[6]) / 0x10000;
+    offsetY = CFSwapInt32HostToBig(ptr32[7]) / 0x10000;
+    
+    free(val);
+
+    bool copySamples = true;  // LATER allow false => reference samples
+
+    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang , 320, 240, 60);//width, height + offsetY, height);
+
+    int applyEdits = 0;
+    if (dstTrackId == MP4_INVALID_TRACK_ID) {
+        return dstTrackId;
+    }
+    
+    bool viaEdits =
+    applyEdits && MP4GetTrackNumberOfEdits(sourceFileHandle, sourceTrackId);
+    
+    MP4SampleId sampleId = 0;
+    MP4SampleId numSamples =
+    MP4GetTrackNumberOfSamples(sourceFileHandle, sourceTrackId);
+    
+    MP4Timestamp when = 0;
+    MP4Duration editsDuration =
+    MP4GetTrackEditTotalDuration(sourceFileHandle, sourceTrackId, MP4_INVALID_EDIT_ID);
+    
+    while (true) {
+        MP4Duration sampleDuration = MP4_INVALID_DURATION;
+        
+        if (viaEdits) {
+            sampleId = MP4GetSampleIdFromEditTime(
+                                                  sourceFileHandle,
+                                                  sourceTrackId,
+                                                  when,
+                                                  NULL,
+                                                  &sampleDuration);
+            
+            // in theory, this shouldn't happen
+            if (sampleId == MP4_INVALID_SAMPLE_ID) {
+                MP4DeleteTrack(fileHandle, dstTrackId);
+                return MP4_INVALID_TRACK_ID;
+            }
+            
+            when += sampleDuration;
+            
+            if (when >= editsDuration) {
+                break;
+            }
+        } else {
+            sampleId++;
+            if (sampleId > numSamples) {
+                break;
+            }
+        }
+        
+        bool rc = false;
+        
+        if (copySamples) {
+            rc = MP4CopySample(
+                               sourceFileHandle,
+                               sourceTrackId,
+                               sampleId,
+                               fileHandle,
+                               dstTrackId,
+                               sampleDuration);
+
+        } else {
+            rc = MP4ReferenceSample(
+                                    sourceFileHandle,
+                                    sourceTrackId,
+                                    sampleId,
+                                    fileHandle,
+                                    dstTrackId,
+                                    sampleDuration);
+        }
+        
+        if (!rc) {
+            MP4DeleteTrack(fileHandle, dstTrackId);
+            return MP4_INVALID_TRACK_ID;
+        }
+    }
 
     MP4Close(sourceFileHandle);
-
-    return success;
+    return dstTrackId;
+    
 }

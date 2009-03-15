@@ -85,7 +85,7 @@
                  [[sourcePath pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame)
             success = muxMP4SubtitleTrack(fileHandle,
                                           sourcePath,
-                                          Id);
+                                          sourceId);
 
         if (!success && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];

@@ -458,7 +458,7 @@ returnCode contextInfo: (void *) contextInfo
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = YES;
-    
+
     [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
@@ -471,7 +471,7 @@ returnCode contextInfo: (void *) contextInfo
     if (returnCode != NSOKButton)
         return;
 
-    [self performSelector:@selector(showImportSheet:) withObject:[sheet.filenames objectAtIndex: 0] afterDelay: 0.0];
+    [self performSelectorOnMainThread:@selector(showImportSheet:) withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
 }
 
 - (void) showImportSheet: (NSString *) filePath
