@@ -48,6 +48,9 @@
         [[propertyView view] setFrame:[targetView bounds]];
         [targetView addSubview: [propertyView view]];
     }
+    
+    [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
+                                   NSColorPboardType, NSFilenamesPboardType, nil]];
 }
 
 - (void) reloadFile: (id) sender
@@ -427,6 +430,49 @@ returnCode contextInfo: (void *) contextInfo
 
     [fileTracksTable reloadData];
     [self updateChangeCount:NSChangeDone];
+}
+
+// Drag & Drop
+
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pboard;
+    NSDragOperation sourceDragMask;
+    
+    sourceDragMask = [sender draggingSourceOperationMask];
+    pboard = [sender draggingPasteboard];
+    
+    if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
+         if (sourceDragMask & NSDragOperationCopy) {
+            return NSDragOperationCopy;
+         }
+    }
+    return NSDragOperationNone;
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pboard;
+    NSDragOperation sourceDragMask;
+    
+    sourceDragMask = [sender draggingSourceOperationMask];
+    pboard = [sender draggingPasteboard];
+    
+    if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
+        NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
+        for (NSString * file in files)
+        {
+            if ([[file pathExtension] caseInsensitiveCompare: @"txt"] == NSOrderedSame)
+            {
+                [self addChapterTrack:file];
+            }
+            else if ([[file pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame)
+            {
+                [subtitleFilePath setStringValue:file];
+                [self addSubtitleTrack:self];
+            }
+        }
+        return YES;
+    }
+    return NO;
 }
 
 -(void) dealloc

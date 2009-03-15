@@ -48,7 +48,7 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
         format = @"3GPP Text";
         sourcePath = [filePath retain];
         delay = subDelay;
-        height = subHeight;
+        trackHeight = subHeight;
         if (!subLanguage)
             language = @"English";
         else
@@ -81,7 +81,7 @@ int muxSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const cha
         success = muxSubtitleTrack(fileHandle,
                                sourcePath,
                                lang_for_english([language UTF8String])->iso639_2,
-                               height,
+                               trackHeight,
                                delay);
     
         if ((!success) && (outError != NULL)) {

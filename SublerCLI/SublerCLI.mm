@@ -70,6 +70,10 @@ int main (int argc, const char * argv[]) {
         MP42File *mp4File;
         mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:input_file encoding:NSUTF8StringEncoding]
                                              andDelegate:nil];
+        if (!mp4File) {
+            printf("Error: %s\n", "the mp4 file couln't be open.");
+            return -1;
+        }
 
         MP42SubtitleTrack * subTrack = [MP42SubtitleTrack subtitleTrackFromFile:[NSString stringWithCString:input_sub
                                                                                                    encoding:NSUTF8StringEncoding]
