@@ -94,6 +94,8 @@
 
 @synthesize sourcePath;
 @synthesize Id;
+@synthesize sourceId;
+
 @synthesize format;
 @synthesize name;
 @synthesize language;

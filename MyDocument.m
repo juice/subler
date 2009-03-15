@@ -12,6 +12,7 @@
 #import "MovieViewController.h"
 #import "VideoViewController.h"
 #import "ChapterViewController.h"
+#import "FileImport.h"
 
 @implementation MyDocument
 
@@ -143,6 +144,7 @@
 
         return NO;
 	}
+
     return YES;
 }
 
@@ -182,6 +184,9 @@
             return YES;
 
     if (action == @selector(selectChapterFile:))
+        return YES;
+    
+    if (action == @selector(selectFile:))
         return YES;
 
     if (action == @selector(deleteTrack:))
@@ -443,6 +448,55 @@ returnCode contextInfo: (void *) contextInfo
 
     [fileTracksTable reloadData];
     [self updateChangeCount:NSChangeDone];
+}
+
+// Import tracks from mp4 file
+
+- (IBAction) selectFile: (id) sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.allowsMultipleSelection = NO;
+    panel.canChooseFiles = YES;
+    panel.canChooseDirectories = YES;
+    
+    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", nil]
+                   modalForWindow: documentWindow modalDelegate: self
+                   didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
+                      contextInfo: nil];                                                      
+}
+
+- (void) selectFileDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
+returnCode contextInfo: (void *) contextInfo
+{
+    if (returnCode != NSOKButton)
+        return;
+
+    [self performSelector:@selector(showImportSheet:) withObject:[sheet.filenames objectAtIndex: 0] afterDelay: 0.0];
+}
+
+- (void) showImportSheet: (NSString *) filePath
+{
+    importWindow = [[FileImport alloc] initWithDelegate:self andFile:filePath];
+
+    [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
+        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+}
+
+- (void) importDone: (NSArray*) tracksToBeImported
+{
+    if (tracksToBeImported) {
+        for (id track in tracksToBeImported)
+            [mp4File addTrack:track];
+     
+        [fileTracksTable reloadData];
+    }
+
+    [NSApp endSheet:[importWindow window]];
+    [[importWindow window] orderOut:self];
+    [importWindow release];
+
+    [self updateChangeCount:NSChangeDone];
+
 }
 
 // Drag & Drop

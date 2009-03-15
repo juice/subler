@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class MP42File;
+@class FileImport;
 
 @interface MyDocument : NSDocument
 {
@@ -34,6 +35,7 @@
 
     NSViewController        *propertyView;
     IBOutlet NSView         *targetView;
+    FileImport              *importWindow;
 
     IBOutlet NSProgressIndicator *optBar;
 }
@@ -43,6 +45,7 @@
 - (IBAction) openBrowse: (id) sender;
 - (IBAction) addSubtitleTrack: (id) sender;
 - (IBAction) selectChapterFile: (id) sender;
+- (IBAction) selectFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 
 @end

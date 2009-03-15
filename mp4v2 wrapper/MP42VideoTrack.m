@@ -49,7 +49,7 @@
 
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
-    if (!fileHandle || !Id)
+    if (!fileHandle)
         return NO;
 
     if (Id && muxed) {
@@ -71,8 +71,8 @@
         
         free(val);
     }
-    else if (isEdited && !muxed && Id) {
-        muxMP4VideoTrack(fileHandle, sourcePath, Id);
+    else if (isEdited && !muxed && sourceId) {
+        muxMP4VideoTrack(fileHandle, sourcePath, sourceId);
     }
     return YES;
 }

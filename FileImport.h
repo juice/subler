@@ -10,7 +10,20 @@
 #import "MP42File.h"
 
 @interface FileImport : NSWindowController {
-    MP42File *sourceFile;
+    MP42File        *sourceFile;
+    NSString        *filePath;
+    NSMutableArray  *importCheckArray;
+
+    id delegate;
 }
+
+- (id)initWithDelegate:(id)del andFile: (NSString *)path;
+- (IBAction) closeWindow: (id) sender;
+- (IBAction) addTracks: (id) sender;
+
+@end
+
+@interface NSObject (FileImportDelegateMethod)
+- (void) importDone: (NSArray*) tracksToBeImported;
 
 @end
