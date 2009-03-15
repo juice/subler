@@ -113,7 +113,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
     if (success) {
         int firstSub = 0;
 
-        success = subtitleTrackId = createSubtitleTrack(fileHandle, 1, lang, videoWidth, videoHeight, subtitleHeight);
+        success = subtitleTrackId = createSubtitleTrack(fileHandle, videoTrack, lang, videoWidth, videoHeight, subtitleHeight);
 
         while (![ss isEmpty]) {
             SubLine *sl = [ss getSerializedPacket];

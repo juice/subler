@@ -8,7 +8,6 @@
 
 #import "MyDocument.h"
 #import "MP42File.h"
-#import "MP42Utilities.h"
 #import "EmptyViewController.h"
 #import "MovieViewController.h"
 #import "VideoViewController.h"
@@ -468,16 +467,12 @@ returnCode contextInfo: (void *) contextInfo
         for (NSString * file in files)
         {
             if ([[file pathExtension] caseInsensitiveCompare: @"txt"] == NSOrderedSame)
-            {
                 [self addChapterTrack:file];
-            }
             else if ([[file pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame)
-            {
                 [self addSubtitleTrack:file
                                  delay:0
                                 height:60
                               language:getFilenameLanguage((CFStringRef)file)];
-            }
         }
         return YES;
     }

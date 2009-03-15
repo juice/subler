@@ -7,7 +7,6 @@
 //
 
 #import "MP42File.h"
-#import "MP42Utilities.h"
 
 @interface MP42File (Private)
 

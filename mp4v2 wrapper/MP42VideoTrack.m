@@ -71,7 +71,7 @@
         
         free(val);
     }
-    else if (isEdited && !muxed) {
+    else if (isEdited && !muxed && Id) {
         muxMP4VideoTrack(fileHandle, sourcePath, Id);
     }
     return YES;
