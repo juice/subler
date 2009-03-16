@@ -76,8 +76,12 @@
     return [tracks objectAtIndex:index];
 }
 
-- (void)addTrack:(id) track
+- (void)addTrack:(MP42Track *) track
 {
+    track.sourceId = track.Id;
+    track.Id = 0;
+    track.muxed = NO;
+    track.isEdited = YES;
     [tracks addObject:track];
 }
 

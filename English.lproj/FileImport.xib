@@ -179,9 +179,9 @@
 												</object>
 												<object class="NSTableColumn" id="168533613">
 													<string key="NSIdentifier">trackName</string>
-													<double key="NSWidth">1.500000e+02</double>
+													<double key="NSWidth">1.600000e+02</double>
 													<double key="NSMinWidth">4.000000e+01</double>
-													<double key="NSMaxWidth">1.500000e+02</double>
+													<double key="NSMaxWidth">1.600000e+02</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
 														<int key="NSCellFlags">75628032</int>
 														<int key="NSCellFlags2">0</int>
@@ -213,9 +213,9 @@
 												</object>
 												<object class="NSTableColumn" id="123111535">
 													<string key="NSIdentifier">trackDuration</string>
-													<double key="NSWidth">8.000000e+01</double>
+													<double key="NSWidth">9.000000e+01</double>
 													<double key="NSMinWidth">1.000000e+01</double>
-													<double key="NSMaxWidth">1.600000e+02</double>
+													<double key="NSMaxWidth">9.000000e+01</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
 														<int key="NSCellFlags">75628032</int>
 														<int key="NSCellFlags2">0</int>
@@ -239,7 +239,7 @@
 												</object>
 												<object class="NSTableColumn" id="863736890">
 													<string key="NSIdentifier">trackLanguage</string>
-													<double key="NSWidth">8.000000e+01</double>
+													<double key="NSWidth">7.000000e+01</double>
 													<double key="NSMinWidth">1.000000e+01</double>
 													<double key="NSMaxWidth">1.000000e+02</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -265,7 +265,7 @@
 												</object>
 												<object class="NSTableColumn" id="596693342">
 													<string key="NSIdentifier">trackInfo</string>
-													<double key="NSWidth">8.000000e+01</double>
+													<double key="NSWidth">7.000000e+01</double>
 													<double key="NSMinWidth">1.000000e+01</double>
 													<double key="NSMaxWidth">1.000000e+02</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">

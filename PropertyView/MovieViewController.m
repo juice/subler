@@ -38,7 +38,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (void) awakeFromNib
 {
-    tagsMenu = [[NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil] retain];
+    tagsMenu = [[metadata writableMetaData] retain];
     for (id tag in tagsMenu)
         [tagList addItemWithTitle:tag];
 
@@ -123,7 +123,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     NSString *tagName = [[sender selectedItem] title];
 
     if (![metadata.tagsDict valueForKey:tagName]) {
-        [metadata.tagsDict setObject:@"Empty" forKey:tagName];
+        [metadata.tagsDict setObject:@"" forKey:tagName];
         [self updateTagsArray];
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         [tagsTableView reloadData];
@@ -135,8 +135,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
     if (rowIndex != -1) {
         NSString *tagName = [tagsArray objectAtIndex:rowIndex];
-        [metadata.tagsDict removeObjectForKey:tagName];
-        metadata.isEdited = YES;
+        [metadata removeTagForKey:tagName];
         [self updateTagsArray];
         
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
@@ -174,17 +173,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
     NSString *tagName = [tagsArray objectAtIndex:rowIndex];
 
-    if ([tableColumn.identifier isEqualToString:@"value"]) {
-        if (![[tags valueForKey:tagName] isEqualToString:anObject]) {
-            [tags setValue:anObject forKey:tagName];
-
-            metadata.isEdited = YES;
+    if ([tableColumn.identifier isEqualToString:@"value"])
+        if ([metadata setTag:anObject forKey:tagName]) {
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
 
             [tagsTableView noteHeightOfRowsWithIndexesChanged:
              [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [tagsTableView numberOfRows])]];
         }
-    }
 }
 
 - (CGFloat) tableView: (NSTableView *) tableView

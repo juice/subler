@@ -96,13 +96,6 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             [tracks addObject:[sourceFile trackAtIndex:i]];
     }
 
-    for (MP42Track* track in tracks) {
-        track.sourceId = track.Id;
-        track.Id = 0;
-        track.muxed = NO;
-        track.isEdited = YES;
-    }
-
     if ([delegate respondsToSelector:@selector(importDone:)]) 
         [delegate importDone:[tracks autorelease]];
 }

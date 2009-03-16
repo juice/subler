@@ -23,6 +23,11 @@
 }
 
 - (id) initWithSourcePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle;
+- (NSArray *) writableMetaData;
+
+- (void) removeTagForKey:(id)aKey;
+- (BOOL) setTag:(id)value forKey:(NSString *)key;
+
 - (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *) fileHandle;
 
 @property(readonly) NSMutableDictionary    *tagsDict;

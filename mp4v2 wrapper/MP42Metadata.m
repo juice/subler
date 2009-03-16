@@ -32,6 +32,33 @@
     return self;
 }
 
+- (NSArray *) availableMetaData
+{
+    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+}
+
+- (NSArray *) writableMetaData
+{
+    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+}
+
+- (void) removeTagForKey:(id)aKey
+{
+    [tagsDict removeObjectForKey:aKey];
+    isEdited = YES;
+}
+
+- (BOOL) setTag:(id)value forKey:(NSString *)key;
+{
+    if (![[tagsDict valueForKey:key] isEqualToString:value]) {
+        [tagsDict setValue:value forKey:key];
+        isEdited = YES;
+        return YES;
+    }
+    else
+        return NO;
+}
+
 -(void) readMetaDataFromFileHandle:(MP4FileHandle)sourceHandle
 {
     const MP4Tags* tags = MP4TagsAlloc();
