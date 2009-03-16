@@ -125,23 +125,6 @@
         free(fileChapters);
         Id = findChapterTrackId(fileHandle);
     }
-    else if (isEdited && !muxed && sourceId)
-    {
-        MP4Chapter_t * fileChapters = 0;
-        uint32_t chapterCount = 0;
-        MP4FileHandle sourceFileHandle;
-        MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
-        if (!refTrack)
-            refTrack = 1;        
-
-        sourceFileHandle = MP4Read([sourcePath UTF8String], 0);
-
-        MP4GetChapters(sourceFileHandle, &fileChapters, &chapterCount, MP4ChapterTypeQt);
-        success = MP4AddChapterTextTrack(fileHandle, 1, 1000);
-        success = MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeAny);
-        MP4Close(sourceFileHandle);
-        free(fileChapters);
-    }
     if (!success) {
         if ( outError != NULL) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];

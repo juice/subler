@@ -10,12 +10,14 @@
 #import "mp4v2.h"
 
 @interface MP42Track : NSObject {
-    MP4TrackId   Id;
+    MP4TrackId  Id;
     MP4TrackId  sourceId;
 	NSString    *sourcePath;
 	NSString    *format;
     NSString    *name;
     NSString    *language;
+    BOOL        enabled;
+    int16_t     alternate_group;
 
     BOOL    isEdited;
     BOOL    isDataEdited;

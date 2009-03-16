@@ -132,7 +132,7 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
     NSString    *name;
     u_int8_t    *value;
     u_int32_t    valueSize;
-
+    
     if (MP4HaveTrackAtom(fileHandle, videoTrack, "udta.name")) {
         MP4GetTrackBytesProperty(fileHandle, videoTrack,
                                  "udta.name.value",
@@ -144,22 +144,21 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
         name = [NSString stringWithCString: trackName];
         free(trackName);
         free(value);
-
-        return name;
+        
+        if (![name isEqualToString:@""])
+            return name;
     }
-    else {
-        const char* type = MP4GetTrackType(fileHandle, videoTrack);
-        if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
-            return NSLocalizedString(@"Audio Track", @"Audio Track");
-        else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
-            return NSLocalizedString(@"Video Track", @"Video Track");
-        else if (!strcmp(type, MP4_TEXT_TRACK_TYPE))
-            return NSLocalizedString(@"Text Track", @"Text Track");
-        else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
-            return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
-        else
-            return NSLocalizedString(@"Unknown Track", @"Unknown Track");
-    }
+    const char* type = MP4GetTrackType(fileHandle, videoTrack);
+    if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
+        return NSLocalizedString(@"Audio Track", @"Audio Track");
+    else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
+        return NSLocalizedString(@"Video Track", @"Video Track");
+    else if (!strcmp(type, MP4_TEXT_TRACK_TYPE))
+        return NSLocalizedString(@"Text Track", @"Text Track");
+    else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
+        return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
+    else
+        return NSLocalizedString(@"Unknown Track", @"Unknown Track");
 }
 
 NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
@@ -204,39 +203,39 @@ NSString* getFilenameLanguage(CFStringRef filename)
 	CFStringRef baseName = NULL;
 	CFStringRef langStr = NULL;
 	NSString *lang = @"English";
-	
+
 	// find and strip the extension
 	findResult = CFStringFind(filename, CFSTR("."), kCFCompareBackwards);
 	findResult.length = findResult.location;
 	findResult.location = 0;
 	baseName = CFStringCreateWithSubstring(NULL, filename, findResult);
-	
+
 	// then find the previous period
 	findResult = CFStringFind(baseName, CFSTR("."), kCFCompareBackwards);
 	findResult.location++;
 	findResult.length = CFStringGetLength(baseName) - findResult.location;
-	
+
 	// check for 3 char language code
 	if (findResult.length == 3) {
 		char langCStr[4] = "";
-		
+
 		langStr = CFStringCreateWithSubstring(NULL, baseName, findResult);
 		CFStringGetCString(langStr, langCStr, 4, kCFStringEncodingASCII);
         lang = [NSString stringWithFormat:@"%s", lang_for_code2(langCStr)->eng_name];
-		
+
 		CFRelease(langStr);
-		
+
 		// and for a 2 char language code
 	} else if (findResult.length == 2) {
 		char langCStr[3] = "";
-		
+
 		langStr = CFStringCreateWithSubstring(NULL, baseName, findResult);
 		CFStringGetCString(langStr, langCStr, 3, kCFStringEncodingASCII);
         lang = [NSString stringWithFormat:@"%s", lang_for_code2(langCStr)->eng_name];
-		
+
 		CFRelease(langStr);
 	}
-	
+
 	CFRelease(baseName);
 	return lang;
 }

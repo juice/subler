@@ -36,7 +36,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     return rc;
 }
 
-- (void) awakeFromNib
+- (void)awakeFromNib
 {
     tagsMenu = [[metadata writableMetaData] retain];
     for (id tag in tagsMenu)
@@ -62,6 +62,21 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     tabCol = [[[tagsTableView tableColumns] objectAtIndex:1] retain];
     
     tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:tagsMenu] retain];
+
+    [tagsTableView setDoubleAction:@selector(doubleClickAction:)];
+    [tagsTableView setTarget:self];
+}
+
+- (IBAction)doubleClickAction:(id)sender
+{
+    // make sure they clicked a real cell and not a header or empty row
+    if ([sender clickedRow] != -1 && [sender clickedColumn] == 1) { 
+        // edit the cell
+        [sender editColumn:[sender clickedColumn] 
+                       row:[sender clickedRow]
+                 withEvent:nil
+                    select:YES];
+    }
 }
 
 - (void) setFile: (MP42File *)file

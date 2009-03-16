@@ -12,15 +12,14 @@
 
 int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sourceTrackId)
 {
-    BOOL success = YES;
     MP4FileHandle sourceFileHandle;
 
     sourceFileHandle = MP4Read([filePath UTF8String], 0);
     MP4TrackId videoTrackId;
 
-    success = videoTrackId = MP4CopyTrack(sourceFileHandle, sourceTrackId, fileHandle, YES, MP4_INVALID_TRACK_ID);
+    videoTrackId = MP4CopyTrack(sourceFileHandle, sourceTrackId, fileHandle, YES, MP4_INVALID_TRACK_ID);
 
     MP4Close(sourceFileHandle);
 
-    return success;
+    return videoTrackId;
 }

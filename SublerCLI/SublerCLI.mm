@@ -75,13 +75,12 @@ int main (int argc, const char * argv[]) {
             return -1;
         }
 
-        MP42SubtitleTrack * subTrack = [MP42SubtitleTrack subtitleTrackFromFile:[NSString stringWithCString:input_sub
+        [mp4File addTrack:[MP42SubtitleTrack subtitleTrackFromFile:[NSString stringWithCString:input_sub
                                                                                                    encoding:NSUTF8StringEncoding]
                                                                           delay:delay
                                                                          height:height
                                                                        language:[NSString stringWithCString:language
-                                                                                                   encoding:NSUTF8StringEncoding]];
-        [mp4File addTrack:subTrack];
+                                                                                                   encoding:NSUTF8StringEncoding]]];
 
         if (![mp4File updateMP4File:&outError]) {
             printf("Error: %s\n", [[outError localizedDescription] UTF8String]);

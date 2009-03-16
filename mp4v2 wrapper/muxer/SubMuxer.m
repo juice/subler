@@ -145,33 +145,25 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
     MP4FileHandle sourceFileHandle;
     MP4TrackId videoTrack;
     float width, height;
-    uint32_t offsetX, offsetY;
+    uint16_t videoWidth, videoHeight;
     char lang[4] = "";
-    uint8_t *val;
-    uint8_t nval[36];
-    uint32_t *ptr32 = (uint32_t*) nval;
-    uint32_t size;
 
     videoTrack = findFirstVideoTrack(fileHandle);
     if (!videoTrack)
         return 0;
-    
+
+    videoWidth = getFixedVideoWidth(fileHandle, videoTrack);
+    videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
+
     sourceFileHandle = MP4Read([filePath UTF8String], MP4_DETAILS_ERROR || MP4_DETAILS_READ);
 
     MP4GetTrackLanguage(sourceFileHandle, sourceTrackId, lang);
     MP4GetTrackFloatProperty(sourceFileHandle, sourceTrackId, "tkhd.width", &width);
     MP4GetTrackFloatProperty(sourceFileHandle, sourceTrackId, "tkhd.height", &height);
-    MP4GetTrackBytesProperty(sourceFileHandle ,sourceTrackId, "tkhd.matrix", &val, &size);
-    memcpy(nval, val, size);
-    offsetX = CFSwapInt32HostToBig(ptr32[6]) / 0x10000;
-    offsetY = CFSwapInt32HostToBig(ptr32[7]) / 0x10000;
-    
-    free(val);
 
     bool copySamples = true;  // LATER allow false => reference samples
 
-    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang , 320, 240, 60);//width, height + offsetY, height);
-
+    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang , videoWidth, videoHeight, height);
     int applyEdits = 0;
     if (dstTrackId == MP4_INVALID_TRACK_ID) {
         return dstTrackId;
@@ -202,6 +194,7 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
             // in theory, this shouldn't happen
             if (sampleId == MP4_INVALID_SAMPLE_ID) {
                 MP4DeleteTrack(fileHandle, dstTrackId);
+                MP4Close(sourceFileHandle);
                 return MP4_INVALID_TRACK_ID;
             }
             
@@ -240,11 +233,11 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
         
         if (!rc) {
             MP4DeleteTrack(fileHandle, dstTrackId);
+            MP4Close(sourceFileHandle);
             return MP4_INVALID_TRACK_ID;
         }
     }
 
     MP4Close(sourceFileHandle);
     return dstTrackId;
-    
 }

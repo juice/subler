@@ -76,12 +76,22 @@
     return [tracks objectAtIndex:index];
 }
 
-- (void)addTrack:(MP42Track *) track
+- (void)addTrack:(id) object
 {
+    MP42Track *track = (MP42Track *) object;
     track.sourceId = track.Id;
     track.Id = 0;
     track.muxed = NO;
     track.isEdited = YES;
+    track.isDataEdited = YES;
+    if ([track isMemberOfClass:[MP42ChapterTrack class]]) {
+        for (id previousTrack in tracks)
+            if ([previousTrack isMemberOfClass:[MP42ChapterTrack class]]) {
+                [tracks removeObject:previousTrack];
+                break;
+        }
+    }
+
     [tracks addObject:track];
 }
 

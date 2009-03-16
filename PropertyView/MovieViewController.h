@@ -19,7 +19,7 @@
     MP42Metadata            *metadata;
 
     IBOutlet NSPopUpButton  *tagList;
-    IBOutlet TagsTableView    *tagsTableView;
+    IBOutlet TagsTableView  *tagsTableView;
 
     IBOutlet NSImageView    *imageView;
     IBOutlet NSPopUpButton  *mediaKind;

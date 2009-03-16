@@ -59,8 +59,17 @@
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
     BOOL err;
-    if (!fileHandle || !Id)
-        return NO;
+    if (!fileHandle || !Id) {
+        if ( outError != NULL) {
+            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+            [errorDetail setValue:@"Failed to modify track" forKey:NSLocalizedDescriptionKey];
+            *outError = [NSError errorWithDomain:@"MP42Error"
+                                            code:120
+                                        userInfo:errorDetail];
+            return NO;
+
+        }
+    }
 
     err = MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
 

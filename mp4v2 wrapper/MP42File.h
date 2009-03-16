@@ -35,7 +35,7 @@
 - (id)   initWithExistingFile:(NSString *) path andDelegate:(id) del;
 - (NSInteger) tracksCount;
 - (id)   trackAtIndex:(NSUInteger) index;
-- (void) addTrack:(id) track;
+- (void) addTrack:(id) object;
 - (void) removeTrackAtIndex:(NSUInteger) index;
 
 - (BOOL) updateMP4File:(NSError **)outError;

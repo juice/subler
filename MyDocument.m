@@ -335,14 +335,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void) addChapterTrack: (NSString *) path
 {
-    for (id previousTrack in mp4File.tracks)
-        if ([previousTrack isMemberOfClass:[MP42ChapterTrack class]]) {
-            [mp4File.tracks removeObject:previousTrack];
-            break;
-        }
-
-    MP42ChapterTrack *track = [MP42ChapterTrack chapterTrackFromFile:path];
-    [mp4File addTrack:track];
+    [mp4File addTrack:[MP42ChapterTrack chapterTrackFromFile:path]];
 
     [fileTracksTable reloadData];
     [self updateChangeCount:NSChangeDone];
@@ -417,12 +410,10 @@ returnCode contextInfo: (void *) contextInfo
                  language:(NSString *)subLanguage
 
 {
-    MP42SubtitleTrack *track = [MP42SubtitleTrack subtitleTrackFromFile:filePath
-                                                                  delay:subDelay
-                                                                 height:subHeight
-                                                               language:subLanguage];
-
-    [mp4File addTrack:track];
+    [mp4File addTrack:[MP42SubtitleTrack subtitleTrackFromFile:filePath
+                                                         delay:subDelay
+                                                        height:subHeight
+                                                      language:subLanguage]];
 
     [fileTracksTable reloadData];
     [self updateChangeCount:NSChangeDone];
@@ -525,6 +516,10 @@ returnCode contextInfo: (void *) contextInfo
                                  delay:0
                                 height:60
                               language:getFilenameLanguage((CFStringRef)file)];
+            else if ([[file pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame)
+                [self showImportSheet:file];
         }
         return YES;
     }

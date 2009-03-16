@@ -22,6 +22,10 @@
 		A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3550F59E17A00885A49 /* libuniversaldetector.a */; };
 		A98ED4030F59E28300885A49 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED4020F59E28300885A49 /* Cocoa.framework */; };
 		A99530FA0F65699A00EC456B /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A99530F80F65699A00EC456B /* MP42VideoTrack.m */; };
+		A9EAE1190F6E7FB1002853C9 /* AudioMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */; };
+		A9EAE11A0F6E7FB1002853C9 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */; };
+		A9EAE11B0F6E7FB1002853C9 /* VideoMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */; };
+		A9EAE11E0F6E7FBB002853C9 /* MP42AudioTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +100,14 @@
 		A98ED4020F59E28300885A49 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A99530F80F65699A00EC456B /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42VideoTrack.m; sourceTree = "<group>"; };
 		A99530F90F65699A00EC456B /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42VideoTrack.h; sourceTree = "<group>"; };
+		A9EAE1130F6E7FB1002853C9 /* AudioMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioMuxer.h; sourceTree = "<group>"; };
+		A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioMuxer.m; sourceTree = "<group>"; };
+		A9EAE1150F6E7FB1002853C9 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
+		A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMuxer.m; sourceTree = "<group>"; };
+		A9EAE1170F6E7FB1002853C9 /* VideoMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoMuxer.h; sourceTree = "<group>"; };
+		A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoMuxer.m; sourceTree = "<group>"; };
+		A9EAE11C0F6E7FBB002853C9 /* MP42AudioTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42AudioTrack.h; sourceTree = "<group>"; };
+		A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42AudioTrack.m; sourceTree = "<group>"; };
 		C6859EA3029092ED04C91782 /* SublerCLI.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SublerCLI.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -168,6 +180,8 @@
 				A98ED3050F59E01400885A49 /* MP42Metadata.m */,
 				A99530F80F65699A00EC456B /* MP42VideoTrack.m */,
 				A99530F90F65699A00EC456B /* MP42VideoTrack.h */,
+				A9EAE11C0F6E7FBB002853C9 /* MP42AudioTrack.h */,
+				A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */,
 				A98ED3060F59E01400885A49 /* MP42SubtitleTrack.h */,
 				A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */,
 				A98ED3080F59E01400885A49 /* MP42Track.h */,
@@ -176,6 +190,7 @@
 				A98ED30B0F59E01400885A49 /* MP42Utilities.m */,
 				A98ED2FA0F59E00E00885A49 /* SubUtilities.h */,
 				A98ED2FC0F59E00E00885A49 /* SubUtilities.m */,
+				A9EAE1120F6E7FB1002853C9 /* muxer */,
 			);
 			name = "mp4v2 wrapper";
 			path = "../mp4v2 wrapper";
@@ -199,6 +214,19 @@
 				A98ED3550F59E17A00885A49 /* libuniversaldetector.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A9EAE1120F6E7FB1002853C9 /* muxer */ = {
+			isa = PBXGroup;
+			children = (
+				A9EAE1130F6E7FB1002853C9 /* AudioMuxer.h */,
+				A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */,
+				A9EAE1150F6E7FB1002853C9 /* SubMuxer.h */,
+				A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */,
+				A9EAE1170F6E7FB1002853C9 /* VideoMuxer.h */,
+				A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */,
+			);
+			path = muxer;
 			sourceTree = "<group>";
 		};
 		C6859EA2029092E104C91782 /* Documentation */ = {
@@ -293,6 +321,10 @@
 				A98ED3110F59E01400885A49 /* MP42Utilities.m in Sources */,
 				A98ED3140F59E02300885A49 /* lang.c in Sources */,
 				A99530FA0F65699A00EC456B /* MP42VideoTrack.m in Sources */,
+				A9EAE1190F6E7FB1002853C9 /* AudioMuxer.m in Sources */,
+				A9EAE11A0F6E7FB1002853C9 /* SubMuxer.m in Sources */,
+				A9EAE11B0F6E7FB1002853C9 /* VideoMuxer.m in Sources */,
+				A9EAE11E0F6E7FBB002853C9 /* MP42AudioTrack.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

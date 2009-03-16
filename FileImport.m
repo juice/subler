@@ -21,7 +21,7 @@
 
         NSInteger i = [sourceFile tracksCount];
         while (i) {
-            [importCheckArray addObject: [NSNumber numberWithBool:NO]];
+            [importCheckArray addObject: [NSNumber numberWithBool:YES]];
             i--;
         }
     }
@@ -97,7 +97,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     }
 
     if ([delegate respondsToSelector:@selector(importDone:)]) 
-        [delegate importDone:[tracks autorelease]];
+        [delegate importDone:tracks];
+    [tracks release];
 }
 
 - (void) dealloc
