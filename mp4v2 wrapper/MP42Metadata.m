@@ -327,6 +327,12 @@
             if((tagValue = [newMetadata.tagsDict valueForKey:key]))
                 [tagsDict setObject:tagValue forKey:key];
 
+    if (!artwork) {
+        artwork = [newMetadata.artwork retain];
+        isArtworkEdited = YES;
+    }
+
+    isEdited = YES;
     return YES;
 }
 
