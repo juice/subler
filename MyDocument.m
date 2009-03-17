@@ -49,7 +49,7 @@
         [[propertyView view] setFrame:[targetView bounds]];
         [targetView addSubview: [propertyView view]];
     }
-    
+
     [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
                                    NSColorPboardType, NSFilenamesPboardType, nil]];
 }
@@ -186,6 +186,9 @@
     if (action == @selector(selectChapterFile:))
         return YES;
     
+    if (action == @selector(selectMetadataFile:))
+        return YES;
+
     if (action == @selector(selectFile:))
         return YES;
 
@@ -275,7 +278,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
     if ([propertyView view] != nil)
 		[[propertyView view] removeFromSuperview];	// remove the current view
-    
+
 	if (propertyView != nil)
 		[propertyView release];		// remove the current view controller
 
@@ -488,6 +491,38 @@ returnCode contextInfo: (void *) contextInfo
     [importWindow release];
 }
 
+- (void) addMetadata: (NSString *) path
+{
+    MP42File *file = [[MP42File alloc] initWithExistingFile:path andDelegate:self];
+    [mp4File.metadata mergeMetadata:file.metadata];
+
+    [self tableViewSelectionDidChange:nil];
+    [self updateChangeCount:NSChangeDone];
+    [file release];
+}
+
+- (IBAction) selectMetadataFile: (id) sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.allowsMultipleSelection = NO;
+    panel.canChooseFiles = YES;
+    panel.canChooseDirectories = YES;
+    
+    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", nil]
+                   modalForWindow: documentWindow modalDelegate: self
+                   didEndSelector: @selector( selectMetadataFileDidEnd:returnCode:contextInfo: )
+                      contextInfo: nil];                                                      
+}
+
+- (void) selectMetadataFileDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
+returnCode contextInfo: (void *) contextInfo
+{
+    if (returnCode != NSOKButton)
+        return;
+    
+    [self addMetadata:[sheet.filenames objectAtIndex: 0]];
+
+}
 // Drag & Drop
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {

@@ -319,6 +319,17 @@
     return YES;
 }
 
+- (BOOL) mergeMetadata: (MP42Metadata *) newMetadata
+{
+    NSString * tagValue;
+    for (NSString * key in [self writableMetaData])
+        if(![tagsDict valueForKey:key])
+            if((tagValue = [newMetadata.tagsDict valueForKey:key]))
+                [tagsDict setObject:tagValue forKey:key];
+
+    return YES;
+}
+
 @synthesize isEdited;
 @synthesize isArtworkEdited;
 @synthesize artwork;

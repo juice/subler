@@ -30,6 +30,8 @@
 
 - (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *) fileHandle;
 
+- (BOOL) mergeMetadata: (MP42Metadata *) newMetadata;
+
 @property(readonly) NSMutableDictionary    *tagsDict;
 @property(readwrite, retain) NSImage                 *artwork;
 @property(readwrite) uint8_t    mediaKind;
