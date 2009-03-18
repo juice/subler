@@ -137,14 +137,13 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
         MP4GetTrackBytesProperty(fileHandle, videoTrack,
                                  "udta.name.value",
                                  &value, &valueSize);
-        char * trackName;
-        trackName = malloc(valueSize +2);
+        char * trackName = malloc(valueSize +1);
         memcpy(trackName, value, valueSize);
+        free(value);
         trackName[valueSize] = '\0';
         name = [NSString stringWithCString: trackName];
         free(trackName);
-        free(value);
-        
+
         if (![name isEqualToString:@""])
             return name;
     }

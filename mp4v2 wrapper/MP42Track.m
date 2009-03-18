@@ -79,10 +79,7 @@
         ![name isEqualToString:@"Text Track"] &&
         ![name isEqualToString:@"Chapter Track"] &&
         name != nil) {
-        if (MP4HaveTrackAtom(fileHandle, Id, "udta.name"))
-            MP4SetTrackBytesProperty(fileHandle, Id,
-                                     "udta.name.value",
-                                     (const uint8_t*) [name UTF8String], strlen([name UTF8String]));
+        MP4SetTrackName(fileHandle, Id, [name cStringUsingEncoding: NSMacOSRomanStringEncoding]);
     }
 
     return err;
