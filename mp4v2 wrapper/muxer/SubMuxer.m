@@ -61,19 +61,80 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId,
 	return subtitle_track;
 }
 
-static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId,const char* string, MP4Duration duration)
+static u_int8_t* makeStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16_t fontID, u_int8_t flags, u_int8_t* style)
+{
+    style[0] = (startChar >> 8) & 0xff; // startChar
+    style[1] = startChar & 0xff;;
+    style[2] = (endChar >> 8) & 0xff;   // endChar
+    style[3] = endChar & 0xff;
+    style[4] = (fontID >> 8) & 0xff;   // font-ID
+    style[5] = fontID & 0xff;
+    style[6] = flags;   // face-style-flags: 1 bold; 2 italic; 4 underline
+    style[7] = 24;      // font-size
+    style[8] = 255;     // r
+    style[9] = 255;     // g
+    style[10] = 255;    // b
+    style[11] = 255;    // a
+    
+    return style;
+}
+
+static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration)
 {
     int Err;
-    const size_t stringLength = strlen(string);
-    u_int8_t buffer[1024];
-    memcpy(buffer+2, string, strlen(string)); // strlen > 1024 -> booom?
+    u_int16_t styleCount = 0;
+    u_int8_t styleBuffer[2048];
+    size_t styleSize;
+    memcpy(styleBuffer+4, "styl", 4);
+    
+    NSRange range = [string rangeOfString: @"<i>"];
+    while (range.location != NSNotFound) 
+    {   NSRange startRange;
+        NSRange endRange;
+        
+        startRange = [string rangeOfString: @"<i>"];
+        if (startRange.location != NSNotFound)
+            string = [string stringByReplacingCharactersInRange:startRange withString:@""];
+        else
+            break;
+        endRange = [string rangeOfString: @"</i>"];
+        if (endRange.location != NSNotFound)
+            string = [string stringByReplacingCharactersInRange:endRange withString:@""];
+        else
+            endRange.location = [string length];
+
+        u_int8_t style[12];
+        makeStyleRecord(startRange.location, endRange.location, 1, 2, style);
+        memcpy(styleBuffer+10+(12*styleCount), style, 12);
+        styleCount++;
+
+        NSLog(@"%d %d", range.length, range.location);
+    }
+
+    if (styleCount)
+    {
+        styleSize = 10 + (styleCount * 12);
+        styleBuffer[0] = 0;
+        styleBuffer[1] = 0;
+        styleBuffer[2] = (styleSize >> 8) & 0xff;
+        styleBuffer[3] = styleSize & 0xff;
+        styleBuffer[8] = (styleCount >> 8) & 0xff;
+        styleBuffer[9] = styleCount & 0xff;
+    }
+    else
+        styleSize = 0;
+
+    const size_t stringLength = [string length]-1;
+    u_int8_t buffer[2048];
+    memcpy(buffer+2, [string UTF8String], stringLength);
+    memcpy(buffer +2 + stringLength, styleBuffer, styleSize);
     buffer[0] = (stringLength >> 8) & 0xff;
     buffer[1] = stringLength & 0xff;
-    
+
     Err = MP4WriteSample(file,
                          subtitleTrackId,
                          buffer,
-                         stringLength + 2,
+                         stringLength + styleSize + 2,
                          duration,
                          0, true);
     return Err;
@@ -117,7 +178,6 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
 
         while (![ss isEmpty]) {
             SubLine *sl = [ss getSerializedPacket];
-            const char *str = [sl->line UTF8String];
             if (firstSub == 0) {
                 firstSub++;
                 if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->begin_time + delay))
@@ -128,7 +188,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
                     break;
                 continue;
             }
-            if (!writeSubtitleSample(fileHandle, subtitleTrackId, str, sl->end_time - sl->begin_time))
+            if (!writeSubtitleSample(fileHandle, subtitleTrackId, sl->line, sl->end_time - sl->begin_time))
                 break;
         }
         writeEmptySubtitleSample(fileHandle, subtitleTrackId, 100);

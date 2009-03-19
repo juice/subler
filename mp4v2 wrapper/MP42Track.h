@@ -17,7 +17,7 @@
     NSString    *name;
     NSString    *language;
     BOOL        enabled;
-    int16_t     alternate_group;
+    uint64_t    alternate_group;
 
     BOOL    isEdited;
     BOOL    isDataEdited;

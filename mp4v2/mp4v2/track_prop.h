@@ -139,10 +139,16 @@ bool MP4SetTrackLanguage(
     const char*   code );
 
 MP4V2_EXPORT
+bool MP4GetTrackName(
+    MP4FileHandle hFile,
+    MP4TrackId    trackId,
+    char**   name );
+
+MP4V2_EXPORT
 bool MP4SetTrackName(
     MP4FileHandle hFile,
     MP4TrackId    trackId,
-    const char*   code );
+    const char*   name );
 
 MP4V2_EXPORT
 uint8_t MP4GetTrackAudioMpeg4Type(

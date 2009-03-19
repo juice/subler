@@ -106,48 +106,38 @@ MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle)
     return 0;
 }
 
-uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId videoTrack)
+uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId Id)
 {
     uint16_t videoWidth;
     uint64_t hSpacing, vSpacing;
 
-    videoWidth = MP4GetTrackVideoWidth(fileHandle, videoTrack);
+    videoWidth = MP4GetTrackVideoWidth(fileHandle, Id);
 
-    if (MP4HaveTrackAtom(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp")) {
-        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.hSpacing", &hSpacing);
-        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.avc1.pasp.vSpacing", &vSpacing);
+    if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.avc1.pasp")) {
+        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.avc1.pasp.hSpacing", &hSpacing);
+        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.avc1.pasp.vSpacing", &vSpacing);
         return (float) videoWidth / vSpacing * hSpacing;
     }
-    else if (MP4HaveTrackAtom(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp")) {
-        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.hSpacing", &hSpacing);
-        MP4GetTrackIntegerProperty(fileHandle, videoTrack, "mdia.minf.stbl.stsd.mp4v.pasp.vSpacing", &vSpacing);
+    else if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.mp4v.pasp")) {
+        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.mp4v.pasp.hSpacing", &hSpacing);
+        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.mp4v.pasp.vSpacing", &vSpacing);
         return (float) videoWidth / vSpacing * hSpacing;
     }
     
     return videoWidth;
 }
 
-NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
+NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
 {
-    NSString    *name;
-    u_int8_t    *value;
-    u_int32_t    valueSize;
-    
-    if (MP4HaveTrackAtom(fileHandle, videoTrack, "udta.name")) {
-        MP4GetTrackBytesProperty(fileHandle, videoTrack,
-                                 "udta.name.value",
-                                 &value, &valueSize);
-        char * trackName = malloc(valueSize +1);
-        memcpy(trackName, value, valueSize);
-        free(value);
-        trackName[valueSize] = '\0';
-        name = [NSString stringWithCString: trackName];
-        free(trackName);
+    char *trackName;
 
-        if (![name isEqualToString:@""])
-            return name;
+    if (MP4GetTrackName(fileHandle, Id, &trackName)) {
+        NSString * name = [NSString stringWithCString: trackName];
+        free(trackName);
+        return name;
     }
-    const char* type = MP4GetTrackType(fileHandle, videoTrack);
+
+    const char* type = MP4GetTrackType(fileHandle, Id);
     if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
         return NSLocalizedString(@"Audio Track", @"Audio Track");
     else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
@@ -160,15 +150,15 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
         return NSLocalizedString(@"Unknown Track", @"Unknown Track");
 }
 
-NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackId videoTrack)
+NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackId Id)
 {
-    const char* dataName = MP4GetTrackMediaDataName(fileHandle, videoTrack);
+    const char* dataName = MP4GetTrackMediaDataName(fileHandle, Id);
     if (!strcmp(dataName, "avc1"))
         return @"H.264";
     else if (!strcmp(dataName, "mp4a"))
         return @"AAC";
     else if (!strcmp(dataName, "ac-3"))
-        return @"AC-3", @"AC-3";
+        return @"AC-3";
     else if (!strcmp(dataName, "mp4v"))
         return @"MPEG-4 Visual";
     else if (!strcmp(dataName, "text"))
@@ -184,13 +174,13 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
         return NSLocalizedString(@"Unknown", @"Unknown");
 }
 
-NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId videoTrack)
+NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId Id)
 {
     NSString *language;
     char lang[4] = "";
-    MP4GetTrackLanguage(fileHandle, videoTrack, lang);
+    MP4GetTrackLanguage(fileHandle, Id, lang);
     language = [NSString stringWithFormat:@"%s", lang_for_code2(lang)->eng_name];
-    
+
     return language;
 }
 

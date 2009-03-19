@@ -31,29 +31,12 @@
                                                    MP4GetTrackDuration(fileHandle, Id),
                                                    MP4_MSECS_TIME_SCALE);
             timescale = MP4GetTrackTimeScale(fileHandle, Id);
+            
+            MP4GetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", &alternate_group);
         }
 	}
 
     return self;
-}
-
--(void)readTrackType
-{
-    MP4FileHandle *sourceHandle = MP4Read([sourcePath UTF8String], 0);
-
-    if (!sourceHandle)
-        return;
-
-    format = getHumanReadableTrackMediaDataName(sourceHandle, Id);
-    name = [getTrackName(sourceHandle, Id) retain];
-    language = [getHumanReadableTrackLanguage(sourceHandle, Id) retain];
-    bitrate = MP4GetTrackBitRate(sourceHandle, Id);
-    duration = MP4ConvertFromTrackDuration(sourceHandle, Id,
-                                          MP4GetTrackDuration(sourceHandle, Id),
-                                          MP4_MSECS_TIME_SCALE);
-    timescale = MP4GetTrackTimeScale(sourceHandle, Id);
-    
-    MP4Close(sourceHandle);
 }
 
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
