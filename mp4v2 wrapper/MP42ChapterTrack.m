@@ -119,11 +119,10 @@
             }
 
             MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeAny);
-            success = YES;
         }
 
         free(fileChapters);
-        Id = findChapterTrackId(fileHandle);
+        success = Id = findChapterTrackId(fileHandle);
     }
     if (!success) {
         if ( outError != NULL) {
@@ -133,6 +132,7 @@
                                             code:120
                                         userInfo:errorDetail];
         }
+        return success;
     }
     else if (Id)
         success = [super writeToFile:fileHandle error:outError];

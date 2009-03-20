@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "MP42File.h"
 
-@interface FileImport : NSWindowController {
+@interface MP4FileImport : NSWindowController {
     MP42File        *sourceFile;
     NSString        *filePath;
     NSMutableArray  *importCheckArray;

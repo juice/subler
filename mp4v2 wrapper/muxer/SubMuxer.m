@@ -196,51 +196,53 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
     return success;
 }
 
-int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sourceTrackId)
+int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
-    MP4FileHandle sourceFileHandle;
+    MP4FileHandle srcFile = MP4Read([filePath UTF8String], MP4_DETAILS_ERROR || MP4_DETAILS_READ);
     MP4TrackId videoTrack;
-    float width, height;
+    float subtitleHeight;
     uint16_t videoWidth, videoHeight;
     char lang[4] = "";
-
+    
     videoTrack = findFirstVideoTrack(fileHandle);
-    if (!videoTrack)
-        return 0;
+    if (videoTrack) {
+        videoWidth = getFixedVideoWidth(fileHandle, videoTrack);
+        videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
+    }
+    else {
+        videoWidth = 640;
+        videoHeight = 480;
+        videoTrack = 1;
+    }
 
-    videoWidth = getFixedVideoWidth(fileHandle, videoTrack);
-    videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
+    MP4GetTrackLanguage(srcFile, srcTrackId, lang);
+    MP4GetTrackFloatProperty(srcFile, srcTrackId, "tkhd.height", &subtitleHeight);
 
-    sourceFileHandle = MP4Read([filePath UTF8String], MP4_DETAILS_ERROR || MP4_DETAILS_READ);
-
-    MP4GetTrackLanguage(sourceFileHandle, sourceTrackId, lang);
-    MP4GetTrackFloatProperty(sourceFileHandle, sourceTrackId, "tkhd.width", &width);
-    MP4GetTrackFloatProperty(sourceFileHandle, sourceTrackId, "tkhd.height", &height);
-
-    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang , videoWidth, videoHeight, height);
-    int applyEdits = 0;
+    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang, videoWidth, videoHeight, subtitleHeight);
     if (dstTrackId == MP4_INVALID_TRACK_ID) {
+        MP4Close(srcFile);
         return dstTrackId;
     }
 
+    int applyEdits = 0;
     bool viaEdits =
-    applyEdits && MP4GetTrackNumberOfEdits(sourceFileHandle, sourceTrackId);
+    applyEdits && MP4GetTrackNumberOfEdits(srcFile, srcTrackId);
 
     MP4SampleId sampleId = 0;
     MP4SampleId numSamples =
-    MP4GetTrackNumberOfSamples(sourceFileHandle, sourceTrackId);
+    MP4GetTrackNumberOfSamples(srcFile, srcTrackId);
 
     MP4Timestamp when = 0;
     MP4Duration editsDuration =
-    MP4GetTrackEditTotalDuration(sourceFileHandle, sourceTrackId, MP4_INVALID_EDIT_ID);
+    MP4GetTrackEditTotalDuration(srcFile, srcTrackId, MP4_INVALID_EDIT_ID);
 
     while (true) {
         MP4Duration sampleDuration = MP4_INVALID_DURATION;
 
         if (viaEdits) {
             sampleId = MP4GetSampleIdFromEditTime(
-                                                  sourceFileHandle,
-                                                  sourceTrackId,
+                                                  srcFile,
+                                                  srcTrackId,
                                                   when,
                                                   NULL,
                                                   &sampleDuration);
@@ -248,7 +250,7 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
             // in theory, this shouldn't happen
             if (sampleId == MP4_INVALID_SAMPLE_ID) {
                 MP4DeleteTrack(fileHandle, dstTrackId);
-                MP4Close(sourceFileHandle);
+                MP4Close(srcFile);
                 return MP4_INVALID_TRACK_ID;
             }
 
@@ -265,8 +267,8 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
         }
 
         bool rc = false;
-        rc = MP4CopySample(sourceFileHandle,
-                           sourceTrackId,
+        rc = MP4CopySample(srcFile,
+                           srcTrackId,
                            sampleId,
                            fileHandle,
                            dstTrackId,
@@ -274,11 +276,11 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 
         if (!rc) {
             MP4DeleteTrack(fileHandle, dstTrackId);
-            MP4Close(sourceFileHandle);
+            MP4Close(srcFile);
             return MP4_INVALID_TRACK_ID;
         }
     }
 
-    MP4Close(sourceFileHandle);
+    MP4Close(srcFile);
     return dstTrackId;
 }

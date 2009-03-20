@@ -6,9 +6,9 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "FileImport.h"
+#import "MP4FileImport.h"
 
-@implementation FileImport
+@implementation MP4FileImport
 
 - (id)initWithDelegate:(id)del andFile: (NSString *)path
 {

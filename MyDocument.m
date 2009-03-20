@@ -12,7 +12,7 @@
 #import "MovieViewController.h"
 #import "VideoViewController.h"
 #import "ChapterViewController.h"
-#import "FileImport.h"
+#import "MP4FileImport.h"
 
 @implementation MyDocument
 
@@ -470,7 +470,7 @@ returnCode contextInfo: (void *) contextInfo
 
 - (void) showImportSheet: (NSString *) filePath
 {
-    importWindow = [[FileImport alloc] initWithDelegate:self andFile:filePath];
+    importWindow = [[MP4FileImport alloc] initWithDelegate:self andFile:filePath];
 
     [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];

@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class MP42File;
-@class FileImport;
+@class MP4FileImport;
 
 @interface MyDocument : NSDocument
 {
@@ -35,7 +35,7 @@
 
     NSViewController        *propertyView;
     IBOutlet NSView         *targetView;
-    FileImport              *importWindow;
+    MP4FileImport              *importWindow;
 
     IBOutlet NSProgressIndicator *optBar;
 }

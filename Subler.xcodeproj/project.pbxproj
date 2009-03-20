@@ -32,7 +32,7 @@
 		A9C054A60F6D288D00AF15B5 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054A50F6D288D00AF15B5 /* SubMuxer.m */; };
 		A9C054B20F6D295A00AF15B5 /* AudioMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054B00F6D295A00AF15B5 /* AudioMuxer.m */; };
 		A9C054D00F6D2D9800AF15B5 /* VideoMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054CF0F6D2D9800AF15B5 /* VideoMuxer.m */; };
-		A9C0552D0F6D392C00AF15B5 /* FileImport.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C0552C0F6D392C00AF15B5 /* FileImport.m */; };
+		A9C0552D0F6D392C00AF15B5 /* MP4FileImport.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C0552C0F6D392C00AF15B5 /* MP4FileImport.m */; };
 		A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C055360F6D395B00AF15B5 /* FileImport.xib */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
 		A9F5EA800F32E55000C057E0 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */; };
@@ -136,8 +136,8 @@
 		A9C054B10F6D295A00AF15B5 /* AudioMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioMuxer.h; sourceTree = "<group>"; };
 		A9C054CE0F6D2D9800AF15B5 /* VideoMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoMuxer.h; sourceTree = "<group>"; };
 		A9C054CF0F6D2D9800AF15B5 /* VideoMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoMuxer.m; sourceTree = "<group>"; };
-		A9C0552B0F6D392C00AF15B5 /* FileImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileImport.h; sourceTree = "<group>"; };
-		A9C0552C0F6D392C00AF15B5 /* FileImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileImport.m; sourceTree = "<group>"; };
+		A9C0552B0F6D392C00AF15B5 /* MP4FileImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP4FileImport.h; sourceTree = "<group>"; };
+		A9C0552C0F6D392C00AF15B5 /* MP4FileImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4FileImport.m; sourceTree = "<group>"; };
 		A9C055330F6D394F00AF15B5 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FileImport.xib; sourceTree = "<group>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9F5EA7E0F32E55000C057E0 /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubUtilities.h; path = ../../SubUtilities.h; sourceTree = "<group>"; };
@@ -216,8 +216,8 @@
 			children = (
 				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
-				A9C0552B0F6D392C00AF15B5 /* FileImport.h */,
-				A9C0552C0F6D392C00AF15B5 /* FileImport.m */,
+				A9C0552B0F6D392C00AF15B5 /* MP4FileImport.h */,
+				A9C0552C0F6D392C00AF15B5 /* MP4FileImport.m */,
 				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
 			);
@@ -445,7 +445,7 @@
 				A9C054A60F6D288D00AF15B5 /* SubMuxer.m in Sources */,
 				A9C054B20F6D295A00AF15B5 /* AudioMuxer.m in Sources */,
 				A9C054D00F6D2D9800AF15B5 /* VideoMuxer.m in Sources */,
-				A9C0552D0F6D392C00AF15B5 /* FileImport.m in Sources */,
+				A9C0552D0F6D392C00AF15B5 /* MP4FileImport.m in Sources */,
 				A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -607,10 +607,7 @@
 		C05733CD08A9546B00998B17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
