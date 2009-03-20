@@ -12,7 +12,7 @@
 
 int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
-    MP4FileHandle srcFile = MP4Read([filePath UTF8String], 0);    
+    MP4FileHandle srcFile = MP4Read([filePath UTF8String], 0);
     MP4TrackId dstTrackId = MP4CloneTrack(srcFile, srcTrackId, fileHandle, MP4_INVALID_TRACK_ID);
 
     if (dstTrackId == MP4_INVALID_TRACK_ID) {
@@ -24,7 +24,7 @@ int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         uint64_t hSpacing, vSpacing;
         MP4GetTrackIntegerProperty(srcFile, srcTrackId, "mdia.minf.stbl.stsd.*.pasp.hSpacing", &hSpacing);
         MP4GetTrackIntegerProperty(srcFile, srcTrackId, "mdia.minf.stbl.stsd.*.pasp.vSpacing", &vSpacing);
-        
+
         MP4AddPixelAspectRatio(fileHandle, dstTrackId, hSpacing, vSpacing);
     }
 

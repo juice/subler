@@ -118,8 +118,8 @@
                 }
             }
 
-            success = MP4AddChapterTextTrack(fileHandle, refTrack, 1000);
             MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeAny);
+            success = YES;
         }
 
         free(fileChapters);

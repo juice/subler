@@ -75,17 +75,19 @@
 
     if (isEdited && !muxed)
     {
-        if ([[sourcePath pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame)
+        if ([[sourcePath pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
             success = muxSRTSubtitleTrack(fileHandle,
                                           sourcePath,
                                           lang_for_english([language UTF8String])->iso639_2,
                                           trackHeight,
                                           delay);
+        }
         else if ([[sourcePath pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
-                 [[sourcePath pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame)
+                 [[sourcePath pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame) {
             success = muxMP4SubtitleTrack(fileHandle,
                                           sourcePath,
                                           sourceId);
+        }
 
         if (!success && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];

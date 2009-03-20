@@ -222,18 +222,18 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
     if (dstTrackId == MP4_INVALID_TRACK_ID) {
         return dstTrackId;
     }
-    
+
     bool viaEdits =
     applyEdits && MP4GetTrackNumberOfEdits(sourceFileHandle, sourceTrackId);
-    
+
     MP4SampleId sampleId = 0;
     MP4SampleId numSamples =
     MP4GetTrackNumberOfSamples(sourceFileHandle, sourceTrackId);
-    
+
     MP4Timestamp when = 0;
     MP4Duration editsDuration =
     MP4GetTrackEditTotalDuration(sourceFileHandle, sourceTrackId, MP4_INVALID_EDIT_ID);
-    
+
     while (true) {
         MP4Duration sampleDuration = MP4_INVALID_DURATION;
 
