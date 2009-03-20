@@ -67,7 +67,7 @@ static u_int8_t* makeStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16
     style[1] = startChar & 0xff;;
     style[2] = (endChar >> 8) & 0xff;   // endChar
     style[3] = endChar & 0xff;
-    style[4] = (fontID >> 8) & 0xff;   // font-ID
+    style[4] = (fontID >> 8) & 0xff;    // font-ID
     style[5] = fontID & 0xff;
     style[6] = flags;   // face-style-flags: 1 bold; 2 italic; 4 underline
     style[7] = 24;      // font-size
@@ -75,7 +75,7 @@ static u_int8_t* makeStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16
     style[9] = 255;     // g
     style[10] = 255;    // b
     style[11] = 255;    // a
-    
+
     return style;
 }
 
@@ -84,19 +84,20 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
     int Err;
     u_int16_t styleCount = 0;
     u_int8_t styleBuffer[2048];
-    size_t styleSize;
+    size_t styleSize = 0;
     memcpy(styleBuffer+4, "styl", 4);
-    
+
     NSRange range = [string rangeOfString: @"<i>"];
-    while (range.location != NSNotFound) 
-    {   NSRange startRange;
+    while (range.location != NSNotFound) {
+        NSRange startRange;
         NSRange endRange;
-        
+
         startRange = [string rangeOfString: @"<i>"];
         if (startRange.location != NSNotFound)
             string = [string stringByReplacingCharactersInRange:startRange withString:@""];
         else
             break;
+
         endRange = [string rangeOfString: @"</i>"];
         if (endRange.location != NSNotFound)
             string = [string stringByReplacingCharactersInRange:endRange withString:@""];
@@ -107,12 +108,9 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
         makeStyleRecord(startRange.location, endRange.location, 1, 2, style);
         memcpy(styleBuffer+10+(12*styleCount), style, 12);
         styleCount++;
-
-        NSLog(@"%d %d", range.length, range.location);
     }
 
-    if (styleCount)
-    {
+    if (styleCount) {
         styleSize = 10 + (styleCount * 12);
         styleBuffer[0] = 0;
         styleBuffer[1] = 0;
@@ -121,13 +119,11 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
         styleBuffer[8] = (styleCount >> 8) & 0xff;
         styleBuffer[9] = styleCount & 0xff;
     }
-    else
-        styleSize = 0;
 
-    const size_t stringLength = [string length]-1;
+    const size_t stringLength = [string length];
     u_int8_t buffer[2048];
     memcpy(buffer+2, [string UTF8String], stringLength);
-    memcpy(buffer +2 + stringLength, styleBuffer, styleSize);
+    memcpy(buffer+2+stringLength, styleBuffer, styleSize);
     buffer[0] = (stringLength >> 8) & 0xff;
     buffer[1] = stringLength & 0xff;
 
@@ -221,8 +217,6 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
     MP4GetTrackFloatProperty(sourceFileHandle, sourceTrackId, "tkhd.width", &width);
     MP4GetTrackFloatProperty(sourceFileHandle, sourceTrackId, "tkhd.height", &height);
 
-    bool copySamples = true;  // LATER allow false => reference samples
-
     MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang , videoWidth, videoHeight, height);
     int applyEdits = 0;
     if (dstTrackId == MP4_INVALID_TRACK_ID) {
@@ -242,7 +236,7 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
     
     while (true) {
         MP4Duration sampleDuration = MP4_INVALID_DURATION;
-        
+
         if (viaEdits) {
             sampleId = MP4GetSampleIdFromEditTime(
                                                   sourceFileHandle,
@@ -250,14 +244,14 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                                                   when,
                                                   NULL,
                                                   &sampleDuration);
-            
+
             // in theory, this shouldn't happen
             if (sampleId == MP4_INVALID_SAMPLE_ID) {
                 MP4DeleteTrack(fileHandle, dstTrackId);
                 MP4Close(sourceFileHandle);
                 return MP4_INVALID_TRACK_ID;
             }
-            
+
             when += sampleDuration;
             
             if (when >= editsDuration) {
@@ -269,28 +263,15 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                 break;
             }
         }
-        
-        bool rc = false;
-        
-        if (copySamples) {
-            rc = MP4CopySample(
-                               sourceFileHandle,
-                               sourceTrackId,
-                               sampleId,
-                               fileHandle,
-                               dstTrackId,
-                               sampleDuration);
 
-        } else {
-            rc = MP4ReferenceSample(
-                                    sourceFileHandle,
-                                    sourceTrackId,
-                                    sampleId,
-                                    fileHandle,
-                                    dstTrackId,
-                                    sampleDuration);
-        }
-        
+        bool rc = false;
+        rc = MP4CopySample(sourceFileHandle,
+                           sourceTrackId,
+                           sampleId,
+                           fileHandle,
+                           dstTrackId,
+                           sampleDuration);
+
         if (!rc) {
             MP4DeleteTrack(fileHandle, dstTrackId);
             MP4Close(sourceFileHandle);

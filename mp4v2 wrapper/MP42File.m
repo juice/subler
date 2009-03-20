@@ -38,9 +38,9 @@
             MP4TrackId trackId = MP4FindTrackId(fileHandle, i, 0, 0);
             const char* type = MP4GetTrackType(fileHandle, trackId);
 
-            if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
+            if (MP4_IS_AUDIO_TRACK_TYPE(type))
                 track = [MP42AudioTrack alloc];
-            else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
+            else if (MP4_IS_VIDEO_TRACK_TYPE(type))
                 track = [MP42VideoTrack alloc];
             else if (!strcmp(type, MP4_TEXT_TRACK_TYPE)) {
                 if (trackId == chapterId)

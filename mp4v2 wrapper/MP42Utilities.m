@@ -108,22 +108,15 @@ MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle)
 
 uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId Id)
 {
-    uint16_t videoWidth;
-    uint64_t hSpacing, vSpacing;
+    uint16_t videoWidth = MP4GetTrackVideoWidth(fileHandle, Id);
 
-    videoWidth = MP4GetTrackVideoWidth(fileHandle, Id);
-
-    if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.avc1.pasp")) {
-        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.avc1.pasp.hSpacing", &hSpacing);
-        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.avc1.pasp.vSpacing", &vSpacing);
+    if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp")) {
+        uint64_t hSpacing, vSpacing;
+        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", &hSpacing);
+        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", &vSpacing);
         return (float) videoWidth / vSpacing * hSpacing;
     }
-    else if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.mp4v.pasp")) {
-        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.mp4v.pasp.hSpacing", &hSpacing);
-        MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.mp4v.pasp.vSpacing", &vSpacing);
-        return (float) videoWidth / vSpacing * hSpacing;
-    }
-    
+
     return videoWidth;
 }
 

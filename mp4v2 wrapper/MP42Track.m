@@ -31,7 +31,7 @@
                                                    MP4GetTrackDuration(fileHandle, Id),
                                                    MP4_MSECS_TIME_SCALE);
             timescale = MP4GetTrackTimeScale(fileHandle, Id);
-            
+
             MP4GetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", &alternate_group);
         }
 	}
@@ -61,6 +61,7 @@
         ![name isEqualToString:@"Subtitle Track"] &&
         ![name isEqualToString:@"Text Track"] &&
         ![name isEqualToString:@"Chapter Track"] &&
+        ![name isEqualToString:@"Unknown Track"] &&
         name != nil) {
         MP4SetTrackName(fileHandle, Id, [name cStringUsingEncoding: NSMacOSRomanStringEncoding]);
     }

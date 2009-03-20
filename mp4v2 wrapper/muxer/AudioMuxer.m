@@ -10,16 +10,14 @@
 #import "SubUtilities.h"
 #import "lang.h"
 
-int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sourceTrackId)
+int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
-    MP4FileHandle sourceFileHandle;
-
-    sourceFileHandle = MP4Read([filePath UTF8String], 0);
+    MP4FileHandle srcFile = MP4Read([filePath UTF8String], 0);
     MP4TrackId audioTrackId;
 
-    audioTrackId = MP4CopyTrack(sourceFileHandle, sourceTrackId, fileHandle, YES, MP4_INVALID_TRACK_ID);
+    audioTrackId = MP4CopyTrack(srcFile, srcTrackId, fileHandle, YES, MP4_INVALID_TRACK_ID);
 
-    MP4Close(sourceFileHandle);
+    MP4Close(srcFile);
 
     return audioTrackId;
 }

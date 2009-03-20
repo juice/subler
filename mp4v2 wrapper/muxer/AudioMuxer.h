@@ -9,4 +9,4 @@
 #import <Foundation/Foundation.h>
 #import "mp4v2.h"
 
-int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sourceTrackId);
+int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
