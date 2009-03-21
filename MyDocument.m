@@ -13,6 +13,7 @@
 #import "VideoViewController.h"
 #import "ChapterViewController.h"
 #import "MP4FileImport.h"
+#import "MovFileImport.h"
 
 @implementation MyDocument
 
@@ -453,7 +454,7 @@ returnCode contextInfo: (void *) contextInfo
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = YES;
 
-    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", nil]
+    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
                       contextInfo: nil];                                                      
@@ -470,7 +471,10 @@ returnCode contextInfo: (void *) contextInfo
 
 - (void) showImportSheet: (NSString *) filePath
 {
-    importWindow = [[MP4FileImport alloc] initWithDelegate:self andFile:filePath];
+    if ([[filePath pathExtension] isEqualToString:@"mov"])
+        importWindow = [[MovFileImport alloc] initWithDelegate:self andFile:filePath];
+    else
+        importWindow = [[MP4FileImport alloc] initWithDelegate:self andFile:filePath];
 
     [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
@@ -553,7 +557,8 @@ returnCode contextInfo: (void *) contextInfo
                               language:getFilenameLanguage((CFStringRef)file)];
             else if ([[file pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
-                     [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame)
+                     [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
                 [self showImportSheet:file];
         }
         return YES;

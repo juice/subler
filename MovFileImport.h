@@ -8,9 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "MP42File.h"
+#import <QTKit/QTKit.h>
 
-@interface MP4FileImport : NSWindowController {
-    MP42File        *sourceFile;
+@interface MovFileImport : NSWindowController {
+    //MP42File        *sourceFile;
+    QTMovie         *sourceFile;
     NSString        *filePath;
     NSMutableArray  *importCheckArray;
 
@@ -23,7 +25,7 @@
 
 @end
 
-@interface NSObject (MP4FileImportDelegateMethod)
+@interface NSObject (MovFileImportDelegateMethod)
 - (void) importDone: (NSArray*) tracksToBeImported;
 
 @end

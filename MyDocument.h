@@ -35,7 +35,7 @@
 
     NSViewController        *propertyView;
     IBOutlet NSView         *targetView;
-    MP4FileImport              *importWindow;
+    id                      importWindow;
 
     IBOutlet NSProgressIndicator *optBar;
 }

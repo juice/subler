@@ -25,16 +25,19 @@
 		A9629C920F56F7B6001D6A75 /* MP42Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C8C0F56F7B6001D6A75 /* MP42Utilities.m */; };
 		A9629D070F56FB2A001D6A75 /* VideoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9629D050F56FB2A001D6A75 /* VideoView.xib */; };
 		A9629D0A0F56FB36001D6A75 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629D080F56FB36001D6A75 /* VideoViewController.m */; };
+		A97BE36F0F73D72E00652CBD /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97BE36E0F73D72E00652CBD /* QTKit.framework */; };
 		A984DB4B0F52D644001A20B2 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A984DB4A0F52D644001A20B2 /* Sparkle.framework */; };
 		A984DB530F52D679001A20B2 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A984DB4A0F52D644001A20B2 /* Sparkle.framework */; };
 		A984DB740F52DD4B001A20B2 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = A984DB730F52DD4B001A20B2 /* dsa_pub.pem */; };
 		A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A99F4D260F6D5825003BA2B9 /* MP42AudioTrack.m */; };
+		A9AB94D50F73D6DA0049DF8C /* MovFileImport.m in Sources */ = {isa = PBXBuildFile; fileRef = A9AB94D30F73D6DA0049DF8C /* MovFileImport.m */; };
 		A9C054A60F6D288D00AF15B5 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054A50F6D288D00AF15B5 /* SubMuxer.m */; };
 		A9C054B20F6D295A00AF15B5 /* AudioMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054B00F6D295A00AF15B5 /* AudioMuxer.m */; };
 		A9C054D00F6D2D9800AF15B5 /* VideoMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054CF0F6D2D9800AF15B5 /* VideoMuxer.m */; };
 		A9C0552D0F6D392C00AF15B5 /* MP4FileImport.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C0552C0F6D392C00AF15B5 /* MP4FileImport.m */; };
 		A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C055360F6D395B00AF15B5 /* FileImport.xib */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
+		A9C8182D0F74D6E300019BFF /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C8182C0F74D6E300019BFF /* QuickTime.framework */; };
 		A9F5EA800F32E55000C057E0 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */; };
 		A9F5EBAE0F32F2DB00C057E0 /* lang.c in Sources */ = {isa = PBXBuildFile; fileRef = A9F5EBAD0F32F2DB00C057E0 /* lang.c */; };
 		A9FD5D340F3C69BE00817716 /* ChapterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5D330F3C69BE00817716 /* ChapterViewController.m */; };
@@ -126,10 +129,13 @@
 		A9629D060F56FB2A001D6A75 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/VideoView.xib; sourceTree = "<group>"; };
 		A9629D080F56FB36001D6A75 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoViewController.m; path = PropertyView/VideoViewController.m; sourceTree = "<group>"; };
 		A9629D090F56FB36001D6A75 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoViewController.h; path = PropertyView/VideoViewController.h; sourceTree = "<group>"; };
+		A97BE36E0F73D72E00652CBD /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		A984DB4A0F52D644001A20B2 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		A984DB730F52DD4B001A20B2 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		A99F4D250F6D5825003BA2B9 /* MP42AudioTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AudioTrack.h; path = "mp4v2 wrapper/MP42AudioTrack.h"; sourceTree = "<group>"; };
 		A99F4D260F6D5825003BA2B9 /* MP42AudioTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42AudioTrack.m; path = "mp4v2 wrapper/MP42AudioTrack.m"; sourceTree = "<group>"; };
+		A9AB94D30F73D6DA0049DF8C /* MovFileImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovFileImport.m; sourceTree = "<group>"; };
+		A9AB94D40F73D6DA0049DF8C /* MovFileImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovFileImport.h; sourceTree = "<group>"; };
 		A9C054A40F6D288D00AF15B5 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
 		A9C054A50F6D288D00AF15B5 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMuxer.m; sourceTree = "<group>"; };
 		A9C054B00F6D295A00AF15B5 /* AudioMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioMuxer.m; sourceTree = "<group>"; };
@@ -140,6 +146,7 @@
 		A9C0552C0F6D392C00AF15B5 /* MP4FileImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP4FileImport.m; sourceTree = "<group>"; };
 		A9C055330F6D394F00AF15B5 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FileImport.xib; sourceTree = "<group>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
+		A9C8182C0F74D6E300019BFF /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		A9F5EA7E0F32E55000C057E0 /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubUtilities.h; path = ../../SubUtilities.h; sourceTree = "<group>"; };
 		A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubUtilities.m; path = ../../SubUtilities.m; sourceTree = "<group>"; };
 		A9F5EBAD0F32F2DB00C057E0 /* lang.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lang.c; sourceTree = "<group>"; };
@@ -164,6 +171,8 @@
 				A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */,
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
 				A984DB4B0F52D644001A20B2 /* Sparkle.framework in Frameworks */,
+				A97BE36F0F73D72E00652CBD /* QTKit.framework in Frameworks */,
+				A9C8182D0F74D6E300019BFF /* QuickTime.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,6 +182,8 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A9C8182C0F74D6E300019BFF /* QuickTime.framework */,
+				A97BE36E0F73D72E00652CBD /* QTKit.framework */,
 				A984DB4A0F52D644001A20B2 /* Sparkle.framework */,
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 			);
@@ -218,6 +229,8 @@
 				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
 				A9C0552B0F6D392C00AF15B5 /* MP4FileImport.h */,
 				A9C0552C0F6D392C00AF15B5 /* MP4FileImport.m */,
+				A9AB94D40F73D6DA0049DF8C /* MovFileImport.h */,
+				A9AB94D30F73D6DA0049DF8C /* MovFileImport.m */,
 				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
 			);
@@ -447,6 +460,7 @@
 				A9C054D00F6D2D9800AF15B5 /* VideoMuxer.m in Sources */,
 				A9C0552D0F6D392C00AF15B5 /* MP4FileImport.m in Sources */,
 				A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */,
+				A9AB94D50F73D6DA0049DF8C /* MovFileImport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -49,12 +49,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if( [tableColumn.identifier isEqualToString: @"check"] )
         return [importCheckArray objectAtIndex: rowIndex];
 
-    if ([tableColumn.identifier isEqualToString:@"trackId"]) {
-        if (track.Id == 0)
-            return @"na";
-        else
-            return [NSString stringWithFormat:@"%d", track.Id];
-    }
+    if ([tableColumn.identifier isEqualToString:@"trackId"])
+        return [NSString stringWithFormat:@"%d", track.Id];
 
     if ([tableColumn.identifier isEqualToString:@"trackName"])
         return track.name;

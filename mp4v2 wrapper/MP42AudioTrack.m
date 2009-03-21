@@ -37,7 +37,10 @@
         return NO;
 
     if (isEdited && !muxed && sourceId) {
-        Id = muxMP4AudioTrack(fileHandle, sourcePath, sourceId);
+        if ([[sourcePath pathExtension] isEqualToString:@"mov"])
+            Id = muxMOVAudioTrack(fileHandle, sourcePath, sourceId);
+        else
+            Id = muxMP4AudioTrack(fileHandle, sourcePath, sourceId);
     }
     if (Id)
         [super writeToFile:fileHandle error:outError];

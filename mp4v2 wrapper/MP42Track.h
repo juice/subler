@@ -31,8 +31,8 @@
 @property(readwrite) MP4TrackId Id;
 @property(readwrite) MP4TrackId sourceId;
 
-@property(readonly) NSString *sourcePath;
-@property(readonly) NSString *format;
+@property(readwrite, retain) NSString *sourcePath;
+@property(readwrite, retain) NSString *format;
 @property(readwrite, retain) NSString *name;
 @property(readwrite, retain) NSString *language;
 
