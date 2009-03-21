@@ -52,8 +52,11 @@
     if (!fileHandle)
         return NO;
 
-    if (isEdited && !muxed && sourceId) {
-        Id = muxMP4VideoTrack(fileHandle, sourcePath, sourceId);
+    if (isEdited && !muxed) {
+        if ([[sourcePath pathExtension] isEqualToString:@"mov"])
+            Id = muxMOVVideoTrack(fileHandle, sourcePath, sourceId);
+        else
+            Id = muxMP4VideoTrack(fileHandle, sourcePath, sourceId);
     }
     if (Id) {
         [super writeToFile:fileHandle error:outError];

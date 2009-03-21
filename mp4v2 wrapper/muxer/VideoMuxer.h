@@ -9,4 +9,5 @@
 #import <Foundation/Foundation.h>
 #import "mp4v2.h"
 
+int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
 int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);

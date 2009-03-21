@@ -36,7 +36,7 @@
     if (!fileHandle)
         return NO;
 
-    if (isEdited && !muxed && sourceId) {
+    if (isEdited && !muxed) {
         if ([[sourcePath pathExtension] isEqualToString:@"mov"])
             Id = muxMOVAudioTrack(fileHandle, sourcePath, sourceId);
         else

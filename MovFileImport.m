@@ -33,55 +33,52 @@
 - (NSString*)summaryForTrack: (QTTrack *)track;
 {
     NSString* result = @"";
-    
-    ImageDescriptionHandle idh;
-    idh = (ImageDescriptionHandle)NewHandleClear(sizeof(ImageDescription));
+    ImageDescriptionHandle idh = (ImageDescriptionHandle) NewHandleClear(sizeof(ImageDescription));
     GetMediaSampleDescription([[track media] quickTimeMedia], 1,
                               (SampleDescriptionHandle)idh);
     
-    NSString* mediaType = [track attributeForKey:QTTrackMediaTypeAttribute];
-    if ([mediaType isEqualToString:QTMediaTypeVideo]) {
-        CFStringRef s;
-        if (noErr == ICMImageDescriptionGetProperty(idh,
-                                                    kQTPropertyClass_ImageDescription,
-                                                    kICMImageDescriptionPropertyID_SummaryString,
-                                                    sizeof(CFStringRef), &s, 0)) {
-            result = [NSString stringWithString:(NSString*)s];
-            CFRelease(s);
-        }
-    }
-    if ([mediaType isEqualToString:QTMediaTypeText]) {
-        CFStringRef s;
-        if (noErr == ICMImageDescriptionGetProperty(idh,
-                                                    kQTPropertyClass_ImageDescription,
-                                                    kICMImageDescriptionPropertyID_SummaryString,
-                                                    sizeof(CFStringRef), &s, 0)) {
-            result = [NSString stringWithString:(NSString*)s];
-            CFRelease(s);
-        }
-    }
-    else if ([mediaType isEqualToString:QTMediaTypeMPEG]) {
-        NSRect rc = [[track attributeForKey:QTTrackBoundsAttribute] rectValue];
-        NSString* name = [track attributeForKey:QTTrackDisplayNameAttribute];
-        result = [NSString stringWithFormat:@"%@, %g x %g",
-                  /*FIXME*/name, rc.size.width, rc.size.height];
-    }
-    else if ([mediaType isEqualToString:QTMediaTypeSound]) {
-        // temporary impl. : how to get audio properties?
-        CFStringRef s;
-        if (noErr == ICMImageDescriptionGetProperty(idh,
-                                                    kQTPropertyClass_ImageDescription,
-                                                    kICMImageDescriptionPropertyID_SummaryString,
-                                                    sizeof(CFStringRef), &s, 0)) {
-            // remove strange contents after codec name.
-            //NSRange range = [(NSString*)s rangeOfString:@", "];
-            //result = [(NSString*)s substringToIndex:range.location];
-            result = [NSString stringWithString:(NSString*)s];
-            CFRelease(s);
-        }
+    switch ((*idh)->cType) {
+        case kH264CodecType:
+            result = @"H.264";
+            break;
+        case kMPEG4VisualCodecType:
+            result = @"MPEG-4 Visual";
+            break;
+        case 'mp4a':
+            result = @"AAC";
+            break;
+        case kAudioFormatAC3:
+        case 'ms \0':
+            result = @"AC-3";
+            break;
+        case kAudioFormatAMR:
+            result = @"AMR Narrow Band";
+            break;
+        case 'text':
+            result = @"Text";
+            break;
+        case 'tx3g':
+            result = @"3GPP Text";
+            break;
+        case 'SRT ':
+            result = @"Text";
+            break;
+        case 'SSA ':
+            result = @"SSA";
+            break;
+        default:
+            result = @"Unknown";
+            break;
     }
     DisposeHandle((Handle)idh);
     return result;
+}
+
+- (NSString*)langForTrack: (QTTrack *)track;
+{
+    short lang = GetMediaLanguage([[track media] quickTimeMedia]);
+
+    return [NSString stringWithFormat:@"d", lang];
 }
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
@@ -112,16 +109,14 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         return [track attributeForKey:QTTrackDisplayNameAttribute];
 
     if ([tableColumn.identifier isEqualToString:@"trackInfo"]) {
-        NSString *info = [track attributeForKey:QTTrackFormatSummaryAttribute];
-        return [info substringToIndex: [info rangeOfString:@", "].location];
-        //return [self summaryForTrack:track];
+        return [self summaryForTrack:track];
     }
 
     if ([tableColumn.identifier isEqualToString:@"trackDuration"]) {
         return QTStringFromTime([[track attributeForKey:QTTrackRangeAttribute] QTTimeRangeValue].duration);
     }
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"])
-        return nil; //track.language;
+        return [self langForTrack:track];
 
     return nil;
 }
@@ -157,11 +152,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             else if ([mediaType isEqualToString:QTMediaTypeSound])
                 newTrack = [[MP42AudioTrack alloc] init];
 
-            NSString *info = [track attributeForKey:QTTrackFormatSummaryAttribute];
-            newTrack.format = [info substringToIndex: [info rangeOfString:@", "].location];
+            newTrack.format = [self summaryForTrack:track];
             newTrack.Id = i;//[[track attributeForKey:QTTrackIDAttribute] integerValue];
             newTrack.sourcePath = filePath;
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
+            newTrack.language = @"English";
             [tracks addObject:newTrack];
         }
     }
