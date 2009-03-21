@@ -118,7 +118,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     QTSampleTableRelease(sampleTable);
     [srcFile release];
 
-    return NO;
+    return dstTrackId;
 }
 
 int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)

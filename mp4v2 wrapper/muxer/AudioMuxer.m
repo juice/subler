@@ -103,6 +103,8 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                   kQTSoundDescriptionPropertyID_MagicCookie,
                                   cookieSize, cookie, &cookieSize);
     // Extract DecoderSpecific info
+    UInt8* buffer;
+    int size;
     ReadESDSDescExt(cookie, &buffer, &size);
 
     // Add audio track
@@ -139,7 +141,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                               NULL, NULL, NULL, NULL, NULL, 1, NULL, &sampleFlags );
 
         // Load the frame.
-		sampleData = malloc( sampleDataSize );
+		sampleData = malloc(sampleDataSize);
 		err = GetMediaSample2( media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
                               NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL );
 
@@ -155,7 +157,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     QTSampleTableRelease(sampleTable);
     [srcFile release];
 
-    return NO;
+    return dstTrackId;
 }
 
 int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
