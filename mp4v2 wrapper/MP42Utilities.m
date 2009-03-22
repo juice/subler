@@ -132,7 +132,7 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
 
     const char* type = MP4GetTrackType(fileHandle, Id);
     if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
-        return NSLocalizedString(@"Audio Track", @"Audio Track");
+        return NSLocalizedString(@"Sound Track", @"Sound Track");
     else if (!strcmp(type, MP4_VIDEO_TRACK_TYPE))
         return NSLocalizedString(@"Video Track", @"Video Track");
     else if (!strcmp(type, MP4_TEXT_TRACK_TYPE))

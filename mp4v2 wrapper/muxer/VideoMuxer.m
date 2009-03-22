@@ -16,10 +16,8 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 {
     OSStatus err;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
+    Media media = [[[[srcFile tracks] objectAtIndex:srcTrackId] media] quickTimeMedia];
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
-    Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
-    Media media = GetTrackMedia(track);
-    TimeScale timeScale = GetMediaTimeScale(media);
 
     // Get the sample description
 	SampleDescriptionHandle desc = (SampleDescriptionHandle) NewHandle(0);
@@ -34,32 +32,33 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     // Dunno what this does
     MP4SetVideoProfileLevel(fileHandle, 0x7F);
     // Add video track
-    dstTrackId = MP4AddH264VideoTrack(fileHandle, timeScale,
-                                      MP4_INVALID_DURATION, (*imgDesc)->width, (*imgDesc)->height,
-                                      (*imgDescHandle)[1], /* AVCProfileIndication */
-                                      (*imgDescHandle)[2], /* profile_compat */
-                                      (*imgDescHandle)[3], /* AVCLevelIndication */
-                                      3);      /* 4 bytes length before each NAL unit */
+    dstTrackId = MP4AddH264VideoTrack(fileHandle, GetMediaTimeScale(media),
+                                      MP4_INVALID_DURATION,
+                                      (*imgDesc)->width, (*imgDesc)->height,
+                                      (*imgDescHandle)[1],  // AVCProfileIndication
+                                      (*imgDescHandle)[2],  // profile_compat
+                                      (*imgDescHandle)[3],  // AVCLevelIndication
+                                      (*imgDescHandle)[4]); // lengthSizeMinusOne
 
     // We have got a complete avcC atom, but mp4v2 wants sps and pps separately
     SInt64 i;
     int8_t spsCount = ((*imgDescHandle)[5] & 0x1f);
-    uint8_t prtPos = 6;
+    uint8_t ptrPos = 6;
     for (i = 0; i < spsCount; i++) {
-        uint16_t spsSize = (*imgDescHandle)[prtPos++] << 8 & 0xff;
-        spsSize = (*imgDescHandle)[prtPos++] & 0xff;
+        uint16_t spsSize = (*imgDescHandle)[ptrPos++] << 8 & 0xff;
+        spsSize = (*imgDescHandle)[ptrPos++] & 0xff;
         MP4AddH264SequenceParameterSet(fileHandle, dstTrackId,
-                                       (uint8_t *)*imgDescHandle+prtPos, spsSize);
-        prtPos += spsSize;
+                                       (uint8_t *)*imgDescHandle+ptrPos, spsSize);
+        ptrPos += spsSize;
     }
 
-    int8_t ppsCount = (*imgDescHandle)[prtPos++];
+    int8_t ppsCount = (*imgDescHandle)[ptrPos++];
     for (i = 0; i < ppsCount; i++) {
-        uint16_t ppsSize = (*imgDescHandle)[prtPos++] << 8 & 0xff;
-        ppsSize = (*imgDescHandle)[prtPos++] & 0xff;
+        uint16_t ppsSize = (*imgDescHandle)[ptrPos++] << 8 & 0xff;
+        ppsSize = (*imgDescHandle)[ptrPos++] & 0xff;
         MP4AddH264PictureParameterSet(fileHandle, dstTrackId,
-                                      (uint8_t*)*imgDescHandle+prtPos, ppsSize);
-        prtPos += ppsSize;
+                                      (uint8_t*)*imgDescHandle+ptrPos, ppsSize);
+        ptrPos += ppsSize;
     }
 
     DisposeHandle(imgDescHandle);
@@ -80,6 +79,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                    sizeof(TimeValue64),
                                    &minDisplayOffset,
                                    NULL);
+
     SInt64 sampleIndex, sampleCount;
     sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
 

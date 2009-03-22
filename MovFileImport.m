@@ -30,7 +30,7 @@
 	return self;
 }
 
-- (NSString*)summaryForTrack: (QTTrack *)track;
+- (NSString*)formatForTrack: (QTTrack *)track;
 {
     NSString* result = @"";
     ImageDescriptionHandle idh = (ImageDescriptionHandle) NewHandleClear(sizeof(ImageDescription));
@@ -109,7 +109,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         return [track attributeForKey:QTTrackDisplayNameAttribute];
 
     if ([tableColumn.identifier isEqualToString:@"trackInfo"]) {
-        return [self summaryForTrack:track];
+        return [self formatForTrack:track];
     }
 
     if ([tableColumn.identifier isEqualToString:@"trackDuration"]) {
@@ -152,7 +152,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             else if ([mediaType isEqualToString:QTMediaTypeSound])
                 newTrack = [[MP42AudioTrack alloc] init];
 
-            newTrack.format = [self summaryForTrack:track];
+            newTrack.format = [self formatForTrack:track];
             newTrack.Id = i;//[[track attributeForKey:QTTrackIDAttribute] integerValue];
             newTrack.sourcePath = filePath;
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];

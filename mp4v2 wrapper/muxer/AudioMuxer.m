@@ -77,12 +77,8 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 {
     OSStatus err;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
+    Media media = [[[[srcFile tracks] objectAtIndex:srcTrackId] media] quickTimeMedia];
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
-    Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
-    Media media = GetTrackMedia(track);
-    SInt64 sampleIndex;
-    SInt64 sampleCount = GetMediaSampleCount(media);
-    TimeScale timeScale = GetMediaTimeScale(media);
 
     // Get the sample description
 	SampleDescriptionHandle desc = (SampleDescriptionHandle) NewHandle(0);
@@ -90,7 +86,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
     SoundDescriptionHandle sndDesc = (SoundDescriptionHandle) desc;
 
-    // Get magic cookie
+    // Get the magic cookie
     UInt32 cookieSize;
     void* cookie;
     QTSoundDescriptionGetPropertyInfo(sndDesc,
@@ -106,10 +102,11 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     UInt8* buffer;
     int size;
     ReadESDSDescExt(cookie, &buffer, &size);
+    free(cookie);
 
     // Add audio track
     dstTrackId = MP4AddAudioTrack(fileHandle,
-                                  timeScale,
+                                  GetMediaTimeScale(media),
                                   1024, MP4_MPEG4_AUDIO_TYPE);
     // Dunno what this does
     MP4SetAudioProfileLevel(fileHandle, 0x0F);
@@ -128,22 +125,25 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                       0,
                                       &sampleTable );
 
+    SInt64 sampleIndex, sampleCount;
+    sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
+
     for (sampleIndex = 0; sampleIndex <= sampleCount; sampleIndex++) {
         TimeValue64 sampleDecodeTime = 0;
         ByteCount sampleDataSize = 0;
         MediaSampleFlags sampleFlags = 0;
 		UInt8 *sampleData = NULL;
-        TimeValue64 decodeDuration = QTSampleTableGetDecodeDuration( sampleTable, sampleIndex );
+        TimeValue64 decodeDuration = QTSampleTableGetDecodeDuration(sampleTable, sampleIndex);
 
         // Get the frame's data size and sample flags.  
-        SampleNumToMediaDecodeTime( media, sampleIndex, &sampleDecodeTime, NULL );
-		err = GetMediaSample2( media, NULL, 0, &sampleDataSize, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, &sampleFlags );
+        SampleNumToMediaDecodeTime(media, sampleIndex, &sampleDecodeTime, NULL);
+		err = GetMediaSample2(media, NULL, 0, &sampleDataSize, sampleDecodeTime,
+                              NULL, NULL, NULL, NULL, NULL, 1, NULL, &sampleFlags);
 
         // Load the frame.
 		sampleData = malloc(sampleDataSize);
-		err = GetMediaSample2( media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL );
+		err = GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
+                              NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
 
         err = MP4WriteSample(fileHandle,
                              dstTrackId,
