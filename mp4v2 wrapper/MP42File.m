@@ -16,6 +16,20 @@
 
 @implementation MP42File
 
+- (id)initWithDelegate:(id)del;
+{
+    if (self = [super init]) {
+        delegate = del;
+        hasFileRepresentation = NO;
+        tracks = [[NSMutableArray alloc] init];
+        tracksToBeDeleted = [[NSMutableArray alloc] init];
+
+        metadata = [[MP42Metadata alloc] init];
+    }
+    
+    return self;
+}
+
 - (id)initWithExistingFile:(NSString *)path andDelegate:(id)del;
 {
     if (self = [super init])
@@ -24,6 +38,7 @@
 
 		fileHandle = MP4Read([path UTF8String], 0);
         filePath = path;
+        hasFileRepresentation = YES;
 		if (!fileHandle) {
             [self release];
 			return nil;
@@ -132,6 +147,18 @@
 {
     [NSThread detachNewThreadSelector:@selector(_optimize:) toTarget:self withObject:nil];
 }
+
+- (BOOL) writeToUrl:(NSURL *)url error:(NSError **)outError
+{
+    filePath = [url path];
+    fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, 0);
+    MP4Close(fileHandle);
+
+    [self updateMP4File:outError];
+
+    return YES;
+}
+
 
 - (BOOL) updateMP4File:(NSError **)outError
 {

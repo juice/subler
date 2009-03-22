@@ -253,23 +253,21 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size)
 {
 	UInt8 *esds = (UInt8 *) descExt;
 	int tag, len;
-	
 	*size = 0;
-	
-	//esds += 4;		// version + flags
-	len = readDescr(&esds, &tag);
+
+	readDescr(&esds, &tag);
 	esds += 2;		// ID
 	if (tag == MP4ESDescrTag)
 		esds++;		// priority
-	
-	len = readDescr(&esds, &tag);
+
+	readDescr(&esds, &tag);
 	if (tag == MP4DecConfigDescrTag) {
 		esds++;		// object type id
 		esds++;		// stream type
 		esds += 3;	// buffer size db
 		esds += 4;	// max bitrate
 		esds += 4;	// average bitrate
-		
+
 		len = readDescr(&esds, &tag);
 		if (tag == MP4DecSpecificDescrTag) {
 			*buffer = calloc(1, len + 8);
@@ -279,6 +277,6 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size)
 			}
 		}
 	}
-	
+
 	return noErr;
 }

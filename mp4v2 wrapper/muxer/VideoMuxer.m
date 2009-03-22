@@ -61,9 +61,9 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                       (uint8_t*)*imgDescHandle+ptrPos, ppsSize);
         ptrPos += ppsSize;
     }
-
     DisposeHandle(imgDescHandle);
 
+    // Create a QTSampleTable which cointans all the informatio of the track samples.
     TimeValue64 sampleTableStartDecodeTime = 0;
     QTMutableSampleTableRef sampleTable = NULL;
     err = CopyMediaMutableSampleTable(media,
@@ -122,12 +122,12 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                 0,
                                 fixed1,
                                 &editTrackStart,
-                                &editTrackDuration );
+                                &editTrackDuration);
 
     while ((editTrackStart >= 0) && (editTrackDuration > 0)) {
         editDisplayStart = TrackTimeToMediaDisplayTime(editTrackStart, track);
 
-        if (minDisplayOffset)
+        if (minDisplayOffset < 0)
             MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, editDisplayStart -minDisplayOffset,
                             editTrackDuration, 0);
         else

@@ -23,6 +23,7 @@
     id delegate;
 
     NSMutableArray  *tracksToBeDeleted;
+    BOOL            hasFileRepresentation;
 
 @protected
     NSMutableArray  *tracks;
@@ -32,12 +33,14 @@
 @property(readonly) NSMutableArray  *tracks;
 @property(readonly) MP42Metadata    *metadata;
 
+- (id)   initWithDelegate:(id)del;
 - (id)   initWithExistingFile:(NSString *) path andDelegate:(id) del;
 - (NSInteger) tracksCount;
 - (id)   trackAtIndex:(NSUInteger) index;
 - (void) addTrack:(id) object;
 - (void) removeTrackAtIndex:(NSUInteger) index;
 
+- (BOOL) writeToUrl:(NSURL *)url error:(NSError **)outError;
 - (BOOL) updateMP4File:(NSError **)outError;
 - (void) optimize;
 

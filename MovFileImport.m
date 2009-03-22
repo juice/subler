@@ -151,6 +151,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 newTrack = [[MP42VideoTrack alloc] init];
             else if ([mediaType isEqualToString:QTMediaTypeSound])
                 newTrack = [[MP42AudioTrack alloc] init];
+            else
+                newTrack = [[MP42Track alloc] init];
 
             newTrack.format = [self formatForTrack:track];
             newTrack.Id = i;//[[track attributeForKey:QTTrackIDAttribute] integerValue];
@@ -158,11 +160,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
             newTrack.language = @"English";
             [tracks addObject:newTrack];
+            [newTrack release];
         }
     }
 
     if ([delegate respondsToSelector:@selector(importDone:)]) 
         [delegate importDone:tracks];
+
     [tracks release];
 }
 

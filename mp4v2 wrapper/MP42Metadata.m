@@ -17,6 +17,18 @@
 
 @implementation MP42Metadata
 
+-(id)init
+{
+	if ((self = [super init]))
+	{
+		sourcePath = nil;
+        tagsDict = [[NSMutableDictionary alloc] init];
+        isEdited = NO;
+        isArtworkEdited = NO;
+	}
+
+    return self;
+}
 
 -(id)initWithSourcePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle
 {
@@ -24,10 +36,11 @@
 	{
 		sourcePath = source;
         tagsDict = [[NSMutableDictionary alloc] init];
+
+        [self readMetaDataFromFileHandle: fileHandle];
+        isEdited = NO;
+        isArtworkEdited = NO;
 	}
-	[self readMetaDataFromFileHandle: fileHandle];
-	isEdited = NO;
-    isArtworkEdited = NO;
 
     return self;
 }
