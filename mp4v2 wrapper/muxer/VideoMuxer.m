@@ -16,6 +16,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 {
     OSStatus err;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
+    Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
     Media media = [[[[srcFile tracks] objectAtIndex:srcTrackId] media] quickTimeMedia];
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
 
@@ -88,18 +89,18 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         ByteCount sampleDataSize = 0;
         MediaSampleFlags sampleFlags = 0;
 		UInt8 *sampleData = NULL;
-        TimeValue64 decodeDuration = QTSampleTableGetDecodeDuration( sampleTable, sampleIndex );
-        TimeValue64 displayOffset = QTSampleTableGetDisplayOffset( sampleTable, sampleIndex );
+        TimeValue64 decodeDuration = QTSampleTableGetDecodeDuration(sampleTable, sampleIndex);
+        TimeValue64 displayOffset = QTSampleTableGetDisplayOffset(sampleTable, sampleIndex);
 
         // Get the frame's data size and sample flags.  
-        SampleNumToMediaDecodeTime( media, sampleIndex, &sampleDecodeTime, NULL );
-		err = GetMediaSample2( media, NULL, 0, &sampleDataSize, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, &sampleFlags );
+        SampleNumToMediaDecodeTime( media, sampleIndex, &sampleDecodeTime, NULL);
+		err = GetMediaSample2(media, NULL, 0, &sampleDataSize, sampleDecodeTime,
+                              NULL, NULL, NULL, NULL, NULL, 1, NULL, &sampleFlags);
 
         // Load the frame.
-		sampleData = malloc( sampleDataSize );
-		err = GetMediaSample2( media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL );
+		sampleData = malloc(sampleDataSize);
+		err = GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
+                              NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
 
         err = MP4WriteSample(fileHandle,
                              dstTrackId,
@@ -111,10 +112,38 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         free(sampleData);
     }
 
-    if (minDisplayOffset)
-        MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, -minDisplayOffset,
-                        MP4GetTrackDuration(fileHandle, dstTrackId), 0);
+    TimeValue editTrackStart, editTrackDuration;
+	TimeValue64 editDisplayStart;
 
+	// Find the first edit, skipping empty edits.
+	// Each edit has a starting track timestamp, a duration in track time, a starting display timestamp and a rate.
+	GetTrackNextInterestingTime(track, 
+                                nextTimeTrackEdit | nextTimeEdgeOK,
+                                0,
+                                fixed1,
+                                &editTrackStart,
+                                &editTrackDuration );
+
+    while ((editTrackStart >= 0) && (editTrackDuration > 0)) {
+        editDisplayStart = TrackTimeToMediaDisplayTime(editTrackStart, track);
+
+        if (minDisplayOffset)
+            MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, editDisplayStart -minDisplayOffset,
+                            editTrackDuration, 0);
+        else
+            MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, editDisplayStart,
+                            editTrackDuration, 0);
+
+        // Find the next edit, skipping empty edits.
+		GetTrackNextInterestingTime(track, 
+                                    nextTimeTrackEdit,
+                                    editTrackStart,
+                                    fixed1,
+                                    &editTrackStart,
+                                    &editTrackDuration);
+    }
+
+    //MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", editTrackStart);
     QTSampleTableRelease(sampleTable);
     [srcFile release];
 
