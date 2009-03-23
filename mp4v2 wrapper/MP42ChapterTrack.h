@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 06/02/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -14,6 +14,8 @@
 }
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;
 + (id) chapterTrackFromFile:(NSString *)filePath;
+
+- (void) addChapter:(NSString *)title duration:(uint64_t)timestamp;
 
 @property (readwrite, retain) NSMutableArray * chapters;
 

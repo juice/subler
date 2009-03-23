@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 29/01/09.
-//  Copyright __MyCompanyName__ 2009 . All rights reserved.
+//  Copyright Damiano Galassi 2009 . All rights reserved.
 //
 
 #import "MyDocument.h"

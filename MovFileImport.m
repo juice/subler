@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 15/03/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
 #import "MovFileImport.h"
@@ -24,6 +24,22 @@
         while (i) {
             [importCheckArray addObject: [NSNumber numberWithBool:YES]];
             i--;
+        }
+
+        if([sourceFile hasChapters]) {
+            long    myCount;
+            long    myTrackCount = GetMovieTrackCount([sourceFile quickTimeMovie]);
+            Track   myTrack = NULL;
+            Track   myChapTrack = NULL;
+
+            for (myCount = 1; myCount <= myTrackCount; myCount++) {
+                myTrack = GetMovieIndTrack([sourceFile quickTimeMovie], myCount);
+                if (GetTrackEnabled(myTrack))
+                    myChapTrack = GetTrackReference(myTrack, kTrackReferenceChapterList, 1);
+                if (myChapTrack != NULL)
+                    chapterTrackId = GetTrackID(myChapTrack);
+                    break;
+            }
         }
     }
 
@@ -109,7 +125,10 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     }
 
     if ([tableColumn.identifier isEqualToString:@"trackName"])
-        return [track attributeForKey:QTTrackDisplayNameAttribute];
+        if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId)
+            return @"Chapter Track";
+        else
+            return [track attributeForKey:QTTrackDisplayNameAttribute];
 
     if ([tableColumn.identifier isEqualToString:@"trackInfo"]) {
         return [self formatForTrack:track];
@@ -152,8 +171,23 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
             if ([mediaType isEqualToString:QTMediaTypeVideo])
                 newTrack = [[MP42VideoTrack alloc] init];
+
             else if ([mediaType isEqualToString:QTMediaTypeSound])
                 newTrack = [[MP42AudioTrack alloc] init];
+
+            else if ([mediaType isEqualToString:QTMediaTypeText])
+                if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId) {
+                    newTrack = [[MP42ChapterTrack alloc] init];
+                    NSArray *chapters = [sourceFile chapters];
+
+                    for (NSDictionary *dic in chapters) {
+                        QTTimeRange time = [[dic valueForKey:QTMovieChapterStartTime] QTTimeRangeValue];
+                        [(MP42ChapterTrack*)newTrack addChapter:[dic valueForKey:QTMovieChapterName]
+                                                       duration:((float)time.time.timeValue / time.time.timeScale)*1000];
+                    }
+                }
+                else
+                    newTrack = [[MP42SubtitleTrack alloc] init];
             else
                 newTrack = [[MP42Track alloc] init];
 

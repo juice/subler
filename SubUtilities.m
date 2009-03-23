@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Alexander Strange on 7/24/07.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
+//  Copyright 2007 Perian. All rights reserved.
 //
 
 #import "SubUtilities.h"

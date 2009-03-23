@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 06/02/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
 #import "MP42ChapterTrack.h"
@@ -11,6 +11,33 @@
 #import "MP42Utilities.h"
 
 @implementation MP42ChapterTrack
+
+- (id) init
+{
+    if (self = [super init])
+    {
+        name = @"Chapter Track";
+        format = @"Text";
+        language = @"English";
+        isEdited = YES;
+        isDataEdited = YES;
+        muxed = NO;
+
+        chapters = [[NSMutableArray alloc] init];
+    }
+    
+    return self;
+}
+
+- (void) addChapter:(NSString *)title duration:(uint64_t)timestamp
+{
+    SBChapter *newChapter = [[SBChapter alloc] init];
+    newChapter.title = title;
+    newChapter.timestamp = timestamp;
+
+    [chapters addObject:newChapter];
+    [newChapter release];
+}
 
 - (id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
