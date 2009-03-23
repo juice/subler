@@ -151,14 +151,13 @@
 - (BOOL) writeToUrl:(NSURL *)url error:(NSError **)outError
 {
     filePath = [url path];
-    fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, 0);
+    fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, MP4_CREATE_64BIT_DATA);
     MP4Close(fileHandle);
 
     [self updateMP4File:outError];
 
     return YES;
 }
-
 
 - (BOOL) updateMP4File:(NSError **)outError
 {
@@ -191,7 +190,6 @@
         [metadata writeMetadataWithFileHandle:fileHandle];
 
     MP4Close(fileHandle);
-
     return success;
 }
 
@@ -217,5 +215,6 @@
 
 @synthesize tracks;
 @synthesize metadata;
+@synthesize hasFileRepresentation;
 
 @end

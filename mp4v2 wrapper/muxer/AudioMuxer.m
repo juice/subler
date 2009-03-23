@@ -24,37 +24,71 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     GetMediaSampleDescription(media, 1, desc);
 
     SoundDescriptionHandle sndDesc = (SoundDescriptionHandle) desc;
+    
+    AudioStreamBasicDescription asbd = {0};
+    err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
+                                        kQTSoundDescriptionPropertyID_AudioStreamBasicDescription,
+                                        sizeof(asbd), &asbd, NULL);
 
-    // Get the magic cookie
-    UInt32 cookieSize;
-    void* cookie;
-    QTSoundDescriptionGetPropertyInfo(sndDesc,
+    if (asbd.mFormatID == kAudioFormatMPEG4AAC) {
+        // Get the magic cookie
+        UInt32 cookieSize;
+        void* cookie;
+        QTSoundDescriptionGetPropertyInfo(sndDesc,
+                                          kQTPropertyClass_SoundDescription,
+                                          kQTSoundDescriptionPropertyID_MagicCookie,
+                                          NULL, &cookieSize, NULL);
+        cookie = malloc(cookieSize);
+        QTSoundDescriptionGetProperty(sndDesc,
                                       kQTPropertyClass_SoundDescription,
                                       kQTSoundDescriptionPropertyID_MagicCookie,
-                                      NULL, &cookieSize, NULL);
-    cookie = malloc(cookieSize);
-    QTSoundDescriptionGetProperty(sndDesc,
-                                  kQTPropertyClass_SoundDescription,
-                                  kQTSoundDescriptionPropertyID_MagicCookie,
-                                  cookieSize, cookie, &cookieSize);
-    // Extract DecoderSpecific info
-    UInt8* buffer;
-    int size;
-    ReadESDSDescExt(cookie, &buffer, &size);
-    free(cookie);
+                                      cookieSize, cookie, &cookieSize);
+        // Extract DecoderSpecific info
+        UInt8* buffer;
+        int size;
+        ReadESDSDescExt(cookie, &buffer, &size, 0);
+        free(cookie);
 
-    // Add audio track
-    dstTrackId = MP4AddAudioTrack(fileHandle,
-                                  GetMediaTimeScale(media),
-                                  1024, MP4_MPEG4_AUDIO_TYPE);
-    // Dunno what this does
-    MP4SetAudioProfileLevel(fileHandle, 0x0F);
+        // Add audio track
+        dstTrackId = MP4AddAudioTrack(fileHandle,
+                                      asbd.mSampleRate,
+                                      1024, MP4_MPEG4_AUDIO_TYPE);
+        // Dunno what this does
+        MP4SetAudioProfileLevel(fileHandle, 0x0F);
 
-    // QuickTime returns a complete ESDS, but mp4v2 wants only
-    // the DecoderSpecific info.
-    MP4SetTrackESConfiguration(fileHandle, dstTrackId,
-                               buffer, size);
+        // QuickTime returns a complete ESDS, but mp4v2 wants only
+        // the DecoderSpecific info.
+        MP4SetTrackESConfiguration(fileHandle, dstTrackId,
+                                   buffer, size);
+    }
+    else if (asbd.mFormatID == kAudioFormatAC3 || asbd.mFormatID == 0x6D732000)
+    {
+        uint8_t fscod = 0;
+        uint8_t bsid = 8;
+        uint8_t bsmod = 0;
+        uint8_t acmod = 7;
+        uint8_t lfeon = 1;
+        uint8_t bit_rate_code = 15;
 
+        if (asbd.mSampleRate == 48000)
+                fscod = 0;
+        else if (asbd.mSampleRate == 44100)
+                fscod = 1;
+        else if (asbd.mSampleRate == 32000)
+                fscod = 2;
+        else
+                fscod = 3;
+
+        dstTrackId = MP4AddAC3AudioTrack(fileHandle, asbd.mSampleRate,
+                                         fscod,
+                                         bsid,
+                                         bsmod,
+                                         acmod,
+                                         lfeon,
+                                         bit_rate_code);
+    }
+
+    // Create a QTSampleTable which cointans all the informatio of the track samples.
     TimeValue64 sampleTableStartDecodeTime = 0;
     QTMutableSampleTableRef sampleTable = NULL;
     err = CopyMediaMutableSampleTable(media,
@@ -64,20 +98,17 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                       0,
                                       &sampleTable );
 
-    SInt64 sampleIndex, sampleCount;
-    sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
+    SInt64 sampleIndex;
+    SInt64 sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
 
-    for (sampleIndex = 0; sampleIndex <= sampleCount; sampleIndex++) {
+    for (sampleIndex = 1; sampleIndex <= sampleCount; sampleIndex++) {
         TimeValue64 sampleDecodeTime = 0;
         ByteCount sampleDataSize = 0;
-        MediaSampleFlags sampleFlags = 0;
 		UInt8 *sampleData = NULL;
-        TimeValue64 decodeDuration = QTSampleTableGetDecodeDuration(sampleTable, sampleIndex);
 
         // Get the frame's data size and sample flags.  
         SampleNumToMediaDecodeTime(media, sampleIndex, &sampleDecodeTime, NULL);
-		err = GetMediaSample2(media, NULL, 0, &sampleDataSize, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, &sampleFlags);
+		sampleDataSize = QTSampleTableGetDataSizePerSample(sampleTable, sampleIndex);
 
         // Load the frame.
 		sampleData = malloc(sampleDataSize);
@@ -88,7 +119,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                              dstTrackId,
                              sampleData,
                              sampleDataSize,
-                             decodeDuration,
+                             MP4_INVALID_DURATION,
                              0, true);
         free(sampleData);
     }

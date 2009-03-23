@@ -71,6 +71,59 @@
     [self tableViewSelectionDidChange:nil];
 }
 
+// Hook into the flow to fork a thread
+- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo
+{
+    [optBar startAnimation:nil];
+    [saveOperationName setStringValue:@"Saving…"];
+    [NSApp beginSheet:savingWindow modalForWindow:documentWindow
+        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+
+    [NSApplication detachDrawingThread:@selector(saveDocumentToDisk:) toTarget:self withObject:[NSDictionary dictionaryWithObjectsAndKeys:absoluteURL, @"absoluteURL", typeName, @"typeName", [NSNumber numberWithInteger:saveOperation], @"saveOperation", nil]];
+}
+
+// Thread entry
+- (void)saveDocumentToDisk:(NSDictionary *)info
+{
+    NSURL       *absoluteURL = [info objectForKey:@"absoluteURL"];
+    NSString    *typeName = [info objectForKey:@"typeName"];
+    NSSaveOperationType	saveOperation = [[info objectForKey:@"saveOperation"] integerValue];
+    NSError	 *outError;
+
+    BOOL success = [self saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&outError];
+
+    if (!success && outError)
+        [self presentError:outError
+            modalForWindow:documentWindow
+                  delegate:nil
+        didPresentSelector:NULL
+               contextInfo:NULL];
+    else {
+        NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
+                                        [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
+                                        nil];
+        
+        [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
+        [self setFileURL:absoluteURL];
+        [self setFileModificationDate:[[[NSFileManager defaultManager]  
+                                        fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
+                                       fileModificationDate]];
+    }
+
+    [self performSelectorOnMainThread:@selector(saveDidComplete) withObject:nil waitUntilDone: NO];
+}
+
+- (void) saveDidComplete
+{
+    [self reloadFile:self];
+
+    [NSApp endSheet: savingWindow];
+    [savingWindow orderOut:self];
+
+    [optBar stopAnimation:nil];
+}
+
 - (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName 
         forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError;
 {
@@ -90,36 +143,16 @@
             // not implemented
             break;
 	}
-
-    if (!success && outError)
-        [self presentError:*outError
-            modalForWindow:documentWindow
-                  delegate:nil
-        didPresentSelector:NULL
-               contextInfo:NULL];
-    else {
-        NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
-                                        [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
-                                        nil];
-
-        [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
-        [self setFileURL:absoluteURL];
-        [self setFileModificationDate:[[[NSFileManager defaultManager]  
-                                        fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
-                                       fileModificationDate]];
-        [self reloadFile:self];
-    }
     return success;
 }
 
 - (void) saveAndOptimize: (id)sender
 {
     if ([self isDocumentEdited])
-        [self saveDocument:sender];
+        return;
 
     [optBar startAnimation:sender];
-
+    [saveOperationName setStringValue:@"Optimizing…"];
     [NSApp beginSheet:savingWindow modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
 
@@ -184,6 +217,7 @@
             return YES;
 
     if (action == @selector(saveAndOptimize:))
+        if (![self isDocumentEdited] && [mp4File hasFileRepresentation])
             return YES;
 
     if (action == @selector(showSubititleWindow:))

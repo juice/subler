@@ -32,6 +32,7 @@
 
 @property(readonly) NSMutableArray  *tracks;
 @property(readonly) MP42Metadata    *metadata;
+@property(readonly) BOOL hasFileRepresentation;
 
 - (id)   initWithDelegate:(id)del;
 - (id)   initWithExistingFile:(NSString *) path andDelegate:(id) del;

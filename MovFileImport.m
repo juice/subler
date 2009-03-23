@@ -66,6 +66,9 @@
         case 'SSA ':
             result = @"SSA";
             break;
+        case 'tmcd':
+            result = @"Timecode";
+            break;
         default:
             result = @"Unknown";
             break;

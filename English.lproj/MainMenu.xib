@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="555"/>
+			<integer value="451"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -299,7 +299,7 @@
 								</object>
 								<object class="NSMenuItem" id="134386248">
 									<reference key="NSMenu" ref="720053764"/>
-									<string type="base64-UTF8" key="NSTitle">U2F2ZSAmIE9wdGltaXplA</string>
+									<string key="NSTitle">Optimize</string>
 									<string key="NSKeyEquiv">s</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2236,7 +2236,7 @@
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{640, 343}, {205, 253}}</string>
+					<string>{{640, 343}, {199, 253}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{155, 774}, {199, 203}}</string>
@@ -2351,6 +2351,7 @@
 							<string>label</string>
 							<string>langSelection</string>
 							<string>optBar</string>
+							<string>saveOperationName</string>
 							<string>savingWindow</string>
 							<string>subtitleFilePath</string>
 							<string>targetView</string>
@@ -2369,6 +2370,7 @@
 							<string>NSTextField</string>
 							<string>NSPopUpButton</string>
 							<string>NSProgressIndicator</string>
+							<string>NSTextField</string>
 							<string>NSWindow</string>
 							<string>NSTextField</string>
 							<string>NSView</string>

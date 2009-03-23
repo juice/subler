@@ -78,7 +78,7 @@ int updateTracksCount(MP4FileHandle fileHandle)
     return MP4SetIntegerProperty(fileHandle, "moov.mvhd.nextTrackId", maxTrackId + 1);
 }
 
-uint64_t findChapterTrackId(MP4FileHandle fileHandle)
+MP4TrackId findChapterTrackId(MP4FileHandle fileHandle)
 {
     MP4TrackId trackId = 0;
     uint64_t trackRef;
@@ -97,6 +97,8 @@ MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle)
 {
     MP4TrackId videoTrack = 0;
     int i, trackNumber = MP4GetNumberOfTracks( fileHandle, 0, 0);
+    if (!trackNumber)
+        return 0;
     for (i = 0; i <= trackNumber; i++) {
         videoTrack = MP4FindTrackId( fileHandle, i, 0, 0);
         const char* trackType = MP4GetTrackType( fileHandle, videoTrack);
@@ -249,13 +251,14 @@ static int readDescr(UInt8 **buffer, int *tag)
 }
 
 // based off of mov_read_esds from mov.c in ffmpeg's libavformat
-ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size)
+ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int versionFlags)
 {
 	UInt8 *esds = (UInt8 *) descExt;
 	int tag, len;
 	*size = 0;
 
-    //esds += 4;		// version + flags
+    if (versionFlags)
+        esds += 4;		// version + flags
 	readDescr(&esds, &tag);
 	esds += 2;		// ID
 	if (tag == MP4ESDescrTag)

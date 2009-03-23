@@ -11,14 +11,18 @@
 #include "mp4v2.h"
 
 NSString* SMPTEStringFromTime(long long time, long timeScale);
+
 int enableFirstSubtitleTrack(MP4FileHandle fileHandle);
 int updateTracksCount(MP4FileHandle fileHandle);
-uint64_t findChapterTrackId(MP4FileHandle fileHandle);
+
+MP4TrackId findChapterTrackId(MP4FileHandle fileHandle);
 MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle);
+
 uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId videoTrack);
+
 NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId videoTrack);
 NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackId videoTrack);
 NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId videoTrack);
 NSString* getFilenameLanguage(CFStringRef filename);
 
-ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size);
+ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int versionFlags);

@@ -81,7 +81,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
             GetImageDescriptionExtension(imgDesc, &imgDescExt, 'esds', 1);
 
-            ReadESDSDescExt(imgDescExt, &buffer, &size);
+            ReadESDSDescExt(*imgDescExt, &buffer, &size, 1);
             MP4SetTrackESConfiguration(fileHandle, dstTrackId, buffer, size);
 
             DisposeHandle(imgDescExt);
@@ -133,7 +133,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     SInt64 sampleIndex, sampleCount;
     sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
 
-    for (sampleIndex = 0; sampleIndex <= sampleCount; sampleIndex++) {
+    for (sampleIndex = 1; sampleIndex <= sampleCount; sampleIndex++) {
         TimeValue64 sampleDecodeTime = 0;
         ByteCount sampleDataSize = 0;
         MediaSampleFlags sampleFlags = 0;
@@ -143,8 +143,8 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
         // Get the frame's data size and sample flags.  
         SampleNumToMediaDecodeTime( media, sampleIndex, &sampleDecodeTime, NULL);
-		err = GetMediaSample2(media, NULL, 0, &sampleDataSize, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, &sampleFlags);
+		sampleDataSize = QTSampleTableGetDataSizePerSample(sampleTable, sampleIndex);
+        sampleFlags = QTSampleTableGetSampleFlags(sampleTable, sampleIndex);
 
         // Load the frame.
 		sampleData = malloc(sampleDataSize);
