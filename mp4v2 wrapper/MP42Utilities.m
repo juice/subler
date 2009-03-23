@@ -255,6 +255,7 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size)
 	int tag, len;
 	*size = 0;
 
+    //esds += 4;		// version + flags
 	readDescr(&esds, &tag);
 	esds += 2;		// ID
 	if (tag == MP4ESDescrTag)

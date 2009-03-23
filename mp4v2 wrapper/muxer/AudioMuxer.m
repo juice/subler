@@ -157,15 +157,21 @@ int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         }
     }
 
+    MP4Duration trackDuration = 0;
     uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(srcFile, srcTrackId);
     while (i <= trackEditCount) {
         MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(srcFile, srcTrackId, i);
-        MP4Duration editDuration = MP4GetTrackEditDuration(srcFile, srcTrackId, i);
+        MP4Duration editDuration = MP4ConvertFromMovieDuration(srcFile,
+                                                               MP4GetTrackEditDuration(srcFile, srcTrackId, i),
+                                                               MP4GetTimeScale(fileHandle));
+        trackDuration += editDuration;
         int8_t editDwell = MP4GetTrackEditDwell(srcFile, srcTrackId, i);
-
+        
         MP4AddTrackEdit(fileHandle, dstTrackId, i, editMediaStart, editDuration, editDwell);
         i++;
     }
+    if (trackEditCount)
+        MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
 
     MP4Close(srcFile);
 

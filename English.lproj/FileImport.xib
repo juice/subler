@@ -366,14 +366,18 @@
 						<object class="NSTextField" id="297678896">
 							<reference key="NSNextResponder" ref="727217425"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{17, 181}, {88, 17}}</string>
+							<string key="NSFrame">{{17, 181}, {92, 17}}</string>
 							<reference key="NSSuperview" ref="727217425"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="886732519">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">272630784</int>
 								<string key="NSContents">Select tracks:</string>
-								<reference key="NSSupport" ref="253129235"/>
+								<object class="NSFont" key="NSSupport">
+									<string key="NSName">LucidaGrande-Bold</string>
+									<double key="NSSize">1.300000e+01</double>
+									<int key="NSfFlags">16</int>
+								</object>
 								<reference key="NSControlView" ref="297678896"/>
 								<object class="NSColor" key="NSBackgroundColor">
 									<int key="NSColorSpace">6</int>

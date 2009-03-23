@@ -28,8 +28,8 @@
 
         MP4GetTrackBytesProperty(fileHandle ,Id, "tkhd.matrix", &val, &size);
         memcpy(nval, val, size);
-        offsetX = CFSwapInt32HostToBig(ptr32[6]) / 0x10000;
-        offsetY = CFSwapInt32HostToBig(ptr32[7]) / 0x10000;
+        offsetX = CFSwapInt32BigToHost(ptr32[6]) / 0x10000;
+        offsetY = CFSwapInt32BigToHost(ptr32[7]) / 0x10000;
 
         free(val);
     }

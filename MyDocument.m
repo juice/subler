@@ -85,7 +85,6 @@
             break;
 		case NSSaveAsOperation:
             success = [mp4File writeToUrl:absoluteURL error:outError];
-            
             break;
 		case NSSaveToOperation:
             // not implemented

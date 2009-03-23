@@ -57,7 +57,7 @@
     err = MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
 
     if (![name isEqualToString:@"Video Track"] &&
-        ![name isEqualToString:@"Audio Track"] &&
+        ![name isEqualToString:@"Sound Track"] &&
         ![name isEqualToString:@"Subtitle Track"] &&
         ![name isEqualToString:@"Text Track"] &&
         ![name isEqualToString:@"Chapter Track"] &&

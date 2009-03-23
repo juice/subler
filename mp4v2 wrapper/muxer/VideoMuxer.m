@@ -17,8 +17,9 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     OSStatus err;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
     Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
-    Media media = [[[[srcFile tracks] objectAtIndex:srcTrackId] media] quickTimeMedia];
+    Media media = GetTrackMedia(track);
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
+    long count;
 
     // Get the sample description
 	SampleDescriptionHandle desc = (SampleDescriptionHandle) NewHandle(0);
@@ -26,42 +27,90 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
     ImageDescriptionHandle imgDesc = (ImageDescriptionHandle) desc;
 
-    // Get avcC atom
-    Handle imgDescHandle = NewHandle(0);
-    GetImageDescriptionExtension(imgDesc, &imgDescHandle, 'avcC', 1);
+    if ((*imgDesc)->cType == kH264CodecType) {
+        // Get avcC atom
+        Handle imgDescHandle = NewHandle(0);
+        GetImageDescriptionExtension(imgDesc, &imgDescHandle, 'avcC', 1);
 
-    // Dunno what this does
-    MP4SetVideoProfileLevel(fileHandle, 0x7F);
-    // Add video track
-    dstTrackId = MP4AddH264VideoTrack(fileHandle, GetMediaTimeScale(media),
+        MP4SetVideoProfileLevel(fileHandle, 0x7F);
+        // Add video track
+        dstTrackId = MP4AddH264VideoTrack(fileHandle, GetMediaTimeScale(media),
+                                          MP4_INVALID_DURATION,
+                                          (*imgDesc)->width, (*imgDesc)->height,
+                                          (*imgDescHandle)[1],  // AVCProfileIndication
+                                          (*imgDescHandle)[2],  // profile_compat
+                                          (*imgDescHandle)[3],  // AVCLevelIndication
+                                          (*imgDescHandle)[4]); // lengthSizeMinusOne
+
+        // We have got a complete avcC atom, but mp4v2 wants sps and pps separately
+        SInt64 i;
+        int8_t spsCount = ((*imgDescHandle)[5] & 0x1f);
+        uint8_t ptrPos = 6;
+        for (i = 0; i < spsCount; i++) {
+            uint16_t spsSize = (*imgDescHandle)[ptrPos++] << 8 & 0xff;
+            spsSize = (*imgDescHandle)[ptrPos++] & 0xff;
+            MP4AddH264SequenceParameterSet(fileHandle, dstTrackId,
+                                           (uint8_t *)*imgDescHandle+ptrPos, spsSize);
+            ptrPos += spsSize;
+        }
+
+        int8_t ppsCount = (*imgDescHandle)[ptrPos++];
+        for (i = 0; i < ppsCount; i++) {
+            uint16_t ppsSize = (*imgDescHandle)[ptrPos++] << 8 & 0xff;
+            ppsSize = (*imgDescHandle)[ptrPos++] & 0xff;
+            MP4AddH264PictureParameterSet(fileHandle, dstTrackId,
+                                      (uint8_t*)*imgDescHandle+ptrPos, ppsSize);
+            ptrPos += ppsSize;
+        }
+        DisposeHandle(imgDescHandle);
+    }
+    else if ((*imgDesc)->cType == kMPEG4VisualCodecType) {
+        MP4SetVideoProfileLevel(fileHandle, MPEG4_SP_L3);
+        // Add video track
+        dstTrackId = MP4AddVideoTrack(fileHandle, GetMediaTimeScale(media),
                                       MP4_INVALID_DURATION,
                                       (*imgDesc)->width, (*imgDesc)->height,
-                                      (*imgDescHandle)[1],  // AVCProfileIndication
-                                      (*imgDescHandle)[2],  // profile_compat
-                                      (*imgDescHandle)[3],  // AVCLevelIndication
-                                      (*imgDescHandle)[4]); // lengthSizeMinusOne
+                                      MP4_MPEG4_VIDEO_TYPE);
 
-    // We have got a complete avcC atom, but mp4v2 wants sps and pps separately
-    SInt64 i;
-    int8_t spsCount = ((*imgDescHandle)[5] & 0x1f);
-    uint8_t ptrPos = 6;
-    for (i = 0; i < spsCount; i++) {
-        uint16_t spsSize = (*imgDescHandle)[ptrPos++] << 8 & 0xff;
-        spsSize = (*imgDescHandle)[ptrPos++] & 0xff;
-        MP4AddH264SequenceParameterSet(fileHandle, dstTrackId,
-                                       (uint8_t *)*imgDescHandle+ptrPos, spsSize);
-        ptrPos += spsSize;
+        // Add ES decoder specific configuration
+        CountImageDescriptionExtensionType(imgDesc, 'esds',  &count);
+        if (count >= 1) {
+            Handle imgDescExt = NewHandle(0);
+            UInt8* buffer;
+            int size;
+
+            GetImageDescriptionExtension(imgDesc, &imgDescExt, 'esds', 1);
+
+            ReadESDSDescExt(imgDescExt, &buffer, &size);
+            MP4SetTrackESConfiguration(fileHandle, dstTrackId, buffer, size);
+
+            DisposeHandle(imgDescExt);
+        }
+    }
+    else
+        goto bail;
+
+    // Add pixel aspect ratio and color atom
+    CountImageDescriptionExtensionType(imgDesc, kPixelAspectRatioImageDescriptionExtension, &count);
+    if (count > 0) {
+        Handle pasp = NewHandle(0);
+        GetImageDescriptionExtension(imgDesc, &pasp, kPixelAspectRatioImageDescriptionExtension, 1);
+        MP4AddPixelAspectRatio(fileHandle, dstTrackId,
+                               CFSwapInt32BigToHost(((PixelAspectRatioImageDescriptionExtension*)(*pasp))->hSpacing),
+                               CFSwapInt32BigToHost(((PixelAspectRatioImageDescriptionExtension*)(*pasp))->vSpacing));
+        DisposeHandle(pasp);
     }
 
-    int8_t ppsCount = (*imgDescHandle)[ptrPos++];
-    for (i = 0; i < ppsCount; i++) {
-        uint16_t ppsSize = (*imgDescHandle)[ptrPos++] << 8 & 0xff;
-        ppsSize = (*imgDescHandle)[ptrPos++] & 0xff;
-        MP4AddH264PictureParameterSet(fileHandle, dstTrackId,
-                                      (uint8_t*)*imgDescHandle+ptrPos, ppsSize);
-        ptrPos += ppsSize;
-    }
-    DisposeHandle(imgDescHandle);
+    CountImageDescriptionExtensionType(imgDesc, kColorInfoImageDescriptionExtension, &count);
+    if (count > 0) {
+        Handle colr = NewHandle(0);
+        GetImageDescriptionExtension(imgDesc, &colr, kColorInfoImageDescriptionExtension, 1);
+        MP4AddColr(fileHandle, dstTrackId,
+                   CFSwapInt16BigToHost(((NCLCColorInfoImageDescriptionExtension*)(*colr))->primaries),
+                   CFSwapInt16BigToHost(((NCLCColorInfoImageDescriptionExtension*)(*colr))->transferFunction),
+                   CFSwapInt16BigToHost(((NCLCColorInfoImageDescriptionExtension*)(*colr))->matrix));
+        DisposeHandle(colr);
+    }    
 
     // Create a QTSampleTable which cointans all the informatio of the track samples.
     TimeValue64 sampleTableStartDecodeTime = 0;
@@ -112,10 +161,13 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         free(sampleData);
     }
 
-    TimeValue editTrackStart, editTrackDuration;
-	TimeValue64 editDisplayStart;
+    QTSampleTableRelease(sampleTable);
 
-	// Find the first edit, skipping empty edits.
+    TimeValue editTrackStart, editTrackDuration;
+	TimeValue64 editDisplayStart, trackDuration = 0;
+    Fixed editDwell;
+
+	// Find the first edit
 	// Each edit has a starting track timestamp, a duration in track time, a starting display timestamp and a rate.
 	GetTrackNextInterestingTime(track, 
                                 nextTimeTrackEdit | nextTimeEdgeOK,
@@ -124,16 +176,19 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                 &editTrackStart,
                                 &editTrackDuration);
 
-    while ((editTrackStart >= 0) && (editTrackDuration > 0)) {
+    while (editTrackDuration > 0) {
         editDisplayStart = TrackTimeToMediaDisplayTime(editTrackStart, track);
-
+        editTrackDuration = (editTrackDuration / (float)GetMovieTimeScale([srcFile quickTimeMovie])) * MP4GetTimeScale(fileHandle);
+        editDwell = GetTrackEditRate64(track, editTrackStart);
+        
         if (minDisplayOffset < 0)
             MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, editDisplayStart -minDisplayOffset,
-                            editTrackDuration, 0);
+                            editTrackDuration, !Fix2X(editDwell));
         else
             MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, editDisplayStart,
-                            editTrackDuration, 0);
+                            editTrackDuration, !Fix2X(editDwell));
 
+        trackDuration += editTrackDuration;
         // Find the next edit, skipping empty edits.
 		GetTrackNextInterestingTime(track, 
                                     nextTimeTrackEdit,
@@ -143,8 +198,9 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                     &editTrackDuration);
     }
 
-    //MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", editTrackStart);
-    QTSampleTableRelease(sampleTable);
+    MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
+
+bail:
     [srcFile release];
 
     return dstTrackId;
@@ -202,15 +258,21 @@ int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         }
     }
 
+    MP4Duration trackDuration = 0;
     uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(srcFile, srcTrackId);
     while (i <= trackEditCount) {
         MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(srcFile, srcTrackId, i);
-        MP4Duration editDuration = MP4GetTrackEditDuration(srcFile, srcTrackId, i);
+        MP4Duration editDuration = MP4ConvertFromMovieDuration(srcFile,
+                                                               MP4GetTrackEditDuration(srcFile, srcTrackId, i),
+                                                               MP4GetTimeScale(fileHandle));
+        trackDuration += editDuration;
         int8_t editDwell = MP4GetTrackEditDwell(srcFile, srcTrackId, i);
 
         MP4AddTrackEdit(fileHandle, dstTrackId, i, editMediaStart, editDuration, editDwell);
         i++;
     }
+    if (trackEditCount)
+        MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
 
     MP4Close(srcFile);
 
