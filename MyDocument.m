@@ -148,6 +148,7 @@
         forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError;
 {
     BOOL success = NO;
+    uint64_t flags = 0;
 
 	switch (saveOperation)
 	{
@@ -157,7 +158,9 @@
             success = [mp4File updateMP4File:outError];
             break;
 		case NSSaveAsOperation:
-            success = [mp4File writeToUrl:absoluteURL data64: _64bit_data time64: _64bit_time error:outError];
+            if (_64bit_data) flags += 0x01;
+            if (_64bit_time) flags += 0x02;
+            success = [mp4File writeToUrl:absoluteURL flags:flags error:outError];
             break;
 		case NSSaveToOperation:
             // not implemented
@@ -166,8 +169,8 @@
     if (_optimize)
     {
         [mp4File optimize];
-        _optimize = NO;
         [saveOperationName setStringValue:@"Optimizing…"];
+        _optimize = NO;
     }
     return success;
 }

@@ -136,14 +136,10 @@
     [pool release];
 }
 
-- (BOOL) writeToUrl:(NSURL *)url data64: (BOOL)dataFlag time64: (BOOL)timeFlag error:(NSError **)outError
+- (BOOL) writeToUrl:(NSURL *)url flags:(uint64_t)flags error:(NSError **)outError
 {
-    uint64_t createFlags = 0;
-    if (dataFlag) createFlags |= MP4_CREATE_64BIT_DATA;
-    if (timeFlag) createFlags |= MP4_CREATE_64BIT_TIME;
-
     filePath = [url path];
-    fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, createFlags);
+    fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, flags);
     MP4Close(fileHandle);
 
     [self updateMP4File:outError];

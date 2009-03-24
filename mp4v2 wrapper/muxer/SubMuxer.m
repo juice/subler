@@ -61,10 +61,24 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId,
 	return subtitle_track;
 }
 
+static size_t closeStyleAtom(u_int16_t styleCount, u_int8_t* styleAtom)
+{
+    size_t styleSize = 10 + (styleCount * 12);
+    styleAtom[0] = 0;
+    styleAtom[1] = 0;
+    styleAtom[2] = (styleSize >> 8) & 0xff;
+    styleAtom[3] = styleSize & 0xff;
+    styleAtom[8] = (styleCount >> 8) & 0xff;
+    styleAtom[9] = styleCount & 0xff;
+    
+    return styleSize;
+    
+}
+
 static u_int8_t* makeStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16_t fontID, u_int8_t flags, u_int8_t* style)
 {
     style[0] = (startChar >> 8) & 0xff; // startChar
-    style[1] = startChar & 0xff;;
+    style[1] = startChar & 0xff;
     style[2] = (endChar >> 8) & 0xff;   // endChar
     style[3] = endChar & 0xff;
     style[4] = (fontID >> 8) & 0xff;    // font-ID
@@ -83,47 +97,68 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
 {
     int Err;
     u_int16_t styleCount = 0;
-    u_int8_t styleBuffer[2048];
+    u_int8_t styleAtom[2048];
     size_t styleSize = 0;
-    memcpy(styleBuffer+4, "styl", 4);
+    memcpy(styleAtom+4, "styl", 4);
 
-    NSRange range = [string rangeOfString: @"<i>"];
-    while (range.location != NSNotFound) {
-        NSRange startRange;
-        NSRange endRange;
+    u_int8_t styl = 0;
+    NSRange endRange;
+    NSRange startRange = [string rangeOfString: @"<"];
+    if (startRange.location != NSNotFound) {
+        unichar tag = [string characterAtIndex:startRange.location + 1];
+        if (tag == 'i') styl += 2;
+        else if (tag == 'b') styl += 1;
+        else if (tag == 'u') styl += 4;
+        startRange.length += 2;
+        string = [string stringByReplacingCharactersInRange:startRange withString:@""];
+    }
 
-        startRange = [string rangeOfString: @"<i>"];
-        if (startRange.location != NSNotFound)
-            string = [string stringByReplacingCharactersInRange:startRange withString:@""];
-        else
-            break;
-
-        endRange = [string rangeOfString: @"</i>"];
-        if (endRange.location != NSNotFound)
-            string = [string stringByReplacingCharactersInRange:endRange withString:@""];
-        else
+    while (startRange.location != NSNotFound) {
+        endRange = [string rangeOfString: @"<"];
+        if (endRange.location == NSNotFound)
             endRange.location = [string length];
 
-        u_int8_t style[12];
-        makeStyleRecord(startRange.location, endRange.location, 1, 2, style);
-        memcpy(styleBuffer+10+(12*styleCount), style, 12);
-        styleCount++;
+        if (styl) {
+            u_int8_t styleRecord[12];
+            makeStyleRecord(startRange.location, endRange.location, 1, styl, styleRecord);
+            memcpy(styleAtom+10+(12*styleCount), styleRecord, 12);
+            styleCount++;
+        }
+
+        endRange = [string rangeOfString: @"<"];
+        if (endRange.location != NSNotFound && (endRange.location + 1) < [string length]) {
+            unichar tag = [string characterAtIndex:endRange.location + 1];
+            if (tag == 'i') styl += 2;
+            else if (tag == 'b') styl += 1;
+            else if (tag == 'u') styl += 4;
+            if (tag == '/' && (endRange.location + 2) < [string length]) {
+                unichar tag2 = [string characterAtIndex:endRange.location + 2];
+                if (tag2 == 'i') styl -= 2;
+                else if (tag2 == 'b') styl -= 1;
+                else if (tag2 == 'u') styl -= 4;
+                if ((endRange.location + 3) < [string length])
+                    endRange.length += 3;
+                string = [string stringByReplacingCharactersInRange:endRange withString:@""];
+            }
+            else {
+                if ((endRange.location + 2) < [string length])
+                    endRange.length += 2;
+                string = [string stringByReplacingCharactersInRange:endRange withString:@""];
+            }
+
+            startRange = endRange;
+        }
+        else
+            break;
     }
 
-    if (styleCount) {
-        styleSize = 10 + (styleCount * 12);
-        styleBuffer[0] = 0;
-        styleBuffer[1] = 0;
-        styleBuffer[2] = (styleSize >> 8) & 0xff;
-        styleBuffer[3] = styleSize & 0xff;
-        styleBuffer[8] = (styleCount >> 8) & 0xff;
-        styleBuffer[9] = styleCount & 0xff;
-    }
+    if (styleCount)
+        styleSize = closeStyleAtom(styleCount, styleAtom);
 
     const size_t stringLength = strlen([string UTF8String]);
     u_int8_t buffer[2048];
     memcpy(buffer+2, [string UTF8String], stringLength);
-    memcpy(buffer+2+stringLength, styleBuffer, styleSize);
+    memcpy(buffer+2+stringLength, styleAtom, styleSize);
     buffer[0] = (stringLength >> 8) & 0xff;
     buffer[1] = stringLength & 0xff;
 

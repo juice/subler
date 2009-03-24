@@ -10,6 +10,8 @@
 		8DD76F9A0486AA7600D96B5E /* SublerCLI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* SublerCLI.mm */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* SublerCLI.1 */; };
+		A94871D20F7914D2008DBC94 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D10F7914D2008DBC94 /* QTKit.framework */; };
+		A94871D70F7914E7008DBC94 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D60F7914E7008DBC94 /* QuickTime.framework */; };
 		A98ED2FE0F59E00E00885A49 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED2FC0F59E00E00885A49 /* SubUtilities.m */; };
 		A98ED30C0F59E01400885A49 /* MP42ChapterTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */; };
 		A98ED30D0F59E01400885A49 /* MP42File.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3030F59E01400885A49 /* MP42File.m */; };
@@ -77,6 +79,8 @@
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SublerCLI_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* SublerCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SublerCLI; sourceTree = BUILT_PRODUCTS_DIR; };
+		A94871D10F7914D2008DBC94 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
+		A94871D60F7914E7008DBC94 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		A98ED2FA0F59E00E00885A49 /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubUtilities.h; path = ../SubUtilities.h; sourceTree = SOURCE_ROOT; };
 		A98ED2FC0F59E00E00885A49 /* SubUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubUtilities.m; path = ../SubUtilities.m; sourceTree = SOURCE_ROOT; };
 		A98ED3000F59E01400885A49 /* MP42ChapterTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42ChapterTrack.h; sourceTree = "<group>"; };
@@ -120,6 +124,8 @@
 				A98ED3330F59E08D00885A49 /* libmp4v2.a in Frameworks */,
 				A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */,
 				A98ED4030F59E28300885A49 /* Cocoa.framework in Frameworks */,
+				A94871D20F7914D2008DBC94 /* QTKit.framework in Frameworks */,
+				A94871D70F7914E7008DBC94 /* QuickTime.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +159,8 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A94871D60F7914E7008DBC94 /* QuickTime.framework */,
+				A94871D10F7914D2008DBC94 /* QTKit.framework */,
 				A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */,
 				A98ED3230F59E08D00885A49 /* mp4v2 */,
 				A98ED4020F59E28300885A49 /* Cocoa.framework */,
