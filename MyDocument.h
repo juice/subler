@@ -38,7 +38,12 @@
     IBOutlet NSView         *targetView;
     id                      importWindow;
 
+    IBOutlet NSView         *saveView;
     IBOutlet NSProgressIndicator *optBar;
+    
+    BOOL _64bit_data;
+    BOOL _64bit_time;
+    BOOL _optimize;
 }
 
 - (IBAction) showSubititleWindow: (id) sender;
@@ -48,5 +53,8 @@
 - (IBAction) selectChapterFile: (id) sender;
 - (IBAction) selectFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
+
+- (IBAction) set64bit_data: (id) sender;
+- (IBAction) set64bit_time: (id) sender;
 
 @end

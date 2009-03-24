@@ -9,6 +9,30 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>m4v</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/x-m4v</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Video-MPEG4</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>M4V</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>MyDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>mp4</string>
 				<string>mpg4</string>
 				<string>mqv</string>
@@ -23,30 +47,6 @@
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>mpg4</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSDocumentClass</key>
-			<string>MyDocument</string>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>m4v</string>
-			</array>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>video/x-m4v</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Video-MPEG4</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>M4V</string>
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
@@ -97,12 +97,12 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2009, Damiano Galassi</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>0.8a6</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2009, Damiano Galassi</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

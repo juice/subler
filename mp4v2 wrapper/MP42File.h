@@ -41,7 +41,7 @@
 - (void) addTrack:(id) object;
 - (void) removeTrackAtIndex:(NSUInteger) index;
 
-- (BOOL) writeToUrl:(NSURL *)url error:(NSError **)outError;
+- (BOOL) writeToUrl:(NSURL *)url data64: (BOOL)dataFlag time64: (BOOL)timeFlag error:(NSError **)outError;
 - (BOOL) updateMP4File:(NSError **)outError;
 - (void) optimize;
 

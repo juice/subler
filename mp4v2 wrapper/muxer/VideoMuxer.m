@@ -190,7 +190,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
         trackDuration += editTrackDuration;
         // Find the next edit, skipping empty edits.
-		GetTrackNextInterestingTime(track, 
+		GetTrackNextInterestingTime(track,
                                     nextTimeTrackEdit,
                                     editTrackStart,
                                     fixed1,

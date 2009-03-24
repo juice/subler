@@ -118,13 +118,7 @@
     [tracks removeObjectAtIndex:index];
 }
 
-- (void) optimizeComplete: (id) sender;
-{
-    if ([delegate respondsToSelector:@selector(optimizeDidComplete)]) 
-        [delegate optimizeDidComplete];
-}
-
-- (void) _optimize: (id) sender
+- (void) optimize
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     BOOL noErr;
@@ -139,19 +133,17 @@
         [fileManager movePath:tempPath toPath:filePath handler:nil];
     }
 
-    [self performSelectorOnMainThread:@selector(optimizeComplete:) withObject:nil waitUntilDone:NO];
     [pool release];
 }
 
-- (void) optimize
+- (BOOL) writeToUrl:(NSURL *)url data64: (BOOL)dataFlag time64: (BOOL)timeFlag error:(NSError **)outError
 {
-    [NSThread detachNewThreadSelector:@selector(_optimize:) toTarget:self withObject:nil];
-}
+    uint64_t createFlags = 0;
+    if (dataFlag) createFlags |= MP4_CREATE_64BIT_DATA;
+    if (timeFlag) createFlags |= MP4_CREATE_64BIT_TIME;
 
-- (BOOL) writeToUrl:(NSURL *)url error:(NSError **)outError
-{
     filePath = [url path];
-    fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, MP4_CREATE_64BIT_DATA);
+    fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, createFlags);
     MP4Close(fileHandle);
 
     [self updateMP4File:outError];

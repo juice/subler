@@ -53,6 +53,8 @@
 
     [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
                                    NSColorPboardType, NSFilenamesPboardType, nil]];
+    
+    _optimize = NO;
 }
 
 - (id)initWithType:(NSString *)typeName error:(NSError **)outError
@@ -114,6 +116,24 @@
     [self performSelectorOnMainThread:@selector(saveDidComplete) withObject:nil waitUntilDone: NO];
 }
 
+- (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
+{
+    [savePanel setExtensionHidden:NO];
+    [savePanel setAccessoryView:saveView];
+
+    return YES;
+}
+
+- (IBAction) set64bit_data: (id) sender
+{
+    _64bit_data = [sender state];
+}
+
+- (IBAction) set64bit_time: (id) sender
+{
+    _64bit_time = [sender state];
+}
+
 - (void) saveDidComplete
 {
     [self reloadFile:self];
@@ -137,41 +157,25 @@
             success = [mp4File updateMP4File:outError];
             break;
 		case NSSaveAsOperation:
-            success = [mp4File writeToUrl:absoluteURL error:outError];
+            success = [mp4File writeToUrl:absoluteURL data64: _64bit_data time64: _64bit_time error:outError];
             break;
 		case NSSaveToOperation:
             // not implemented
             break;
 	}
+    if (_optimize)
+    {
+        [mp4File optimize];
+        _optimize = NO;
+        [saveOperationName setStringValue:@"Optimizing…"];
+    }
     return success;
 }
 
 - (void) saveAndOptimize: (id)sender
 {
-    if ([self isDocumentEdited])
-        return;
-
-    [optBar startAnimation:sender];
-    [saveOperationName setStringValue:@"Optimizing…"];
-    [NSApp beginSheet:savingWindow modalForWindow:documentWindow
-        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
-
-    [mp4File optimize];
-}
-
-- (void) optimizeDidComplete
-{
-    [self reloadFile:self];
-
-    [self setFileURL: [self fileURL]];
-    [self setFileModificationDate:[[[NSFileManager defaultManager]  
-                                    fileAttributesAtPath:[[self fileURL] path] traverseLink:YES]  
-                                   fileModificationDate]];
-
-    [NSApp endSheet: savingWindow];
-    [savingWindow orderOut:self];
-
-    [optBar stopAnimation:nil];
+    _optimize = YES;
+    [self saveDocument:sender];
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
