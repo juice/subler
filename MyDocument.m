@@ -168,8 +168,8 @@
 	}
     if (_optimize)
     {
-        [mp4File optimize];
         [saveOperationName setStringValue:@"Optimizing…"];
+        [mp4File optimize];
         _optimize = NO;
     }
     return success;
@@ -482,7 +482,7 @@ returnCode contextInfo: (void *) contextInfo
 
 - (IBAction) deleteTrack: (id) sender
 {
-    if ([fileTracksTable selectedRow] == -1)
+    if ([fileTracksTable selectedRow] == -1  || [fileTracksTable editedRow] != -1)
         return;
 
     [mp4File removeTrackAtIndex:[fileTracksTable selectedRow]];

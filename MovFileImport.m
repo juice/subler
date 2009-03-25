@@ -8,6 +8,7 @@
 
 #import "MovFileImport.h"
 #import <QuickTime/QuickTime.h>
+#include "lang.h"
 
 @implementation MovFileImport
 
@@ -97,7 +98,7 @@
 {
     short lang = GetMediaLanguage([[track media] quickTimeMedia]);
 
-    return [NSString stringWithFormat:@"d", lang];
+    return [NSString stringWithFormat:@"%s", lang_for_qtcode(lang)->eng_name];
 }
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
@@ -169,8 +170,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             NSString* mediaType = [track attributeForKey:QTTrackMediaTypeAttribute];
             MP42Track *newTrack;
 
-            if ([mediaType isEqualToString:QTMediaTypeVideo])
+            if ([mediaType isEqualToString:QTMediaTypeVideo]) {
                 newTrack = [[MP42VideoTrack alloc] init];
+                NSSize dimesion = [[track attributeForKey:QTTrackDimensionsAttribute] sizeValue];
+                [(MP42VideoTrack*)newTrack setTrackWidth: dimesion.width];
+                [(MP42VideoTrack*)newTrack setTrackHeight: dimesion.height];
+            }
 
             else if ([mediaType isEqualToString:QTMediaTypeSound])
                 newTrack = [[MP42AudioTrack alloc] init];
@@ -195,7 +200,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             newTrack.Id = i;//[[track attributeForKey:QTTrackIDAttribute] integerValue];
             newTrack.sourcePath = filePath;
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
-            newTrack.language = @"English";
+            newTrack.language = [self langForTrack:track];
             [tracks addObject:newTrack];
             [newTrack release];
         }

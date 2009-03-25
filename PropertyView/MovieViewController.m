@@ -148,7 +148,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 - (IBAction) removeTag: (id) sender {
     NSInteger rowIndex = [tagsTableView selectedRow];
 
-    if (rowIndex != -1) {
+    if (rowIndex != -1 && [tagsTableView editedRow] == -1) {
         NSString *tagName = [tagsArray objectAtIndex:rowIndex];
         [metadata removeTagForKey:tagName];
         [self updateTagsArray];

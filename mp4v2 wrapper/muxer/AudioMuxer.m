@@ -87,6 +87,8 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                          lfeon,
                                          bit_rate_code);
     }
+    
+    enableFirstAudioTrack(fileHandle);
 
     // Create a QTSampleTable which cointans all the informatio of the track samples.
     TimeValue64 sampleTableStartDecodeTime = 0;
@@ -162,6 +164,7 @@ int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         MP4Close(srcFile);
         return dstTrackId;
     }
+    enableFirstAudioTrack(fileHandle);
 
     MP4SampleId sampleId = 0;
     MP4SampleId numSamples = MP4GetTrackNumberOfSamples(srcFile, srcTrackId);

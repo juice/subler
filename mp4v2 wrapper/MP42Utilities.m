@@ -67,6 +67,23 @@ int enableFirstSubtitleTrack(MP4FileHandle fileHandle)
         return 0;
 }
 
+int enableFirstAudioTrack(MP4FileHandle fileHandle)
+{
+    int i, firstTrack = 0;
+    for (i = 0; i < MP4GetNumberOfTracks( fileHandle, 0, 0); i++) {
+        const char* trackType = MP4GetTrackType( fileHandle, MP4FindTrackId( fileHandle, i, 0, 0));
+        
+        if (!strcmp(trackType, MP4_AUDIO_TRACK_TYPE)) {
+            MP4SetTrackIntegerProperty(fileHandle, MP4FindTrackId( fileHandle, i, 0, 0), "tkhd.alternate_group", 1);
+            if (firstTrack++ == 0)
+                enableTrack(fileHandle, MP4FindTrackId( fileHandle, i, 0, 0));
+            else
+                disableTrack(fileHandle, MP4FindTrackId( fileHandle, i, 0, 0));
+        }
+    }
+    return 0;
+}
+
 int updateTracksCount(MP4FileHandle fileHandle)
 {
     MP4TrackId maxTrackId = 0;

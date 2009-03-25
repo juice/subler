@@ -93,22 +93,22 @@ static u_int8_t* makeStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16
     return style;
 }
 
-static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration)
+static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *size)
 {
-    int Err;
     u_int16_t styleCount = 0;
-    u_int8_t styleAtom[2048];
-    size_t styleSize = 0;
-    memcpy(styleAtom+4, "styl", 4);
+    memcpy(buffer + 4, "styl", 4);
 
-    u_int8_t styl = 0;
+    u_int8_t italic = 0;
+    u_int8_t bold = 0;
+    u_int8_t underline = 0;
+
     NSRange endRange;
     NSRange startRange = [string rangeOfString: @"<"];
     if (startRange.location != NSNotFound) {
         unichar tag = [string characterAtIndex:startRange.location + 1];
-        if (tag == 'i') styl += 2;
-        else if (tag == 'b') styl += 1;
-        else if (tag == 'u') styl += 4;
+        if (tag == 'i') italic++;
+        else if (tag == 'b') bold++;
+        else if (tag == 'u') underline++;
         startRange.length += 2;
         string = [string stringByReplacingCharactersInRange:startRange withString:@""];
     }
@@ -118,24 +118,30 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
         if (endRange.location == NSNotFound)
             endRange.location = [string length];
 
-        if (styl) {
+        u_int8_t styl = 0;
+        if (italic) styl +=2;
+        if (bold) styl +=1;
+        if (underline) styl +=4;
+
+        if (styl && startRange.location != endRange.location) {
             u_int8_t styleRecord[12];
             makeStyleRecord(startRange.location, endRange.location, 1, styl, styleRecord);
-            memcpy(styleAtom+10+(12*styleCount), styleRecord, 12);
+            memcpy(buffer + 10 + (12 * styleCount), styleRecord, 12);
             styleCount++;
         }
 
         endRange = [string rangeOfString: @"<"];
         if (endRange.location != NSNotFound && (endRange.location + 1) < [string length]) {
             unichar tag = [string characterAtIndex:endRange.location + 1];
-            if (tag == 'i') styl += 2;
-            else if (tag == 'b') styl += 1;
-            else if (tag == 'u') styl += 4;
+            if (tag == 'i') italic++;
+            else if (tag == 'b') bold++;
+            else if (tag == 'u') underline++;
+
             if (tag == '/' && (endRange.location + 2) < [string length]) {
                 unichar tag2 = [string characterAtIndex:endRange.location + 2];
-                if (tag2 == 'i') styl -= 2;
-                else if (tag2 == 'b') styl -= 1;
-                else if (tag2 == 'u') styl -= 4;
+                if (tag2 == 'i') italic--;
+                else if (tag2 == 'b') bold--;
+                else if (tag2 == 'u') underline--;
                 if ((endRange.location + 3) < [string length])
                     endRange.length += 3;
                 string = [string stringByReplacingCharactersInRange:endRange withString:@""];
@@ -145,7 +151,6 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
                     endRange.length += 2;
                 string = [string stringByReplacingCharactersInRange:endRange withString:@""];
             }
-
             startRange = endRange;
         }
         else
@@ -153,7 +158,18 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
     }
 
     if (styleCount)
-        styleSize = closeStyleAtom(styleCount, styleAtom);
+        *size = closeStyleAtom(styleCount, buffer);
+
+    return string;
+}
+
+static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration)
+{
+    int Err;
+    u_int8_t styleAtom[2048];
+    size_t styleSize = 0;
+
+    string = createStyleAtomForString(string, styleAtom, &styleSize);
 
     const size_t stringLength = strlen([string UTF8String]);
     u_int8_t buffer[2048];
