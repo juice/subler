@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="451"/>
+			<integer value="550"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -363,7 +363,7 @@
 											</object>
 											<object class="NSMenuItem" id="68918869">
 												<reference key="NSMenu" ref="994517761"/>
-												<string type="base64-UTF8" key="NSTitle">TVBFRy004oCmA</string>
+												<string type="base64-UTF8" key="NSTitle">TVBFRy00L01vduKApg</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSMnemonicLoc">2147483647</int>
 												<reference key="NSOnImage" ref="1033313550"/>
@@ -2205,7 +2205,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{597, 548}, {179, 83}}</string>
+					<string>{{839, 333}, {179, 83}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2323,10 +2323,14 @@
 							<string>openBrowse:</string>
 							<string>selectChapterFile:</string>
 							<string>selectFile:</string>
+							<string>set64bit_data:</string>
+							<string>set64bit_time:</string>
 							<string>showSubititleWindow:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2352,6 +2356,7 @@
 							<string>langSelection</string>
 							<string>optBar</string>
 							<string>saveOperationName</string>
+							<string>saveView</string>
 							<string>savingWindow</string>
 							<string>subtitleFilePath</string>
 							<string>targetView</string>
@@ -2371,6 +2376,7 @@
 							<string>NSPopUpButton</string>
 							<string>NSProgressIndicator</string>
 							<string>NSTextField</string>
+							<string>NSView</string>
 							<string>NSWindow</string>
 							<string>NSTextField</string>
 							<string>NSView</string>
