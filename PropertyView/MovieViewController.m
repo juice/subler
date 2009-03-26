@@ -105,6 +105,17 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     }
 }
 
+- (IBAction) changecContentRating: (id) sender
+{
+    uint8_t tagName = [[sender selectedItem] tag];
+    
+    if (metadata.contentRating != tagName) {
+        metadata.contentRating = tagName;
+        metadata.isEdited = YES;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
+}
+
 - (IBAction) changeGapless: (id) sender
 {
     uint8_t newValue = [sender state];

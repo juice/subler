@@ -189,7 +189,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                             editTrackDuration, !Fix2X(editDwell));
 
         trackDuration += editTrackDuration;
-        // Find the next edit, skipping empty edits.
+        // Find the next edit
 		GetTrackNextInterestingTime(track,
                                     nextTimeTrackEdit,
                                     editTrackStart,
@@ -201,6 +201,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
 
 bail:
+    DisposeHandle((Handle) desc);
     [srcFile release];
 
     return dstTrackId;

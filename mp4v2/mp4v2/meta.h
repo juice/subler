@@ -566,6 +566,7 @@ typedef struct MP4Tags_s
     const uint32_t* iTunesCountry;
     const uint32_t* cnID;
     const uint32_t* atID;
+    const uint64_t* plID;
     const uint32_t* geID;
     
 
@@ -625,7 +626,7 @@ MP4V2_EXPORT void MP4TagsSetComments        ( const MP4Tags*, const char* );
 MP4V2_EXPORT void MP4TagsSetGenre           ( const MP4Tags*, const char* );
 MP4V2_EXPORT void MP4TagsSetReleaseDate     ( const MP4Tags*, const char* );
 MP4V2_EXPORT void MP4TagsSetTempo           ( const MP4Tags*, const uint16_t* );
-MP4V2_EXPORT void MP4TagsSetCompilation     ( const MP4Tags*, const uint8_t* ); /* TODO: Needs testing */
+MP4V2_EXPORT void MP4TagsSetCompilation     ( const MP4Tags*, const uint8_t* );
 
 MP4V2_EXPORT void MP4TagsSetTVShow          ( const MP4Tags*, const char* );
 MP4V2_EXPORT void MP4TagsSetTVNetwork       ( const MP4Tags*, const char* );
@@ -651,10 +652,12 @@ MP4V2_EXPORT void MP4TagsRemoveArtwork      ( const MP4Tags*, uint32_t );
 MP4V2_EXPORT void MP4TagsSetCopyright       ( const MP4Tags*, const char* );
 MP4V2_EXPORT void MP4TagsSetEncodingTool    ( const MP4Tags*, const char* );
 MP4V2_EXPORT void MP4TagsSetEncodedBy       ( const MP4Tags*, const char* );
+MP4V2_EXPORT void MP4TagsSetPurchaseDate    ( const MP4Tags*, const char* );
 
 MP4V2_EXPORT void MP4TagsSetHDVideo         ( const MP4Tags*, const uint8_t* );
 MP4V2_EXPORT void MP4TagsSetMediaType       ( const MP4Tags*, const uint8_t* );
-MP4V2_EXPORT void MP4TagsSetGapless         ( const MP4Tags*, const uint8_t* ); /* TODO: Needs testing */
+MP4V2_EXPORT void MP4TagsSetContentRating   ( const MP4Tags*, const uint8_t* );
+MP4V2_EXPORT void MP4TagsSetGapless         ( const MP4Tags*, const uint8_t* );
 
 MP4V2_EXPORT void MP4TagsSetCNID            ( const MP4Tags*, const uint32_t* );
 

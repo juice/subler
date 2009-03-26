@@ -138,12 +138,31 @@ bool MP4SetTrackLanguage(
     MP4TrackId    trackId,
     const char*   code );
 
+/** Get track name.
+ *
+ *  MP4GetTrackName gets the name of the track via udta.name property.
+ *
+ *  @param hFile handle of file for operation.
+ *  @param trackId id of track for operation.
+ *
+ *  @return <b>true</b> on success, <b>false</b> on failure.
+ */
 MP4V2_EXPORT
 bool MP4GetTrackName(
     MP4FileHandle hFile,
     MP4TrackId    trackId,
-    char**   name );
+    char**        name );
 
+/** Set track name.
+ *
+ *  MP4SetTrackName sets the name of the track via udta.name property.
+ *  The udta atom is created if needed.
+ *
+ *  @param hFile handle of file for operation.
+ *  @param trackId id of track for operation.
+ *
+ *  @return <b>true</b> on success, <b>false</b> on failure.
+ */
 MP4V2_EXPORT
 bool MP4SetTrackName(
     MP4FileHandle hFile,

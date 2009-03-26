@@ -10,13 +10,15 @@
 #import "SubUtilities.h"
 #import <QTKit/QTKit.h>
 #import <QuickTime/QuickTime.h>
+#import <AudioToolbox/AudioToolbox.h>
 #import "lang.h"
 
 int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
     OSStatus err;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
-    Media media = [[[[srcFile tracks] objectAtIndex:srcTrackId] media] quickTimeMedia];
+    Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
+    Media media = GetTrackMedia(track);
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
 
     // Get the sample description
@@ -63,21 +65,61 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     }
     else if (asbd.mFormatID == kAudioFormatAC3 || asbd.mFormatID == 0x6D732000)
     {
+        ByteCount           channelLayoutSize;
+        AudioChannelLayout* channelLayout = NULL;
+        err = QTSoundDescriptionGetPropertyInfo(sndDesc, kQTPropertyClass_SoundDescription,
+                                                kQTSoundDescriptionPropertyID_AudioChannelLayout,
+                                                NULL, &channelLayoutSize, NULL);
+
+        channelLayout = (AudioChannelLayout*)malloc(channelLayoutSize);
+        
+        err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
+                                            kQTSoundDescriptionPropertyID_AudioChannelLayout,
+                                            channelLayoutSize, channelLayout, NULL);
+        UInt32 bitRate = 0;
+    
+        err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
+                                            kQTSoundDescriptionPropertyID_BitRate,
+                                            sizeof(UInt32), (QTPropertyValuePtr)&bitRate, NULL);
+
+        UInt32 bitmapSize = sizeof(AudioChannelLayoutTag);
+        UInt32 channelBitmap;
+        AudioFormatGetProperty(kAudioFormatProperty_BitmapForLayoutTag,
+                               sizeof(AudioChannelLayoutTag), &channelLayout->mChannelLayoutTag,
+                               &bitmapSize, &channelBitmap);
         uint8_t fscod = 0;
         uint8_t bsid = 8;
         uint8_t bsmod = 0;
         uint8_t acmod = 7;
-        uint8_t lfeon = 1;
+        uint8_t lfeon = (channelBitmap & kAudioChannelBit_LFEScreen) ? 1 : 0;
         uint8_t bit_rate_code = 15;
 
-        if (asbd.mSampleRate == 48000)
-                fscod = 0;
-        else if (asbd.mSampleRate == 44100)
-                fscod = 1;
-        else if (asbd.mSampleRate == 32000)
-                fscod = 2;
-        else
-                fscod = 3;
+        switch (AudioChannelLayoutTag_GetNumberOfChannels(channelLayout->mChannelLayoutTag) - lfeon) {
+            case 1:
+                acmod = 1;
+                break;
+            case 2:
+                acmod = 2;
+                break;
+            case 3:
+                if (channelBitmap & kAudioChannelBit_CenterSurround) acmod = 3;
+                else acmod = 4;
+                break;
+            case 4:
+                if (channelBitmap & kAudioChannelBit_CenterSurround) acmod = 5;
+                else acmod = 6;
+                break;
+            case 5:
+                acmod = 7;
+                break;
+            default:
+                break;
+        }
+
+        if (asbd.mSampleRate == 48000) fscod = 0;
+        else if (asbd.mSampleRate == 44100) fscod = 1;
+        else if (asbd.mSampleRate == 32000) fscod = 2;
+        else fscod = 3;
 
         dstTrackId = MP4AddAC3AudioTrack(fileHandle, asbd.mSampleRate,
                                          fscod,
@@ -86,7 +128,10 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                          acmod,
                                          lfeon,
                                          bit_rate_code);
+        free(channelLayout);
     }
+    else
+        goto bail;
     
     enableFirstAudioTrack(fileHandle);
 
@@ -127,6 +172,41 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     }
 
     QTSampleTableRelease(sampleTable);
+
+    TimeValue editTrackStart, editTrackDuration;
+	TimeValue64 editDisplayStart, trackDuration = 0;
+    Fixed editDwell;
+    
+	// Find the first edit
+	// Each edit has a starting track timestamp, a duration in track time, a starting display timestamp and a rate.
+	GetTrackNextInterestingTime(track, 
+                                nextTimeTrackEdit | nextTimeEdgeOK,
+                                0,
+                                fixed1,
+                                &editTrackStart,
+                                &editTrackDuration);
+    
+    while (editTrackDuration > 0) {
+        editDisplayStart = TrackTimeToMediaDisplayTime(editTrackStart, track);
+        editTrackDuration = (editTrackDuration / (float)GetMovieTimeScale([srcFile quickTimeMovie])) * MP4GetTimeScale(fileHandle);
+        editDwell = GetTrackEditRate64(track, editTrackStart);
+        
+        MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, editDisplayStart,
+                        editTrackDuration, !Fix2X(editDwell));
+        
+        trackDuration += editTrackDuration;
+        // Find the next edit
+		GetTrackNextInterestingTime(track,
+                                    nextTimeTrackEdit,
+                                    editTrackStart,
+                                    fixed1,
+                                    &editTrackStart,
+                                    &editTrackDuration);
+    }
+    
+    MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
+bail:
+    DisposeHandle((Handle) desc);
     [srcFile release];
 
     return dstTrackId;

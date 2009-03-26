@@ -171,7 +171,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             MP42Track *newTrack;
 
             if ([mediaType isEqualToString:QTMediaTypeVideo]) {
-                newTrack = [[MP42VideoTrack alloc] init];
+                if ([[self formatForTrack:track] isEqualToString:@"Text"]){
+                    NSLog(@"Lalala");
+                    newTrack = [[MP42SubtitleTrack alloc] init];
+                }
+                else
+                    newTrack = [[MP42VideoTrack alloc] init];
                 NSSize dimesion = [[track attributeForKey:QTTrackDimensionsAttribute] sizeValue];
                 [(MP42VideoTrack*)newTrack setTrackWidth: dimesion.width];
                 [(MP42VideoTrack*)newTrack setTrackHeight: dimesion.height];
@@ -194,7 +199,10 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 else
                     newTrack = [[MP42SubtitleTrack alloc] init];
             else
-                newTrack = [[MP42Track alloc] init];
+                if([[self formatForTrack:track] isEqualToString:@"3GPP Text"])
+                    newTrack = [[MP42SubtitleTrack alloc] init];
+                else
+                    newTrack = [[MP42Track alloc] init];
 
             newTrack.format = [self formatForTrack:track];
             newTrack.Id = i;//[[track attributeForKey:QTTrackIDAttribute] integerValue];

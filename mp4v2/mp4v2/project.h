@@ -23,7 +23,7 @@
 #define MP4V2_PROJECT_repo_rev        275
 #define MP4V2_PROJECT_repo_date       "2009-03-16 02:36:12 +0100 (Mon, 16 Mar 2009)"
 #define MP4V2_PROJECT_repo_type       "developer"
-#define MP4V2_PROJECT_build           "Mon Mar 16 14:28:14 CET 2009"
+#define MP4V2_PROJECT_build           "Tue Mar 24 10:02:49 CET 2009"
 
 /*****************************************************************************/
 

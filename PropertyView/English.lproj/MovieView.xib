@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="19"/>
+			<integer value="87"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -50,7 +50,7 @@
 							<object class="NSTabViewItem" id="561234673">
 								<string key="NSIdentifier">1</string>
 								<object class="NSView" key="NSView" id="900859224">
-									<reference key="NSNextResponder" ref="980212840"/>
+									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">256</int>
 									<object class="NSMutableArray" key="NSSubviews">
 										<bool key="EncodedWithXMLCoder">YES</bool>
@@ -567,7 +567,6 @@
 										</object>
 									</object>
 									<string key="NSFrame">{{10, 25}, {482, 241}}</string>
-									<reference key="NSSuperview" ref="980212840"/>
 								</object>
 								<string key="NSLabel">Tags</string>
 								<object class="NSColor" key="NSColor" id="117260690">
@@ -623,7 +622,7 @@
 							<object class="NSTabViewItem" id="380965669">
 								<string key="NSIdentifier">Item 2</string>
 								<object class="NSView" key="NSView" id="944020088">
-									<nil key="NSNextResponder"/>
+									<reference key="NSNextResponder" ref="980212840"/>
 									<int key="NSvFlags">256</int>
 									<object class="NSMutableArray" key="NSSubviews">
 										<bool key="EncodedWithXMLCoder">YES</bool>
@@ -667,7 +666,7 @@
 														<object class="NSPopUpButton" id="239549626">
 															<reference key="NSNextResponder" ref="871859253"/>
 															<int key="NSvFlags">301</int>
-															<string key="NSFrame">{{119, 118}, {143, 22}}</string>
+															<string key="NSFrame">{{119, 117}, {143, 22}}</string>
 															<reference key="NSSuperview" ref="871859253"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSPopUpButtonCell" key="NSCell" id="520270271">
@@ -699,17 +698,6 @@
 																	<string key="NSTitle">OtherViews</string>
 																	<object class="NSMutableArray" key="NSMenuItems">
 																		<bool key="EncodedWithXMLCoder">YES</bool>
-																		<object class="NSMenuItem" id="678633230">
-																			<reference key="NSMenu" ref="934177093"/>
-																			<string key="NSTitle">Movie</string>
-																			<string key="NSKeyEquiv"/>
-																			<int key="NSKeyEquivModMask">1048576</int>
-																			<int key="NSMnemonicLoc">2147483647</int>
-																			<reference key="NSOnImage" ref="558671127"/>
-																			<reference key="NSMixedImage" ref="129495974"/>
-																			<string key="NSAction">_popUpItemAction:</string>
-																			<reference key="NSTarget" ref="520270271"/>
-																		</object>
 																		<reference ref="1016746334"/>
 																		<object class="NSMenuItem" id="168161241">
 																			<reference key="NSMenu" ref="934177093"/>
@@ -736,7 +724,7 @@
 																		</object>
 																		<object class="NSMenuItem" id="679752482">
 																			<reference key="NSMenu" ref="934177093"/>
-																			<string key="NSTitle">Short Film</string>
+																			<string key="NSTitle">Movie</string>
 																			<string key="NSKeyEquiv"/>
 																			<int key="NSMnemonicLoc">2147483647</int>
 																			<reference key="NSOnImage" ref="558671127"/>
@@ -767,9 +755,20 @@
 																			<int key="NSTag">11</int>
 																			<reference key="NSTarget" ref="520270271"/>
 																		</object>
+																		<object class="NSMenuItem" id="678633230">
+																			<reference key="NSMenu" ref="934177093"/>
+																			<string key="NSTitle">Ringtone</string>
+																			<string key="NSKeyEquiv"/>
+																			<int key="NSKeyEquivModMask">1048576</int>
+																			<int key="NSMnemonicLoc">2147483647</int>
+																			<reference key="NSOnImage" ref="558671127"/>
+																			<reference key="NSMixedImage" ref="129495974"/>
+																			<string key="NSAction">_popUpItemAction:</string>
+																			<int key="NSTag">14</int>
+																			<reference key="NSTarget" ref="520270271"/>
+																		</object>
 																	</object>
 																</object>
-																<int key="NSSelectedIndex">1</int>
 																<int key="NSPreferredEdge">1</int>
 																<bool key="NSUsesItemFromMenu">YES</bool>
 																<bool key="NSAltersState">YES</bool>
@@ -929,20 +928,21 @@
 										</object>
 									</object>
 									<string key="NSFrame">{{10, 25}, {482, 241}}</string>
+									<reference key="NSSuperview" ref="980212840"/>
 								</object>
 								<string key="NSLabel">Other Settings</string>
 								<reference key="NSColor" ref="117260690"/>
 								<reference key="NSTabView" ref="980212840"/>
 							</object>
 						</object>
-						<reference key="NSSelectedTabViewItem" ref="561234673"/>
+						<reference key="NSSelectedTabViewItem" ref="380965669"/>
 						<reference key="NSFont" ref="26"/>
 						<int key="NSTvFlags">134217728</int>
 						<bool key="NSAllowTruncatedLabels">YES</bool>
 						<bool key="NSDrawsBackground">YES</bool>
 						<object class="NSMutableArray" key="NSSubviews">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="900859224"/>
+							<reference ref="944020088"/>
 						</object>
 					</object>
 				</object>
@@ -1089,6 +1089,14 @@
 						<reference key="destination" ref="675549215"/>
 					</object>
 					<int key="connectionID">112</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">changecContentRating:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="736986403"/>
+					</object>
+					<int key="connectionID">113</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1327,11 +1335,11 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="92996803"/>
-							<reference ref="239549626"/>
 							<reference ref="337325011"/>
 							<reference ref="4464028"/>
 							<reference ref="736986403"/>
 							<reference ref="100355935"/>
+							<reference ref="239549626"/>
 						</object>
 						<reference key="parent" ref="944020088"/>
 					</object>
@@ -1605,7 +1613,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{645, 519}, {143, 122}}</string>
+					<string>{{542, 615}, {143, 122}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1650,7 +1658,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">112</int>
+			<int key="maxID">113</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1665,12 +1673,14 @@
 							<string>addTag:</string>
 							<string>changeGapless:</string>
 							<string>changeMediaKind:</string>
+							<string>changecContentRating:</string>
 							<string>changehdVideo:</string>
 							<string>removeTag:</string>
 							<string>updateArtwork:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1707,6 +1717,20 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="757483216">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">PropertyView/MovieViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">MP4FileImport.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">MovFileImport.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

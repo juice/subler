@@ -86,8 +86,14 @@
                  [[sourcePath pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame) {
             success = muxMP4SubtitleTrack(fileHandle,
                                           sourcePath,
-                                          sourceId);
+                                          sourceId,
+                                          lang_for_english([language UTF8String])->iso639_2);
         }
+        else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
+            success = muxMOVSubtitleTrack(fileHandle,
+                                          sourcePath,
+                                          sourceId,
+                                          lang_for_english([language UTF8String])->iso639_2);
 
         if (!success && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];

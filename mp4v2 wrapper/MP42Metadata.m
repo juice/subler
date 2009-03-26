@@ -278,6 +278,8 @@
 
     MP4TagsSetGapless(tags, &gapless);
 
+    MP4TagsSetContentRating(tags, &contentRating);
+
     if ([tagsDict valueForKey:@"cnID"]) {
         const uint32_t i = [[tagsDict valueForKey:@"cnID"] integerValue];
         MP4TagsSetCNID(tags, &i);

@@ -45,6 +45,7 @@
 - (IBAction) updateArtwork: (id) sender;
 
 - (IBAction) changeMediaKind: (id) sender;
+- (IBAction) changecContentRating: (id) sender;
 - (IBAction) changeGapless: (id) sender;
 - (IBAction) changehdVideo: (id) sender;
 
