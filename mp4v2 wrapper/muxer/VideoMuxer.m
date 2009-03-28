@@ -14,7 +14,7 @@
 
 int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
-    OSStatus err;
+    OSStatus err = noErr;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
     Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
     Media media = GetTrackMedia(track);
@@ -47,8 +47,8 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         int8_t spsCount = ((*imgDescHandle)[5] & 0x1f);
         uint8_t ptrPos = 6;
         for (i = 0; i < spsCount; i++) {
-            uint16_t spsSize = (*imgDescHandle)[ptrPos++] << 8 & 0xff;
-            spsSize = (*imgDescHandle)[ptrPos++] & 0xff;
+            uint16_t spsSize = ((*imgDescHandle)[ptrPos++] << 8) & 0xff00;
+            spsSize += (*imgDescHandle)[ptrPos++] & 0xff;
             MP4AddH264SequenceParameterSet(fileHandle, dstTrackId,
                                            (uint8_t *)*imgDescHandle+ptrPos, spsSize);
             ptrPos += spsSize;
@@ -56,8 +56,8 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
         int8_t ppsCount = (*imgDescHandle)[ptrPos++];
         for (i = 0; i < ppsCount; i++) {
-            uint16_t ppsSize = (*imgDescHandle)[ptrPos++] << 8 & 0xff;
-            ppsSize = (*imgDescHandle)[ptrPos++] & 0xff;
+            uint16_t ppsSize = ((*imgDescHandle)[ptrPos++] << 8) & 0xff00;
+            ppsSize += (*imgDescHandle)[ptrPos++] & 0xff;
             MP4AddH264PictureParameterSet(fileHandle, dstTrackId,
                                       (uint8_t*)*imgDescHandle+ptrPos, ppsSize);
             ptrPos += ppsSize;
@@ -121,6 +121,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                       0,
                                       0,
                                       &sampleTable);
+    require_noerr(err, bail);
 
     TimeValue64 minDisplayOffset = 0;
     err = QTSampleTableGetProperty(sampleTable,
@@ -129,6 +130,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                    sizeof(TimeValue64),
                                    &minDisplayOffset,
                                    NULL);
+    require_noerr(err, bail);
 
     SInt64 sampleIndex, sampleCount;
     sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
@@ -148,8 +150,8 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
         // Load the frame.
 		sampleData = malloc(sampleDataSize);
-		err = GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
+		GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
+                        NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
 
         err = MP4WriteSample(fileHandle,
                              dstTrackId,
@@ -159,6 +161,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                              displayOffset -minDisplayOffset,
                              !sampleFlags);
         free(sampleData);
+        if(!err) goto bail;
     }
 
     QTSampleTableRelease(sampleTable);

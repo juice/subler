@@ -15,7 +15,7 @@
 
 int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
-    OSStatus err;
+    OSStatus err = noErr;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
     Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
     Media media = GetTrackMedia(track);
@@ -31,6 +31,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
                                         kQTSoundDescriptionPropertyID_AudioStreamBasicDescription,
                                         sizeof(asbd), &asbd, NULL);
+    require_noerr(err, bail);
 
     if (asbd.mFormatID == kAudioFormatMPEG4AAC) {
         // Get the magic cookie
@@ -70,17 +71,14 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         err = QTSoundDescriptionGetPropertyInfo(sndDesc, kQTPropertyClass_SoundDescription,
                                                 kQTSoundDescriptionPropertyID_AudioChannelLayout,
                                                 NULL, &channelLayoutSize, NULL);
+        require_noerr(err, bail);
 
         channelLayout = (AudioChannelLayout*)malloc(channelLayoutSize);
         
         err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
                                             kQTSoundDescriptionPropertyID_AudioChannelLayout,
                                             channelLayoutSize, channelLayout, NULL);
-        UInt32 bitRate = 0;
-    
-        err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
-                                            kQTSoundDescriptionPropertyID_BitRate,
-                                            sizeof(UInt32), (QTPropertyValuePtr)&bitRate, NULL);
+        require_noerr(err, bail);
 
         UInt32 bitmapSize = sizeof(AudioChannelLayoutTag);
         UInt32 channelBitmap;
@@ -144,6 +142,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                                       0,
                                       0,
                                       &sampleTable );
+    require_noerr(err, bail);
 
     SInt64 sampleIndex;
     SInt64 sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
@@ -159,8 +158,8 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
         // Load the frame.
 		sampleData = malloc(sampleDataSize);
-		err = GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
+		GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
+                        NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
 
         err = MP4WriteSample(fileHandle,
                              dstTrackId,
@@ -169,6 +168,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
                              MP4_INVALID_DURATION,
                              0, true);
         free(sampleData);
+        if(!err) goto bail;
     }
 
     QTSampleTableRelease(sampleTable);
@@ -205,6 +205,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     }
     
     MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
+
 bail:
     DisposeHandle((Handle) desc);
     [srcFile release];

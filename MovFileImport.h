@@ -11,7 +11,6 @@
 #import <QTKit/QTKit.h>
 
 @interface MovFileImport : NSWindowController {
-    //MP42File        *sourceFile;
     QTMovie         *sourceFile;
     NSString        *filePath;
     NSMutableArray  *importCheckArray;

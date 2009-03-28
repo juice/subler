@@ -253,12 +253,12 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
 
 int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId, const char* lang)
 {
-    OSStatus err;
+    OSStatus err = noErr;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
     Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
     Media media = GetTrackMedia(track);
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
-    
+
     uint16_t videoWidth, videoHeight;
     MP4TrackId videoTrack = findFirstVideoTrack(fileHandle);
     if (videoTrack) {
@@ -270,13 +270,13 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
         videoHeight = 480;
         videoTrack = 1;
     }
-    
+
     // Get the sample description
 	SampleDescriptionHandle desc = (SampleDescriptionHandle) NewHandle(0);
     GetMediaSampleDescription(media, 1, desc);
-    
+
     ImageDescriptionHandle imgDesc = (ImageDescriptionHandle) desc;
-    
+
     if ((*imgDesc)->cType == 'SRT ' || (*imgDesc)->cType == 'tx3g') {
         // Add video track
         dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang, videoWidth, videoHeight, 60);
@@ -294,26 +294,28 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                                       0,
                                       0,
                                       &sampleTable);
+    require_noerr(err, bail);
 
     SInt64 sampleIndex, sampleCount;
     sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
-    
+
     for (sampleIndex = 1; sampleIndex <= sampleCount; sampleIndex++) {
         TimeValue64 sampleDecodeTime = 0;
         ByteCount sampleDataSize = 0;
         MediaSampleFlags sampleFlags = 0;
 		UInt8 *sampleData = NULL;
         TimeValue64 decodeDuration = QTSampleTableGetDecodeDuration(sampleTable, sampleIndex);
-        
+
         // Get the frame's data size and sample flags.  
         SampleNumToMediaDecodeTime( media, sampleIndex, &sampleDecodeTime, NULL);
 		sampleDataSize = QTSampleTableGetDataSizePerSample(sampleTable, sampleIndex);
         sampleFlags = QTSampleTableGetSampleFlags(sampleTable, sampleIndex);
-        
+
         // Load the frame.
 		sampleData = malloc(sampleDataSize);
-		err = GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
-                              NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
+		GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
+                        NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
+        require_noerr(err, bail);
 
         if ((*imgDesc)->cType == 'SRT ') {
             if (sampleDataSize == 1) {
@@ -336,14 +338,15 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                                  !sampleFlags);
         }
         free(sampleData);
+        if(!err) goto bail;
     }
-    
+
     QTSampleTableRelease(sampleTable);
-    
+
     TimeValue editTrackStart, editTrackDuration;
 	TimeValue64 editDisplayStart, trackDuration = 0;
     Fixed editDwell;
-    
+
 	// Find the first edit
 	// Each edit has a starting track timestamp, a duration in track time, a starting display timestamp and a rate.
 	GetTrackNextInterestingTime(track, 
@@ -352,7 +355,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                                 fixed1,
                                 &editTrackStart,
                                 &editTrackDuration);
-    
+
     while (editTrackDuration > 0) {
         editDisplayStart = TrackTimeToMediaDisplayTime(editTrackStart, track);
         editTrackDuration = (editTrackDuration / (float)GetMovieTimeScale([srcFile quickTimeMovie])) * MP4GetTimeScale(fileHandle);
@@ -360,7 +363,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
         
         MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, editDisplayStart,
                         editTrackDuration, !Fix2X(editDwell));
-        
+
         trackDuration += editTrackDuration;
         // Find the next edit
 		GetTrackNextInterestingTime(track,
@@ -370,9 +373,9 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                                     &editTrackStart,
                                     &editTrackDuration);
     }
-    
+
     MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
-    
+
 bail:
     DisposeHandle((Handle) desc);
     [srcFile release];
@@ -408,14 +411,14 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 
     MP4SampleId sampleId = 0;
     MP4SampleId numSamples = MP4GetTrackNumberOfSamples(srcFile, srcTrackId);
-    
+
     while (true) {
         MP4Duration sampleDuration = MP4_INVALID_DURATION;
-        
+
         sampleId++;
         if (sampleId > numSamples)
             break;
-        
+
         bool rc = false;
         rc = MP4CopySample(srcFile,
                            srcTrackId,
@@ -430,7 +433,7 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
             return MP4_INVALID_TRACK_ID;
         }
     }
-    
+
     MP4Duration trackDuration = 0;
     uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(srcFile, srcTrackId);
     while (i <= trackEditCount) {
@@ -440,14 +443,14 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                                                                MP4GetTimeScale(fileHandle));
         trackDuration += editDuration;
         int8_t editDwell = MP4GetTrackEditDwell(srcFile, srcTrackId, i);
-        
+
         MP4AddTrackEdit(fileHandle, dstTrackId, i, editMediaStart, editDuration, editDwell);
         i++;
     }
     if (trackEditCount)
         MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
-    
+
     MP4Close(srcFile);
-    
+
     return dstTrackId;    
 }
