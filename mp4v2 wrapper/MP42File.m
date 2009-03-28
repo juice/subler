@@ -186,7 +186,10 @@
     if (!fileHandle)
         return;
 
-    MP4DeleteTrack(fileHandle, track.Id);
+    if ([track isMemberOfClass:[MP42ChapterTrack class]])
+        MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
+    else
+        MP4DeleteTrack(fileHandle, track.Id);
 
     updateTracksCount(fileHandle);
     if ([track isMemberOfClass:[MP42SubtitleTrack class]])
