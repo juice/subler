@@ -71,10 +71,10 @@
         case kAudioFormatAMR:
             result = @"AMR Narrow Band";
             break;
-        case 'text':
+        case TextMediaType:
             result = @"Text";
             break;
-        case 'tx3g':
+        case kTx3gSampleType:
             result = @"3GPP Text";
             break;
         case 'SRT ':
@@ -83,7 +83,7 @@
         case 'SSA ':
             result = @"SSA";
             break;
-        case 'tmcd':
+        case TimeCodeMediaType:
             result = @"Timecode";
             break;
         default:
@@ -170,21 +170,23 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             NSString* mediaType = [track attributeForKey:QTTrackMediaTypeAttribute];
             MP42Track *newTrack;
 
+            // Video
             if ([mediaType isEqualToString:QTMediaTypeVideo]) {
-                if ([[self formatForTrack:track] isEqualToString:@"Text"]){
-                    NSLog(@"Lalala");
+                if ([[self formatForTrack:track] isEqualToString:@"Text"])
                     newTrack = [[MP42SubtitleTrack alloc] init];
-                }
                 else
                     newTrack = [[MP42VideoTrack alloc] init];
-                NSSize dimesion = [[track attributeForKey:QTTrackDimensionsAttribute] sizeValue];
+
+                NSSize dimesion = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
                 [(MP42VideoTrack*)newTrack setTrackWidth: dimesion.width];
                 [(MP42VideoTrack*)newTrack setTrackHeight: dimesion.height];
             }
 
+            // Audio
             else if ([mediaType isEqualToString:QTMediaTypeSound])
                 newTrack = [[MP42AudioTrack alloc] init];
 
+            // Text
             else if ([mediaType isEqualToString:QTMediaTypeText])
                 if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId) {
                     newTrack = [[MP42ChapterTrack alloc] init];
@@ -196,13 +198,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                        duration:((float)time.time.timeValue / time.time.timeScale)*1000];
                     }
                 }
-                else
+            // Subtitle
+            else if([mediaType isEqualToString:@"sbtl"])
                     newTrack = [[MP42SubtitleTrack alloc] init];
-            else
-                if([[self formatForTrack:track] isEqualToString:@"3GPP Text"])
-                    newTrack = [[MP42SubtitleTrack alloc] init];
-                else
-                    newTrack = [[MP42Track alloc] init];
 
             newTrack.format = [self formatForTrack:track];
             newTrack.Id = i;//[[track attributeForKey:QTTrackIDAttribute] integerValue];

@@ -77,9 +77,9 @@
     [super dealloc];
 }
 
-- (NSString *) SMPTETimeString
+- (NSString *) timeString
 {
-    return SMPTEStringFromTime(duration, 1000);
+        return SMPTEStringFromTime(duration, 1000);
 }
 
 @synthesize sourcePath;

@@ -47,6 +47,6 @@
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError;
 
-- (NSString *) SMPTETimeString;
+- (NSString *) timeString;
 
 @end

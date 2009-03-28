@@ -290,7 +290,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         return track.format;
 
     if ([tableColumn.identifier isEqualToString:@"trackDuration"])
-        return [track SMPTETimeString];
+        return [track timeString];
 
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"])
         return track.language;
