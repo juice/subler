@@ -277,7 +277,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 
     ImageDescriptionHandle imgDesc = (ImageDescriptionHandle) desc;
 
-    if ((*imgDesc)->cType == 'SRT ' || (*imgDesc)->cType == 'tx3g') {
+    if ((*imgDesc)->cType == 'SRT ' || /* (*imgDesc)->cType == 'SSA ' ||*/ (*imgDesc)->cType == 'tx3g') {
         // Add video track
         dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang, videoWidth, videoHeight, 60);
         
@@ -315,9 +315,8 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 		sampleData = malloc(sampleDataSize);
 		GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
                         NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
-        require_noerr(err, bail);
 
-        if ((*imgDesc)->cType == 'SRT ') {
+        if ((*imgDesc)->cType != 'tx3g') {
             if (sampleDataSize == 1) {
                 if (*sampleData == 0xA)
                     err= writeEmptySubtitleSample(fileHandle, dstTrackId, decodeDuration);
@@ -327,8 +326,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                 err = writeSubtitleSample(fileHandle, dstTrackId, string, decodeDuration);
             }
         }
-        else
-        {
+        else {
             err = MP4WriteSample(fileHandle,
                                  dstTrackId,
                                  sampleData,

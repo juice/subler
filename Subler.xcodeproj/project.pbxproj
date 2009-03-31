@@ -17,6 +17,8 @@
 		A91103E40F321DBA0013D1E0 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A91103930F321CF60013D1E0 /* libuniversaldetector.a */; };
 		A911064B0F323D450013D1E0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A911064A0F323D450013D1E0 /* AppDelegate.m */; };
 		A9569CEB0F616926002F79F8 /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */; };
+		A95C87AE0F82798200F51A22 /* ButtonToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */; };
+		A95C881D0F827BFB00F51A22 /* ToolbarRemoveTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */; };
 		A9629C8D0F56F7B6001D6A75 /* MP42ChapterTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C820F56F7B6001D6A75 /* MP42ChapterTrack.m */; };
 		A9629C8E0F56F7B6001D6A75 /* MP42File.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C840F56F7B6001D6A75 /* MP42File.m */; };
 		A9629C8F0F56F7B6001D6A75 /* MP42Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C860F56F7B6001D6A75 /* MP42Metadata.m */; };
@@ -115,6 +117,9 @@
 		A9569CE90F616926002F79F8 /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42VideoTrack.h; path = "mp4v2 wrapper/MP42VideoTrack.h"; sourceTree = "<group>"; };
 		A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42VideoTrack.m; path = "mp4v2 wrapper/MP42VideoTrack.m"; sourceTree = "<group>"; };
 		A95A60470F4422DB00767D87 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mp4v2.h; path = mp4v2/mp4v2.h; sourceTree = "<group>"; };
+		A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonToolbarItem.m; sourceTree = "<group>"; };
+		A95C87AD0F82798200F51A22 /* ButtonToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonToolbarItem.h; sourceTree = "<group>"; };
+		A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToolbarRemoveTemplate.png; path = images/ToolbarRemoveTemplate.png; sourceTree = "<group>"; };
 		A9629C810F56F7B6001D6A75 /* MP42ChapterTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42ChapterTrack.h; path = "mp4v2 wrapper/MP42ChapterTrack.h"; sourceTree = "<group>"; };
 		A9629C820F56F7B6001D6A75 /* MP42ChapterTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42ChapterTrack.m; path = "mp4v2 wrapper/MP42ChapterTrack.m"; sourceTree = "<group>"; };
 		A9629C830F56F7B6001D6A75 /* MP42File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42File.h; path = "mp4v2 wrapper/MP42File.h"; sourceTree = "<group>"; };
@@ -231,6 +236,8 @@
 			children = (
 				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
+				A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */,
+				A95C87AD0F82798200F51A22 /* ButtonToolbarItem.h */,
 				A9C0552B0F6D392C00AF15B5 /* MP4FileImport.h */,
 				A9C0552C0F6D392C00AF15B5 /* MP4FileImport.m */,
 				A9AB94D40F73D6DA0049DF8C /* MovFileImport.h */,
@@ -259,6 +266,7 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */,
 				A984DB730F52DD4B001A20B2 /* dsa_pub.pem */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
@@ -433,6 +441,7 @@
 				A984DB740F52DD4B001A20B2 /* dsa_pub.pem in Resources */,
 				A9629D070F56FB2A001D6A75 /* VideoView.xib in Resources */,
 				A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */,
+				A95C881D0F827BFB00F51A22 /* ToolbarRemoveTemplate.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,6 +474,7 @@
 				A9C0552D0F6D392C00AF15B5 /* MP4FileImport.m in Sources */,
 				A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */,
 				A9AB94D50F73D6DA0049DF8C /* MovFileImport.m in Sources */,
+				A95C87AE0F82798200F51A22 /* ButtonToolbarItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

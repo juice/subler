@@ -172,7 +172,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
             // Video
             if ([mediaType isEqualToString:QTMediaTypeVideo]) {
-                if ([[self formatForTrack:track] isEqualToString:@"Text"])
+                if ([[self formatForTrack:track] isEqualToString:@"Text"] || [[self formatForTrack:track] isEqualToString:@"SSA"])
                     newTrack = [[MP42SubtitleTrack alloc] init];
                 else
                     newTrack = [[MP42VideoTrack alloc] init];
@@ -203,7 +203,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                     newTrack = [[MP42SubtitleTrack alloc] init];
 
             newTrack.format = [self formatForTrack:track];
-            newTrack.Id = i;//[[track attributeForKey:QTTrackIDAttribute] integerValue];
+            newTrack.Id = i;
             newTrack.sourcePath = filePath;
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
             newTrack.language = [self langForTrack:track];

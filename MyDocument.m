@@ -252,7 +252,6 @@
 
     else if (toolbarItem == deleteTrack)
         if ([fileTracksTable selectedRow] != -1 && [NSApp isActive])
-                //[[toolbarItem view] setEnabled:NO];
                 return YES;
 
     return NO;
