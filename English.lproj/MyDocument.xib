@@ -8,7 +8,6 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="5"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -318,7 +317,7 @@
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{350, 200}</string>
 				<object class="NSView" key="NSWindowView" id="568628114">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -696,7 +695,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{620, 420}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMinSize">{350, 255}</string>
@@ -1451,7 +1449,7 @@
 							<reference ref="673939845"/>
 						</object>
 						<reference key="parent" ref="0"/>
-						<string key="objectName">AddSheet</string>
+						<string key="objectName">Subtitle</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">100049</int>
@@ -2116,8 +2114,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{442, 572}, {480, 182}}</string>
-					<string>{{442, 572}, {480, 182}}</string>
+					<string>{{415, 622}, {480, 182}}</string>
+					<string>{{415, 622}, {480, 182}}</string>
 					<reference ref="6"/>
 					<boolean value="YES" id="5"/>
 					<reference ref="5"/>
@@ -2134,7 +2132,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{651, 707}, {129, 4}}</string>
+					<string>{{624, 755}, {106, 6}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2221,7 +2219,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">100195</int>
+			<int key="maxID">100214</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2271,6 +2269,7 @@
 							<string>addSubtitleWindow</string>
 							<string>addTrack</string>
 							<string>addTrackToolBar</string>
+							<string>addVideoFramerateWindow</string>
 							<string>delay</string>
 							<string>deleteTrack</string>
 							<string>documentWindow</string>
@@ -2291,6 +2290,7 @@
 							<string>NSWindow</string>
 							<string>NSButton</string>
 							<string>NSToolbarItem</string>
+							<string>NSWindow</string>
 							<string>NSTextField</string>
 							<string>NSToolbarItem</string>
 							<string>NSWindow</string>

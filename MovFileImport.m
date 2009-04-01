@@ -168,7 +168,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         if ([[importCheckArray objectAtIndex: i] boolValue]) {
             QTTrack *track = [[sourceFile tracks] objectAtIndex:i];
             NSString* mediaType = [track attributeForKey:QTTrackMediaTypeAttribute];
-            MP42Track *newTrack;
+            MP42Track *newTrack = nil;
 
             // Video
             if ([mediaType isEqualToString:QTMediaTypeVideo]) {
@@ -202,13 +202,15 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             else if([mediaType isEqualToString:@"sbtl"])
                     newTrack = [[MP42SubtitleTrack alloc] init];
 
-            newTrack.format = [self formatForTrack:track];
-            newTrack.Id = i;
-            newTrack.sourcePath = filePath;
-            newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
-            newTrack.language = [self langForTrack:track];
-            [tracks addObject:newTrack];
-            [newTrack release];
+            if (newTrack) {
+                newTrack.format = [self formatForTrack:track];
+                newTrack.Id = i;
+                newTrack.sourcePath = filePath;
+                newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
+                newTrack.language = [self langForTrack:track];
+                [tracks addObject:newTrack];
+                [newTrack release];
+            }
         }
     }
 

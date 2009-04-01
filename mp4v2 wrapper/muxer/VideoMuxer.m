@@ -6,11 +6,40 @@
 //  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
+#import "VideoMuxer.h"
 #import "MP42Utilities.h"
 #import "SubUtilities.h"
 #import <QTKit/QTKit.h>
 #import <QuickTime/QuickTime.h>
 #import "lang.h"
+
+static const framerate_t framerates[] =
+{ { 2398, 24000, 1001 },
+  { 24, 600, 25 },
+  { 25, 600, 24 },
+  { 2997, 30000, 1001 },
+  { 30, 600, 20 },
+  { 5994, 60000, 1001 },
+  { 60, 600, 10 },
+  { 0, 24000, 1001 } };
+
+MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
+                        uint32_t timescale, uint32_t mp4FrameDuration);
+
+int muxH264ElementaryStream(MP4FileHandle fileHandle, NSString* filePath, uint32_t frameRateCode) {
+    MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
+    FILE* inFile = fopen([filePath UTF8String], "rb");
+    framerate_t * framerate;
+
+    for (framerate = (framerate_t*) framerates; framerate->code; framerate++)
+        if(frameRateCode == framerate->code)
+            break;
+
+    dstTrackId = H264Creator(fileHandle, inFile, framerate->timescale, framerate->duration);
+    fclose(inFile);
+
+    return dstTrackId;
+}
 
 int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {

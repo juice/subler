@@ -42,6 +42,7 @@
     if (self = [super init])
     {
         name = @"Video Track";
+        language = @"Unknown";
     }
 
     return self;
@@ -55,6 +56,8 @@
     if (isEdited && !muxed) {
         if ([[sourcePath pathExtension] isEqualToString:@"mov"])
             Id = muxMOVVideoTrack(fileHandle, sourcePath, sourceId);
+        else if ([[sourcePath pathExtension] isEqualToString:@"h264"])
+            Id = muxH264ElementaryStream(fileHandle, sourcePath, sourceId);
         else
             Id = muxMP4VideoTrack(fileHandle, sourcePath, sourceId);
     }

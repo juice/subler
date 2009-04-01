@@ -13,6 +13,29 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "lang.h"
 
+MP4TrackId AacCreator(MP4FileHandle mp4File, FILE* inFile);
+MP4TrackId Ac3Creator(MP4FileHandle mp4File, FILE* inFile);
+
+int muxAACAdtsStream(MP4FileHandle fileHandle, NSString* filePath) {
+    MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
+    FILE* inFile = fopen([filePath UTF8String], "rb");
+    
+    dstTrackId = AacCreator(fileHandle, inFile);
+    fclose(inFile);
+    
+    return dstTrackId;
+}
+
+int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath) {
+    MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
+    FILE* inFile = fopen([filePath UTF8String], "rb");
+    
+    dstTrackId = Ac3Creator(fileHandle, inFile);
+    fclose(inFile);
+    
+    return dstTrackId;
+}
+
 int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
     OSStatus err = noErr;

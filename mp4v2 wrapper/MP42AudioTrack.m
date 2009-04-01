@@ -25,7 +25,8 @@
 {
     if (self = [super init])
     {
-        name = @"Audio Track";
+        name = @"Sound Track";
+        language = @"Unknown";
     }
 
     return self;
@@ -39,6 +40,10 @@
     if (isEdited && !muxed) {
         if ([[sourcePath pathExtension] isEqualToString:@"mov"])
             Id = muxMOVAudioTrack(fileHandle, sourcePath, sourceId);
+        else if ([[sourcePath pathExtension] isEqualToString:@"aac"])
+            Id = muxAACAdtsStream(fileHandle, sourcePath);
+        else if ([[sourcePath pathExtension] isEqualToString:@"ac3"])
+            Id = muxAC3ElementaryStream(fileHandle, sourcePath);
         else
             Id = muxMP4AudioTrack(fileHandle, sourcePath, sourceId);
     }

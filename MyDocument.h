@@ -15,15 +15,16 @@
 {
     MP42File  *mp4File;
 
-    IBOutlet NSTextField    *subtitleFilePath;
-    IBOutlet NSTextField    *label;
-
-    IBOutlet NSTableView    *fileTracksTable;
-    IBOutlet NSWindow       *addSubtitleWindow;
-    IBOutlet NSWindow       *savingWindow;
-    IBOutlet NSTextField    *saveOperationName;
     IBOutlet NSWindow       *documentWindow;
 
+    IBOutlet NSTableView    *fileTracksTable;
+
+    IBOutlet NSWindow       *savingWindow;
+    IBOutlet NSTextField    *saveOperationName;
+
+    IBOutlet NSTextField    *subtitleFilePath;
+    IBOutlet NSTextField    *label;    
+    IBOutlet NSWindow       *addSubtitleWindow;
     IBOutlet NSPopUpButton  *langSelection;
     IBOutlet NSTextField    *delay;
     IBOutlet NSTextField    *trackHeight;

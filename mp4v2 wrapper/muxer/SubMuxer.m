@@ -242,7 +242,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
             if (!writeSubtitleSample(fileHandle, subtitleTrackId, sl->line, sl->end_time - sl->begin_time))
                 break;
         }
-        writeEmptySubtitleSample(fileHandle, subtitleTrackId, 100);
+        writeEmptySubtitleSample(fileHandle, subtitleTrackId, 10);
     }
 
     [ss release];

@@ -14,6 +14,7 @@
 #import "ChapterViewController.h"
 #import "MP4FileImport.h"
 #import "MovFileImport.h"
+#import "VideoFramerate.h"
 
 @implementation MyDocument
 
@@ -499,7 +500,8 @@ returnCode contextInfo: (void *) contextInfo
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = YES;
 
-    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov", nil]
+    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
+                                                                                    @"aac", @"h264", @"ac3", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
                       contextInfo: nil];                                                      
@@ -511,13 +513,27 @@ returnCode contextInfo: (void *) contextInfo
     if (returnCode != NSOKButton)
         return;
 
-    [self performSelectorOnMainThread:@selector(showImportSheet:) withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
+    if ([[[sheet.filenames objectAtIndex: 0] pathExtension] isEqualToString:@"aac"] ||
+        [[[sheet.filenames objectAtIndex: 0] pathExtension] isEqualToString:@"ac3"]) {
+        MP42AudioTrack *newTrack = [[MP42AudioTrack alloc] init];
+        newTrack.sourceId = 0;
+        newTrack.sourcePath = [sheet.filenames objectAtIndex: 0];
+        [mp4File addTrack:newTrack];
+        [fileTracksTable reloadData];
+        [self updateChangeCount:NSChangeDone];
+
+        [newTrack release];
+    }
+    else
+        [self performSelectorOnMainThread:@selector(showImportSheet:) withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
 }
 
 - (void) showImportSheet: (NSString *) filePath
 {
     if ([[filePath pathExtension] isEqualToString:@"mov"])
         importWindow = [[MovFileImport alloc] initWithDelegate:self andFile:filePath];
+    else if ([[filePath pathExtension] isEqualToString:@"h264"])
+        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:filePath];
     else
         importWindow = [[MP4FileImport alloc] initWithDelegate:self andFile:filePath];
 
@@ -603,8 +619,21 @@ returnCode contextInfo: (void *) contextInfo
             else if ([[file pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame ||
-                     [[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
+                     [[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"h264"] == NSOrderedSame)
                 [self showImportSheet:file];
+
+            else if ([[file pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame) {
+                MP42AudioTrack *newTrack = [[MP42AudioTrack alloc] init];
+                newTrack.sourceId = 0;
+                newTrack.sourcePath = file;
+                [mp4File addTrack:newTrack];
+                [fileTracksTable reloadData];
+                [self updateChangeCount:NSChangeDone];
+
+                [newTrack release];
+            }
         }
         return YES;
     }
