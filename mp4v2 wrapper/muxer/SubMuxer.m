@@ -377,7 +377,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 bail:
     DisposeHandle((Handle) desc);
     [srcFile release];
-    
+
     return dstTrackId;
 }
 

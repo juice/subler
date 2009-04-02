@@ -40,6 +40,7 @@
 - (id)   trackAtIndex:(NSUInteger) index;
 - (void) addTrack:(id) object;
 - (void) removeTrackAtIndex:(NSUInteger) index;
+- (void) moveTrackAtIndex: (NSUInteger)index toIndex:(NSUInteger) newIndex;
 
 - (BOOL) writeToUrl:(NSURL *)url flags:(uint64_t)flags error:(NSError **)outError;
 - (BOOL) updateMP4File:(NSError **)outError;

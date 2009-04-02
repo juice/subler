@@ -71,12 +71,10 @@
 
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
-    BOOL success = YES;
-
     if (isEdited && !muxed)
     {
         if ([[sourcePath pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
-            success = muxSRTSubtitleTrack(fileHandle,
+            Id = muxSRTSubtitleTrack(fileHandle,
                                           sourcePath,
                                           lang_for_english([language UTF8String])->iso639_2,
                                           trackHeight,
@@ -84,26 +82,27 @@
         }
         else if ([[sourcePath pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
                  [[sourcePath pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame) {
-            success = muxMP4SubtitleTrack(fileHandle,
+            Id = muxMP4SubtitleTrack(fileHandle,
                                           sourcePath,
                                           sourceId,
                                           lang_for_english([language UTF8String])->iso639_2);
         }
         else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
-            success = muxMOVSubtitleTrack(fileHandle,
+            Id = muxMOVSubtitleTrack(fileHandle,
                                           sourcePath,
                                           sourceId,
                                           lang_for_english([language UTF8String])->iso639_2);
 
-        if (!success && (outError != NULL)) {
+        if (!Id && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
             [errorDetail setValue:@"Failed to mux subtitles into mp4 file" forKey:NSLocalizedDescriptionKey];
             *outError = [NSError errorWithDomain:@"MP42Error"
                                             code:110
                                         userInfo:errorDetail];
         }
-
-        return success;
+        muxed = YES;
+        [super writeToFile:fileHandle error:outError];
+        return Id;
     }
     else
         [super writeToFile:fileHandle error:outError];

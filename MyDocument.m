@@ -16,6 +16,8 @@
 #import "MovFileImport.h"
 #import "VideoFramerate.h"
 
+#define SublerTableViewDataType @"SublerTableViewDataType"
+
 @implementation MyDocument
 
 - (id)init
@@ -52,6 +54,7 @@
         [targetView addSubview: [propertyView view]];
     }
 
+    [fileTracksTable registerForDraggedTypes:[NSArray arrayWithObjects:SublerTableViewDataType, nil]];
     [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
                                    NSColorPboardType, NSFilenamesPboardType, nil]];
     
@@ -366,6 +369,51 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [[propertyView view] setAutoresizingMask:( NSViewWidthSizable | NSViewHeightSizable )];
 }
 
+- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
+{
+    // Copy the row numbers to the pasteboard.
+    if ([[mp4File trackAtIndex:[rowIndexes firstIndex]] muxed])
+        return NO;
+
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes];
+    [pboard declareTypes:[NSArray arrayWithObject:SublerTableViewDataType] owner:self];
+    [pboard setData:data forType:SublerTableViewDataType];
+    return YES;
+}
+
+- (NSDragOperation)tableView:(NSTableView*)tv
+                validateDrop:(id <NSDraggingInfo>)info
+                 proposedRow:(NSInteger)row
+       proposedDropOperation:(NSTableViewDropOperation)op
+{
+    if (op == NSTableViewDropAbove && row < [mp4File tracksCount]) {
+        if(![[mp4File trackAtIndex:row] muxed])
+            return NSDragOperationEvery;
+    }
+    else if (op == NSTableViewDropAbove && row == [mp4File tracksCount])
+        return NSDragOperationEvery;
+
+    return NSDragOperationNone;
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
+              row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
+{
+    NSPasteboard* pboard = [info draggingPasteboard];
+    NSData* rowData = [pboard dataForType:SublerTableViewDataType];
+    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+    NSInteger dragRow = [rowIndexes firstIndex];
+    
+    [mp4File moveTrackAtIndex:dragRow toIndex:row];
+    [fileTracksTable reloadData];
+    return YES;
+}
+
+- (BOOL)canDragRowsWithIndexes:(NSIndexSet *)rowIndexes atPoint:(NSPoint)mouseDownPoint
+{
+    return YES;
+}
+
 /* NSComboBoxCell dataSource */
 
 - (NSInteger)numberOfItemsInComboBoxCell:(NSComboBoxCell *)comboBoxCell
@@ -518,7 +566,7 @@ returnCode contextInfo: (void *) contextInfo
     panel.canChooseDirectories = YES;
 
     [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
-                                                                                    @"aac", @"h264", @"ac3", nil]
+                                                                                    @"aac", @"h264", @"264", @"ac3", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
                       contextInfo: nil];                                                      
@@ -542,7 +590,7 @@ returnCode contextInfo: (void *) contextInfo
 {
     if ([[filePath pathExtension] isEqualToString:@"mov"])
         importWindow = [[MovFileImport alloc] initWithDelegate:self andFile:filePath];
-    else if ([[filePath pathExtension] isEqualToString:@"h264"])
+    else if ([[filePath pathExtension] isEqualToString:@"h264"] || [[filePath pathExtension] isEqualToString:@"264"])
         importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:filePath];
     else
         importWindow = [[MP4FileImport alloc] initWithDelegate:self andFile:filePath];
@@ -630,7 +678,8 @@ returnCode contextInfo: (void *) contextInfo
                      [[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame ||
-                     [[file pathExtension] caseInsensitiveCompare: @"h264"] == NSOrderedSame)
+                     [[file pathExtension] caseInsensitiveCompare: @"h264"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"264"] == NSOrderedSame)
                 [self showImportSheet:file];
 
             else if ([[file pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame ||

@@ -118,10 +118,21 @@
     [tracks removeObjectAtIndex:index];
 }
 
+- (void) moveTrackAtIndex: (NSUInteger)index toIndex:(NSUInteger) newIndex
+{
+    id track = [[tracks objectAtIndex:index] retain];
+
+    [tracks removeObjectAtIndex:index];
+    if (newIndex > [tracks count] || newIndex > index)
+        newIndex--;
+    [tracks insertObject:track atIndex:newIndex];
+    [track release];
+}
+
 - (void) optimize
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     BOOL noErr;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString * tempPath = [NSString stringWithFormat:@"%@%@", filePath, @".tmp"];
 
     noErr = MP4Optimize([filePath UTF8String], [tempPath UTF8String], MP4_DETAILS_ERROR);
