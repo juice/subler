@@ -187,7 +187,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 newTrack = [[MP42AudioTrack alloc] init];
 
             // Text
-            else if ([mediaType isEqualToString:QTMediaTypeText])
+            else if ([mediaType isEqualToString:QTMediaTypeText]) {
                 if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId) {
                     newTrack = [[MP42ChapterTrack alloc] init];
                     NSArray *chapters = [sourceFile chapters];
@@ -198,6 +198,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                        duration:((float)time.time.timeValue / time.time.timeScale)*1000];
                     }
                 }
+            }
             // Subtitle
             else if([mediaType isEqualToString:@"sbtl"])
                     newTrack = [[MP42SubtitleTrack alloc] init];

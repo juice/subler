@@ -140,6 +140,7 @@
 {
     filePath = [url path];
     fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, flags);
+    MP4SetTimeScale(fileHandle, 600);
     MP4Close(fileHandle);
 
     [self updateMP4File:outError];

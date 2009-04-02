@@ -35,6 +35,7 @@
     MP42VideoTrack *newTrack = [[MP42VideoTrack alloc] init];
     newTrack.Id = [[framerateSelection selectedItem] tag];
     newTrack.sourcePath = filePath;
+    newTrack.format = @"H.264";
 
     [tracks addObject:newTrack];
     [newTrack release];

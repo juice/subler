@@ -491,7 +491,24 @@ returnCode contextInfo: (void *) contextInfo
     [self updateChangeCount:NSChangeDone];
 }
 
-// Import tracks from mp4 file
+// Import tracks from file
+
+- (void) addAudioTrack: (NSString *)path
+{
+    MP42AudioTrack *newTrack = [[MP42AudioTrack alloc] init];
+    newTrack.sourceId = 0;
+    newTrack.sourcePath = path;
+    if ([[path pathExtension] isEqualToString:@"ac3"])
+        newTrack.format = @"AC-3";
+    else
+        newTrack.format = @"AAC";
+
+    [mp4File addTrack:newTrack];
+    [fileTracksTable reloadData];
+    [self updateChangeCount:NSChangeDone];
+    
+    [newTrack release];
+}
 
 - (IBAction) selectFile: (id) sender
 {
@@ -515,14 +532,7 @@ returnCode contextInfo: (void *) contextInfo
 
     if ([[[sheet.filenames objectAtIndex: 0] pathExtension] isEqualToString:@"aac"] ||
         [[[sheet.filenames objectAtIndex: 0] pathExtension] isEqualToString:@"ac3"]) {
-        MP42AudioTrack *newTrack = [[MP42AudioTrack alloc] init];
-        newTrack.sourceId = 0;
-        newTrack.sourcePath = [sheet.filenames objectAtIndex: 0];
-        [mp4File addTrack:newTrack];
-        [fileTracksTable reloadData];
-        [self updateChangeCount:NSChangeDone];
-
-        [newTrack release];
+        [self addAudioTrack:[sheet.filenames objectAtIndex: 0]];
     }
     else
         [self performSelectorOnMainThread:@selector(showImportSheet:) withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
@@ -624,16 +634,9 @@ returnCode contextInfo: (void *) contextInfo
                 [self showImportSheet:file];
 
             else if ([[file pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame ||
-                     [[file pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame) {
-                MP42AudioTrack *newTrack = [[MP42AudioTrack alloc] init];
-                newTrack.sourceId = 0;
-                newTrack.sourcePath = file;
-                [mp4File addTrack:newTrack];
-                [fileTracksTable reloadData];
-                [self updateChangeCount:NSChangeDone];
+                     [[file pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame)
+                [self addAudioTrack:file];
 
-                [newTrack release];
-            }
         }
         return YES;
     }

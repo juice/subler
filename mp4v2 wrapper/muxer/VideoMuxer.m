@@ -213,7 +213,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         editTrackDuration = (editTrackDuration / (float)GetMovieTimeScale([srcFile quickTimeMovie])) * MP4GetTimeScale(fileHandle);
         editDwell = GetTrackEditRate64(track, editTrackStart);
         
-        if (minDisplayOffset < 0)
+        if (minDisplayOffset < 0 && editDisplayStart != -1)
             MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, editDisplayStart -minDisplayOffset,
                             editTrackDuration, !Fix2X(editDwell));
         else

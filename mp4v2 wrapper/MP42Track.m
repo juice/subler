@@ -23,7 +23,7 @@
         muxed = YES;
 
         if (fileHandle) {
-            format = getHumanReadableTrackMediaDataName(fileHandle, Id);
+            format = [getHumanReadableTrackMediaDataName(fileHandle, Id) retain];
             name = [getTrackName(fileHandle, Id) retain];
             language = [getHumanReadableTrackLanguage(fileHandle, Id) retain];
             bitrate = MP4GetTrackBitRate(fileHandle, Id);
@@ -71,6 +71,7 @@
 
 - (void) dealloc
 {
+    [format release];
     [sourcePath release];
     [name release];
     [language release];

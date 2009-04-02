@@ -158,6 +158,10 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
         return NSLocalizedString(@"Text Track", @"Text Track");
     else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
         return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
+    else if (!strcmp(type, MP4_OD_TRACK_TYPE))
+        return NSLocalizedString(@"MPEG-4 ODSM Track", @"MPEG-4 ODSM Track");
+    else if (!strcmp(type, MP4_SCENE_TRACK_TYPE))
+        return NSLocalizedString(@"MPEG-4 SDSM Track", @"MPEG-4 SDSM Track");
     else
         return NSLocalizedString(@"Unknown Track", @"Unknown Track");
 }
@@ -183,7 +187,7 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
         return @"Hint";
 
     else
-        return NSLocalizedString(@"Unknown", @"Unknown");
+        return [NSString stringWithCString:dataName];
 }
 
 NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId Id)
