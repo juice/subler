@@ -96,6 +96,12 @@ typedef struct h264_decode_t {
     uint32_t log2_max_pic_order_cnt_lsb_minus4;
     uint32_t pic_order_cnt_type;
     uint8_t frame_mbs_only_flag;
+    uint8_t mb_adaptive_frame_field_flag;
+    uint8_t direct_8x8_inference_flag;
+    uint32_t frame_crop_left_offset;
+    uint32_t frame_crop_right_offset;
+    uint32_t frame_crop_top_offset;
+    uint32_t frame_crop_bottom_offset;
     uint8_t pic_order_present_flag;
     uint8_t delta_pic_order_always_zero_flag;
     int32_t offset_for_non_ref_pic;
@@ -115,6 +121,7 @@ typedef struct h264_decode_t {
     int32_t delta_pic_order_cnt[2];
     
     uint32_t pic_width, pic_height;
+    uint32_t sar_width, sar_height;
     uint32_t slice_type;
     
     /* POC state */
@@ -345,6 +352,112 @@ static void scaling_list (uint sizeOfScalingList, CBitstream *bs)
     }
 }
 
+extern "C" void h264_hrd_parameters (h264_decode_t *dec, CBitstream *bs)
+{
+    uint32_t cpb_cnt;
+    dec->cpb_cnt_minus1 = cpb_cnt = h264_ue(bs);
+    uint32_t temp;
+    printf("     cpb_cnt_minus1: %u\n", cpb_cnt);
+    printf("     bit_rate_scale: %u\n", bs->GetBits(4));
+    printf("     cpb_size_scale: %u\n", bs->GetBits(4));
+    for (uint32_t ix = 0; ix <= cpb_cnt; ix++) {
+        printf("      bit_rate_value_minus1[%u]: %u\n", ix, h264_ue(bs));
+        printf("      cpb_size_value_minus1[%u]: %u\n", ix, h264_ue(bs));
+        printf("      cbr_flag[%u]: %u\n", ix, bs->GetBits(1));
+    }
+    temp = dec->initial_cpb_removal_delay_length_minus1 = bs->GetBits(5);
+    printf("     initial_cpb_removal_delay_length_minus1: %u\n", temp);
+    
+    dec->cpb_removal_delay_length_minus1 = temp = bs->GetBits(5);
+    printf("     cpb_removal_delay_length_minus1: %u\n", temp);
+    dec->dpb_output_delay_length_minus1 = temp = bs->GetBits(5);
+    printf("     dpb_output_delay_length_minus1: %u\n", temp);
+    dec->time_offset_length = temp = bs->GetBits(5);  
+    printf("     time_offset_length: %u\n", temp);
+}
+
+extern "C" void h264_vui_parameters (h264_decode_t *dec, CBitstream *bs)
+{
+    uint32_t temp;
+    temp = bs->GetBits(1);
+    if (temp) {
+        temp = bs->GetBits(8);
+        if (temp == 0xff) { // extended_SAR
+            dec->sar_width = bs->GetBits(16);
+            dec->sar_height = bs->GetBits(16);
+        }
+    }
+    else {
+        dec->sar_width = 0;
+        dec->sar_height = 0;
+    }
+#if 0
+    temp = bs->GetBits(1);
+    printf("    overscan_info_present_flag: %u\n", temp);
+    if (temp) {
+        printf("     overscan_appropriate_flag: %u\n", bs->GetBits(1));
+    }
+    temp = bs->GetBits(1);
+    printf("    video_signal_info_present_flag: %u\n", temp);
+    if (temp) {
+        printf("     video_format: %u\n", bs->GetBits(3));
+        printf("     video_full_range_flag: %u\n", bs->GetBits(1));
+        temp = bs->GetBits(1);
+        printf("     colour_description_present_flag: %u\n", temp);
+        if (temp) {
+            printf("      colour_primaries: %u\n", bs->GetBits(8));
+            printf("      transfer_characteristics: %u\n", bs->GetBits(8));
+            printf("      matrix_coefficients: %u\n", bs->GetBits(8));
+        }
+    }
+    
+    temp = bs->GetBits(1);
+    printf("    chroma_loc_info_present_flag: %u\n", temp);
+    if (temp) {
+        printf("     chroma_sample_loc_type_top_field: %u\n", h264_ue(bs));
+        printf("     chroma_sample_loc_type_bottom_field: %u\n", h264_ue(bs));
+    }
+    temp = bs->GetBits(1);
+    printf("    timing_info_present_flag: %u\n", temp);
+    if (temp) {
+        printf("     num_units_in_tick: %u\n", bs->GetBits(32));
+        printf("     time_scale: %u\n", bs->GetBits(32));
+        printf("     fixed_frame_scale: %u\n", bs->GetBits(1));
+    }
+    temp = bs->GetBits(1);
+    printf("    nal_hrd_parameters_present_flag: %u\n", temp);
+    if (temp) {
+        dec->NalHrdBpPresentFlag = 1;
+        dec->CpbDpbDelaysPresentFlag = 1;
+        h264_hrd_parameters(dec, bs);
+    }
+    uint32_t temp2;
+
+    temp2 = bs->GetBits(1);
+    printf("    vcl_hrd_parameters_present_flag: %u\n", temp2);
+    if (temp2) {
+        dec->VclHrdBpPresentFlag = 1;
+        dec->CpbDpbDelaysPresentFlag = 1;
+        h264_hrd_parameters(dec, bs);
+    }
+    if (temp || temp2) {
+        printf("    low_delay_hrd_flag: %u\n", bs->GetBits(1));
+    }
+    dec->pic_struct_present_flag = temp = bs->GetBits(1);
+    printf("    pic_struct_present_flag: %u\n", temp);
+    temp = bs->GetBits(1);
+    if (temp) {
+        printf("    motion_vectors_over_pic_boundaries_flag: %u\n", bs->GetBits(1));
+        printf("    max_bytes_per_pic_denom: %u\n", h264_ue(bs));
+        printf("    max_bits_per_mb_denom: %u\n", h264_ue(bs));
+        printf("    log2_max_mv_length_horizontal: %u\n", h264_ue(bs));
+        printf("    log2_max_mv_length_vertical: %u\n", h264_ue(bs));
+        printf("    num_reorder_frames: %u\n", h264_ue(bs));
+        printf("     max_dec_frame_buffering: %u\n", h264_ue(bs));
+    }
+#endif
+}
+
 int h264_read_seq_info (const uint8_t *buffer, 
                         uint32_t buflen, 
                         h264_decode_t *dec)
@@ -407,25 +520,23 @@ int h264_read_seq_info (const uint8_t *buffer,
         dec->frame_mbs_only_flag = bs.GetBits(1);
         dec->pic_height = 
         (2 - dec->frame_mbs_only_flag) * PicHeightInMapUnits * 16;
-#if 0
+
         if (!dec->frame_mbs_only_flag) {
-            printf("    mb_adaptive_frame_field_flag: %u\n", bs->GetBits(1));
+            dec->mb_adaptive_frame_field_flag = bs.GetBits(1);
         }
-        printf("   direct_8x8_inference_flag: %u\n", bs->GetBits(1));
-        temp = bs->GetBits(1);
-        printf("   frame_cropping_flag: %u\n", temp);
-        if (temp) {
-            printf("     frame_crop_left_offset: %u\n", h264_ue(bs));
-            printf("     frame_crop_right_offset: %u\n", h264_ue(bs));
-            printf("     frame_crop_top_offset: %u\n", h264_ue(bs));
-            printf("     frame_crop_bottom_offset: %u\n", h264_ue(bs));
+        dec->direct_8x8_inference_flag = bs.GetBits(1);
+        dummy = bs.GetBits(1);
+        if (dummy) {
+            dec->frame_crop_left_offset = h264_ue(&bs);
+            dec->frame_crop_right_offset = h264_ue(&bs);
+            dec->frame_crop_top_offset = h264_ue(&bs);
+            dec->frame_crop_bottom_offset = h264_ue(&bs);
         }
-        temp = bs->GetBits(1);
-        printf("   vui_parameters_present_flag: %u\n", temp);
-        if (temp) {
-            h264_vui_parameters(bs);
+        dummy = bs.GetBits(1);
+        if (dummy) {
+            h264_vui_parameters(dec, &bs);
         }
-#endif
+
     } catch (...) {
         return -1;
     }
@@ -1164,6 +1275,12 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
         fprintf(stderr,
                 "%s: can't create video track\n", ProgName);
         return MP4_INVALID_TRACK_ID;
+    }
+    
+    if (h264_dec.sar_width && h264_dec.pic_height) {
+        MP4AddPixelAspectRatio(mp4File, trackId, h264_dec.sar_width, h264_dec.sar_height);
+        MP4SetTrackFloatProperty(mp4File, trackId, "tkhd.width",
+                                 h264_dec.pic_width * (h264_dec.sar_width / (float)h264_dec.sar_height));
     }
     
     if (MP4GetNumberOfTracks(mp4File, MP4_VIDEO_TRACK_TYPE) == 1) {
