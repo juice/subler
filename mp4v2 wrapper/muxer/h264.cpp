@@ -102,6 +102,8 @@ typedef struct h264_decode_t {
     uint32_t frame_crop_right_offset;
     uint32_t frame_crop_top_offset;
     uint32_t frame_crop_bottom_offset;
+    uint8_t aspect_ratio_info_present_flag;
+    uint8_t aspect_ratio_idc;
     uint8_t pic_order_present_flag;
     uint8_t delta_pic_order_always_zero_flag;
     int32_t offset_for_non_ref_pic;
@@ -378,19 +380,16 @@ extern "C" void h264_hrd_parameters (h264_decode_t *dec, CBitstream *bs)
 
 extern "C" void h264_vui_parameters (h264_decode_t *dec, CBitstream *bs)
 {
-    uint32_t temp;
-    temp = bs->GetBits(1);
-    if (temp) {
-        temp = bs->GetBits(8);
-        if (temp == 0xff) { // extended_SAR
+    //uint32_t temp;
+    dec->aspect_ratio_info_present_flag = bs->GetBits(1);
+    if (dec->aspect_ratio_info_present_flag) {
+        dec->aspect_ratio_idc = bs->GetBits(8);
+        if (dec->aspect_ratio_idc == 0xff) { // extended_SAR
             dec->sar_width = bs->GetBits(16);
             dec->sar_height = bs->GetBits(16);
         }
     }
-    else {
-        dec->sar_width = 0;
-        dec->sar_height = 0;
-    }
+
 #if 0
     temp = bs->GetBits(1);
     printf("    overscan_info_present_flag: %u\n", temp);
@@ -1277,7 +1276,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
         return MP4_INVALID_TRACK_ID;
     }
     
-    if (h264_dec.sar_width && h264_dec.pic_height) {
+    if (h264_dec.aspect_ratio_info_present_flag && h264_dec.aspect_ratio_idc == 0xff) {
         MP4AddPixelAspectRatio(mp4File, trackId, h264_dec.sar_width, h264_dec.sar_height);
         MP4SetTrackFloatProperty(mp4File, trackId, "tkhd.width",
                                  h264_dec.pic_width * (h264_dec.sar_width / (float)h264_dec.sar_height));
