@@ -530,6 +530,12 @@ int h264_read_seq_info (const uint8_t *buffer,
             dec->frame_crop_right_offset = h264_ue(&bs);
             dec->frame_crop_top_offset = h264_ue(&bs);
             dec->frame_crop_bottom_offset = h264_ue(&bs);
+            
+            dec->pic_width -= 2*dec->frame_crop_right_offset;
+            if (dec->frame_mbs_only_flag)
+                dec->pic_height -= 2*dec->frame_crop_bottom_offset;
+            else
+                dec->pic_height -= 4*dec->frame_crop_bottom_offset;
         }
         dummy = bs.GetBits(1);
         if (dummy) {
