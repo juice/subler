@@ -306,6 +306,16 @@ int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     }
     if (trackEditCount)
         MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
+    else {
+        uint32_t firstFrameOffset = MP4GetSampleRenderingOffset(fileHandle, dstTrackId, 1);
+        MP4Duration editDuration = MP4ConvertFromTrackDuration(srcFile,
+                                                               srcTrackId,
+                                                               MP4GetTrackDuration(srcFile, srcTrackId),
+                                                               MP4GetTimeScale(fileHandle));
+        MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, firstFrameOffset,
+                        editDuration, 0);
+    }
+        
 
     MP4Close(srcFile);
 

@@ -123,11 +123,6 @@ static u_int16_t MP4AV_Ac3GetFrameSize(u_int8_t* pHdr)
 	return Ac3FrameSize[frmsizecod][3 - index] * 2;
 }
 
-static u_int8_t MP4AV_Ac3GetChannels(u_int8_t* pHdr)
-{
-	return 6;
-}
-
 /* 
  * hdr must point to at least Ac3_HEADER_MAX_SIZE bytes of memory 
  */
@@ -280,8 +275,6 @@ extern "C"  MP4TrackId Ac3Creator(MP4FileHandle mp4File, FILE* inFile)
 {
     // collect all the necessary meta information
     u_int32_t samplesPerSecond;
-    u_int8_t channelConfig;
-    u_int16_t framesize;
     uint32_t fscod, frmsizecod, bsid, bsmod, acmod, lfeon;
     uint32_t lfe_offset = 4;
     
@@ -294,7 +287,7 @@ extern "C"  MP4TrackId Ac3Creator(MP4FileHandle mp4File, FILE* inFile)
     
     fscod = (firstHeader[4] >> 6) & 0x3;
     frmsizecod = (firstHeader[4] & 0x3f);
-    bsid = (firstHeader[5] >> 3) & 0x1f;
+    bsid =  (firstHeader[5] >> 3) & 0x1f;
     bsmod = (firstHeader[5] & 0xf);
     acmod = (firstHeader[6] >> 5) & 0x7;
     if (acmod == 2)
@@ -308,8 +301,6 @@ extern "C"  MP4TrackId Ac3Creator(MP4FileHandle mp4File, FILE* inFile)
     lfeon = (firstHeader[6] >> lfe_offset) & 0x1;
     
     samplesPerSecond = MP4AV_Ac3GetSamplingRate(firstHeader);
-    channelConfig = MP4AV_Ac3GetChannels(firstHeader);
-    framesize = MP4AV_Ac3GetFrameSize(firstHeader);
     
     // add the new audio track
     MP4TrackId trackId = MP4AddAC3AudioTrack(mp4File, samplesPerSecond,

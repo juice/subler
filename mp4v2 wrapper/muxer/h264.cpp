@@ -943,6 +943,8 @@ extern "C" char *h264_get_profile_level_string (const uint8_t profile,
         pro = "High 4:2:2";
     } else if (profile == 144) {
         pro = "High 4:4:4";
+    } else if (profile == 244) {
+        pro = "High 4:4:4 Predictive";
     } else {
         snprintf(profileb, sizeof(profileb), "Unknown Profile %x", profile);
         pro = profileb;
@@ -1259,17 +1261,15 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     nal.buffer = NULL;
 
     // create the new video track
-    MP4TrackId trackId;
-    trackId =
-    MP4AddH264VideoTrack(mp4File,
-                         timescale,
-                         mp4FrameDuration,
-                         h264_dec.pic_width,
-                         h264_dec.pic_height,
-                         AVCProfileIndication,
-                         profile_compat, 
-                         AVCLevelIndication,
-                         3);
+    MP4TrackId trackId = MP4AddH264VideoTrack(mp4File,
+                                              timescale,
+                                              mp4FrameDuration,
+                                              h264_dec.pic_width,
+                                              h264_dec.pic_height,
+                                              AVCProfileIndication,
+                                              profile_compat, 
+                                              AVCLevelIndication,
+                                              3);
     
     if (trackId == MP4_INVALID_TRACK_ID) {
         fprintf(stderr,
@@ -1407,7 +1407,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
             }
             nal_buffer[nal_buffer_size] = (to_write >> 24) & 0xff;
             nal_buffer[nal_buffer_size + 1] = (to_write >> 16) & 0xff;
-            nal_buffer[nal_buffer_size + 2] = (to_write >> 8)& 0xff;
+            nal_buffer[nal_buffer_size + 2] = (to_write >> 8) & 0xff;
             nal_buffer[nal_buffer_size + 3] = to_write & 0xff;
             memcpy(nal_buffer + nal_buffer_size + 4,
                    nal.buffer + header_size,
@@ -1458,7 +1458,9 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
         
         for (ix = 0; ix < samplesWritten; ix++) {;
             const int offset = DpbFrameOffset(&h264_dpb, ix);
-            //fprintf( stderr, "dts=%d pts=%d offset=%d\n", ix, ix+offset, offset );
+#ifdef DEBUG_H264
+            printf("dts=%d pts=%d offset=%d\n", ix, ix+offset, offset );
+#endif
             MP4SetSampleRenderingOffset(mp4File, trackId, 1 + ix, 
                                         offset * mp4FrameDuration);
         }

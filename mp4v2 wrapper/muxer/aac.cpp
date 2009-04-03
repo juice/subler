@@ -28,7 +28,7 @@
 
 static const char*  ProgName = "Subler";
 static int aacUseOldFile = 0;
-static int aacProfileLevel = 1;
+static int aacProfileLevel = 4;
 
 #define MP4AV_AAC_MAIN_PROFILE	0
 #define MP4AV_AAC_LC_PROFILE	1
