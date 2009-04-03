@@ -23,6 +23,9 @@ int muxAACAdtsStream(MP4FileHandle fileHandle, NSString* filePath) {
     dstTrackId = AacCreator(fileHandle, inFile);
     fclose(inFile);
     
+    if (dstTrackId)
+        enableFirstAudioTrack(fileHandle);
+    
     return dstTrackId;
 }
 
@@ -32,7 +35,10 @@ int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath) {
     
     dstTrackId = Ac3Creator(fileHandle, inFile);
     fclose(inFile);
-    
+
+    if (dstTrackId)
+        enableFirstAudioTrack(fileHandle);
+
     return dstTrackId;
 }
 

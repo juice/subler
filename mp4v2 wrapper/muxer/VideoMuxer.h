@@ -9,13 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "mp4v2.h"
 
-typedef struct framerate_t
-    {
-        uint32_t code;
-        uint32_t timescale;
-        uint32_t duration;
-
-    } framerate_t;
+typedef struct framerate_t {
+    uint32_t code;
+    uint32_t timescale;
+    uint32_t duration;
+} framerate_t;
 
 int muxH264ElementaryStream(MP4FileHandle fileHandle, NSString* filePath, uint32_t frameRateCode);
 
