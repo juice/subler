@@ -150,7 +150,40 @@
 - (BOOL) writeToUrl:(NSURL *)url flags:(uint64_t)flags error:(NSError **)outError
 {
     filePath = [url path];
-    fileHandle = MP4Create([filePath UTF8String], MP4_DETAILS_ERROR, flags);
+    NSString *fileExtension = [filePath pathExtension];
+    char* majorBrand = "mp42";
+    char** supportedBrands;
+    u_int32_t supportedBrandsCount = 0;
+
+    if ([fileExtension isEqualToString:@"m4v"]) {
+        majorBrand = "M4V ";
+        char *brands[4];
+        brands[0] = majorBrand;
+        brands[1] = "M4A ";
+        brands[2] = "mp42";
+        brands[3] = "isom";
+        supportedBrands = brands;
+        supportedBrandsCount = 4;
+    }
+    else if ([fileExtension isEqualToString:@"m4a"]) {
+        majorBrand = "M4A ";
+        char *brands[4];
+        brands[0] = majorBrand;
+        brands[1] = "mp42";
+        brands[2] = "isom";
+        supportedBrands = brands;
+        supportedBrandsCount = 3;
+    }
+    else {
+        char *brands[2];
+        brands[0] = majorBrand;
+        brands[2] = "isom";
+        supportedBrands = brands;
+        supportedBrandsCount = 2;
+    }
+
+    fileHandle = MP4CreateEx([filePath UTF8String], MP4_DETAILS_ERROR, flags, 1, 1, majorBrand, 0,
+                             supportedBrands, supportedBrandsCount);
     MP4SetTimeScale(fileHandle, 600);
     MP4Close(fileHandle);
 

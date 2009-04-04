@@ -124,6 +124,7 @@
 {
     [savePanel setExtensionHidden:NO];
     [savePanel setAccessoryView:saveView];
+    [savePanel setAllowsOtherFileTypes:YES];
 
     return YES;
 }
