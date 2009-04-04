@@ -177,7 +177,7 @@
     else {
         char *brands[2];
         brands[0] = majorBrand;
-        brands[2] = "isom";
+        brands[1] = "isom";
         supportedBrands = brands;
         supportedBrandsCount = 2;
     }

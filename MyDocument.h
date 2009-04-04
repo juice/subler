@@ -39,7 +39,9 @@
     IBOutlet NSView         *targetView;
     id                      importWindow;
 
+    NSSavePanel             *currentSavePanel;
     IBOutlet NSView         *saveView;
+    IBOutlet NSPopUpButton  *fileFormat;
     IBOutlet NSProgressIndicator *optBar;
     
     BOOL _64bit_data;
@@ -55,6 +57,7 @@
 - (IBAction) selectFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 
+- (IBAction) setSaveFormat: (id) sender;
 - (IBAction) set64bit_data: (id) sender;
 - (IBAction) set64bit_time: (id) sender;
 

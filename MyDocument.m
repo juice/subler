@@ -122,11 +122,34 @@
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
+    currentSavePanel = savePanel;
     [savePanel setExtensionHidden:NO];
     [savePanel setAccessoryView:saveView];
-    [savePanel setAllowsOtherFileTypes:YES];
+
+    NSArray *formats = [self writableTypesForSaveOperation:NSSaveAsOperation];
+    [fileFormat removeAllItems];
+    for (id format in formats)
+        [fileFormat addItemWithTitle:format];
 
     return YES;
+}
+
+- (IBAction) setSaveFormat: (id) sender
+{
+    NSInteger tag = [sender indexOfSelectedItem];
+    switch (tag) {
+        case 0:
+            [currentSavePanel setRequiredFileType:@"m4v"];
+            break;
+        case 1:
+            [currentSavePanel setRequiredFileType:@"mp4"];
+            break;
+        case 2:
+            [currentSavePanel setRequiredFileType:@"m4a"];
+            break;
+        default:
+            break;
+    }
 }
 
 - (IBAction) set64bit_data: (id) sender
