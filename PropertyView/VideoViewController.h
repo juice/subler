@@ -21,9 +21,12 @@
     
     IBOutlet NSTextField *offsetX;
     IBOutlet NSTextField *offsetY;
+    
+    IBOutlet NSPopUpButton *alternateGroup;
 }
 
 - (void) setTrack:(MP42VideoTrack *) videoTrack;
 - (IBAction) setSize: (id) sender;
+- (IBAction) setAltenateGroup: (id) sender;
 
 @end

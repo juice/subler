@@ -21,6 +21,8 @@
     
     [offsetX setStringValue: [NSString stringWithFormat:@"%d", track.offsetX]];
     [offsetY setStringValue: [NSString stringWithFormat:@"%d", track.offsetY]];
+    
+    [alternateGroup selectItemAtIndex:track.alternate_group];
 }
 
 - (void) setTrack:(MP42VideoTrack *) videoTrack
@@ -67,6 +69,16 @@
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
         }
+    }
+}
+
+- (IBAction) setAltenateGroup: (id) sender
+{
+    uint8_t tagName = [[sender selectedItem] tag];
+    
+    if (track.alternate_group != tagName) {
+        track.alternate_group = tagName;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
 

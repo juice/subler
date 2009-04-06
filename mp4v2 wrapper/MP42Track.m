@@ -21,6 +21,7 @@
         isEdited = NO;
         isDataEdited = NO;
         muxed = YES;
+        updatedProperty = [[NSMutableDictionary alloc] init];
 
         if (fileHandle) {
             format = [getHumanReadableTrackMediaDataName(fileHandle, Id) retain];
@@ -41,7 +42,7 @@
 
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
-    BOOL err;
+    BOOL success = YES;
     if (!fileHandle || !Id) {
         if ( outError != NULL) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
@@ -54,23 +55,27 @@
         }
     }
 
-    err = MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
+    if ([updatedProperty valueForKey:@"name"] || !muxed)
+        if (![name isEqualToString:@"Video Track"] &&
+            ![name isEqualToString:@"Sound Track"] &&
+            ![name isEqualToString:@"Subtitle Track"] &&
+            ![name isEqualToString:@"Text Track"] &&
+            ![name isEqualToString:@"Chapter Track"] &&
+            ![name isEqualToString:@"Unknown Track"] &&
+            name != nil) {
+            MP4SetTrackName(fileHandle, Id, [name cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+        }
+    if ([updatedProperty valueForKey:@"alternate_group"] || !muxed)
+        MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", alternate_group);
+    if ([updatedProperty valueForKey:@"language"] || !muxed)
+        MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
 
-    if (![name isEqualToString:@"Video Track"] &&
-        ![name isEqualToString:@"Sound Track"] &&
-        ![name isEqualToString:@"Subtitle Track"] &&
-        ![name isEqualToString:@"Text Track"] &&
-        ![name isEqualToString:@"Chapter Track"] &&
-        ![name isEqualToString:@"Unknown Track"] &&
-        name != nil) {
-        MP4SetTrackName(fileHandle, Id, [name cStringUsingEncoding: NSMacOSRomanStringEncoding]);
-    }
-
-    return err;
+    return success;
 }
 
 - (void) dealloc
 {
+    [updatedProperty release];
     [format release];
     [sourcePath release];
     [name release];
@@ -89,7 +94,33 @@
 
 @synthesize format;
 @synthesize name;
+
+- (void) setName: (NSString *) newName
+{
+    [name autorelease];
+    name = [newName retain];
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"name"];
+}
+
 @synthesize language;
+
+- (void) setLanguage: (NSString *) newLang
+{
+    [language autorelease];
+    language = [newLang retain];
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"language"];
+}
+
+@synthesize alternate_group;
+
+- (void) setAlternate_group: (uint64_t) newGroup
+{
+    alternate_group = newGroup;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"alternate_group"];
+}
 
 @synthesize timescale;
 @synthesize bitrate;

@@ -10,6 +10,9 @@
 #import "MP42Track.h"
 
 @interface MP42AudioTrack : MP42Track {
+    float volume;
 }
+
+@property float volume;
 
 @end

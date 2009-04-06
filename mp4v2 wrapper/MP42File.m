@@ -26,7 +26,7 @@
 
         metadata = [[MP42Metadata alloc] init];
     }
-    
+
     return self;
 }
 

@@ -172,14 +172,17 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
             // Video
             if ([mediaType isEqualToString:QTMediaTypeVideo]) {
-                if ([[self formatForTrack:track] isEqualToString:@"Text"] || [[self formatForTrack:track] isEqualToString:@"SSA"])
+                if ([[self formatForTrack:track] isEqualToString:@"Text"] || [[self formatForTrack:track] isEqualToString:@"SSA"]) {
                     newTrack = [[MP42SubtitleTrack alloc] init];
-                else
+                    [(MP42SubtitleTrack*)newTrack setTrackWidth:60];
+                }
+                else {
                     newTrack = [[MP42VideoTrack alloc] init];
 
-                NSSize dimesion = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
-                [(MP42VideoTrack*)newTrack setTrackWidth: dimesion.width];
-                [(MP42VideoTrack*)newTrack setTrackHeight: dimesion.height];
+                    NSSize dimesion = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
+                    [(MP42VideoTrack*)newTrack setTrackWidth: dimesion.width];
+                    [(MP42VideoTrack*)newTrack setTrackHeight: dimesion.height];
+                }
             }
 
             // Audio

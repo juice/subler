@@ -11,6 +11,7 @@
 #import "EmptyViewController.h"
 #import "MovieViewController.h"
 #import "VideoViewController.h"
+#import "SoundViewController.h"
 #import "ChapterViewController.h"
 #import "MP4FileImport.h"
 #import "MovFileImport.h"
@@ -335,14 +336,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"]) {
         if (![track.language isEqualToString:anObject]) {
             track.language = anObject;
-            track.isEdited = YES;
             [self updateChangeCount:NSChangeDone];
         }
     }
     if ([tableColumn.identifier isEqualToString:@"trackName"]) {
         if (![track.name isEqualToString:anObject]) {
             track.name = anObject;
-            track.isEdited = YES;
             [self updateChangeCount:NSChangeDone];
         }
     }
@@ -374,6 +373,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     else if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42VideoTrack class]])
     {
         VideoViewController *controller = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
+        [controller setTrack:[mp4File trackAtIndex:row]];
+        if (controller !=nil)
+            propertyView = controller;
+    }
+    else if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42AudioTrack class]])
+    {
+        SoundViewController *controller = [[SoundViewController alloc] initWithNibName:@"SoundView" bundle:nil];
         [controller setTrack:[mp4File trackAtIndex:row]];
         if (controller !=nil)
             propertyView = controller;

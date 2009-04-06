@@ -15,7 +15,7 @@
 {
     if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
     {
-
+        MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.volume", &volume);
     }
 
     return self;
@@ -57,5 +57,7 @@
 {
     [super dealloc];
 }
+
+@synthesize volume;
 
 @end

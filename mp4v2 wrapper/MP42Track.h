@@ -26,6 +26,8 @@
 	uint32_t    timescale; 
 	uint32_t    bitrate; 
 	MP4Duration duration;
+    
+    NSMutableDictionary *updatedProperty;
 }
 
 @property(readwrite) MP4TrackId Id;
@@ -35,6 +37,8 @@
 @property(readwrite, retain) NSString *format;
 @property(readwrite, retain) NSString *name;
 @property(readwrite, retain) NSString *language;
+
+@property(readwrite) uint64_t alternate_group;
 
 @property(readonly) uint32_t timescale;
 @property(readonly) uint32_t bitrate;

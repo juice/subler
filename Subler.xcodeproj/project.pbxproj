@@ -16,6 +16,8 @@
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		A91103E40F321DBA0013D1E0 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A91103930F321CF60013D1E0 /* libuniversaldetector.a */; };
 		A911064B0F323D450013D1E0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A911064A0F323D450013D1E0 /* AppDelegate.m */; };
+		A91E7DEA0F8A2E6800AF387E /* SoundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A91E7DE90F8A2E6800AF387E /* SoundViewController.m */; };
+		A91E7DEE0F8A2F3D00AF387E /* SoundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */; };
 		A9569CEB0F616926002F79F8 /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */; };
 		A95C87AE0F82798200F51A22 /* ButtonToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */; };
 		A95C881D0F827BFB00F51A22 /* ToolbarRemoveTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */; };
@@ -120,6 +122,9 @@
 		A911049C0F321DFC0013D1E0 /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = UniversalDetector/UniversalDetector.h; sourceTree = "<group>"; };
 		A91106490F323D450013D1E0 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A911064A0F323D450013D1E0 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A91E7DE80F8A2E6800AF387E /* SoundViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundViewController.h; path = PropertyView/SoundViewController.h; sourceTree = "<group>"; };
+		A91E7DE90F8A2E6800AF387E /* SoundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SoundViewController.m; path = PropertyView/SoundViewController.m; sourceTree = "<group>"; };
+		A91E7DED0F8A2F3D00AF387E /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/SoundView.xib; sourceTree = "<group>"; };
 		A9569CE90F616926002F79F8 /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42VideoTrack.h; path = "mp4v2 wrapper/MP42VideoTrack.h"; sourceTree = "<group>"; };
 		A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42VideoTrack.m; path = "mp4v2 wrapper/MP42VideoTrack.m"; sourceTree = "<group>"; };
 		A95A60470F4422DB00767D87 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mp4v2.h; path = mp4v2/mp4v2.h; sourceTree = "<group>"; };
@@ -290,6 +295,7 @@
 				1DDD58280DA1D0D100B32029 /* MyDocument.xib */,
 				1DDD582A0DA1D0D100B32029 /* MainMenu.xib */,
 				A9629D050F56FB2A001D6A75 /* VideoView.xib */,
+				A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */,
 				A9FD5DA30F3C6F8100817716 /* EmptyView.xib */,
 				A9FD5DA50F3C6F8A00817716 /* ChapterView.xib */,
 				A9FD5EC50F3C8A4800817716 /* MovieView.xib */,
@@ -350,6 +356,8 @@
 				A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */,
 				A9629D090F56FB36001D6A75 /* VideoViewController.h */,
 				A9629D080F56FB36001D6A75 /* VideoViewController.m */,
+				A91E7DE80F8A2E6800AF387E /* SoundViewController.h */,
+				A91E7DE90F8A2E6800AF387E /* SoundViewController.m */,
 				A9FD5D320F3C69BE00817716 /* ChapterViewController.h */,
 				A9FD5D330F3C69BE00817716 /* ChapterViewController.m */,
 			);
@@ -467,6 +475,7 @@
 				A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */,
 				A95C881D0F827BFB00F51A22 /* ToolbarRemoveTemplate.png in Resources */,
 				A9FB9DC90F83AAC100AB791A /* VideoFramerate.xib in Resources */,
+				A91E7DEE0F8A2F3D00AF387E /* SoundView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,6 +514,7 @@
 				A9BB60D80F834E0A005CD0BB /* mbs.cpp in Sources */,
 				A9BB60DB0F834F18005CD0BB /* ac3.cpp in Sources */,
 				A9FB9D4B0F83A6FF00AB791A /* VideoFramerate.m in Sources */,
+				A91E7DEA0F8A2E6800AF387E /* SoundViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,6 +559,14 @@
 				2A37F4BAFDCFA73011CA2CEA /* English */,
 			);
 			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A91E7DED0F8A2F3D00AF387E /* English */,
+			);
+			name = SoundView.xib;
 			sourceTree = "<group>";
 		};
 		A9629D050F56FB2A001D6A75 /* VideoView.xib */ = {

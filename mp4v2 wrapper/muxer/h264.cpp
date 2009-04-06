@@ -1287,6 +1287,8 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
         MP4SetTrackFloatProperty(mp4File, trackId, "tkhd.width",
                                  h264_dec.pic_width * (h264_dec.sar_width / (float)h264_dec.sar_height));
     }
+    else
+        MP4AddPixelAspectRatio(mp4File, trackId, 1, 1);
     
     if (MP4GetNumberOfTracks(mp4File, MP4_VIDEO_TRACK_TYPE) == 1) {
         uint32_t new_verb = Verbosity & ~(MP4_DETAILS_ERROR);
