@@ -39,7 +39,7 @@
     IBOutlet NSView         *targetView;
     id                      importWindow;
 
-    NSSavePanel             *currentSavePanel;
+    NSSavePanel             *_currentSavePanel;
     IBOutlet NSView         *saveView;
     IBOutlet NSPopUpButton  *fileFormat;
     IBOutlet NSProgressIndicator *optBar;

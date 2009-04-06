@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="11"/>
+			<integer value="12"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -67,7 +67,7 @@
 														<object class="NSTableView" id="999266526">
 															<reference key="NSNextResponder" ref="399023230"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{446, 175}</string>
+															<string key="NSFrameSize">{446, 181}</string>
 															<reference key="NSSuperview" ref="399023230"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="888415462">
@@ -439,7 +439,7 @@
 															<bool key="NSAllowsTypeSelect">YES</bool>
 														</object>
 													</object>
-													<string key="NSFrame">{{1, 17}, {446, 175}}</string>
+													<string key="NSFrame">{{1, 17}, {446, 181}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
 													<reference key="NSNextKeyView" ref="999266526"/>
 													<reference key="NSDocView" ref="999266526"/>
@@ -483,7 +483,7 @@
 												</object>
 												<reference ref="738579199"/>
 											</object>
-											<string key="NSFrame">{{17, 42}, {448, 193}}</string>
+											<string key="NSFrame">{{17, 36}, {448, 199}}</string>
 											<reference key="NSSuperview" ref="900859224"/>
 											<reference key="NSNextKeyView" ref="399023230"/>
 											<int key="NSsFlags">562</int>
@@ -497,16 +497,20 @@
 										<object class="NSPopUpButton" id="1066578221">
 											<reference key="NSNextResponder" ref="900859224"/>
 											<int key="NSvFlags">292</int>
-											<string key="NSFrame">{{14, 13}, {100, 22}}</string>
+											<string key="NSFrame">{{17, 7}, {28, 22}}</string>
 											<reference key="NSSuperview" ref="900859224"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSPopUpButtonCell" key="NSCell" id="930025659">
 												<int key="NSCellFlags">-2076049856</int>
-												<int key="NSCellFlags2">133120</int>
+												<int key="NSCellFlags2">134350848</int>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="1066578221"/>
-												<int key="NSButtonFlags">109199615</int>
-												<int key="NSButtonFlags2">129</int>
+												<int key="NSButtonFlags">-2038415105</int>
+												<int key="NSButtonFlags2">34</int>
+												<object class="NSCustomResource" key="NSNormalImage" id="643285381">
+													<string key="NSClassName">NSImage</string>
+													<string key="NSResourceName">NSAddTemplate</string>
+												</object>
 												<string key="NSAlternateContents"/>
 												<string key="NSKeyEquivalent"/>
 												<int key="NSPeriodicDelay">400</int>
@@ -514,11 +518,12 @@
 												<object class="NSMenuItem" key="NSMenuItem" id="191747648">
 													<reference key="NSMenu" ref="758321555"/>
 													<bool key="NSIsHidden">YES</bool>
-													<string key="NSTitle">Add</string>
+													<string key="NSTitle"/>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
 													<int key="NSState">1</int>
+													<reference key="NSImage" ref="643285381"/>
 													<object class="NSCustomResource" key="NSOnImage" id="558671127">
 														<string key="NSClassName">NSImage</string>
 														<string key="NSResourceName">NSMenuCheckmark</string>
@@ -547,18 +552,26 @@
 										</object>
 										<object class="NSButton" id="6773204">
 											<reference key="NSNextResponder" ref="900859224"/>
-											<int key="NSvFlags">289</int>
-											<string key="NSFrame">{{374, 10}, {96, 28}}</string>
+											<int key="NSvFlags">292</int>
+											<string key="NSFrame">{{44, 7}, {24, 22}}</string>
 											<reference key="NSSuperview" ref="900859224"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="751441864">
 												<int key="NSCellFlags">604110336</int>
-												<int key="NSCellFlags2">134348800</int>
-												<string key="NSContents">Remove</string>
-												<reference key="NSSupport" ref="26"/>
+												<int key="NSCellFlags2">134217728</int>
+												<string key="NSContents"/>
+												<object class="NSFont" key="NSSupport">
+													<string key="NSName">LucidaGrande</string>
+													<double key="NSSize">1.300000e+01</double>
+													<int key="NSfFlags">1044</int>
+												</object>
 												<reference key="NSControlView" ref="6773204"/>
-												<int key="NSButtonFlags">-2038284033</int>
-												<int key="NSButtonFlags2">129</int>
+												<int key="NSButtonFlags">-2030288641</int>
+												<int key="NSButtonFlags2">162</int>
+												<object class="NSCustomResource" key="NSNormalImage">
+													<string key="NSClassName">NSImage</string>
+													<string key="NSResourceName">NSRemoveTemplate</string>
+												</object>
 												<string key="NSAlternateContents"/>
 												<string key="NSKeyEquivalent"/>
 												<int key="NSPeriodicDelay">200</int>
@@ -1602,7 +1615,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{209, 639}, {100, 20}}</string>
+					<string>{{345, 579}, {83, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1731,6 +1744,13 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">MovFileImport.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">VideoFramerate.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

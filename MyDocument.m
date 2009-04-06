@@ -122,7 +122,7 @@
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
-    currentSavePanel = savePanel;
+    _currentSavePanel = savePanel;
     [savePanel setExtensionHidden:NO];
     [savePanel setAccessoryView:saveView];
 
@@ -136,16 +136,16 @@
 
 - (IBAction) setSaveFormat: (id) sender
 {
-    NSInteger tag = [sender indexOfSelectedItem];
-    switch (tag) {
+    NSInteger index = [sender indexOfSelectedItem];
+    switch (index) {
         case 0:
-            [currentSavePanel setRequiredFileType:@"m4v"];
+            [_currentSavePanel setRequiredFileType:@"m4v"];
             break;
         case 1:
-            [currentSavePanel setRequiredFileType:@"mp4"];
+            [_currentSavePanel setRequiredFileType:@"mp4"];
             break;
         case 2:
-            [currentSavePanel setRequiredFileType:@"m4a"];
+            [_currentSavePanel setRequiredFileType:@"m4a"];
             break;
         default:
             break;

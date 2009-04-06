@@ -251,14 +251,14 @@
 			children = (
 				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
-				A95C87AD0F82798200F51A22 /* ButtonToolbarItem.h */,
-				A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */,
 				A9C0552B0F6D392C00AF15B5 /* MP4FileImport.h */,
 				A9C0552C0F6D392C00AF15B5 /* MP4FileImport.m */,
 				A9AB94D40F73D6DA0049DF8C /* MovFileImport.h */,
 				A9AB94D30F73D6DA0049DF8C /* MovFileImport.m */,
 				A9FB9D490F83A6FF00AB791A /* VideoFramerate.h */,
 				A9FB9D4A0F83A6FF00AB791A /* VideoFramerate.m */,
+				A95C87AD0F82798200F51A22 /* ButtonToolbarItem.h */,
+				A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */,
 				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
 			);

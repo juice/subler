@@ -152,37 +152,33 @@
     filePath = [url path];
     NSString *fileExtension = [filePath pathExtension];
     char* majorBrand = "mp42";
-    char** supportedBrands;
+    char* supportedBrands[4];
     u_int32_t supportedBrandsCount = 0;
 
     if ([fileExtension isEqualToString:@"m4v"]) {
         majorBrand = "M4V ";
-        char *brands[4];
-        brands[0] = majorBrand;
-        brands[1] = "M4A ";
-        brands[2] = "mp42";
-        brands[3] = "isom";
-        supportedBrands = brands;
+        supportedBrands[0] = majorBrand;
+        supportedBrands[1] = "M4A ";
+        supportedBrands[2] = "mp42";
+        supportedBrands[3] = "isom";
         supportedBrandsCount = 4;
     }
     else if ([fileExtension isEqualToString:@"m4a"]) {
         majorBrand = "M4A ";
-        char *brands[4];
-        brands[0] = majorBrand;
-        brands[1] = "mp42";
-        brands[2] = "isom";
-        supportedBrands = brands;
+        supportedBrands[0] = majorBrand;
+        supportedBrands[1] = "mp42";
+        supportedBrands[2] = "isom";
         supportedBrandsCount = 3;
     }
     else {
-        char *brands[2];
-        brands[0] = majorBrand;
-        brands[1] = "isom";
-        supportedBrands = brands;
+        supportedBrands[0] = majorBrand;
+        supportedBrands[1] = "isom";
         supportedBrandsCount = 2;
     }
 
-    fileHandle = MP4CreateEx([filePath UTF8String], MP4_DETAILS_ERROR, flags, 1, 1, majorBrand, 0,
+    fileHandle = MP4CreateEx([filePath UTF8String], MP4_DETAILS_ERROR,
+                             flags, 1, 1,
+                             majorBrand, 0,
                              supportedBrands, supportedBrandsCount);
     MP4SetTimeScale(fileHandle, 600);
     MP4Close(fileHandle);

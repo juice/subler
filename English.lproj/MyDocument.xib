@@ -1106,7 +1106,7 @@
 					<object class="NSButton" id="992226451">
 						<reference key="NSNextResponder" ref="433541932"/>
 						<int key="NSvFlags">301</int>
-						<string key="NSFrame">{{90, 28}, {149, 18}}</string>
+						<string key="NSFrame">{{89, 28}, {149, 18}}</string>
 						<reference key="NSSuperview" ref="433541932"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="869120083">
@@ -1133,7 +1133,7 @@
 					<object class="NSButton" id="976564591">
 						<reference key="NSNextResponder" ref="433541932"/>
 						<int key="NSvFlags">301</int>
-						<string key="NSFrame">{{90, 8}, {105, 18}}</string>
+						<string key="NSFrame">{{89, 8}, {105, 18}}</string>
 						<reference key="NSSuperview" ref="433541932"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="555641604">
@@ -1155,7 +1155,7 @@
 					<object class="NSPopUpButton" id="217955784">
 						<reference key="NSNextResponder" ref="433541932"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{88, 47}, {196, 26}}</string>
+						<string key="NSFrame">{{88, 48}, {225, 26}}</string>
 						<reference key="NSSuperview" ref="433541932"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSPopUpButtonCell" key="NSCell" id="171428875">
@@ -1250,7 +1250,7 @@
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{291, 81}</string>
+				<string key="NSFrameSize">{320, 82}</string>
 				<reference key="NSSuperview"/>
 				<string key="NSClassName">NSView</string>
 			</object>
@@ -2390,7 +2390,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{652, 606}, {291, 81}}</string>
+					<string>{{491, 588}, {320, 82}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2398,7 +2398,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{729, 616}, {196, 63}}</string>
+					<string>{{568, 599}, {225, 63}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

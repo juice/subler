@@ -15,8 +15,8 @@
     NSString        *filePath;
     NSMutableArray  *importCheckArray;
     
-    int             chapterTrackId;
-    id delegate;
+    int chapterTrackId;
+    id  delegate;
 }
 
 - (id)initWithDelegate:(id)del andFile: (NSString *)path;

@@ -8,7 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface VideoFramerate : NSWindowController {
     NSString    *filePath;
     IBOutlet NSPopUpButton  *framerateSelection;
