@@ -24,7 +24,11 @@
 
 - (IBAction) setTrackVolume: (id) sender
 {
-    track.volume = [sender doubleValue] / 100;
+    float value = [sender doubleValue] / 100;
+    if (track.volume != value) {
+        track.volume = value;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
 }
 
 - (IBAction) setAltenateGroup: (id) sender

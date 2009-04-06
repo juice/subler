@@ -27,6 +27,7 @@
     {
         name = @"Sound Track";
         language = @"Unknown";
+        volume = 1;
     }
 
     return self;
@@ -50,6 +51,9 @@
     if (Id)
         [super writeToFile:fileHandle error:outError];
 
+    if ([updatedProperty valueForKey:@"volume"] || !muxed)
+        MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.volume", volume);
+
     return YES;
 }
 
@@ -59,5 +63,12 @@
 }
 
 @synthesize volume;
+
+- (void) setVolume: (float) newVolume
+{
+    volume = newVolume;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"volume"];
+}
 
 @end
