@@ -1225,7 +1225,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     uint8_t nal_type;
     nal_reader_t nal;
     h264_decode_t h264_dec;
-    MP4Timestamp lastTime = 0, thisTime;
+    //MP4Timestamp lastTime = 0, thisTime;
     MP4SampleId samplesWritten = 0;
     
     memset(&nal, 0, sizeof(nal));
@@ -1345,7 +1345,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
                                     0, 
                                     nal_is_sync);
                 
-                lastTime = thisTime;
+                //lastTime = thisTime;
                 if ( !rc ) {
                     fprintf(stderr,
                             "%s: can't write video frame %u\n",
