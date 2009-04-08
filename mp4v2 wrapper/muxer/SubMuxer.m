@@ -14,11 +14,11 @@
 #import "lang.h"
 
 // Create a subtitle track and set default value for the sample description
-static MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId, const char* language_iso639_2,
+static MP4TrackId createSubtitleTrack(MP4FileHandle file, const char* language_iso639_2,
                                uint16_t video_width, uint16_t video_height, uint16_t subtitleHeight)
 {
     const uint8_t textColor[4] = { 255,255,255,255 };
-    MP4TrackId subtitle_track = MP4AddSubtitleTrack(file, refTrackId);
+    MP4TrackId subtitle_track = MP4AddSubtitleTrack(file, 1000);
 
     MP4SetTrackLanguage(file, subtitle_track, language_iso639_2);
 
@@ -55,9 +55,6 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle file, MP4TrackId refTrackId,
 
     MP4SetTrackBytesProperty(file, subtitle_track, "tkhd.matrix", nval, size);
     free(val);
-
-    /* set the timescale to ms */
-    MP4SetTrackTimeScale(file,subtitle_track, 1000);
 
     enableFirstSubtitleTrack(file);
 
@@ -210,11 +207,14 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
     uint16_t videoWidth, videoHeight;
 
     videoTrack = findFirstVideoTrack(fileHandle);
-    if (!videoTrack)
-        return 0;
-
-    videoWidth = getFixedVideoWidth(fileHandle, videoTrack);
-    videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
+    if (videoTrack) {
+        videoWidth = getFixedVideoWidth(fileHandle, videoTrack);
+        videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
+    }
+    else {
+        videoWidth = 640;
+        videoHeight = 480;
+    }
 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
@@ -225,7 +225,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
     if (success) {
         int firstSub = 0;
 
-        success = subtitleTrackId = createSubtitleTrack(fileHandle, videoTrack, lang, videoWidth, videoHeight, subtitleHeight);
+        success = subtitleTrackId = createSubtitleTrack(fileHandle, lang, videoWidth, videoHeight, subtitleHeight);
 
         while (![ss isEmpty]) {
             SubLine *sl = [ss getSerializedPacket];
@@ -268,7 +268,6 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
     else {
         videoWidth = 640;
         videoHeight = 480;
-        videoTrack = 1;
     }
 
     // Get the sample description
@@ -279,7 +278,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 
     if ((*imgDesc)->cType == 'SRT ' || /* (*imgDesc)->cType == 'SSA ' ||*/ (*imgDesc)->cType == 'tx3g') {
         // Add video track
-        dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang, videoWidth, videoHeight, 60);
+        dstTrackId = createSubtitleTrack(fileHandle, lang, videoWidth, videoHeight, 60);
         
     }
     else
@@ -396,12 +395,11 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
     else {
         videoWidth = 640;
         videoHeight = 480;
-        videoTrack = 1;
     }
 
     MP4GetTrackFloatProperty(srcFile, srcTrackId, "tkhd.height", &subtitleHeight);
 
-    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, videoTrack, lang, videoWidth, videoHeight, subtitleHeight);
+    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, lang, videoWidth, videoHeight, subtitleHeight);
     if (dstTrackId == MP4_INVALID_TRACK_ID) {
         MP4Close(srcFile);
         return dstTrackId;

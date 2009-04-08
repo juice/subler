@@ -25,6 +25,10 @@
 		A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3550F59E17A00885A49 /* libuniversaldetector.a */; };
 		A98ED4030F59E28300885A49 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED4020F59E28300885A49 /* Cocoa.framework */; };
 		A99530FA0F65699A00EC456B /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A99530F80F65699A00EC456B /* MP42VideoTrack.m */; };
+		A9AFB6590F8CF1EE0050583E /* ac3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9AFB6530F8CF1EE0050583E /* ac3.cpp */; };
+		A9AFB65A0F8CF1EE0050583E /* h264.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9AFB6550F8CF1EE0050583E /* h264.cpp */; };
+		A9AFB65B0F8CF1EE0050583E /* aac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9AFB6560F8CF1EE0050583E /* aac.cpp */; };
+		A9AFB65C0F8CF1EE0050583E /* mbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9AFB6570F8CF1EE0050583E /* mbs.cpp */; };
 		A9EAE1190F6E7FB1002853C9 /* AudioMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */; };
 		A9EAE11A0F6E7FB1002853C9 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */; };
 		A9EAE11B0F6E7FB1002853C9 /* VideoMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */; };
@@ -106,6 +110,12 @@
 		A98ED4020F59E28300885A49 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A99530F80F65699A00EC456B /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42VideoTrack.m; sourceTree = "<group>"; };
 		A99530F90F65699A00EC456B /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42VideoTrack.h; sourceTree = "<group>"; };
+		A9AFB6530F8CF1EE0050583E /* ac3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ac3.cpp; sourceTree = "<group>"; };
+		A9AFB6540F8CF1EE0050583E /* mpeg4ip_bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpeg4ip_bitstream.h; sourceTree = "<group>"; };
+		A9AFB6550F8CF1EE0050583E /* h264.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = h264.cpp; sourceTree = "<group>"; };
+		A9AFB6560F8CF1EE0050583E /* aac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = aac.cpp; sourceTree = "<group>"; };
+		A9AFB6570F8CF1EE0050583E /* mbs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mbs.cpp; sourceTree = "<group>"; };
+		A9AFB6580F8CF1EE0050583E /* mbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mbs.h; sourceTree = "<group>"; };
 		A9EAE1130F6E7FB1002853C9 /* AudioMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioMuxer.h; sourceTree = "<group>"; };
 		A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioMuxer.m; sourceTree = "<group>"; };
 		A9EAE1150F6E7FB1002853C9 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
@@ -237,6 +247,12 @@
 				A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */,
 				A9EAE1170F6E7FB1002853C9 /* VideoMuxer.h */,
 				A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */,
+				A9AFB6530F8CF1EE0050583E /* ac3.cpp */,
+				A9AFB6540F8CF1EE0050583E /* mpeg4ip_bitstream.h */,
+				A9AFB6550F8CF1EE0050583E /* h264.cpp */,
+				A9AFB6560F8CF1EE0050583E /* aac.cpp */,
+				A9AFB6570F8CF1EE0050583E /* mbs.cpp */,
+				A9AFB6580F8CF1EE0050583E /* mbs.h */,
 			);
 			path = muxer;
 			sourceTree = "<group>";
@@ -337,6 +353,10 @@
 				A9EAE11A0F6E7FB1002853C9 /* SubMuxer.m in Sources */,
 				A9EAE11B0F6E7FB1002853C9 /* VideoMuxer.m in Sources */,
 				A9EAE11E0F6E7FBB002853C9 /* MP42AudioTrack.m in Sources */,
+				A9AFB6590F8CF1EE0050583E /* ac3.cpp in Sources */,
+				A9AFB65A0F8CF1EE0050583E /* h264.cpp in Sources */,
+				A9AFB65B0F8CF1EE0050583E /* aac.cpp in Sources */,
+				A9AFB65C0F8CF1EE0050583E /* mbs.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
