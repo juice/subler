@@ -1293,7 +1293,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     if (MP4GetNumberOfTracks(mp4File, MP4_VIDEO_TRACK_TYPE) == 1) {
         uint32_t new_verb = Verbosity & ~(MP4_DETAILS_ERROR);
         MP4SetVerbosity(mp4File, new_verb);
-        MP4SetVideoProfileLevel(mp4File, 0x7f);
+        MP4SetVideoProfileLevel(mp4File, 0x15);
         MP4SetVerbosity(mp4File, Verbosity);
     }
     

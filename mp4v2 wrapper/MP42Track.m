@@ -12,6 +12,15 @@
 
 @implementation MP42Track
 
+-(id)init
+{
+    if ((self = [super init]))
+    {
+        enabled = YES;
+    }
+    return self;
+}
+
 -(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
 	if ((self = [super init]))

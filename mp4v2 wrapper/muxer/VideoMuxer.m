@@ -61,7 +61,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         Handle imgDescHandle = NewHandle(0);
         GetImageDescriptionExtension(imgDesc, &imgDescHandle, 'avcC', 1);
 
-        MP4SetVideoProfileLevel(fileHandle, 0x7F);
+        MP4SetVideoProfileLevel(fileHandle, 0x15);
         // Add video track
         dstTrackId = MP4AddH264VideoTrack(fileHandle, GetMediaTimeScale(media),
                                           MP4_INVALID_DURATION,
