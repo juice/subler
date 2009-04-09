@@ -32,7 +32,11 @@
                                                    MP4GetTrackDuration(fileHandle, Id),
                                                    MP4_MSECS_TIME_SCALE);
             timescale = MP4GetTrackTimeScale(fileHandle, Id);
-
+    
+            uint64_t temp;
+            MP4GetTrackIntegerProperty(fileHandle, Id, "tkhd.flags", &temp);
+            if (temp & TRACK_ENABLED) enabled = YES;
+            else enabled = NO;
             MP4GetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", &alternate_group);
         }
 	}
@@ -69,6 +73,10 @@
         MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", alternate_group);
     if ([updatedProperty valueForKey:@"language"] || !muxed)
         MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
+    if ([updatedProperty valueForKey:@"enabled"] || !muxed) {
+        if (enabled) enableTrack(fileHandle, Id);
+        else disableTrack(fileHandle, Id);
+    }
 
     return success;
 }
@@ -111,6 +119,15 @@
     language = [newLang retain];
     isEdited = YES;
     [updatedProperty setValue:@"True" forKey:@"language"];
+}
+
+@synthesize enabled;
+
+- (void) setEnabled: (BOOL) newState
+{
+    enabled = newState;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"enabled"];
 }
 
 @synthesize alternate_group;

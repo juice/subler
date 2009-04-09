@@ -316,6 +316,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     if ([tableColumn.identifier isEqualToString:@"trackInfo"])
         return track.format;
+    
+    if ([tableColumn.identifier isEqualToString:@"trackEnabled"])
+        return [NSNumber numberWithInteger:track.enabled];
 
     if ([tableColumn.identifier isEqualToString:@"trackDuration"])
         return [track timeString];
@@ -339,9 +342,15 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             [self updateChangeCount:NSChangeDone];
         }
     }
-    if ([tableColumn.identifier isEqualToString:@"trackName"]) {
+    else if ([tableColumn.identifier isEqualToString:@"trackName"]) {
         if (![track.name isEqualToString:anObject]) {
             track.name = anObject;
+            [self updateChangeCount:NSChangeDone];
+        }
+    }
+    else if ([tableColumn.identifier isEqualToString:@"trackEnabled"]) {
+        if (!(track.enabled  == [anObject integerValue])) {
+            track.enabled = [anObject integerValue];
             [self updateChangeCount:NSChangeDone];
         }
     }

@@ -10,7 +10,17 @@
 #import <Foundation/Foundation.h>
 #include "mp4v2.h"
 
+typedef enum {  TRACK_DISABLED = 0x0,
+    TRACK_ENABLED = 0x1,
+    TRACK_IN_MOVIE = 0x2,
+    TRACK_IN_PREVIEW = 0x4,
+    TRACK_IN_POSTER = 0x8
+} track_header_flags;
+
 NSString* SMPTEStringFromTime(long long time, long timeScale);
+
+int enableTrack(MP4FileHandle fileHandle, MP4TrackId trackId);
+int disableTrack(MP4FileHandle fileHandle, MP4TrackId trackId);
 
 int enableFirstSubtitleTrack(MP4FileHandle fileHandle);
 int enableFirstAudioTrack(MP4FileHandle fileHandle);

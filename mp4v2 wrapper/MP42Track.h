@@ -38,6 +38,7 @@
 @property(readwrite, retain) NSString *name;
 @property(readwrite, retain) NSString *language;
 
+@property(readwrite) BOOL     enabled;
 @property(readwrite) uint64_t alternate_group;
 
 @property(readonly) uint32_t timescale;
