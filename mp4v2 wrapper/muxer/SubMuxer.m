@@ -117,7 +117,7 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
     while (startRange.location != NSNotFound) {
         endRange = [string rangeOfString: @"<"];
         if (endRange.location == NSNotFound)
-            endRange.location = [string length];
+            endRange.location = [string length] -1;
 
         u_int8_t styl = 0;
         if (italic) styl +=2;
@@ -172,7 +172,7 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
 
     string = createStyleAtomForString(string, styleAtom, &styleSize);
 
-    const size_t stringLength = strlen([string UTF8String]);
+    const size_t stringLength = strlen([string UTF8String]) -1;
     u_int8_t buffer[2048];
     memcpy(buffer+2, [string UTF8String], stringLength);
     memcpy(buffer+2+stringLength, styleAtom, styleSize);

@@ -276,7 +276,7 @@
 
 - (BOOL)validateToolbarItem: (NSToolbarItem *) toolbarItem
 {
-    if (toolbarItem == addTrackToolBar)
+    if (toolbarItem == addTracks)
             return YES;
 
     else if (toolbarItem == deleteTrack)
@@ -468,7 +468,18 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     return [languages indexOfObject: string];
 }
 
-/* Select chapter file */
+- (IBAction) deleteTrack: (id) sender
+{
+    if ([fileTracksTable selectedRow] == -1  || [fileTracksTable editedRow] != -1)
+        return;
+    
+    [mp4File removeTrackAtIndex:[fileTracksTable selectedRow]];
+    
+    [fileTracksTable reloadData];
+    [self updateChangeCount:NSChangeDone];
+}
+
+// Import tracks from file
 
 - (void) addChapterTrack: (NSString *) path
 {
@@ -478,65 +489,18 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [self updateChangeCount:NSChangeDone];
 }
 
-- (IBAction) selectChapterFile: (id) sender
+- (IBAction) showSubititleWindow: (NSString *) path;
 {
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = YES;
-    panel.canChooseDirectories = YES;
+    [langSelection selectItemWithTitle:getFilenameLanguage((CFStringRef)path)];
+    subtitleFilePath = [path retain];
 
-    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObject:@"txt"]
-                   modalForWindow: documentWindow modalDelegate: self
-                   didEndSelector: @selector( selectChapterFileDidEnd:returnCode:contextInfo: )
-                      contextInfo: nil];                                                      
-}
-
-- (void) selectChapterFileDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
-returnCode contextInfo: (void *) contextInfo
-{
-    if (returnCode != NSOKButton)
-        return;
-
-    [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
-}
-
-/* Subtitle methods */
-
-- (IBAction) showSubititleWindow: (id) sender;
-{
     [NSApp beginSheet:addSubtitleWindow modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
 }
 
-- (IBAction) openBrowse: (id) sender
-{
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = YES;
-    panel.canChooseDirectories = YES;
-
-    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"srt", nil]
-                   modalForWindow: addSubtitleWindow modalDelegate: self
-                   didEndSelector: @selector( openBrowseDidEnd:returnCode:contextInfo: )
-                      contextInfo: nil];                                                      
-}
-
-- (void) openBrowseDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
-returnCode contextInfo: (void *) contextInfo
-{
-    if( returnCode != NSOKButton ) {
-        if ([subtitleFilePath stringValue] == nil)
-            [addTrack setEnabled:NO];
-        return;
-    }
-
-    [subtitleFilePath setStringValue: [sheet.filenames objectAtIndex: 0]];
-    [langSelection selectItemWithTitle:getFilenameLanguage((CFStringRef)[sheet.filenames objectAtIndex: 0])];
-    [addTrack setEnabled:YES];
-}
-
 - (IBAction) closeSheet: (id) sender
 {
+    [subtitleFilePath release];
     [NSApp endSheet: addSubtitleWindow];
     [addSubtitleWindow orderOut:self];
 }
@@ -559,26 +523,14 @@ returnCode contextInfo: (void *) contextInfo
     [addSubtitleWindow orderOut:self];
 }
 
-- (IBAction) addSubtitleTrack: (id) sender
+- (IBAction) addSubtitleTrack: (id)sender
 {
-    [self addSubtitleTrack:[subtitleFilePath stringValue]
+    [self addSubtitleTrack:subtitleFilePath
                      delay:[[delay stringValue] integerValue]
                     height:[[trackHeight stringValue] integerValue]
                   language:[[langSelection selectedItem] title]];
+    [subtitleFilePath release];
 }
-
-- (IBAction) deleteTrack: (id) sender
-{
-    if ([fileTracksTable selectedRow] == -1  || [fileTracksTable editedRow] != -1)
-        return;
-
-    [mp4File removeTrackAtIndex:[fileTracksTable selectedRow]];
-
-    [fileTracksTable reloadData];
-    [self updateChangeCount:NSChangeDone];
-}
-
-// Import tracks from file
 
 - (void) addAudioTrack: (NSString *)path
 {
@@ -605,7 +557,8 @@ returnCode contextInfo: (void *) contextInfo
     panel.canChooseDirectories = YES;
 
     [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
-                                                                                    @"aac", @"h264", @"264", @"ac3", nil]
+                                                                                    @"aac", @"h264", @"264", @"ac3",
+                                                                                    @"txt", @"srt", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
                       contextInfo: nil];                                                      
@@ -617,12 +570,22 @@ returnCode contextInfo: (void *) contextInfo
     if (returnCode != NSOKButton)
         return;
 
-    if ([[[sheet.filenames objectAtIndex: 0] pathExtension] isEqualToString:@"aac"] ||
-        [[[sheet.filenames objectAtIndex: 0] pathExtension] isEqualToString:@"ac3"]) {
+    NSString *fileExtension = [[sheet.filenames objectAtIndex: 0] pathExtension];
+
+    if ([fileExtension isEqualToString:@"aac"] ||
+        [fileExtension isEqualToString:@"ac3"])
         [self addAudioTrack:[sheet.filenames objectAtIndex: 0]];
-    }
+
+    else if ([fileExtension caseInsensitiveCompare: @"srt"] == NSOrderedSame)
+        [self performSelectorOnMainThread:@selector(showSubititleWindow:)
+                               withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
+
+    else if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
+         [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
+
     else
-        [self performSelectorOnMainThread:@selector(showImportSheet:) withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
+        [self performSelectorOnMainThread:@selector(showImportSheet:)
+                               withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
 }
 
 - (void) showImportSheet: (NSString *) filePath

@@ -14,7 +14,6 @@
 @interface MyDocument : NSDocument
 {
     MP42File  *mp4File;
-
     IBOutlet NSWindow       *documentWindow;
 
     IBOutlet NSTableView    *fileTracksTable;
@@ -22,15 +21,12 @@
     IBOutlet NSWindow       *savingWindow;
     IBOutlet NSTextField    *saveOperationName;
 
-    IBOutlet NSTextField    *subtitleFilePath;
-    IBOutlet NSTextField    *label;    
-    IBOutlet NSWindow       *addSubtitleWindow;
-    IBOutlet NSPopUpButton  *langSelection;
-    IBOutlet NSTextField    *delay;
-    IBOutlet NSTextField    *trackHeight;
-    IBOutlet NSButton       *addTrack;
+    NSSavePanel                     *_currentSavePanel;
+    IBOutlet NSView                 *saveView;
+    IBOutlet NSPopUpButton          *fileFormat;
+    IBOutlet NSProgressIndicator    *optBar;
 
-    IBOutlet NSToolbarItem  *addTrackToolBar;
+    IBOutlet NSToolbarItem  *addTracks;
     IBOutlet NSToolbarItem  *deleteTrack;
 
     NSMutableArray          *languages;
@@ -39,21 +35,19 @@
     IBOutlet NSView         *targetView;
     id                      importWindow;
 
-    NSSavePanel             *_currentSavePanel;
-    IBOutlet NSView         *saveView;
-    IBOutlet NSPopUpButton  *fileFormat;
-    IBOutlet NSProgressIndicator *optBar;
+    IBOutlet NSWindow       *addSubtitleWindow;
+    IBOutlet NSPopUpButton  *langSelection;
+    IBOutlet NSTextField    *delay;
+    IBOutlet NSTextField    *trackHeight;
+    NSString                *subtitleFilePath;
     
     BOOL _64bit_data;
     BOOL _64bit_time;
     BOOL _optimize;
 }
 
-- (IBAction) showSubititleWindow: (id) sender;
 - (IBAction) closeSheet: (id) sender;
-- (IBAction) openBrowse: (id) sender;
 - (IBAction) addSubtitleTrack: (id) sender;
-- (IBAction) selectChapterFile: (id) sender;
 - (IBAction) selectFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 
