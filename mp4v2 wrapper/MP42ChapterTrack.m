@@ -82,6 +82,7 @@
         isEdited = YES;
         isDataEdited = YES;
         muxed = NO;
+        enabled = NO;
 
         chapters = [[NSMutableArray alloc] init];
         LoadChaptersFromPath(filePath, chapters);        
