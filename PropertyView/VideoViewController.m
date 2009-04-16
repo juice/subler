@@ -18,7 +18,10 @@
     
     [trackWidth setStringValue: [NSString stringWithFormat:@"%d", (uint16_t)track.trackWidth]];
     [trackHeight setStringValue: [NSString stringWithFormat:@"%d", (uint16_t)track.trackHeight]];
-    
+
+    [hSpacing setStringValue: [NSString stringWithFormat:@"%d", track.hSpacing]];
+    [vSpacing setStringValue: [NSString stringWithFormat:@"%d", track.vSpacing]];
+
     [offsetX setStringValue: [NSString stringWithFormat:@"%d", track.offsetX]];
     [offsetY setStringValue: [NSString stringWithFormat:@"%d", track.offsetY]];
     
@@ -71,6 +74,31 @@
         }
     }
 }
+
+- (IBAction) setPixelAspect: (id) sender
+{
+    NSInteger i;
+    
+    if (sender == hSpacing) {
+        i = [hSpacing integerValue];
+        if (track.hSpacing != i) {
+            track.hSpacing = i;
+            
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+            track.isEdited = YES;
+        }
+    }
+    else if (sender == vSpacing) {
+        i = [vSpacing integerValue];
+        if (track.vSpacing != i) {
+            track.vSpacing = i;
+            
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+            track.isEdited = YES;
+        }
+    }
+}
+
 
 - (IBAction) setAltenateGroup: (id) sender
 {

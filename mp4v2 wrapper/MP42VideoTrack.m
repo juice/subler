@@ -30,8 +30,16 @@
         memcpy(nval, val, size);
         offsetX = CFSwapInt32BigToHost(ptr32[6]) / 0x10000;
         offsetY = CFSwapInt32BigToHost(ptr32[7]) / 0x10000;
-
         free(val);
+
+        if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp")) {
+            MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", &hSpacing);
+            MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", &vSpacing);
+        }
+        else {
+            hSpacing = 1;
+            vSpacing = 1;
+        }
     }
 
     return self;
@@ -65,7 +73,7 @@
     if (Id) {
         [super writeToFile:fileHandle error:outError];
 
-        if(trackWidth && trackHeight) {
+        if (trackWidth && trackHeight) {
             MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.width", trackWidth);
             MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.height", trackHeight);
 
@@ -81,6 +89,13 @@
             MP4SetTrackBytesProperty(fileHandle, Id, "tkhd.matrix", nval, size);
 
             free(val);
+            
+            if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp")) {
+                MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", hSpacing);
+                MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", vSpacing);
+            }
+            else if(hSpacing > 1 && vSpacing > 1)
+                MP4AddPixelAspectRatio(fileHandle, Id, hSpacing, vSpacing);
         }
     }
 
@@ -97,6 +112,9 @@
 
 @synthesize trackWidth;
 @synthesize trackHeight;
+
+@synthesize hSpacing;
+@synthesize vSpacing;
 
 @synthesize offsetX;
 @synthesize offsetY;
