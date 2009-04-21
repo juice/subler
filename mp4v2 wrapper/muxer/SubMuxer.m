@@ -20,6 +20,8 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle file, const char* language_i
     const uint8_t textColor[4] = { 255,255,255,255 };
     MP4TrackId subtitle_track = MP4AddSubtitleTrack(file, 1000);
 
+    MP4SetTrackDurationPerChunk(file, subtitle_track, 1000 / 8);
+
     MP4SetTrackLanguage(file, subtitle_track, language_iso639_2);
 
     MP4SetTrackFloatProperty(file,subtitle_track, "tkhd.width", video_width);

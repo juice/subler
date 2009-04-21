@@ -932,8 +932,13 @@ extern "C" MP4TrackId AacCreator(MP4FileHandle mp4File, FILE* inFile)
         return MP4_INVALID_TRACK_ID;
     }
     
+    MP4SetTrackDurationPerChunk(mp4File, trackId, samplesPerSecond / 8);
+    
     if (MP4GetNumberOfTracks(mp4File, MP4_AUDIO_TRACK_TYPE) == 1) {
-        MP4SetAudioProfileLevel(mp4File, 0x0F);
+        uint8_t profile = 0x0F;
+        if (channelConfig<=2) profile = (samplesPerSecond<=24000) ? 0x28 : 0x29;  /*LC@L1 or LC@L2*/
+        else profile = (samplesPerSecond<=48000) ? 0x2A : 0x2B; /*LC@L4 or LC@L5*/
+        MP4SetAudioProfileLevel(mp4File, profile);
     }
 	
     u_int8_t* pConfig = NULL;

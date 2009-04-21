@@ -85,8 +85,11 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         dstTrackId = MP4AddAudioTrack(fileHandle,
                                       asbd.mSampleRate,
                                       1024, MP4_MPEG4_AUDIO_TYPE);
-        // Dunno what this does
-        MP4SetAudioProfileLevel(fileHandle, 0x0F);
+        // Set the audio profile in the IOD
+        uint8_t profile = 0x0F;
+        if (asbd.mChannelsPerFrame<=2) profile = (asbd.mSampleRate<=24000) ? 0x28 : 0x29;  /*LC@L1 or LC@L2*/
+        else profile = (asbd.mSampleRate<=48000) ? 0x2A : 0x2B; /*LC@L4 or LC@L5*/
+        MP4SetAudioProfileLevel(fileHandle, profile);
 
         // QuickTime returns a complete ESDS, but mp4v2 wants only
         // the DecoderSpecific info.
@@ -160,6 +163,7 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     else
         goto bail;
     
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, GetMediaTimeScale(media) / 8);
     enableFirstAudioTrack(fileHandle);
 
     // Create a QTSampleTable which cointans all the informatio of the track samples.
@@ -274,6 +278,7 @@ int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         MP4Close(srcFile);
         return dstTrackId;
     }
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTimeScale(fileHandle) / 8);
     enableFirstAudioTrack(fileHandle);
 
     MP4SampleId sampleId = 0;

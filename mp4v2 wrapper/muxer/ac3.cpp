@@ -317,6 +317,8 @@ extern "C"  MP4TrackId Ac3Creator(MP4FileHandle mp4File, FILE* inFile)
         return MP4_INVALID_TRACK_ID;
     }
     
+    MP4SetTrackDurationPerChunk(mp4File, trackId, samplesPerSecond / 8);
+    
     if (MP4GetNumberOfTracks(mp4File, MP4_AUDIO_TRACK_TYPE) == 1) {
         MP4SetAudioProfileLevel(mp4File, 0x0F);
     }

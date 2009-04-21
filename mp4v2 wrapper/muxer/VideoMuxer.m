@@ -119,6 +119,8 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     else
         goto bail;
 
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, GetMediaTimeScale(media) / 8);
+
     // Add pixel aspect ratio and color atom
     CountImageDescriptionExtensionType(imgDesc, kPixelAspectRatioImageDescriptionExtension, &count);
     if (count > 0) {
@@ -141,7 +143,7 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         DisposeHandle(colr);
     }    
 
-    // Create a QTSampleTable which cointans all the informatio of the track samples.
+    // Create a QTSampleTable which contains all the informatio of the track samples.
     TimeValue64 sampleTableStartDecodeTime = 0;
     QTMutableSampleTableRef sampleTable = NULL;
     err = CopyMediaMutableSampleTable(media,
@@ -248,6 +250,8 @@ int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         MP4Close(srcFile);
         return dstTrackId;
     }
+
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTimeScale(fileHandle) / 8);
 
     if (MP4HaveTrackAtom(srcFile, srcTrackId, "mdia.minf.stbl.stsd.*.pasp")) {
         uint64_t hSpacing, vSpacing;

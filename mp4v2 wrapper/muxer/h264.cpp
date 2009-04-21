@@ -1282,6 +1282,8 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
         return MP4_INVALID_TRACK_ID;
     }
     
+    MP4SetTrackDurationPerChunk(mp4File, trackId, mp4FrameDuration * 4);
+    
     if (h264_dec.aspect_ratio_info_present_flag && h264_dec.aspect_ratio_idc == 0xff) {
         MP4AddPixelAspectRatio(mp4File, trackId, h264_dec.sar_width, h264_dec.sar_height);
         MP4SetTrackFloatProperty(mp4File, trackId, "tkhd.width",
