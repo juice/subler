@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1"/>
+			<integer value="36"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -155,7 +155,7 @@
 															<reference key="NSSuperview" ref="506907932"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSButtonCell" key="NSCell" id="721503955">
-																<int key="NSCellFlags">604110336</int>
+																<int key="NSCellFlags">-2080244224</int>
 																<int key="NSCellFlags2">131072</int>
 																<string key="NSContents">Preserve Aspect Ratio</string>
 																<reference key="NSSupport" ref="26"/>
@@ -388,7 +388,7 @@
 														<object class="NSTextField" id="582309524">
 															<reference key="NSNextResponder" ref="506907932"/>
 															<int key="NSvFlags">268</int>
-															<string key="NSFrame">{{2, 18}, {93, 14}}</string>
+															<string key="NSFrame">{{2, 26}, {93, 14}}</string>
 															<reference key="NSSuperview" ref="506907932"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTextFieldCell" key="NSCell" id="793186029">
@@ -570,7 +570,7 @@
 														<object class="NSPopUpButton" id="253388668">
 															<reference key="NSNextResponder" ref="506907932"/>
 															<int key="NSvFlags">268</int>
-															<string key="NSFrame">{{97, 13}, {70, 22}}</string>
+															<string key="NSFrame">{{97, 21}, {70, 22}}</string>
 															<reference key="NSSuperview" ref="506907932"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSPopUpButtonCell" key="NSCell" id="540795814">

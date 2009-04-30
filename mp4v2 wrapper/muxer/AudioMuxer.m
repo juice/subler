@@ -278,7 +278,7 @@ int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         MP4Close(srcFile);
         return dstTrackId;
     }
-    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTimeScale(fileHandle) / 8);
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTrackTimeScale(srcFile, srcTrackId) / 8);
     enableFirstAudioTrack(fileHandle);
 
     MP4SampleId sampleId = 0;

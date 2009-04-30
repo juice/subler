@@ -251,7 +251,7 @@ int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         return dstTrackId;
     }
 
-    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTimeScale(fileHandle) / 8);
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTrackTimeScale(srcFile, srcTrackId) / 8);
 
     if (MP4HaveTrackAtom(srcFile, srcTrackId, "mdia.minf.stbl.stsd.*.pasp")) {
         uint64_t hSpacing, vSpacing;

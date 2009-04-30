@@ -89,7 +89,7 @@
             MP4SetTrackBytesProperty(fileHandle, Id, "tkhd.matrix", nval, size);
 
             free(val);
-            
+
             if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp")) {
                 MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", hSpacing);
                 MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", vSpacing);
