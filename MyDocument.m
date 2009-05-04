@@ -110,7 +110,7 @@
                                         [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
                                         [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
                                         nil];
-        
+
         [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
         [self setFileURL:absoluteURL];
         [self setFileModificationDate:[[[NSFileManager defaultManager]  

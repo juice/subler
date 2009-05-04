@@ -12,7 +12,7 @@
 // Custom class for capturing return key
 @interface MetaDataTableView : NSTableView {
 }
-- (void)keyDown:(NSEvent *)theEvent;
+- (void)keyDown:(NSEvent *)event;
 @end
 
 @protocol MetaDataTableViewDelegate

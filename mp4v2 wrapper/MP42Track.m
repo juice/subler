@@ -17,6 +17,7 @@
     if ((self = [super init]))
     {
         enabled = YES;
+        updatedProperty = [[NSMutableDictionary alloc] init];
     }
     return self;
 }

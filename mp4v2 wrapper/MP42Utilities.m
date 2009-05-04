@@ -152,6 +152,8 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
         return NSLocalizedString(@"Text Track", @"Text Track");
     else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
         return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
+    else if (!strcmp(type, "clcp"))
+        return NSLocalizedString(@"Closed Captions Track", @"Closed Captions Track");
     else if (!strcmp(type, MP4_OD_TRACK_TYPE))
         return NSLocalizedString(@"MPEG-4 ODSM Track", @"MPEG-4 ODSM Track");
     else if (!strcmp(type, MP4_SCENE_TRACK_TYPE))
@@ -175,6 +177,8 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
         return @"Text";
     else if (!strcmp(dataName, "tx3g"))
         return @"3GPP Text";
+    else if (!strcmp(dataName, "c608"))
+        return @"CEA-608";
     else if (!strcmp(dataName, "samr"))
         return @"AMR Narrow Band";
     else if (!strcmp(dataName, "rtp "))

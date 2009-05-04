@@ -11,34 +11,34 @@
 #import "SubUtilities.h"
 #import <QTKit/QTKit.h>
 #import <QuickTime/QuickTime.h>
-#import "lang.h"
 
 // Create a subtitle track and set default value for the sample description
-static MP4TrackId createSubtitleTrack(MP4FileHandle file, const char* language_iso639_2,
-                               uint16_t video_width, uint16_t video_height, uint16_t subtitleHeight)
+static MP4TrackId createSubtitleTrack(MP4FileHandle fileHandle,
+                                      uint16_t videoTrackWidth,
+                                      uint16_t videoTrackHeight,
+                                      uint16_t subtitleHeight)
 {
     const uint8_t textColor[4] = { 255,255,255,255 };
-    MP4TrackId subtitle_track = MP4AddSubtitleTrack(file, 1000, video_width, subtitleHeight);
+    MP4TrackId trackId = MP4AddSubtitleTrack(fileHandle, 1000, videoTrackWidth, subtitleHeight);
 
-    MP4SetTrackDurationPerChunk(file, subtitle_track, 1000 / 8);
-    MP4SetTrackLanguage(file, subtitle_track, language_iso639_2);
-    MP4SetTrackIntegerProperty(file, subtitle_track, "tkhd.alternate_group", 2);
+    MP4SetTrackDurationPerChunk(fileHandle, trackId, 1000 / 8);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "tkhd.alternate_group", 2);
 
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.horizontalJustification", 1);
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.verticalJustification", 0);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.horizontalJustification", 1);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.verticalJustification", 0);
 
-	MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.bgColorAlpha", 255);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.bgColorAlpha", 255);
 
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", subtitleHeight);
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", video_width);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", subtitleHeight);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", videoTrackWidth);
 
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontID", 1);
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontSize", 24);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.fontID", 1);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.fontSize", 24);
 
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorRed", textColor[0]);
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorGreen", textColor[1]);
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorBlue", textColor[2]);
-    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorAlpha", textColor[3]);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.fontColorRed", textColor[0]);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.fontColorGreen", textColor[1]);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.fontColorBlue", textColor[2]);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.fontColorAlpha", textColor[3]);
 
     /* translate the track */
     uint8_t* val;
@@ -46,16 +46,16 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle file, const char* language_i
     uint32_t *ptr32 = (uint32_t*) nval;
     uint32_t size;
 
-    MP4GetTrackBytesProperty(file, subtitle_track, "tkhd.matrix", &val, &size);
+    MP4GetTrackBytesProperty(fileHandle, trackId, "tkhd.matrix", &val, &size);
     memcpy(nval, val, size);
-    ptr32[7] = CFSwapInt32HostToBig( (video_height - subtitleHeight) * 0x10000);
+    ptr32[7] = CFSwapInt32HostToBig( (videoTrackHeight - subtitleHeight) * 0x10000);
 
-    MP4SetTrackBytesProperty(file, subtitle_track, "tkhd.matrix", nval, size);
+    MP4SetTrackBytesProperty(fileHandle, trackId, "tkhd.matrix", nval, size);
     free(val);
 
-    enableFirstSubtitleTrack(file);
+    enableFirstSubtitleTrack(fileHandle);
 
-	return subtitle_track;
+    return trackId;
 }
 
 static size_t closeStyleAtom(u_int16_t styleCount, u_int8_t* styleAtom)
@@ -198,7 +198,7 @@ static int writeEmptySubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrack
     return Err;
 }
 
-int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const char* lang, uint16_t subtitleHeight, int16_t delay) {
+int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16_t subtitleHeight, int16_t delay) {
     BOOL success = YES;
     MP4TrackId subtitleTrackId, videoTrack;
     uint16_t videoWidth, videoHeight;
@@ -222,7 +222,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
     if (success) {
         int firstSub = 0;
 
-        success = subtitleTrackId = createSubtitleTrack(fileHandle, lang, videoWidth, videoHeight, subtitleHeight);
+        success = subtitleTrackId = createSubtitleTrack(fileHandle, videoWidth, videoHeight, subtitleHeight);
 
         while (![ss isEmpty]) {
             SubLine *sl = [ss getSerializedPacket];
@@ -248,7 +248,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, const 
     return success;
 }
 
-int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId, const char* lang)
+int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
     OSStatus err = noErr;
     QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
@@ -275,7 +275,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 
     if ((*imgDesc)->cType == 'SRT ' || /* (*imgDesc)->cType == 'SSA ' ||*/ (*imgDesc)->cType == 'tx3g') {
         // Add video track
-        dstTrackId = createSubtitleTrack(fileHandle, lang, videoWidth, videoHeight, 60);
+        dstTrackId = createSubtitleTrack(fileHandle, videoWidth, videoHeight, 60);
         
     }
     else
@@ -377,7 +377,7 @@ bail:
     return dstTrackId;
 }
 
-int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId,  const char* lang)
+int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
     MP4FileHandle srcFile = MP4Read([filePath UTF8String], MP4_DETAILS_ERROR || MP4_DETAILS_READ);
     MP4TrackId videoTrack;
@@ -396,7 +396,7 @@ int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 
     MP4GetTrackFloatProperty(srcFile, srcTrackId, "tkhd.height", &subtitleHeight);
 
-    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, lang, videoWidth, videoHeight, subtitleHeight);
+    MP4TrackId dstTrackId = createSubtitleTrack(fileHandle, videoWidth, videoHeight, subtitleHeight);
     if (dstTrackId == MP4_INVALID_TRACK_ID) {
         MP4Close(srcFile);
         return dstTrackId;

@@ -47,9 +47,9 @@
         delay = subDelay;
         trackHeight = subHeight;
         if (!subLanguage)
-            language = @"English";
+            [self setLanguage: @"English"];
         else
-            language = [subLanguage retain];
+            [self setLanguage: subLanguage];
         isEdited = YES;
         isDataEdited = YES;
         muxed = NO;
@@ -76,7 +76,6 @@
         if ([[sourcePath pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
             Id = muxSRTSubtitleTrack(fileHandle,
                                           sourcePath,
-                                          lang_for_english([language UTF8String])->iso639_2,
                                           trackHeight,
                                           delay);
         }
@@ -84,14 +83,12 @@
                  [[sourcePath pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame) {
             Id = muxMP4SubtitleTrack(fileHandle,
                                           sourcePath,
-                                          sourceId,
-                                          lang_for_english([language UTF8String])->iso639_2);
+                                          sourceId);
         }
         else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
             Id = muxMOVSubtitleTrack(fileHandle,
                                           sourcePath,
-                                          sourceId,
-                                          lang_for_english([language UTF8String])->iso639_2);
+                                          sourceId);
 
         if (!Id && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
