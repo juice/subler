@@ -10,16 +10,21 @@
 #import "MP42File.h"
 
 // Custom class for capturing return key
-@interface TagsTableView : NSTableView {
+@interface MetaDataTableView : NSTableView {
 }
 - (void)keyDown:(NSEvent *)theEvent;
+@end
+
+@protocol MetaDataTableViewDelegate
+@optional
+- (void)deleteSelectionFromTableView:(NSTableView *)tableView;
 @end
 
 @interface MovieViewController : NSViewController {
     MP42Metadata            *metadata;
 
     IBOutlet NSPopUpButton  *tagList;
-    IBOutlet TagsTableView  *tagsTableView;
+    IBOutlet MetaDataTableView  *tagsTableView;
 
     IBOutlet NSImageView    *imageView;
     IBOutlet NSPopUpButton  *mediaKind;

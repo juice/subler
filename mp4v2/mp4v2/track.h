@@ -305,7 +305,9 @@ MP4TrackId MP4AddTextTrack(
 MP4V2_EXPORT
 MP4TrackId MP4AddSubtitleTrack(
     MP4FileHandle hFile,
-    uint32_t timescale );
+    uint32_t timescale,
+    uint16_t width,
+    uint16_t height );
 
 MP4V2_EXPORT
 MP4TrackId MP4AddPixelAspectRatio(

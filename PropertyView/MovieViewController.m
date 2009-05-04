@@ -8,14 +8,43 @@
 
 #import "MovieViewController.h"
 
-@implementation TagsTableView
+@implementation MetaDataTableView
 
-- (void)keyDown:(NSEvent *)theEvent
+- (void)keyDown:(NSEvent *)event
 {
-    if ([theEvent keyCode] == 0x24 || [theEvent keyCode] == 0x4C)
+    id delegate = [self delegate];
+
+    unichar key = [[event charactersIgnoringModifiers] characterAtIndex:0];
+    if (key == NSEnterCharacter || key == NSCarriageReturnCharacter)
         [self editColumn:1 row:[self selectedRow] withEvent:nil select:YES];
+    else if ((key == NSDeleteCharacter) && [delegate respondsToSelector:@selector(deleteSelectionFromTableView:)]) {
+        if ([self selectedRow] == -1)
+            NSBeep();
+        else
+            [delegate deleteSelectionFromTableView:self];
+        return;
+    }
     else
-        [super keyDown:theEvent];
+        [super keyDown:event];
+}
+
+- (void)delete:(id)sender
+{
+    if ([self selectedRow] == -1)
+        return;
+    else
+        [[self delegate] deleteSelectionFromTableView:self];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+    id delegate = [self delegate];
+    SEL action = [item action];
+    
+    if ((action == @selector(delete:) && [self selectedRow] == -1) || ![delegate respondsToSelector:@selector(deleteSelectionFromTableView:)] )
+            return NO;
+    
+    return YES;
 }
 
 @end
@@ -154,6 +183,11 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         [tagsTableView reloadData];
     }
+}
+
+- (void)deleteSelectionFromTableView:(NSTableView *)tableView;
+{
+    [self removeTag:self];
 }
 
 - (IBAction) removeTag: (id) sender {

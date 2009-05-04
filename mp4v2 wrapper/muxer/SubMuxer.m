@@ -18,32 +18,27 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle file, const char* language_i
                                uint16_t video_width, uint16_t video_height, uint16_t subtitleHeight)
 {
     const uint8_t textColor[4] = { 255,255,255,255 };
-    MP4TrackId subtitle_track = MP4AddSubtitleTrack(file, 1000);
+    MP4TrackId subtitle_track = MP4AddSubtitleTrack(file, 1000, video_width, subtitleHeight);
 
     MP4SetTrackDurationPerChunk(file, subtitle_track, 1000 / 8);
-
     MP4SetTrackLanguage(file, subtitle_track, language_iso639_2);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "tkhd.alternate_group", 2);
 
-    MP4SetTrackFloatProperty(file,subtitle_track, "tkhd.width", video_width);
-    MP4SetTrackFloatProperty(file,subtitle_track, "tkhd.height", subtitleHeight);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.horizontalJustification", 1);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.verticalJustification", 0);
 
-    MP4SetTrackIntegerProperty(file,subtitle_track, "tkhd.alternate_group", 2);
+	MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.bgColorAlpha", 255);
 
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.horizontalJustification", 1);
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.verticalJustification", 0);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", subtitleHeight);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", video_width);
 
-	MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.bgColorAlpha", 255);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontID", 1);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontSize", 24);
 
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", subtitleHeight);
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", video_width);
-
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontID", 1);
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontSize", 24);
-
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorRed", textColor[0]);
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorGreen", textColor[1]);
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorBlue", textColor[2]);
-    MP4SetTrackIntegerProperty(file,subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorAlpha", textColor[3]);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorRed", textColor[0]);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorGreen", textColor[1]);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorBlue", textColor[2]);
+    MP4SetTrackIntegerProperty(file, subtitle_track, "mdia.minf.stbl.stsd.tx3g.fontColorAlpha", textColor[3]);
 
     /* translate the track */
     uint8_t* val;
