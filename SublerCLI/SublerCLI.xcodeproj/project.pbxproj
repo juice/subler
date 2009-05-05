@@ -10,6 +10,10 @@
 		8DD76F9A0486AA7600D96B5E /* SublerCLI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* SublerCLI.mm */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* SublerCLI.1 */; };
+		A91F633B0FB0C6D800B96B33 /* CCMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A91F63390FB0C6D800B96B33 /* CCMuxer.m */; };
+		A91F633F0FB0C6ED00B96B33 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = A91F633E0FB0C6ED00B96B33 /* RegexKitLite.m */; };
+		A91F634A0FB0C70100B96B33 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A91F63490FB0C70100B96B33 /* libicucore.dylib */; };
+		A91F63510FB0C76300B96B33 /* MP42ClosedCaptionTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A91F63500FB0C76300B96B33 /* MP42ClosedCaptionTrack.m */; };
 		A94871D20F7914D2008DBC94 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D10F7914D2008DBC94 /* QTKit.framework */; };
 		A94871D70F7914E7008DBC94 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D60F7914E7008DBC94 /* QuickTime.framework */; };
 		A9726A270F7B89F0008A828C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9726A260F7B89F0008A828C /* AudioToolbox.framework */; };
@@ -84,6 +88,13 @@
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SublerCLI_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* SublerCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SublerCLI; sourceTree = BUILT_PRODUCTS_DIR; };
+		A91F63390FB0C6D800B96B33 /* CCMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMuxer.m; sourceTree = "<group>"; };
+		A91F633A0FB0C6D800B96B33 /* CCMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMuxer.h; sourceTree = "<group>"; };
+		A91F633D0FB0C6ED00B96B33 /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = ../RegexKitLite.h; sourceTree = SOURCE_ROOT; };
+		A91F633E0FB0C6ED00B96B33 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegexKitLite.m; path = ../RegexKitLite.m; sourceTree = SOURCE_ROOT; };
+		A91F63490FB0C70100B96B33 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = /usr/lib/libicucore.dylib; sourceTree = "<absolute>"; };
+		A91F634F0FB0C76300B96B33 /* MP42ClosedCaptionTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42ClosedCaptionTrack.h; sourceTree = "<group>"; };
+		A91F63500FB0C76300B96B33 /* MP42ClosedCaptionTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42ClosedCaptionTrack.m; sourceTree = "<group>"; };
 		A94871D10F7914D2008DBC94 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		A94871D60F7914E7008DBC94 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		A9726A260F7B89F0008A828C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
@@ -139,6 +150,7 @@
 				A94871D20F7914D2008DBC94 /* QTKit.framework in Frameworks */,
 				A94871D70F7914E7008DBC94 /* QuickTime.framework in Frameworks */,
 				A9726A270F7B89F0008A828C /* AudioToolbox.framework in Frameworks */,
+				A91F634A0FB0C70100B96B33 /* libicucore.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,6 +174,8 @@
 				A98ED3150F59E03300885A49 /* UniversalDetector.h */,
 				A98ED3120F59E02300885A49 /* lang.h */,
 				A98ED3130F59E02300885A49 /* lang.c */,
+				A91F633D0FB0C6ED00B96B33 /* RegexKitLite.h */,
+				A91F633E0FB0C6ED00B96B33 /* RegexKitLite.m */,
 				A98ED2FF0F59E01400885A49 /* mp4v2 wrapper */,
 				32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* SublerCLI.mm */,
@@ -172,6 +186,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A91F63490FB0C70100B96B33 /* libicucore.dylib */,
 				A9726A260F7B89F0008A828C /* AudioToolbox.framework */,
 				A94871D60F7914E7008DBC94 /* QuickTime.framework */,
 				A94871D10F7914D2008DBC94 /* QTKit.framework */,
@@ -206,6 +221,8 @@
 				A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */,
 				A98ED3060F59E01400885A49 /* MP42SubtitleTrack.h */,
 				A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */,
+				A91F634F0FB0C76300B96B33 /* MP42ClosedCaptionTrack.h */,
+				A91F63500FB0C76300B96B33 /* MP42ClosedCaptionTrack.m */,
 				A98ED3080F59E01400885A49 /* MP42Track.h */,
 				A98ED3090F59E01400885A49 /* MP42Track.m */,
 				A98ED30A0F59E01400885A49 /* MP42Utilities.h */,
@@ -241,6 +258,8 @@
 		A9EAE1120F6E7FB1002853C9 /* muxer */ = {
 			isa = PBXGroup;
 			children = (
+				A91F633A0FB0C6D800B96B33 /* CCMuxer.h */,
+				A91F63390FB0C6D800B96B33 /* CCMuxer.m */,
 				A9EAE1130F6E7FB1002853C9 /* AudioMuxer.h */,
 				A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */,
 				A9EAE1150F6E7FB1002853C9 /* SubMuxer.h */,
@@ -357,6 +376,9 @@
 				A9AFB65A0F8CF1EE0050583E /* h264.cpp in Sources */,
 				A9AFB65B0F8CF1EE0050583E /* aac.cpp in Sources */,
 				A9AFB65C0F8CF1EE0050583E /* mbs.cpp in Sources */,
+				A91F633B0FB0C6D800B96B33 /* CCMuxer.m in Sources */,
+				A91F633F0FB0C6ED00B96B33 /* RegexKitLite.m in Sources */,
+				A91F63510FB0C76300B96B33 /* MP42ClosedCaptionTrack.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
