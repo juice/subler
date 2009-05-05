@@ -65,6 +65,8 @@
             }
             else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
                 track = [MP42SubtitleTrack alloc];
+            else if (!strcmp(type, MP4_CC_TRACK_TYPE))
+                track = [MP42ClosedCaptionTrack alloc];
             else
                 track = [MP42Track alloc];
 

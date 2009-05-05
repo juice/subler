@@ -8,7 +8,7 @@
 
 #import "SubUtilities.h"
 
-@implementation SBChapter
+@implementation SBSample
 
 -(void) dealloc
 {
@@ -206,7 +206,6 @@ canOutput:
 }
 @end
 
-
 static unsigned ParseSubTime(const char *time, unsigned secondScale, BOOL hasSign)
 {
 	unsigned hour, minute, second, subsecond, timeval;
@@ -394,7 +393,7 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
                     [sc scanUpToString:@"\n" intoString:&res];
                     [sc scanString:@"\n" intoString:nil];
 
-                    SBChapter *chapter = [[SBChapter alloc] init];
+                    SBSample *chapter = [[SBSample alloc] init];
                     chapter.timestamp = time;
                     chapter.title = res;
                     [ss addObject:chapter];
@@ -419,7 +418,7 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
                     [sc scanUpToString:@"\n" intoString:&res];
                     [sc scanString:@"\n" intoString:nil];
                     
-                    SBChapter *chapter = [[SBChapter alloc] init];
+                    SBSample *chapter = [[SBSample alloc] init];
                     chapter.timestamp = time;
                     chapter.title = res;
                     [ss addObject:chapter];

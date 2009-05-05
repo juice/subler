@@ -69,7 +69,6 @@ static size_t closeStyleAtom(u_int16_t styleCount, u_int8_t* styleAtom)
     styleAtom[9] = styleCount & 0xff;
     
     return styleSize;
-    
 }
 
 static u_int8_t* makeStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16_t fontID, u_int8_t flags, u_int8_t* style)
@@ -281,7 +280,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
     else
         goto bail;
 
-    // Create a QTSampleTable which cointans all the informatio of the track samples.
+    // Create a QTSampleTable which cointans all the informations of the track samples.
     TimeValue64 sampleTableStartDecodeTime = 0;
     QTMutableSampleTableRef sampleTable = NULL;
     err = CopyMediaMutableSampleTable(media,

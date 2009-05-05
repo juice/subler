@@ -12,6 +12,7 @@
 #import "MP42VideoTrack.h"
 #import "MP42AudioTrack.h"
 #import "MP42SubtitleTrack.h"
+#import "MP42ClosedCaptionTrack.h"
 #import "MP42ChapterTrack.h"
 #import "MP42Metadata.h"
 #import "MP42Utilities.h"

@@ -153,7 +153,7 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
     else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
         return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
     else if (!strcmp(type, "clcp"))
-        return NSLocalizedString(@"Closed Captions Track", @"Closed Captions Track");
+        return NSLocalizedString(@"Closed Caption Track", @"Closed Caption Track");
     else if (!strcmp(type, MP4_OD_TRACK_TYPE))
         return NSLocalizedString(@"MPEG-4 ODSM Track", @"MPEG-4 ODSM Track");
     else if (!strcmp(type, MP4_SCENE_TRACK_TYPE))

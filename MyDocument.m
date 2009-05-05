@@ -489,6 +489,14 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [self updateChangeCount:NSChangeDone];
 }
 
+- (void) addCCTrack: (NSString *) path
+{
+    [mp4File addTrack:[MP42ClosedCaptionTrack ccTrackFromFile:path]];
+    
+    [fileTracksTable reloadData];
+    [self updateChangeCount:NSChangeDone];
+}
+
 - (IBAction) showSubititleWindow: (NSString *) path;
 {
     [langSelection selectItemWithTitle:getFilenameLanguage((CFStringRef)path)];
@@ -558,7 +566,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
                                                                                     @"aac", @"h264", @"264", @"ac3",
-                                                                                    @"txt", @"srt", nil]
+                                                                                    @"txt", @"srt", @"scc", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
                       contextInfo: nil];                                                      
@@ -582,6 +590,9 @@ returnCode contextInfo: (void *) contextInfo
 
     else if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
          [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
+
+    else if ([fileExtension caseInsensitiveCompare: @"scc"] == NSOrderedSame)
+        [self addCCTrack:[sheet.filenames objectAtIndex: 0]];
 
     else
         [self performSelectorOnMainThread:@selector(showImportSheet:)
@@ -671,6 +682,8 @@ returnCode contextInfo: (void *) contextInfo
         {
             if ([[file pathExtension] caseInsensitiveCompare: @"txt"] == NSOrderedSame)
                 [self addChapterTrack:file];
+            else if ([[file pathExtension] caseInsensitiveCompare: @"scc"] == NSOrderedSame)
+                [self addCCTrack:file];
             else if ([[file pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame)
                 [self addSubtitleTrack:file
                                  delay:0

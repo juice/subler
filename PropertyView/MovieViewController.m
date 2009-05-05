@@ -191,16 +191,20 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 }
 
 - (IBAction) removeTag: (id) sender {
-    NSInteger rowIndex = [tagsTableView selectedRow];
+    NSIndexSet *rowIndexes = [tagsTableView selectedRowIndexes];
+    NSUInteger current_index = [rowIndexes lastIndex];
 
-    if (rowIndex != -1 && [tagsTableView editedRow] == -1) {
-        NSString *tagName = [tagsArray objectAtIndex:rowIndex];
-        [metadata removeTagForKey:tagName];
-        [self updateTagsArray];
-        
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-        [tagsTableView reloadData];
+    while (current_index != NSNotFound) {
+        if (current_index != -1 && [tagsTableView editedRow] == -1) {
+            NSString *tagName = [tagsArray objectAtIndex:current_index];
+            [metadata removeTagForKey:tagName];
+            [self updateTagsArray];
+            
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+        }
+        current_index = [rowIndexes indexLessThanIndex: current_index];
     }
+    [tagsTableView reloadData];
 }
 
 - (NSAttributedString *) boldString: (NSString *) string

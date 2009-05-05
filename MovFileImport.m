@@ -83,6 +83,9 @@
         case 'SSA ':
             result = @"SSA";
             break;
+        case 'c608':
+            result = @"CEA-608";
+            break;
         case TimeCodeMediaType:
             result = @"Timecode";
             break;
@@ -205,6 +208,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             // Subtitle
             else if([mediaType isEqualToString:@"sbtl"])
                     newTrack = [[MP42SubtitleTrack alloc] init];
+            // Closed Caption
+            else if([mediaType isEqualToString:@"clcp"])
+                newTrack = [[MP42ClosedCaptionTrack alloc] init];
 
             if (newTrack) {
                 newTrack.format = [self formatForTrack:track];
