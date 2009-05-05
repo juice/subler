@@ -13,9 +13,9 @@
 #import <QuickTime/QuickTime.h>
 #import "RegexKitLite.h"
 
-static unsigned ParseSubTime(const char *time, unsigned secondScale, BOOL hasSign)
+static unsigned ParseTimeCode(const char *time, unsigned secondScale, BOOL hasSign)
 {
-	unsigned hour, minute, second, subsecond, timeval;
+	unsigned hour, minute, second, frame, timeval;
 	char separator;
 	int sign = 1;
 	
@@ -24,11 +24,11 @@ static unsigned ParseSubTime(const char *time, unsigned secondScale, BOOL hasSig
 		time++;
 	}
 	
-	if (sscanf(time,"%u:%u:%u%[,.:]%u",&hour,&minute,&second,&separator,&subsecond) < 5)
+	if (sscanf(time,"%u:%u:%u%[,.:]%u",&hour,&minute,&second,&separator,&frame) < 5)
 		return 0;
 	
-	timeval = hour * 60 * 60 + minute * 60 + second;
-	timeval = secondScale * timeval + subsecond;
+	timeval = (hour * 60 * 60 + minute * 60 + second) * 30 + frame;
+	//timeval = secondScale * timeval + frame;
 	
 	return timeval * sign;
 }
@@ -69,21 +69,21 @@ int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
     NSData *data = [NSData dataWithContentsOfMappedFile:filePath];
     if (!data)
         return 0;
-    
+
     NSString *scc = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
     if (!scc) return 0;
 
     NSScanner *sc = [NSScanner scannerWithString:scc];
 	NSString *res=nil;
 	[sc setCharactersToBeSkipped:nil];
-    
+
     [sc scanUpToString:@"\n" intoString:&res];
     if (![res isEqualToString:@"Scenarist_SCC V1.0"])
         return 0;
-    
+
     unsigned startTime=0;
-    
-    MP4TrackId dstTrack = MP4AddCCTrack(fileHandle, 1000, 640, 480);
+
+    MP4TrackId dstTrack = MP4AddCCTrack(fileHandle, 30000, 640, 480);
 
     BOOL firstSample = YES;
     NSString *splitLine  = @"\\n+";
@@ -100,14 +100,14 @@ int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
         NSArray *lineArray = [line componentsSeparatedByRegex:splitTimestamp];
         if ([lineArray count] < 2)
             continue;
-        startTime = ParseSubTime([[lineArray objectAtIndex:0] UTF8String], 1000, NO);
+        startTime = ParseTimeCode([[lineArray objectAtIndex:0] UTF8String], 30000, NO);
         SBSample *sample = [[SBSample alloc] init];
         sample.timestamp = startTime;
         sample.title = [lineArray lastObject];
-        
+
         [sampleArray addObject:[sample autorelease]];
     }
-    
+
     for (SBSample *sample in sampleArray) {
         NSArray  *bytesArray   = nil;
         MP4Duration sampleDuration = 0;
@@ -141,17 +141,17 @@ int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
             sampleDuration = boh.timestamp - sample.timestamp;
         }
         else
-            sampleDuration = 1000;
+            sampleDuration = 5;
 
         MP4WriteSample(fileHandle,
                        dstTrack,
                        bytes,
                        byteCount + 8,
-                       sampleDuration, 0, 1);
+                       sampleDuration *= 1001, 0, 1);
         free(bytes);
         i++;
     }
-    
+
     [sampleArray release];
 
     return 1;
