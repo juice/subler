@@ -18,18 +18,18 @@ static unsigned ParseTimeCode(const char *time, unsigned secondScale, BOOL hasSi
 	unsigned hour, minute, second, frame, timeval;
 	char separator;
 	int sign = 1;
-	
+
 	if (hasSign && *time == '-') {
 		sign = -1;
 		time++;
 	}
-	
+
 	if (sscanf(time,"%u:%u:%u%[,.:]%u",&hour,&minute,&second,&separator,&frame) < 5)
 		return 0;
-	
+
 	timeval = (hour * 60 * 60 + minute * 60 + second) * 30 + frame;
 	//timeval = secondScale * timeval + frame;
-	
+
 	return timeval * sign;
 }
 
@@ -37,12 +37,12 @@ int ParseByte(const char *string, UInt8 *byte, Boolean hex)
 {
 	int err = 0;
 	char chars[2];
-    
+
 	if (sscanf(string, "%2c", chars) == 1)
 	{
 		chars[0] = (char)tolower(chars[0]);
 		chars[1] = (char)tolower(chars[1]);
-        
+
 		if (((chars[0] >= '0' && chars[0] <= '9') || (hex && (chars[0] >= 'a' && chars[0] <= 'f'))) &&
 			((chars[1] >= '0' && chars[1] <= '9') || (hex && (chars[1] >= 'a' && chars[1] <= 'f'))))
 		{
@@ -60,15 +60,14 @@ int ParseByte(const char *string, UInt8 *byte, Boolean hex)
 			err = 1;
 		}
 	}
-	
+
 	return err;
 }
 
 int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
 {
     NSData *data = [NSData dataWithContentsOfMappedFile:filePath];
-    if (!data)
-        return 0;
+    if (!data) return 0;
 
     NSString *scc = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
     if (!scc) return 0;
@@ -81,10 +80,20 @@ int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
     if (![res isEqualToString:@"Scenarist_SCC V1.0"])
         return 0;
 
+    uint16_t videoWidth, videoHeight;
+    MP4TrackId videoTrack = findFirstVideoTrack(fileHandle);
+    if (videoTrack) {
+        videoWidth = getFixedVideoWidth(fileHandle, videoTrack);
+        videoHeight = MP4GetTrackVideoHeight(fileHandle, videoTrack);
+    }
+    else {
+        videoWidth = 640;
+        videoHeight = 480;
+    }
+
+    MP4TrackId dstTrack = MP4AddCCTrack(fileHandle, 30000, videoWidth, videoHeight);
+
     unsigned startTime=0;
-
-    MP4TrackId dstTrack = MP4AddCCTrack(fileHandle, 30000, 640, 480);
-
     BOOL firstSample = YES;
     NSString *splitLine  = @"\\n+";
     NSString *splitTimestamp  = @"\\t+";
@@ -154,7 +163,7 @@ int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
 
     [sampleArray release];
 
-    return 1;
+    return dstTrack;
 }
 
 int muxMOVCCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)

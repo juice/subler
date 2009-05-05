@@ -39,7 +39,7 @@
         name = @"Closed Caption Track";
         format = @"CEA-608";
         sourcePath = [filePath retain];
-        language = @"English";
+        [self setLanguage:@"English"];
         isEdited = YES;
         isDataEdited = YES;
         muxed = NO;
@@ -81,8 +81,8 @@
         }
         muxed = YES;
     }
-    else
-        [super writeToFile:fileHandle error:outError];
+
+    [super writeToFile:fileHandle error:outError];
 
     return Id;
 }
