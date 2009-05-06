@@ -28,7 +28,7 @@ NSString *SMPTEStringFromTime( long long time, long timeScale )
     result = result / 60; // hour
     hour = result % 24;
 
-    days = result;
+    //days = result;
 
     SMPTE_string = [NSString stringWithFormat:@"%d:%02d:%02d:%02d", hour, minute, second, frame]; // h:mm:ss:ff
 

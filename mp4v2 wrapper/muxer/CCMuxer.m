@@ -66,7 +66,7 @@ int ParseByte(const char *string, UInt8 *byte, Boolean hex)
 
 int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
 {
-    NSString *scc = STStandardizeStringNewlines([[NSString alloc] initWithContentsOfFile:filePath usedEncoding:nil error:nil]);
+    NSString *scc = STStandardizeStringNewlines(STLoadFileWithUnknownEncoding(filePath));
     if (!scc) return 0;
 
     NSScanner *sc = [NSScanner scannerWithString:scc];
@@ -160,7 +160,7 @@ int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
                        dstTrack,
                        bytes,
                        byteCount + 8,
-                       sampleDuration *= 1001, 0, 1);
+                       sampleDuration * 1001, 0, 1);
         free(bytes);
         i++;
     }
