@@ -139,15 +139,22 @@ int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
 
         if (firstSample) {
             SBSample *boh = [sampleArray objectAtIndex:1];
-            sampleDuration = boh.timestamp;
+            sampleDuration = boh.timestamp - sample.timestamp;
             firstSample = NO;
+            u_int8_t empty[8] = {0,0,0,8,'c','d','a','t'};
+
+            MP4WriteSample(fileHandle,
+                           dstTrack,
+                           empty,
+                           8,
+                           sample.timestamp *= 1001, 0, 1);
         }
         else if (i+1 < [sampleArray count]) {
             SBSample *boh = [sampleArray objectAtIndex:i+1];
             sampleDuration = boh.timestamp - sample.timestamp;
         }
         else
-            sampleDuration = 5;
+            sampleDuration = 30;
 
         MP4WriteSample(fileHandle,
                        dstTrack,

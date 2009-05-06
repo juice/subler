@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1"/>
+			<integer value="19"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1767,7 +1767,7 @@
 							<string>NSPopUpButton</string>
 							<string>NSButton</string>
 							<string>NSPopUpButton</string>
-							<string>TagsTableView</string>
+							<string>MetaDataTableView</string>
 						</object>
 					</object>
 					<reference key="sourceIdentifier" ref="757483216"/>
