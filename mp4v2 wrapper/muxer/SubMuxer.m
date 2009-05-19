@@ -168,7 +168,7 @@ static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, N
 
     string = createStyleAtomForString(string, styleAtom, &styleSize);
 
-    const size_t stringLength = strlen([string UTF8String]) -1;
+    const size_t stringLength = strlen([string UTF8String]);
     u_int8_t buffer[2048];
     memcpy(buffer+2, [string UTF8String], stringLength);
     memcpy(buffer+2+stringLength, styleAtom, styleSize);

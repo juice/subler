@@ -114,6 +114,7 @@
     track.muxed = NO;
     track.isEdited = YES;
     track.isDataEdited = YES;
+    track.language = track.language;
     if ([track isMemberOfClass:[MP42ChapterTrack class]]) {
         for (id previousTrack in tracks)
             if ([previousTrack isMemberOfClass:[MP42ChapterTrack class]]) {
