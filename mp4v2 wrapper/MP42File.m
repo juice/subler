@@ -83,6 +83,19 @@
 	return self;
 }
 
+- (void)removeTracksAtIndexes:(NSIndexSet *)indexes
+{
+  unsigned index = [indexes firstIndex];
+  while (index!=NSNotFound) {    
+    MP42Track *track = [tracks objectAtIndex:index];
+    if (track.muxed)
+      [tracksToBeDeleted addObject:track];    
+    index=[indexes indexGreaterThanIndex:index];
+  }
+  
+  [tracks removeObjectsAtIndexes:indexes]; 
+}
+
 - (NSInteger)tracksCount
 {
     return [tracks count];

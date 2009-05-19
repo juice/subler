@@ -169,6 +169,12 @@
     return success;
 }
 
+
+- (NSInteger)chapterCount
+{
+  return [chapters count];
+}
+
 - (void) dealloc
 {
     [chapters release];

@@ -6,6 +6,7 @@ void print_help()
     printf("usage:\n");
     printf("\t\t-i set input file\n");
     printf("\t\t-s set subtitle input file\n");
+    printf("\t\t-c set chapter input file\n");
     printf("\t\t-d set delay in ms\n");
     printf("\t\t-a set height in pixel\n");
     printf("\t\t-l set track language (i.e. English)\n");
@@ -24,6 +25,7 @@ int main (int argc, const char * argv[]) {
 
     char* input_file = NULL;
     char* input_sub = NULL;
+    char* input_chap = NULL;
     char* name = "Subtitle Track";
     char* language = "English";
     int delay = 0;
@@ -37,7 +39,7 @@ int main (int argc, const char * argv[]) {
     }
 
     char opt_char=0;
-    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:d:a:l:n:rvh")) != -1) {
+    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:c:d:a:l:n:rvh")) != -1) {
         switch(opt_char) {
             case 'h':
                 print_help();
@@ -52,6 +54,9 @@ int main (int argc, const char * argv[]) {
                 break;
             case 's':
                 input_sub = optarg;
+                break;
+            case 'c':
+                input_chap = optarg;
                 break;
             case 'd':
                 delay = atoi(optarg);
@@ -75,7 +80,7 @@ int main (int argc, const char * argv[]) {
         }
     }
 
-    if (input_file && (input_sub || removeExisting))
+    if (input_file && (input_sub || input_chap || removeExisting))
     {
         NSError *outError;
         MP42File *mp4File;
@@ -86,13 +91,16 @@ int main (int argc, const char * argv[]) {
             return -1;
         }
         if (removeExisting) {
-            MP42Track *track;
-            for (track in mp4File.tracks)
-                if ([track isMemberOfClass:[MP42SubtitleTrack class]])
-                    if (track.muxed) {
-                        [mp4File removeTrackAtIndex:[mp4File.tracks indexOfObject:track]];
-                        modified = true;
-                    }
+          NSMutableIndexSet *subtitleTrackIndexes = [[NSMutableIndexSet alloc] init];
+          MP42Track *track;
+          for (track in mp4File.tracks)
+            if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
+              [subtitleTrackIndexes addIndex:[mp4File.tracks indexOfObject:track]];
+               modified = true;
+            }
+                              
+          [mp4File removeTracksAtIndexes:subtitleTrackIndexes];
+          [subtitleTrackIndexes release];
         }
 
         if (input_sub) {
@@ -104,6 +112,31 @@ int main (int argc, const char * argv[]) {
                                                                                                    encoding:NSUTF8StringEncoding]];
             track.name = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
             [mp4File addTrack:track];
+            modified = true;
+        }
+      
+        if (input_chap) {
+            MP42Track *oldChapterTrack = NULL;
+            MP42ChapterTrack *newChapterTrack = NULL;
+            
+            MP42Track *track;
+            for (track in mp4File.tracks)
+              if ([track isMemberOfClass:[MP42ChapterTrack class]]) {
+                oldChapterTrack = track;
+                break;
+              }
+          
+          if(oldChapterTrack != NULL) {
+            [mp4File removeTrackAtIndex:[mp4File.tracks indexOfObject:oldChapterTrack]];
+            modified = true;
+          }
+          
+          newChapterTrack = [MP42ChapterTrack chapterTrackFromFile:[NSString stringWithCString:input_chap encoding:NSUTF8StringEncoding]];
+          
+          if([newChapterTrack chapterCount] > 0 ) {
+            [mp4File addTrack:newChapterTrack];            
+            modified = true;      
+          }
         }
 
         if (modified && ![mp4File updateMP4File:&outError]) {

@@ -15,6 +15,7 @@
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;
 + (id) chapterTrackFromFile:(NSString *)filePath;
 
+- (NSInteger) chapterCount;
 - (void) addChapter:(NSString *)title duration:(uint64_t)timestamp;
 
 @property (readwrite, retain) NSMutableArray * chapters;

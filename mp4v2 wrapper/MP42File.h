@@ -41,6 +41,7 @@
 - (id)   trackAtIndex:(NSUInteger) index;
 - (void) addTrack:(id) object;
 - (void) removeTrackAtIndex:(NSUInteger) index;
+- (void) removeTracksAtIndexes:(NSIndexSet *) indexes;
 - (void) moveTrackAtIndex: (NSUInteger)index toIndex:(NSUInteger) newIndex;
 
 - (BOOL) writeToUrl:(NSURL *)url flags:(uint64_t)flags error:(NSError **)outError;
