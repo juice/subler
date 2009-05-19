@@ -6,6 +6,8 @@
 //  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
+NSString *MetadataPBoardType = @"MetadataPBoardType";
+
 #import "MovieViewController.h"
 
 @implementation MetaDataTableView
@@ -17,11 +19,11 @@
     unichar key = [[event charactersIgnoringModifiers] characterAtIndex:0];
     if (key == NSEnterCharacter || key == NSCarriageReturnCharacter)
         [self editColumn:1 row:[self selectedRow] withEvent:nil select:YES];
-    else if ((key == NSDeleteCharacter) && [delegate respondsToSelector:@selector(deleteSelectionFromTableView:)]) {
+    else if ((key == NSDeleteCharacter) && [delegate respondsToSelector:@selector(_deleteSelectionFromTableView:)]) {
         if ([self selectedRow] == -1)
             NSBeep();
         else
-            [delegate deleteSelectionFromTableView:self];
+            [delegate _deleteSelectionFromTableView:self];
         return;
     }
     else
@@ -32,20 +34,56 @@
 {
     if ([self selectedRow] == -1)
         return;
-    else
-        [[self delegate] deleteSelectionFromTableView:self];
+    else if ([[self delegate] respondsToSelector:@selector(_deleteSelectionFromTableView:)])
+        [[self delegate] _deleteSelectionFromTableView:self];
+}
+
+- (IBAction) copy:(id)sender {
+    if ([self selectedRow] == -1)
+        return;
+    else if ([[self delegate] respondsToSelector:@selector(_copySelectionFromTableView:)])
+        [[self delegate] _copySelectionFromTableView:self];
+}
+
+- (IBAction) paste:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(_pasteToTableView:)])
+        [[self delegate] _pasteToTableView:self];
+}
+
+- (BOOL)pasteboardHasSupportedType {
+    // has the pasteboard got a type we support?
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+    NSString *bestType = [pb availableTypeFromArray:_pasteboardTypes];
+    return (bestType != nil);
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
     id delegate = [self delegate];
     SEL action = [item action];
-    
-    if ((action == @selector(delete:) && [self selectedRow] == -1) || ![delegate respondsToSelector:@selector(deleteSelectionFromTableView:)] )
+
+    if (action == @selector(delete:))
+        if ([self selectedRow] == -1 || ![delegate respondsToSelector:@selector(_deleteSelectionFromTableView:)])
             return NO;
-    
+
+    if (action == @selector(copy:))
+        if ([self selectedRow] == -1 || ![delegate respondsToSelector:@selector(_copySelectionFromTableView:)])
+            return NO;
+
+    if (action == @selector(paste:))
+        if (![self pasteboardHasSupportedType] || ![delegate respondsToSelector:@selector(_pasteToTableView:)])
+            return NO;
+
     return YES;
 }
+
+- (void) dealloc
+{
+    [_pasteboardTypes release];
+    [super dealloc];
+}
+
+@synthesize _pasteboardTypes;
 
 @end
 
@@ -89,23 +127,12 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     [gapless setState:metadata.gapless];
 
     tabCol = [[[tagsTableView tableColumns] objectAtIndex:1] retain];
-    
+
     tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:tagsMenu] retain];
 
     [tagsTableView setDoubleAction:@selector(doubleClickAction:)];
     [tagsTableView setTarget:self];
-}
-
-- (IBAction)doubleClickAction:(id)sender
-{
-    // make sure they clicked a real cell and not a header or empty row
-    if ([sender clickedRow] != -1 && [sender clickedColumn] == 1) { 
-        // edit the cell
-        [sender editColumn:[sender clickedColumn] 
-                       row:[sender clickedRow]
-                 withEvent:nil
-                    select:YES];
-    }
+    [tagsTableView set_pasteboardTypes:[NSArray arrayWithObject:MetadataPBoardType]];
 }
 
 - (void) setFile: (MP42File *)file
@@ -185,9 +212,64 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     }
 }
 
-- (void)deleteSelectionFromTableView:(NSTableView *)tableView;
+/* NSTableView additions for copy & paste and more */
+
+- (IBAction)doubleClickAction:(id)sender
 {
-    [self removeTag:self];
+    // make sure they clicked a real cell and not a header or empty row
+    if ([sender clickedRow] != -1 && [sender clickedColumn] == 1) { 
+        // edit the cell
+        [sender editColumn:[sender clickedColumn] 
+                       row:[sender clickedRow]
+                 withEvent:nil
+                    select:YES];
+    }
+}
+
+- (void)_deleteSelectionFromTableView:(NSTableView *)tableView;
+{
+    [self removeTag:tableView];
+}
+
+- (void)_copySelectionFromTableView:(NSTableView *)tableView;
+{
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+    NSIndexSet *rowIndexes = [tableView selectedRowIndexes];
+    NSUInteger current_index = [rowIndexes lastIndex];
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    NSString *string = @"";
+
+    while (current_index != NSNotFound) {
+        NSString *tagName = [tagsArray objectAtIndex:current_index];
+        NSString *tagValue = [tags objectForKey:tagName];
+        string = [string stringByAppendingFormat:@"%@: %@\n",tagName, tagValue];
+        [data setValue:tagValue forKey:tagName];
+
+        current_index = [rowIndexes indexLessThanIndex: current_index];
+    }
+
+    NSArray *types = [NSArray arrayWithObjects:
+                      MetadataPBoardType, NSStringPboardType, nil];
+    [pb declareTypes:types owner:nil];
+    [pb setString:string forType: NSStringPboardType];
+    [pb setData:[NSArchiver archivedDataWithRootObject:data] forType:MetadataPBoardType];
+    [data release];
+}
+
+- (void)_pasteToTableView:(NSTableView *)tableView
+{
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+    NSData *archivedData = [pb dataForType:MetadataPBoardType];
+    NSMutableDictionary *data = [NSUnarchiver unarchiveObjectWithData:archivedData];
+    NSArray *metadataKeys = [data allKeys];
+
+    for (NSString *key in metadataKeys) {
+        [metadata setTag:[data valueForKey:key] forKey:key];
+    }
+
+    [self updateTagsArray];
+    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    [tagsTableView reloadData]; 
 }
 
 - (IBAction) removeTag: (id) sender {
@@ -199,7 +281,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
             NSString *tagName = [tagsArray objectAtIndex:current_index];
             [metadata removeTagForKey:tagName];
             [self updateTagsArray];
-            
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
         current_index = [rowIndexes indexLessThanIndex: current_index];
@@ -211,6 +293,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 {
     return [[[NSAttributedString alloc] initWithString:string attributes:detailBoldAttr] autorelease];
 }
+
+/* TableView delegate methods */
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {

@@ -11,13 +11,18 @@
 
 // Custom class for capturing return key
 @interface MetaDataTableView : NSTableView {
+    NSArray *_pasteboardTypes;
 }
 - (void)keyDown:(NSEvent *)event;
+@property(readwrite, retain) NSArray* _pasteboardTypes;
 @end
 
 @protocol MetaDataTableViewDelegate
 @optional
-- (void)deleteSelectionFromTableView:(NSTableView *)tableView;
+- (void)_deleteSelectionFromTableView:(NSTableView *)tableView;
+- (void)_copySelectionFromTableView:(NSTableView *)tableView;
+- (void)_pasteToTableView:(NSTableView *)tableView;
+
 @end
 
 @interface MovieViewController : NSViewController {
