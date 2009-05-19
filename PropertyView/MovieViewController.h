@@ -21,6 +21,7 @@
 @optional
 - (void)_deleteSelectionFromTableView:(NSTableView *)tableView;
 - (void)_copySelectionFromTableView:(NSTableView *)tableView;
+- (void)_cutSelectionFromTableView:(NSTableView *)tableView;
 - (void)_pasteToTableView:(NSTableView *)tableView;
 
 @end

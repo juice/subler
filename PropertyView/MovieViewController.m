@@ -45,6 +45,13 @@ NSString *MetadataPBoardType = @"MetadataPBoardType";
         [[self delegate] _copySelectionFromTableView:self];
 }
 
+- (IBAction) cut:(id)sender {
+    if ([self selectedRow] == -1)
+        return;
+    else if ([[self delegate] respondsToSelector:@selector(_cutSelectionFromTableView:)])
+        [[self delegate] _cutSelectionFromTableView:self];
+}
+
 - (IBAction) paste:(id)sender {
     if ([[self delegate] respondsToSelector:@selector(_pasteToTableView:)])
         [[self delegate] _pasteToTableView:self];
@@ -68,6 +75,10 @@ NSString *MetadataPBoardType = @"MetadataPBoardType";
 
     if (action == @selector(copy:))
         if ([self selectedRow] == -1 || ![delegate respondsToSelector:@selector(_copySelectionFromTableView:)])
+            return NO;
+
+    if (action == @selector(cut:))
+        if ([self selectedRow] == -1 || ![delegate respondsToSelector:@selector(_cutSelectionFromTableView:)])
             return NO;
 
     if (action == @selector(paste:))
@@ -254,6 +265,12 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     [pb setString:string forType: NSStringPboardType];
     [pb setData:[NSArchiver archivedDataWithRootObject:data] forType:MetadataPBoardType];
     [data release];
+}
+
+- (void)_cutSelectionFromTableView:(NSTableView *)tableView;
+{
+    [self _copySelectionFromTableView:tableView];
+    [self removeTag:tableView];
 }
 
 - (void)_pasteToTableView:(NSTableView *)tableView
