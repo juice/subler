@@ -309,10 +309,23 @@ MP4TrackId MP4AddSubtitleTrack(
     uint16_t      width,
     uint16_t      height );
 
+/** Add a closed caption track.
+ *
+ *  MP4AddCCTrack adds a closed caption track track to the mp4 file. MP4WriteSample()
+ *  can then be used to add the desired video samples.
+ *
+ *  @param hFile handle of file for operation.
+ *  @param timeScale the timescale in ticks per second of the track.
+ *  @param width specifies the video frame width in pixels.
+ *  @param height specifies the video frame height in pixels.
+ *
+ *  @return On success, the track-id of the new track.
+ *      On error, #MP4_INVALID_TRACK_ID.
+ */
 MP4V2_EXPORT
 MP4TrackId MP4AddCCTrack(
     MP4FileHandle hFile,
-    uint32_t      timescale,
+    uint32_t      timeScale,
     uint16_t      width,
     uint16_t      height );
 
