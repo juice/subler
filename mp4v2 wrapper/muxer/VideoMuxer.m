@@ -173,24 +173,33 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 		UInt8 *sampleData = NULL;
         TimeValue64 decodeDuration = QTSampleTableGetDecodeDuration(sampleTable, sampleIndex);
         TimeValue64 displayOffset = QTSampleTableGetDisplayOffset(sampleTable, sampleIndex);
+        uint32_t dflags = 0;
 
         // Get the frame's data size and sample flags.  
         SampleNumToMediaDecodeTime( media, sampleIndex, &sampleDecodeTime, NULL);
 		sampleDataSize = QTSampleTableGetDataSizePerSample(sampleTable, sampleIndex);
         sampleFlags = QTSampleTableGetSampleFlags(sampleTable, sampleIndex);
+        dflags |= (sampleFlags & mediaSampleHasRedundantCoding) ? MP4_SDT_HAS_REDUNDANT_CODING : 0;
+        dflags |= (sampleFlags & mediaSampleHasNoRedundantCoding) ? MP4_SDT_HAS_NO_REDUNDANT_CODING : 0;
+        dflags |= (sampleFlags & mediaSampleIsDependedOnByOthers) ? MP4_SDT_HAS_DEPENDENTS : 0;
+        dflags |= (sampleFlags & mediaSampleIsNotDependedOnByOthers) ? MP4_SDT_HAS_NO_DEPENDENTS : 0;
+        dflags |= (sampleFlags & mediaSampleDependsOnOthers) ? MP4_SDT_IS_DEPENDENT : 0;
+        dflags |= (sampleFlags & mediaSampleDoesNotDependOnOthers) ? MP4_SDT_IS_INDEPENDENT : 0;
+        dflags |= (sampleFlags & mediaSampleEarlierDisplayTimesAllowed) ? MP4_SDT_EARLIER_DISPLAY_TIMES_ALLOWED : 0;
 
         // Load the frame.
 		sampleData = malloc(sampleDataSize);
 		GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
                         NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
 
-        err = MP4WriteSample(fileHandle,
-                             dstTrackId,
-                             sampleData,
-                             sampleDataSize,
-                             decodeDuration,
-                             displayOffset -minDisplayOffset,
-                             !sampleFlags);
+        err = MP4WriteSampleDependency(fileHandle,
+                                       dstTrackId,
+                                       sampleData,
+                                       sampleDataSize,
+                                       decodeDuration,
+                                       displayOffset -minDisplayOffset,
+                                       !(sampleFlags & mediaSampleNotSync),
+                                       dflags);
         free(sampleData);
         if(!err) goto bail;
     }
