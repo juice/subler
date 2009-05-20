@@ -25,7 +25,7 @@
 {
     if (self = [super init])
     {
-        name = @"Closed Captions Track";
+        name = @"Closed Caption Track";
         format = @"CEA-608";
     }
 

@@ -176,20 +176,17 @@
         supportedBrands[0] = majorBrand;
         supportedBrands[1] = "M4A ";
         supportedBrands[2] = "mp42";
-        supportedBrands[3] = "isom";
-        supportedBrandsCount = 4;
+        supportedBrandsCount = 3;
     }
     else if ([fileExtension isEqualToString:@"m4a"]) {
         majorBrand = "M4A ";
         supportedBrands[0] = majorBrand;
         supportedBrands[1] = "mp42";
-        supportedBrands[2] = "isom";
-        supportedBrandsCount = 3;
+        supportedBrandsCount = 2;
     }
     else {
         supportedBrands[0] = majorBrand;
-        supportedBrands[1] = "isom";
-        supportedBrandsCount = 2;
+        supportedBrandsCount = 1;
     }
 
     fileHandle = MP4CreateEx([filePath UTF8String], MP4_DETAILS_ERROR,

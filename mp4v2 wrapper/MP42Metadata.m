@@ -233,6 +233,22 @@
 
     MP4TagsSetReleaseDate(tags, [[tagsDict valueForKey:@"Release Date"] UTF8String]);
     
+    if ([tagsDict valueForKey:@"Track #"]) {
+        MP4TagTrack dtrack;
+        sscanf([[tagsDict valueForKey:@"Track #"] UTF8String],"%u%[/- ]%u", &dtrack.index, NULL, &dtrack.total);
+        MP4TagsSetTrack(tags, &dtrack);
+    }
+    else
+        MP4TagsSetTrack(tags, NULL);
+    
+    if ([tagsDict valueForKey:@"Disk #"]) {
+        MP4TagDisk ddisk;
+        sscanf([[tagsDict valueForKey:@"Disk #"] UTF8String],"%u%[/- ]%u", &ddisk.index, NULL, &ddisk.total);
+        MP4TagsSetDisk(tags, &ddisk);
+    }
+    else
+        MP4TagsSetDisk(tags, NULL);    
+    
     if ([tagsDict valueForKey:@"Tempo"]) {
         const uint16_t i = [[tagsDict valueForKey:@"Tempo"] integerValue];
         MP4TagsSetTempo(tags, &i);
@@ -252,7 +268,7 @@
     }
     else
         MP4TagsSetTVSeason(tags, NULL);
-    
+
     if ([tagsDict valueForKey:@"TV Episode #"]) {
         const uint32_t i = [[tagsDict valueForKey:@"TV Episode #"] integerValue];
         MP4TagsSetTVEpisode(tags, &i);
@@ -263,7 +279,7 @@
     MP4TagsSetDescription(tags, [[tagsDict valueForKey:@"Description"] UTF8String]);
 
     MP4TagsSetLongDescription(tags, [[tagsDict valueForKey:@"Long Description"] UTF8String]);
-    
+
     MP4TagsSetLyrics(tags, [[tagsDict valueForKey:@"Lyrics"] UTF8String]);
 
     MP4TagsSetCopyright(tags, [[tagsDict valueForKey:@"Copyright"] UTF8String]);
@@ -311,26 +327,6 @@
     MP4TagsStore(tags, fileHandle);
     MP4TagsFree(tags);
 
-    // Tags settable only with old style api
-
-    if ([tagsDict valueForKey:@"Track #"]) {
-        int trackNum = 0, totalTrackNum = 0;
-        char separator;
-        sscanf([[tagsDict valueForKey:@"Track #"] UTF8String],"%u%[/- ]%u",&trackNum,&separator,&totalTrackNum);
-        MP4SetMetadataTrack(fileHandle, trackNum, totalTrackNum);
-    }
-    else
-        MP4DeleteMetadataTrack(fileHandle);
-
-    if ([tagsDict valueForKey:@"Disk #"]) {
-        int diskNum = 0, totalDiskNum = 0;
-        char separator;
-        sscanf([[tagsDict valueForKey:@"Disk #"] UTF8String],"%u%[/- ]%u",&diskNum,&separator,&totalDiskNum);
-        MP4SetMetadataDisk(fileHandle, diskNum, totalDiskNum);
-    }
-    else
-        MP4DeleteMetadataDisk(fileHandle);
-    
     return YES;
 }
 
