@@ -895,6 +895,43 @@ uint32_t h264_read_sei_value (const uint8_t *buffer, uint32_t *size)
     return ret;
 }
 
+extern "C" const char *h264_get_frame_type (h264_decode_t *dec)
+{
+    if (dec->nal_unit_type == H264_NAL_TYPE_IDR_SLICE) {
+        if (H264_TYPE_IS_I(dec->slice_type)) return "IDR";
+        if (H264_TYPE_IS_SI(dec->slice_type)) return "IDR";
+    }
+    else {
+        if (H264_TYPE_IS_P(dec->slice_type)) return "P";
+        if (H264_TYPE_IS_B(dec->slice_type)) 
+            if (dec->nal_ref_idc)
+                return "BREF";
+            else
+                return "B";
+        if (H264_TYPE_IS_I(dec->slice_type)) return "I";
+        if (H264_TYPE_IS_SI(dec->slice_type)) return "SI";
+        if (H264_TYPE_IS_SP(dec->slice_type)) return "SP";
+    }
+    return "UNK";
+}
+
+extern "C" uint32_t h264_get_frame_dependency (h264_decode_t *dec)
+{
+    uint32_t dflags = 0;
+
+    if (dec->nal_ref_idc)
+        dflags |= MP4_SDT_HAS_DEPENDENTS;
+    else
+        dflags |= MP4_SDT_HAS_NO_DEPENDENTS; /* disposable */
+
+    if (dec->nal_unit_type != H264_NAL_TYPE_IDR_SLICE) {
+        if (H264_TYPE_IS_P(dec->slice_type)) dflags |= MP4_SDT_EARLIER_DISPLAY_TIMES_ALLOWED;
+        if (H264_TYPE_IS_I(dec->slice_type)) dflags |= MP4_SDT_EARLIER_DISPLAY_TIMES_ALLOWED;;
+    }
+
+    return dflags;
+}
+
 extern "C" const char *h264_get_slice_name (const uint8_t slice_type)
 {
     if (H264_TYPE_IS_P(slice_type)) return "P";  
@@ -1308,6 +1345,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     bool nal_is_sync = false;
     bool slice_is_idr = false;
     int32_t poc = 0;
+    uint32_t dflags = 0;
     h264_dpb_t h264_dpb;
     
     // now process the rest of the video stream
@@ -1331,23 +1369,15 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
                        nal_buffer_size);
 #endif
                 samplesWritten++;
-                //double thiscalc;
-                //thiscalc = samplesWritten;
-                //thiscalc *= timescale;
-                //thiscalc /= VideoFrameRate;
+                rc = MP4WriteSampleDependency(mp4File, 
+                                              trackId,
+                                              nal_buffer,
+                                              nal_buffer_size,
+                                              mp4FrameDuration,
+                                              0, 
+                                              nal_is_sync,
+                                              dflags);
                 
-                //thisTime = (MP4Duration)thiscalc;
-                //MP4Duration dur;
-                //dur = thisTime - lastTime;
-                rc = MP4WriteSample(mp4File, 
-                                    trackId,
-                                    nal_buffer,
-                                    nal_buffer_size,
-                                    mp4FrameDuration,
-                                    0, 
-                                    nal_is_sync);
-                
-                //lastTime = thisTime;
                 if ( !rc ) {
                     fprintf(stderr,
                             "%s: can't write video frame %u\n",
@@ -1370,6 +1400,10 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
                    h264_dec.nal_unit_type, nal.buffer_on);
         }
         if (h264_nal_unit_type_is_slice(h264_dec.nal_unit_type)) {
+#ifdef DEBUG_H264
+            printf("%d, nal type %s ref %d\n", samplesWritten, h264_get_frame_type(&h264_dec), h264_dec.nal_ref_idc);
+#endif
+            dflags = h264_get_frame_dependency(&h264_dec);
             // copy all seis, etc before indicating first
             first = false;
             copy_nal_to_buffer = true;
@@ -1382,8 +1416,6 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
                 case H264_NAL_TYPE_SEQ_PARAM:
                     // doesn't get added to sample buffer
                     // remove header
-                    
-                    
                     MP4AddH264SequenceParameterSet(mp4File, trackId, 
                                                    nal.buffer + header_size, 
                                                    nal.buffer_on - header_size);
@@ -1435,21 +1467,14 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     
     if (nal_buffer_size != 0) {
         samplesWritten++;
-        //double thiscalc;
-        //thiscalc = samplesWritten;
-        //thiscalc *= timescale;
-        //thiscalc /= VideoFrameRate;
-        
-        //thisTime = (MP4Duration)thiscalc;
-        //MP4Duration dur;
-        //dur = thisTime - lastTime;
-        rc = MP4WriteSample(mp4File, 
-                            trackId,
-                            nal_buffer,
-                            nal_buffer_size,
-                            mp4FrameDuration,
-                            0, 
-                            nal_is_sync);
+        rc = MP4WriteSampleDependency(mp4File, 
+                                      trackId,
+                                      nal_buffer,
+                                      nal_buffer_size,
+                                      mp4FrameDuration,
+                                      0, 
+                                      nal_is_sync,
+                                      dflags);
         if ( !rc ) {
             fprintf(stderr,
                     "%s: can't write video frame %u\n",
