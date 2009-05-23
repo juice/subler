@@ -316,8 +316,6 @@ int muxMP4CCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTr
     MP4SampleId numSamples = MP4GetTrackNumberOfSamples(srcFile, srcTrackId);
 
     while (true) {
-        MP4Duration sampleDuration = MP4_INVALID_DURATION;
-
         sampleId++;
         if (sampleId > numSamples)
             break;
@@ -328,7 +326,7 @@ int muxMP4CCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTr
                            sampleId,
                            fileHandle,
                            dstTrackId,
-                           sampleDuration);
+                           MP4_INVALID_DURATION);
         
         if (!rc) {
             MP4DeleteTrack(fileHandle, dstTrackId);
