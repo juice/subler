@@ -234,16 +234,22 @@
     MP4TagsSetReleaseDate(tags, [[tagsDict valueForKey:@"Release Date"] UTF8String]);
     
     if ([tagsDict valueForKey:@"Track #"]) {
-        MP4TagTrack dtrack;
-        sscanf([[tagsDict valueForKey:@"Track #"] UTF8String],"%u%[/- ]%u", &dtrack.index, NULL, &dtrack.total);
+        MP4TagTrack dtrack; int trackNum = 0, totalTrackNum = 0;
+        char separator;
+        sscanf([[tagsDict valueForKey:@"Track #"] UTF8String],"%u%[/- ]%u", &trackNum, &separator, &totalTrackNum);
+        dtrack.index = trackNum;
+        dtrack.total = totalTrackNum;
         MP4TagsSetTrack(tags, &dtrack);
     }
     else
         MP4TagsSetTrack(tags, NULL);
     
     if ([tagsDict valueForKey:@"Disk #"]) {
-        MP4TagDisk ddisk;
-        sscanf([[tagsDict valueForKey:@"Disk #"] UTF8String],"%u%[/- ]%u", &ddisk.index, NULL, &ddisk.total);
+        MP4TagDisk ddisk; int diskNum = 0, totalDiskNum = 0;
+        char separator;
+        sscanf([[tagsDict valueForKey:@"Disk #"] UTF8String],"%u%[/- ]%u", &diskNum, &separator, &totalDiskNum);
+        ddisk.index = diskNum;
+        ddisk.total = totalDiskNum;
         MP4TagsSetDisk(tags, &ddisk);
     }
     else
