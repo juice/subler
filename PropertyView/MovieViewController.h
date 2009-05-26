@@ -39,12 +39,12 @@
     IBOutlet NSButton       *gapless;
 
     IBOutlet NSButton       *removeTag;
-    
+
     NSDictionary    *tags;
     NSArray         *tagsArray;
     NSArray         *tagsMenu;
     NSDictionary    *detailBoldAttr;
-    
+
     NSTableColumn *tabCol;
     CGFloat width;
 }
@@ -52,6 +52,7 @@
 - (void) setFile: (MP42File *)file;
 - (IBAction) addTag: (id) sender;
 - (IBAction) removeTag: (id) sender;
+- (IBAction) addMetadataSet: (id)sender;
 
 - (IBAction) updateArtwork: (id) sender;
 

@@ -223,6 +223,41 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     }
 }
 
+- (NSArray *) allSet
+{
+    return [metadata writableMetaData];
+}
+
+- (NSArray *) tvShowSet
+{
+    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", nil];
+}
+
+- (NSArray *) movieSet
+{
+    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", nil];
+}
+
+- (IBAction) addMetadataSet: (id)sender
+{
+    NSArray *metadataKeys = nil;
+    if ([sender tag] == 0)
+        metadataKeys = [self allSet];
+    else if ([sender tag] == 1)
+        metadataKeys = [self movieSet];
+    else if ([sender tag] == 2)
+        metadataKeys = [self tvShowSet];
+
+    for (NSString *key in metadataKeys) {
+        if (![[metadata tagsDict] valueForKey:key])
+            [metadata setTag:@"" forKey:key];
+    }
+
+    [self updateTagsArray];
+    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    [tagsTableView reloadData]; 
+}
+
 /* NSTableView additions for copy & paste and more */
 
 - (IBAction)doubleClickAction:(id)sender
