@@ -35,7 +35,7 @@
 	// input lines, sorted by 1. beginning time 2. original insertion order
 	NSMutableArray *lines;
 	BOOL finished;
-	
+
 	unsigned last_begin_time, last_end_time;
 	unsigned linesInput;
 }

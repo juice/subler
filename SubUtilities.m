@@ -52,14 +52,14 @@ static CFComparisonResult CompareLinesByBeginTime(const void *a, const void *b, 
 	return kCFCompareEqualTo;
 }
 
-static int cmp_uint(const void *a, const void *b)
+/*static int cmp_uint(const void *a, const void *b)
 {
 	unsigned av = *(unsigned*)a, bv = *(unsigned*)b;
 	
 	if (av > bv) return 1;
 	if (av < bv) return -1;
 	return 0;
-}
+}*/
 
 -(void)addLine:(SubLine *)line
 {
@@ -239,7 +239,7 @@ NSMutableString *STStandardizeStringNewlines(NSString *str)
 static const short frequencies[] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-674, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 0, 1026, 29, -1258, 539, -930, -652, -815, -487, -2526, -2161, 146, -956, -914, 1149, -102, 
 293, -2675, -923, -597, 339, 110, 247, 9, 0, 1024, 1239, 0, 0, 0, 0, 0, 
