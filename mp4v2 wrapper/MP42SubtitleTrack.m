@@ -98,6 +98,7 @@
                                         userInfo:errorDetail];
         }
         muxed = YES;
+        enableFirstSubtitleTrack(fileHandle);
 
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.width", &trackWidth);
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.height", &trackHeight);

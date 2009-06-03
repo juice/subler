@@ -42,7 +42,7 @@
                                                    MP4GetTrackDuration(fileHandle, Id),
                                                    MP4_MSECS_TIME_SCALE);
             timescale = MP4GetTrackTimeScale(fileHandle, Id);
-    
+
             uint64_t temp;
             MP4GetTrackIntegerProperty(fileHandle, Id, "tkhd.flags", &temp);
             if (temp & TRACK_ENABLED) enabled = YES;

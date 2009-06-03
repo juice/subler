@@ -319,7 +319,7 @@
         bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations 
                                                                usingType:NSPNGFileType properties:nil];
 
-        newArtwork.data = [bitmapData bytes];
+        newArtwork.data = (void *)[bitmapData bytes];
         newArtwork.size = [bitmapData length];
         newArtwork.type = MP4_ART_PNG;
         if (!tags->artworkCount)

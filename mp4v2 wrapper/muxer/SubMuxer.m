@@ -53,8 +53,6 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle fileHandle,
     MP4SetTrackBytesProperty(fileHandle, trackId, "tkhd.matrix", nval, size);
     free(val);
 
-    enableFirstSubtitleTrack(fileHandle);
-
     return trackId;
 }
 

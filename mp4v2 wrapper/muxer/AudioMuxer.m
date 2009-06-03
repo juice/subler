@@ -22,10 +22,7 @@ int muxAACAdtsStream(MP4FileHandle fileHandle, NSString* filePath) {
     
     dstTrackId = AacCreator(fileHandle, inFile);
     fclose(inFile);
-    
-    if (dstTrackId)
-        enableFirstAudioTrack(fileHandle);
-    
+
     return dstTrackId;
 }
 
@@ -35,9 +32,6 @@ int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath) {
     
     dstTrackId = Ac3Creator(fileHandle, inFile);
     fclose(inFile);
-
-    if (dstTrackId)
-        enableFirstAudioTrack(fileHandle);
 
     return dstTrackId;
 }
@@ -164,7 +158,6 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         goto bail;
     
     MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, GetMediaTimeScale(media) / 8);
-    enableFirstAudioTrack(fileHandle);
 
     // Create a QTSampleTable which cointans all the informatio of the track samples.
     TimeValue64 sampleTableStartDecodeTime = 0;
@@ -279,7 +272,6 @@ int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         return dstTrackId;
     }
     MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTrackTimeScale(srcFile, srcTrackId) / 8);
-    enableFirstAudioTrack(fileHandle);
 
     MP4SampleId sampleId = 0;
     MP4SampleId numSamples = MP4GetTrackNumberOfSamples(srcFile, srcTrackId);

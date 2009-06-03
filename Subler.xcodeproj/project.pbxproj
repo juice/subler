@@ -277,8 +277,8 @@
 				A9FB9D4A0F83A6FF00AB791A /* VideoFramerate.m */,
 				A95C87AD0F82798200F51A22 /* ButtonToolbarItem.h */,
 				A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */,
-				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
+				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
 			);
 			name = Classes;
 			sourceTree = "<group>";

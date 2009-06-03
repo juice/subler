@@ -14,7 +14,7 @@
 NSString *SMPTEStringFromTime( long long time, long timeScale )
 {
     NSString *SMPTE_string;
-    int days, hour, minute, second, frame;
+    int hour, minute, second, frame;
     long long result;
 
     result = time / timeScale; // second
@@ -27,8 +27,6 @@ NSString *SMPTEStringFromTime( long long time, long timeScale )
 
     result = result / 60; // hour
     hour = result % 24;
-
-    //days = result;
 
     SMPTE_string = [NSString stringWithFormat:@"%d:%02d:%02d:%02d", hour, minute, second, frame]; // h:mm:ss:ff
 

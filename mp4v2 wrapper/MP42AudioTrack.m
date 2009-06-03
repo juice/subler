@@ -8,6 +8,7 @@
 
 #import "MP42AudioTrack.h"
 #import "AudioMuxer.h"
+#import "MP42Utilities.h"
 
 @implementation MP42AudioTrack
 
@@ -47,6 +48,9 @@
             Id = muxAC3ElementaryStream(fileHandle, sourcePath);
         else
             Id = muxMP4AudioTrack(fileHandle, sourcePath, sourceId);
+        
+        muxed = YES;
+        enableFirstAudioTrack(fileHandle);
     }
     if (Id)
         [super writeToFile:fileHandle error:outError];
