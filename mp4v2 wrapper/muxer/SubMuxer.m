@@ -318,7 +318,7 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
                     err= writeEmptySubtitleSample(fileHandle, dstTrackId, decodeDuration);
             }
             else {
-                NSString * string = [NSString stringWithCString:(char *)sampleData length:sampleDataSize];
+                NSString * string = [NSString stringWithCString:(char *)sampleData encoding:NSUTF8StringEncoding];
                 err = writeSubtitleSample(fileHandle, dstTrackId, string, decodeDuration);
             }
         }

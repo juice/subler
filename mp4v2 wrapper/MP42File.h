@@ -24,7 +24,7 @@
     id delegate;
 
     NSMutableArray  *tracksToBeDeleted;
-    BOOL            hasFileRepresentation;
+    BOOL             hasFileRepresentation;
 
 @protected
     NSMutableArray  *tracks;
@@ -36,13 +36,16 @@
 @property(readonly) BOOL hasFileRepresentation;
 
 - (id)   initWithDelegate:(id)del;
-- (id)   initWithExistingFile:(NSString *) path andDelegate:(id) del;
+- (id)   initWithExistingFile:(NSString *)path andDelegate:(id)del;
+
 - (NSInteger) tracksCount;
-- (id)   trackAtIndex:(NSUInteger) index;
-- (void) addTrack:(id) object;
-- (void) removeTrackAtIndex:(NSUInteger) index;
-- (void) removeTracksAtIndexes:(NSIndexSet *) indexes;
-- (void) moveTrackAtIndex: (NSUInteger)index toIndex:(NSUInteger) newIndex;
+- (id)   trackAtIndex:(NSUInteger)index;
+
+- (void) addTrack:(id)object;
+
+- (void) removeTrackAtIndex:(NSUInteger)index;
+- (void) removeTracksAtIndexes:(NSIndexSet *)indexes;
+- (void) moveTrackAtIndex:(NSUInteger)index toIndex:(NSUInteger)newIndex;
 
 - (BOOL) writeToUrl:(NSURL *)url flags:(uint64_t)flags error:(NSError **)outError;
 - (BOOL) updateMP4File:(NSError **)outError;
