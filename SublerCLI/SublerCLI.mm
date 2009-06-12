@@ -12,7 +12,7 @@ void print_help()
     printf("\t\t-l set track language (i.e. English)\n");
     printf("\t\t-n set track name\n");
     printf("\t\t-r remove existing subtitles\n");
-    printf("\t\t-O remove existing subtitles\n");
+    printf("\t\t-O optimize\n");
     printf("\t\t-h print this help information\n");
     printf("\t\t-v print version\n");
 }
@@ -41,7 +41,7 @@ int main (int argc, const char * argv[]) {
     }
 
     char opt_char=0;
-    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:c:d:a:l:n:rvh")) != -1) {
+    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:c:d:a:l:n:rvhO")) != -1) {
         switch(opt_char) {
             case 'h':
                 print_help();
@@ -159,10 +159,10 @@ int main (int argc, const char * argv[]) {
             printf("Error: %s\n", "the mp4 file couln't be open.");
             return -1;
         }
-        printf("Optimizing...");
+        printf("Optimizing...\n");
         [mp4File optimize];
         [mp4File release];
-        printf("Done.");
+        printf("Done.\n");
     }
 
     [pool drain];
