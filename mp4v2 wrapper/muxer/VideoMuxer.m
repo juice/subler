@@ -10,7 +10,9 @@
 #import "MP42Utilities.h"
 #import "SubUtilities.h"
 #import <QTKit/QTKit.h>
-#import <QuickTime/QuickTime.h>
+#if !__LP64__
+    #import <QuickTime/QuickTime.h>
+#endif
 #import "lang.h"
 
 static const framerate_t framerates[] =
@@ -41,6 +43,7 @@ int muxH264ElementaryStream(MP4FileHandle fileHandle, NSString* filePath, uint32
     return dstTrackId;
 }
 
+#if !__LP64__
 int muxMOVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
     OSStatus err = noErr;
@@ -249,6 +252,7 @@ bail:
 
     return dstTrackId;
 }
+#endif
 
 int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {

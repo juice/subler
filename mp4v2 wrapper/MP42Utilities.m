@@ -136,7 +136,7 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
     char *trackName;
 
     if (MP4GetTrackName(fileHandle, Id, &trackName)) {
-        NSString * name = [NSString stringWithCString: trackName];
+        NSString * name = [NSString stringWithUTF8String: trackName];
         free(trackName);
         return name;
     }
@@ -183,7 +183,7 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
         return @"Hint";
 
     else
-        return [NSString stringWithCString:dataName];
+        return [NSString stringWithUTF8String:dataName];
 }
 
 NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId Id)

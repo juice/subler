@@ -62,8 +62,11 @@
         return NO;
 
     if (isEdited && !muxed) {
-        if ([[sourcePath pathExtension] isEqualToString:@"mov"])
+        if ([[sourcePath pathExtension] isEqualToString:@"mov"]) {
+#if !__LP64__
             Id = muxMOVVideoTrack(fileHandle, sourcePath, sourceId);
+#endif
+        }
         else if ([[sourcePath pathExtension] isEqualToString:@"h264"] ||
                  [[sourcePath pathExtension] isEqualToString:@"264"])
             Id = muxH264ElementaryStream(fileHandle, sourcePath, sourceId);

@@ -9,7 +9,9 @@
 #import "MP42Utilities.h"
 #import "SubUtilities.h"
 #import <QTKit/QTKit.h>
-#import <QuickTime/QuickTime.h>
+#if !__LP64__
+    #import <QuickTime/QuickTime.h>
+#endif
 #import <AudioToolbox/AudioToolbox.h>
 #import "lang.h"
 
@@ -36,6 +38,7 @@ int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath) {
     return dstTrackId;
 }
 
+#if !__LP64__
 int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
     OSStatus err = noErr;
@@ -238,6 +241,7 @@ bail:
 
     return dstTrackId;
 }
+#endif
 
 int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {

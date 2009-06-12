@@ -11,6 +11,8 @@
 
 int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath);
 
-int muxMOVCCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
+#if !__LP64__
+    int muxMOVCCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
+#endif
 
 int muxMP4CCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);

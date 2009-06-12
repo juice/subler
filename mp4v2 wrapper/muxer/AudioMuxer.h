@@ -13,6 +13,8 @@ int muxAACAdtsStream(MP4FileHandle fileHandle, NSString* filePath);
 
 int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath);
 
-int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
+#if !__LP64__
+    int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
+#endif
 
 int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);

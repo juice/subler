@@ -6,8 +6,12 @@
 //  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
+extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
+
 #import "MovFileImport.h"
-#import <QuickTime/QuickTime.h>
+#if !__LP64__
+    #import <QuickTime/QuickTime.h>
+#endif
 #include "lang.h"
 
 @implementation MovFileImport
@@ -19,14 +23,22 @@
 		delegate = del;
         filePath = path;
         sourceFile = [[QTMovie alloc] initWithFile:filePath error:nil];
-        NSInteger i = [[sourceFile tracks] count];
-        importCheckArray = [[NSMutableArray alloc] initWithCapacity:i];
+        NSArray *tracks = [sourceFile tracks];
+        importCheckArray = [[NSMutableArray alloc] initWithCapacity:[tracks count]];
 
-        while (i) {
+        NSInteger i;
+        for (i = 0; i < [tracks count]; i++) {
             [importCheckArray addObject: [NSNumber numberWithBool:YES]];
-            i--;
-        }
 
+#if __LP64__
+            //This should work, but it doesn't in current QuickTime
+            QTTrack *track = [tracks objectAtIndex:i];
+            if ([[track attributeForKey:QTTrackIsChapterTrackAttribute] boolValue])
+                chapterTrackId = [[track attributeForKey:QTTrackIDAttribute] integerValue];
+#endif
+        }
+        
+#if !__LP64__
         if([sourceFile hasChapters]) {
             long    myCount;
             long    myTrackCount = GetMovieTrackCount([sourceFile quickTimeMovie]);
@@ -42,6 +54,7 @@
                     break;
             }
         }
+#endif
     }
 
 	return self;
@@ -50,6 +63,7 @@
 - (NSString*)formatForTrack: (QTTrack *)track;
 {
     NSString* result = @"";
+#if !__LP64__
     ImageDescriptionHandle idh = (ImageDescriptionHandle) NewHandleClear(sizeof(ImageDescription));
     GetMediaSampleDescription([[track media] quickTimeMedia], 1,
                               (SampleDescriptionHandle)idh);
@@ -94,14 +108,14 @@
             break;
     }
     DisposeHandle((Handle)idh);
+#endif
     return result;
 }
 
 - (NSString*)langForTrack: (QTTrack *)track;
 {
-    short lang = GetMediaLanguage([[track media] quickTimeMedia]);
-
-    return [NSString stringWithFormat:@"%s", lang_for_qtcode(lang)->eng_name];
+    return [NSString stringWithFormat:@"%s", lang_for_qtcode(
+                            [[track attributeForKey:QTTrackLanguageAttribute] longValue])->eng_name];
 }
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
@@ -175,7 +189,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
             // Video
             if ([mediaType isEqualToString:QTMediaTypeVideo]) {
-                if ([[self formatForTrack:track] isEqualToString:@"Text"] || [[self formatForTrack:track] isEqualToString:@"SSA"]) {
+                if ([[self formatForTrack:track] isEqualToString:@"Text"]) {
                     newTrack = [[MP42SubtitleTrack alloc] init];
                     [(MP42SubtitleTrack*)newTrack setTrackWidth:60];
                 }
@@ -196,6 +210,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             else if ([mediaType isEqualToString:QTMediaTypeText]) {
                 if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId) {
                     newTrack = [[MP42ChapterTrack alloc] init];
+#if !__LP64__
                     NSArray *chapters = [sourceFile chapters];
 
                     for (NSDictionary *dic in chapters) {
@@ -203,6 +218,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                         [(MP42ChapterTrack*)newTrack addChapter:[dic valueForKey:QTMovieChapterName]
                                                        duration:((float)time.time.timeValue / time.time.timeScale)*1000];
                     }
+#endif
                 }
             }
             // Subtitle

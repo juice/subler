@@ -10,7 +10,9 @@
 #import "MP42Utilities.h"
 #import "SubUtilities.h"
 #import <QTKit/QTKit.h>
-#import <QuickTime/QuickTime.h>
+#if !__LP64__
+    #import <QuickTime/QuickTime.h>
+#endif
 
 // Create a subtitle track and set default value for the sample description
 static MP4TrackId createSubtitleTrack(MP4FileHandle fileHandle,
@@ -245,6 +247,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
     return success;
 }
 
+#if !__LP64__
 int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
     OSStatus err = noErr;
@@ -373,6 +376,7 @@ bail:
 
     return dstTrackId;
 }
+#endif
 
 int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {

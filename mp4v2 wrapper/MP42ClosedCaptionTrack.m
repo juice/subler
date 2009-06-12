@@ -67,11 +67,13 @@
                                sourcePath,
                                sourceId);
         }
-        else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
+        else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
+#if !__LP64__
             Id = muxMOVCCTrack(fileHandle,
                                sourcePath,
                                sourceId);
-
+#endif
+        }
         if (!Id && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
             [errorDetail setValue:@"Failed to mux closed captions into mp4 file" forKey:NSLocalizedDescriptionKey];

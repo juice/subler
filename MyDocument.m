@@ -41,7 +41,12 @@
 {
     [super windowControllerDidLoadNib:aController];
 
-    languages = [[NSArray arrayWithObjects:  @"Unknown", @"English", @"French", @"German" , @"Italian", @"Dutch", @"Swedish" , @"Spanish" , @"Danish" , @"Portuguese", @"Norwegian", @"Hebrew", @"Japanese", @"Arabic", @"Finnish", @"Greek", @"Icelandic", @"Maltese", @"Turkish", @"Croatian", @"Chinese", @"Urdu", @"Hindi", @"Thai", @"Korean", @"Lithuanian", @"Polish", @"Hungarian", @"Estonian", @"Latvian", @"Northern Sami", @"Faroese", @"Persian", @"Russian", @"Irish", @"Albanian", @"Bulgarian", @"Czech", @"Slovak", @"Slovenian", nil] retain];
+    languages = [[NSArray arrayWithObjects:  @"Unknown", @"English", @"French", @"German" , @"Italian", @"Dutch",
+				  @"Swedish" , @"Spanish" , @"Danish" , @"Portuguese", @"Norwegian", @"Hebrew",
+				  @"Japanese", @"Arabic", @"Finnish", @"Greek", @"Icelandic", @"Maltese", @"Turkish",
+				  @"Croatian", @"Chinese", @"Urdu", @"Hindi", @"Thai", @"Korean", @"Lithuanian", @"Polish", 
+				  @"Hungarian", @"Estonian", @"Latvian", @"Northern Sami", @"Faroese", @"Persian", @"Russian", 
+				  @"Irish", @"Albanian", @"Bulgarian", @"Czech", @"Slovak", @"Slovenian", nil] retain];
 
     [langSelection addItemsWithTitles:languages];
     [langSelection selectItemWithTitle:@"English"];
@@ -79,14 +84,22 @@
 }
 
 // Hook into the flow to fork a thread
-- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo
+- (void)saveToURL:(NSURL *)absoluteURL
+		   ofType:(NSString *)typeName
+ forSaveOperation:(NSSaveOperationType)saveOperation
+		 delegate:(id)delegate
+  didSaveSelector:(SEL)didSaveSelector
+	  contextInfo:(void *)contextInfo
 {
     [optBar startAnimation:nil];
     [saveOperationName setStringValue:@"Saving…"];
     [NSApp beginSheet:savingWindow modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
 
-    [NSApplication detachDrawingThread:@selector(saveDocumentToDisk:) toTarget:self withObject:[NSDictionary dictionaryWithObjectsAndKeys:absoluteURL, @"absoluteURL", typeName, @"typeName", [NSNumber numberWithInteger:saveOperation], @"saveOperation", nil]];
+    [NSApplication detachDrawingThread:@selector(saveDocumentToDisk:) toTarget:self
+							withObject:[NSDictionary dictionaryWithObjectsAndKeys:absoluteURL, @"absoluteURL",
+										typeName, @"typeName",
+										[NSNumber numberWithInteger:saveOperation], @"saveOperation", nil]];
 }
 
 // Thread entry

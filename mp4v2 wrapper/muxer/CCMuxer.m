@@ -10,7 +10,9 @@
 #import "MP42Utilities.h"
 #import "SubUtilities.h"
 #import <QTKit/QTKit.h>
-#import <QuickTime/QuickTime.h>
+#if !__LP64__
+    #import <QuickTime/QuickTime.h>
+#endif
 #import "RegexKitLite.h"
 
 static unsigned ParseTimeCode(const char *time, unsigned secondScale, BOOL hasSign)
@@ -170,6 +172,7 @@ int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath)
     return dstTrack;
 }
 
+#if !__LP64__
 int muxMOVCCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
     OSStatus err = noErr;
@@ -286,6 +289,7 @@ bail:
 
     return dstTrackId;
 }
+#endif
 
 int muxMP4CCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {

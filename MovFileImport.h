@@ -15,7 +15,7 @@
     NSString        *filePath;
     NSMutableArray  *importCheckArray;
     
-    int chapterTrackId;
+    NSInteger chapterTrackId;
     id  delegate;
 }
 

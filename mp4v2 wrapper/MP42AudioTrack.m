@@ -40,8 +40,11 @@
         return NO;
 
     if (isEdited && !muxed) {
-        if ([[sourcePath pathExtension] isEqualToString:@"mov"])
+        if ([[sourcePath pathExtension] isEqualToString:@"mov"]) {
+#if !__LP64__
             Id = muxMOVAudioTrack(fileHandle, sourcePath, sourceId);
+#endif
+        }
         else if ([[sourcePath pathExtension] isEqualToString:@"aac"])
             Id = muxAACAdtsStream(fileHandle, sourcePath);
         else if ([[sourcePath pathExtension] isEqualToString:@"ac3"])
