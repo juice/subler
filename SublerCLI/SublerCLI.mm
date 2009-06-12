@@ -12,6 +12,7 @@ void print_help()
     printf("\t\t-l set track language (i.e. English)\n");
     printf("\t\t-n set track name\n");
     printf("\t\t-r remove existing subtitles\n");
+    printf("\t\t-O remove existing subtitles\n");
     printf("\t\t-h print this help information\n");
     printf("\t\t-v print version\n");
 }
@@ -32,6 +33,7 @@ int main (int argc, const char * argv[]) {
     unsigned int height = 60;
     BOOL removeExisting = false;
     BOOL modified = false;
+    BOOL optimize = false;
 
     if (argc == 1) {
         print_help();
@@ -72,7 +74,10 @@ int main (int argc, const char * argv[]) {
                 break ;
             case 'r':
                 removeExisting = true;
-                break ;                
+                break ;
+            case 'O':
+                optimize = true;
+                break ;
             default:
                 print_help();
                 exit(-1);
@@ -145,6 +150,19 @@ int main (int argc, const char * argv[]) {
         }
 
         [mp4File release];
+    }
+    if (optimize) {
+        MP42File *mp4File;
+        mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:input_file encoding:NSUTF8StringEncoding]
+                                             andDelegate:nil];
+        if (!mp4File) {
+            printf("Error: %s\n", "the mp4 file couln't be open.");
+            return -1;
+        }
+        printf("Optimizing...");
+        [mp4File optimize];
+        [mp4File release];
+        printf("Done.");
     }
 
     [pool drain];
