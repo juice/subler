@@ -144,9 +144,10 @@ static bool LoadNextAc3Header(FILE* inFile, u_int8_t* hdr)
 		if (state == hdrByteSize - 1) {
 			hdr[state] = b;
 			if (dropped > 0) {
-                
+#ifdef DEBUG
                 fprintf(stderr, "Warning: dropped %u input bytes at offset %u\n", dropped,
                         ftell(inFile) - dropped - state - 1);
+#endif
 			}
 			return true;
 		}

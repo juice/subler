@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.03">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9G55</string>
+		<string key="IBDocument.SystemVersion">9J61</string>
 		<string key="IBDocument.InterfaceBuilderVersion">677</string>
-		<string key="IBDocument.AppKitVersion">949.43</string>
+		<string key="IBDocument.AppKitVersion">949.46</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -111,16 +111,12 @@
 													</object>
 													<object class="NSButtonCell" key="NSDataCell" id="686206091">
 														<int key="NSCellFlags">67239424</int>
-														<int key="NSCellFlags2">0</int>
+														<int key="NSCellFlags2">131072</int>
 														<string key="NSContents"/>
-														<object class="NSFont" key="NSSupport" id="253129235">
-															<string key="NSName">LucidaGrande</string>
-															<double key="NSSize">1.300000e+01</double>
-															<int key="NSfFlags">1044</int>
-														</object>
+														<reference key="NSSupport" ref="26"/>
 														<reference key="NSControlView" ref="650446865"/>
 														<int key="NSButtonFlags">1211912703</int>
-														<int key="NSButtonFlags2">130</int>
+														<int key="NSButtonFlags2">2</int>
 														<object class="NSCustomResource" key="NSNormalImage">
 															<string key="NSClassName">NSImage</string>
 															<string key="NSResourceName">NSSwitch</string>
@@ -140,7 +136,7 @@
 												</object>
 												<object class="NSTableColumn" id="728141896">
 													<string key="NSIdentifier">trackId</string>
-													<double key="NSWidth">2.500000e+01</double>
+													<double key="NSWidth">2.900000e+01</double>
 													<double key="NSMinWidth">2.500000e+01</double>
 													<double key="NSMaxWidth">3.000000e+01</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -155,7 +151,11 @@
 														<int key="NSCellFlags">337772096</int>
 														<int key="NSCellFlags2">2048</int>
 														<string key="NSContents">Text Cell</string>
-														<reference key="NSSupport" ref="253129235"/>
+														<object class="NSFont" key="NSSupport" id="253129235">
+															<string key="NSName">LucidaGrande</string>
+															<double key="NSSize">1.300000e+01</double>
+															<int key="NSfFlags">1044</int>
+														</object>
 														<reference key="NSControlView" ref="650446865"/>
 														<object class="NSColor" key="NSBackgroundColor" id="649026299">
 															<int key="NSColorSpace">6</int>
@@ -179,7 +179,7 @@
 												</object>
 												<object class="NSTableColumn" id="168533613">
 													<string key="NSIdentifier">trackName</string>
-													<double key="NSWidth">1.550000e+02</double>
+													<double key="NSWidth">1.540000e+02</double>
 													<double key="NSMinWidth">4.000000e+01</double>
 													<double key="NSMaxWidth">1.550000e+02</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -213,7 +213,7 @@
 												</object>
 												<object class="NSTableColumn" id="123111535">
 													<string key="NSIdentifier">trackDuration</string>
-													<double key="NSWidth">1.100000e+02</double>
+													<double key="NSWidth">1.090000e+02</double>
 													<double key="NSMinWidth">1.000000e+01</double>
 													<double key="NSMaxWidth">1.100000e+02</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -239,7 +239,7 @@
 												</object>
 												<object class="NSTableColumn" id="863736890">
 													<string key="NSIdentifier">trackLanguage</string>
-													<double key="NSWidth">9.000000e+01</double>
+													<double key="NSWidth">8.900000e+01</double>
 													<double key="NSMinWidth">1.000000e+01</double>
 													<double key="NSMaxWidth">9.000000e+01</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -265,7 +265,7 @@
 												</object>
 												<object class="NSTableColumn" id="596693342">
 													<string key="NSIdentifier">trackInfo</string>
-													<double key="NSWidth">9.000000e+01</double>
+													<double key="NSWidth">8.900000e+01</double>
 													<double key="NSMinWidth">1.000000e+01</double>
 													<double key="NSMaxWidth">9.000000e+01</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -516,10 +516,10 @@
 						<reference key="object" ref="727217425"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="834470010"/>
 							<reference ref="590792675"/>
 							<reference ref="860718496"/>
 							<reference ref="297678896"/>
+							<reference ref="834470010"/>
 						</object>
 						<reference key="parent" ref="652328645"/>
 					</object>

@@ -139,7 +139,7 @@ canOutput:
 		}
 	}
 	
-	return [[SubLine alloc] initWithLine:str start:begin_time end:end_time];
+	return [[[SubLine alloc] initWithLine:str start:begin_time end:end_time] autorelease];
 }
 
 -(SubLine*)getSerializedPacket
@@ -151,7 +151,7 @@ canOutput:
 	SubLine *nextline = [lines objectAtIndex:0], *ret;
 	
 	if (nextline->begin_time > last_end_time) {
-		ret = [[SubLine alloc] initWithLine:@"\n" start:last_end_time end:nextline->begin_time];
+		ret = [[[SubLine alloc] initWithLine:@"\n" start:last_end_time end:nextline->begin_time] autorelease];
 	} else {
 		ret = [self getNextRealSerializedPacket];
 	}
@@ -161,7 +161,7 @@ canOutput:
 	last_begin_time = ret->begin_time;
 	last_end_time   = ret->end_time;
     
-	return [ret autorelease];
+	return ret;
 }
 
 -(void)setFinished:(BOOL)_finished
@@ -292,7 +292,7 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 	}
 	
 	res = [[[NSString alloc] initWithData:data encoding:enc] autorelease];
-	
+
 	if (!res) {
 		if (latin2) {
 			enc = (enc == NSWindowsCP1252StringEncoding) ? NSWindowsCP1250StringEncoding : NSWindowsCP1252StringEncoding;
@@ -300,7 +300,7 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 		}
 	}
 	[ud release];
-	
+
 	return res;
 }
 
@@ -308,22 +308,22 @@ int LoadSRTFromPath(NSString *path, SubSerializer *ss)
 {
 	NSMutableString *srt = STStandardizeStringNewlines(STLoadFileWithUnknownEncoding(path));
 	if (!srt) return 0;
-    
+
 	if ([srt characterAtIndex:0] == 0xFEFF) [srt deleteCharactersInRange:NSMakeRange(0,1)];
 	if ([srt characterAtIndex:[srt length]-1] != '\n') [srt appendFormat:@"%c",'\n'];
-	
+
 	NSScanner *sc = [NSScanner scannerWithString:srt];
-	NSString *res=nil;
+	NSString *res = nil;
 	[sc setCharactersToBeSkipped:nil];
-	
+
 	unsigned startTime=0, endTime=0;
-	
+
 	enum {
 		INITIAL,
 		TIMESTAMP,
 		LINES
 	} state = INITIAL;
-	
+
 	do {
 		switch (state) {
 			case INITIAL:
@@ -337,7 +337,7 @@ int LoadSRTFromPath(NSString *path, SubSerializer *ss)
 				[sc scanUpToString:@" --> " intoString:&res];
 				[sc scanString:@" --> " intoString:nil];
 				startTime = ParseSubTime([res UTF8String], 1000, NO);
-				
+
 				[sc scanUpToString:@"\n" intoString:&res];
 				[sc scanString:@"\n" intoString:nil];
 				endTime = ParseSubTime([res UTF8String], 1000, NO);

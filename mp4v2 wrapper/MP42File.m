@@ -70,7 +70,7 @@
             else
                 track = [MP42Track alloc];
 
-            [track initWithSourcePath:filePath trackID: trackId fileHandle:fileHandle];
+            track = [track initWithSourcePath:filePath trackID:trackId fileHandle:fileHandle];
             [tracks addObject:track];
             [track release];
         }

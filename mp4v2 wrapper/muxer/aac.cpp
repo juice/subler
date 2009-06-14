@@ -718,10 +718,7 @@ static bool LoadNextAdtsHeader(FILE* inFile, u_int8_t* hdr)
 		if (state == hdrByteSize - 1) {
 			hdr[state] = b;
 			if (dropped > 0) {
-#ifndef _WIN32
-                fprintf(stderr, "Warning: dropped %u input bytes at offset %d\n", dropped, 
-                        ftello(inFile) - dropped - state - 1);
-#else
+#ifdef DEBUG
                 fprintf(stderr, "Warning: dropped %u input bytes at offset %u\n", dropped,
                         ftell(inFile) - dropped - state - 1);
 #endif
