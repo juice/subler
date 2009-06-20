@@ -9,94 +9,7 @@
 NSString *MetadataPBoardType = @"MetadataPBoardType";
 
 #import "MovieViewController.h"
-
-@implementation MetaDataTableView
-
-- (void)keyDown:(NSEvent *)event
-{
-    id delegate = [self delegate];
-
-    unichar key = [[event charactersIgnoringModifiers] characterAtIndex:0];
-    if (key == NSEnterCharacter || key == NSCarriageReturnCharacter)
-        [self editColumn:1 row:[self selectedRow] withEvent:nil select:YES];
-    else if ((key == NSDeleteCharacter) && [delegate respondsToSelector:@selector(_deleteSelectionFromTableView:)]) {
-        if ([self selectedRow] == -1)
-            NSBeep();
-        else
-            [delegate _deleteSelectionFromTableView:self];
-        return;
-    }
-    else
-        [super keyDown:event];
-}
-
-- (void)delete:(id)sender
-{
-    if ([self selectedRow] == -1)
-        return;
-    else if ([[self delegate] respondsToSelector:@selector(_deleteSelectionFromTableView:)])
-        [[self delegate] _deleteSelectionFromTableView:self];
-}
-
-- (IBAction) copy:(id)sender {
-    if ([self selectedRow] == -1)
-        return;
-    else if ([[self delegate] respondsToSelector:@selector(_copySelectionFromTableView:)])
-        [[self delegate] _copySelectionFromTableView:self];
-}
-
-- (IBAction) cut:(id)sender {
-    if ([self selectedRow] == -1)
-        return;
-    else if ([[self delegate] respondsToSelector:@selector(_cutSelectionFromTableView:)])
-        [[self delegate] _cutSelectionFromTableView:self];
-}
-
-- (IBAction) paste:(id)sender {
-    if ([[self delegate] respondsToSelector:@selector(_pasteToTableView:)])
-        [[self delegate] _pasteToTableView:self];
-}
-
-- (BOOL)pasteboardHasSupportedType {
-    // has the pasteboard got a type we support?
-    NSPasteboard *pb = [NSPasteboard generalPasteboard];
-    NSString *bestType = [pb availableTypeFromArray:_pasteboardTypes];
-    return (bestType != nil);
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)item
-{
-    id delegate = [self delegate];
-    SEL action = [item action];
-
-    if (action == @selector(delete:))
-        if ([self selectedRow] == -1 || ![delegate respondsToSelector:@selector(_deleteSelectionFromTableView:)])
-            return NO;
-
-    if (action == @selector(copy:))
-        if ([self selectedRow] == -1 || ![delegate respondsToSelector:@selector(_copySelectionFromTableView:)])
-            return NO;
-
-    if (action == @selector(cut:))
-        if ([self selectedRow] == -1 || ![delegate respondsToSelector:@selector(_cutSelectionFromTableView:)])
-            return NO;
-
-    if (action == @selector(paste:))
-        if (![self pasteboardHasSupportedType] || ![delegate respondsToSelector:@selector(_pasteToTableView:)])
-            return NO;
-
-    return YES;
-}
-
-- (void) dealloc
-{
-    [_pasteboardTypes release];
-    [super dealloc];
-}
-
-@synthesize _pasteboardTypes;
-
-@end
+#import "SBTableView.h"
 
 @implementation MovieViewController
 
@@ -223,6 +136,42 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     }
 }
 
+- (IBAction) removeTag: (id) sender {
+    NSIndexSet *rowIndexes = [tagsTableView selectedRowIndexes];
+    NSUInteger current_index = [rowIndexes lastIndex];
+    
+    while (current_index != NSNotFound) {
+        if (current_index != -1 && [tagsTableView editedRow] == -1) {
+            NSString *tagName = [tagsArray objectAtIndex:current_index];
+            [metadata removeTagForKey:tagName];
+            [self updateTagsArray];
+            
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+        }
+        current_index = [rowIndexes indexLessThanIndex: current_index];
+    }
+    [tagsTableView reloadData];
+}
+
+- (void) setMetadata:(id)value forKey:(NSString *)key
+{
+    NSString *oldValue = [[metadata tagsDict] valueForKey:key];
+    
+    if ([metadata setTag:value forKey:key]) {
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+        
+        [tagsTableView noteHeightOfRowsWithIndexesChanged:
+         [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [tagsTableView numberOfRows])]];
+        
+        NSUndoManager *undo = [[self view] undoManager];
+        [[undo prepareWithInvocationTarget:self] setMetadata:oldValue
+                                                      forKey:key];
+        if (![undo isUndoing]) {
+            [undo setActionName:@"Tag Editing"];
+        }
+    }
+}
+
 - (NSArray *) allSet
 {
     return [metadata writableMetaData];
@@ -324,23 +273,6 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     [tagsTableView reloadData]; 
 }
 
-- (IBAction) removeTag: (id) sender {
-    NSIndexSet *rowIndexes = [tagsTableView selectedRowIndexes];
-    NSUInteger current_index = [rowIndexes lastIndex];
-
-    while (current_index != NSNotFound) {
-        if (current_index != -1 && [tagsTableView editedRow] == -1) {
-            NSString *tagName = [tagsArray objectAtIndex:current_index];
-            [metadata removeTagForKey:tagName];
-            [self updateTagsArray];
-
-            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-        }
-        current_index = [rowIndexes indexLessThanIndex: current_index];
-    }
-    [tagsTableView reloadData];
-}
-
 - (NSAttributedString *) boldString: (NSString *) string
 {
     return [[[NSAttributedString alloc] initWithString:string attributes:detailBoldAttr] autorelease];
@@ -374,12 +306,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     NSString *tagName = [tagsArray objectAtIndex:rowIndex];
 
     if ([tableColumn.identifier isEqualToString:@"value"])
-        if ([metadata setTag:anObject forKey:tagName]) {
-            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-
-            [tagsTableView noteHeightOfRowsWithIndexesChanged:
-             [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [tagsTableView numberOfRows])]];
-        }
+        [self setMetadata:anObject forKey:tagName];
 }
 
 - (CGFloat) tableView: (NSTableView *) tableView

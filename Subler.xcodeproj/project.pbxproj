@@ -22,6 +22,8 @@
 		A91E7DEE0F8A2F3D00AF387E /* SoundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */; };
 		A91F62260FB0A50D00B96B33 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = A91F62240FB0A50D00B96B33 /* RegexKitLite.m */; };
 		A91F622D0FB0A56F00B96B33 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A91F622C0FB0A56F00B96B33 /* libicucore.dylib */; };
+		A92E6E2D0FE8FD6C00CDF1F9 /* SBView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92E6E2C0FE8FD6C00CDF1F9 /* SBView.m */; };
+		A92E6EDC0FE9064000CDF1F9 /* SBTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92E6EDB0FE9064000CDF1F9 /* SBTableView.m */; };
 		A9569CEB0F616926002F79F8 /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */; };
 		A95C87AE0F82798200F51A22 /* ButtonToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */; };
 		A95C881D0F827BFB00F51A22 /* ToolbarRemoveTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */; };
@@ -136,6 +138,10 @@
 		A91F62240FB0A50D00B96B33 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		A91F62250FB0A50D00B96B33 /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
 		A91F622C0FB0A56F00B96B33 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = /usr/lib/libicucore.dylib; sourceTree = "<absolute>"; };
+		A92E6E2B0FE8FD6C00CDF1F9 /* SBView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBView.h; sourceTree = "<group>"; };
+		A92E6E2C0FE8FD6C00CDF1F9 /* SBView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBView.m; sourceTree = "<group>"; };
+		A92E6EDA0FE9064000CDF1F9 /* SBTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBTableView.h; sourceTree = "<group>"; };
+		A92E6EDB0FE9064000CDF1F9 /* SBTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBTableView.m; sourceTree = "<group>"; };
 		A9569CE90F616926002F79F8 /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42VideoTrack.h; path = "mp4v2 wrapper/MP42VideoTrack.h"; sourceTree = "<group>"; };
 		A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42VideoTrack.m; path = "mp4v2 wrapper/MP42VideoTrack.m"; sourceTree = "<group>"; };
 		A95A60470F4422DB00767D87 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mp4v2.h; path = mp4v2/mp4v2.h; sourceTree = "<group>"; };
@@ -377,6 +383,10 @@
 				A91E7DE90F8A2E6800AF387E /* SoundViewController.m */,
 				A9FD5D320F3C69BE00817716 /* ChapterViewController.h */,
 				A9FD5D330F3C69BE00817716 /* ChapterViewController.m */,
+				A92E6EDA0FE9064000CDF1F9 /* SBTableView.h */,
+				A92E6EDB0FE9064000CDF1F9 /* SBTableView.m */,
+				A92E6E2B0FE8FD6C00CDF1F9 /* SBView.h */,
+				A92E6E2C0FE8FD6C00CDF1F9 /* SBView.m */,
 			);
 			name = PropertyView;
 			sourceTree = "<group>";
@@ -537,6 +547,8 @@
 				A905E5520FB054B500B926FF /* CCMuxer.m in Sources */,
 				A905E58A0FB05A8100B926FF /* MP42ClosedCaptionTrack.m in Sources */,
 				A91F62260FB0A50D00B96B33 /* RegexKitLite.m in Sources */,
+				A92E6E2D0FE8FD6C00CDF1F9 /* SBView.m in Sources */,
+				A92E6EDC0FE9064000CDF1F9 /* SBTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

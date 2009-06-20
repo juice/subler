@@ -58,20 +58,11 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle fileHandle,
     return trackId;
 }
 
-static size_t closeStyleAtom(u_int16_t styleCount, u_int8_t* styleAtom)
-{
-    size_t styleSize = 10 + (styleCount * 12);
-    styleAtom[0] = 0;
-    styleAtom[1] = 0;
-    styleAtom[2] = (styleSize >> 8) & 0xff;
-    styleAtom[3] = styleSize & 0xff;
-    styleAtom[8] = (styleCount >> 8) & 0xff;
-    styleAtom[9] = styleCount & 0xff;
-    
-    return styleSize;
-}
+#define STYLE_BOLD 1
+#define STYLE_ITALIC 2
+#define STYLE_UNDERLINED 4
 
-static u_int8_t* makeStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16_t fontID, u_int8_t flags, u_int8_t* style)
+static u_int8_t* createStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16_t fontID, u_int8_t flags, u_int8_t* style)
 {
     style[0] = (startChar >> 8) & 0xff; // startChar
     style[1] = startChar & 0xff;
@@ -89,6 +80,19 @@ static u_int8_t* makeStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16
     return style;
 }
 
+static size_t closeStyleAtom(u_int16_t styleCount, u_int8_t* styleAtom)
+{
+    size_t styleSize = 10 + (styleCount * 12);
+    styleAtom[0] = 0;
+    styleAtom[1] = 0;
+    styleAtom[2] = (styleSize >> 8) & 0xff;
+    styleAtom[3] = styleSize & 0xff;
+    styleAtom[8] = (styleCount >> 8) & 0xff;
+    styleAtom[9] = styleCount & 0xff;
+
+    return styleSize;
+}
+
 static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *size)
 {
     u_int16_t styleCount = 0;
@@ -96,7 +100,7 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
 
     u_int8_t italic = 0;
     u_int8_t bold = 0;
-    u_int8_t underline = 0;
+    u_int8_t underlined = 0;
 
     // Parse the tags in the line, remove them and create a style record for every style change
     NSRange endRange;
@@ -105,7 +109,7 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
         unichar tag = [string characterAtIndex:startRange.location + 1];
         if (tag == 'i') italic++;
         else if (tag == 'b') bold++;
-        else if (tag == 'u') underline++;
+        else if (tag == 'u') underlined++;
         startRange.length += 2;
         string = [string stringByReplacingCharactersInRange:startRange withString:@""];
     }
@@ -116,13 +120,13 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
             endRange.location = [string length] -1;
 
         u_int8_t styl = 0;
-        if (italic) styl +=2;
-        if (bold) styl +=1;
-        if (underline) styl +=4;
+        if (italic) styl |= STYLE_ITALIC;
+        if (bold) styl |= STYLE_BOLD;
+        if (underlined) styl |= STYLE_UNDERLINED;
 
         if (styl && startRange.location != endRange.location) {
             u_int8_t styleRecord[12];
-            makeStyleRecord(startRange.location, endRange.location, 1, styl, styleRecord);
+            createStyleRecord(startRange.location, endRange.location, 1, styl, styleRecord);
             memcpy(buffer + 10 + (12 * styleCount), styleRecord, 12);
             styleCount++;
         }
@@ -132,13 +136,13 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
             unichar tag = [string characterAtIndex:endRange.location + 1];
             if (tag == 'i') italic++;
             else if (tag == 'b') bold++;
-            else if (tag == 'u') underline++;
+            else if (tag == 'u') underlined++;
 
             if (tag == '/' && (endRange.location + 2) < [string length]) {
                 unichar tag2 = [string characterAtIndex:endRange.location + 2];
                 if (tag2 == 'i') italic--;
                 else if (tag2 == 'b') bold--;
-                else if (tag2 == 'u') underline--;
+                else if (tag2 == 'u') underlined--;
                 if ((endRange.location + 3) < [string length])
                     endRange.length += 3;
                 string = [string stringByReplacingCharactersInRange:endRange withString:@""];

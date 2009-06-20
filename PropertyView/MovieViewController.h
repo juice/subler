@@ -9,28 +9,13 @@
 #import <Cocoa/Cocoa.h>
 #import "MP42File.h"
 
-// Custom class for capturing return key
-@interface MetaDataTableView : NSTableView {
-    NSArray *_pasteboardTypes;
-}
-- (void)keyDown:(NSEvent *)event;
-@property(readwrite, retain) NSArray* _pasteboardTypes;
-@end
-
-@protocol MetaDataTableViewDelegate
-@optional
-- (void)_deleteSelectionFromTableView:(NSTableView *)tableView;
-- (void)_copySelectionFromTableView:(NSTableView *)tableView;
-- (void)_cutSelectionFromTableView:(NSTableView *)tableView;
-- (void)_pasteToTableView:(NSTableView *)tableView;
-
-@end
+@class SBTableView;
 
 @interface MovieViewController : NSViewController {
     MP42Metadata            *metadata;
 
     IBOutlet NSPopUpButton  *tagList;
-    IBOutlet MetaDataTableView  *tagsTableView;
+    IBOutlet SBTableView  *tagsTableView;
 
     IBOutlet NSImageView    *imageView;
     IBOutlet NSPopUpButton  *mediaKind;

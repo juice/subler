@@ -374,6 +374,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([propertyView view] != nil)
 		[[propertyView view] removeFromSuperview];	// remove the current view
 
+    [[self undoManager] removeAllActionsWithTarget:propertyView];  // remove the undo items from the dealloced view
+
 	if (propertyView != nil)
 		[propertyView release];		// remove the current view controller
 

@@ -9,7 +9,8 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="100049"/>
-			<integer value="100028"/>
+			<integer value="100187"/>
+			<integer value="100128"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -363,11 +364,11 @@
 																	<string key="NSIdentifier">trackEnabled</string>
 																	<double key="NSWidth">1.800000e+01</double>
 																	<double key="NSMinWidth">1.800000e+01</double>
-																	<double key="NSMaxWidth">1.800000e+01</double>
+																	<double key="NSMaxWidth">5.000000e+01</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628032</int>
 																		<int key="NSCellFlags2">0</int>
-																		<string key="NSContents"/>
+																		<string key="NSContents">Enabled</string>
 																		<reference key="NSSupport" ref="26"/>
 																		<object class="NSColor" key="NSBackgroundColor" id="589793095">
 																			<int key="NSColorSpace">6</int>
@@ -1045,7 +1046,7 @@
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
 			<object class="NSCustomView" id="433541932">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">268</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1062,7 +1063,7 @@
 							<reference key="NSSupport" ref="871642454"/>
 							<reference key="NSControlView" ref="992226451"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="907147097"/>
 							<reference key="NSAlternateImage" ref="963694266"/>
 							<string key="NSAlternateContents"/>
@@ -1084,7 +1085,7 @@
 							<reference key="NSSupport" ref="871642454"/>
 							<reference key="NSControlView" ref="976564591"/>
 							<int key="NSButtonFlags">1211912703</int>
-							<int key="NSButtonFlags2">130</int>
+							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="907147097"/>
 							<reference key="NSAlternateImage" ref="963694266"/>
 							<string key="NSAlternateContents"/>
@@ -1192,6 +1193,7 @@
 					</object>
 				</object>
 				<string key="NSFrameSize">{320, 82}</string>
+				<reference key="NSSuperview"/>
 				<string key="NSClassName">NSView</string>
 			</object>
 		</object>
