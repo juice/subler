@@ -68,12 +68,12 @@
 									<characters key="NS.bytes">1A1981DF-4B61-4138-AF89-2C08EB9862B2</characters>
 								</object>
 								<string key="NSToolbarItemLabel">Delete Track</string>
-								<string key="NSToolbarItemPaletteLabel">Delete</string>
+								<string key="NSToolbarItemPaletteLabel">Delete Track</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSButton" key="NSToolbarItemView" id="1014421854">
 									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
-									<string key="NSFrame">{{4, 14}, {34, 25}}</string>
+									<string key="NSFrame">{{20, 14}, {34, 25}}</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="343767794">
 										<int key="NSCellFlags">67239424</int>
@@ -112,13 +112,13 @@
 								<object class="NSMutableString" key="NSToolbarItemIdentifier">
 									<characters key="NS.bytes">3594B023-F131-4DE6-8067-263D9BF3F6BB</characters>
 								</object>
-								<string key="NSToolbarItemLabel">Delete Track</string>
-								<string key="NSToolbarItemPaletteLabel">Add</string>
+								<string key="NSToolbarItemLabel">Add Track</string>
+								<string key="NSToolbarItemPaletteLabel">Add Track</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSButton" key="NSToolbarItemView" id="729416343">
 									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
-									<string key="NSFrame">{{0, 14}, {34, 25}}</string>
+									<string key="NSFrame">{{14, 14}, {34, 25}}</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="602077902">
 										<int key="NSCellFlags">67239424</int>
