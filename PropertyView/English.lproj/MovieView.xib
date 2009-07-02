@@ -8,6 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="11"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -35,7 +36,7 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSCustomView" id="1005">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">268</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -440,6 +441,7 @@
 													</object>
 													<string key="NSFrame">{{1, 17}, {446, 181}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
+													<reference key="NSNextKeyView" ref="999266526"/>
 													<reference key="NSDocView" ref="999266526"/>
 													<reference key="NSBGColor" ref="315001162"/>
 													<int key="NScvFlags">4</int>
@@ -474,6 +476,7 @@
 													</object>
 													<string key="NSFrame">{{1, 0}, {446, 17}}</string>
 													<reference key="NSSuperview" ref="86220922"/>
+													<reference key="NSNextKeyView" ref="888415462"/>
 													<reference key="NSDocView" ref="888415462"/>
 													<reference key="NSBGColor" ref="315001162"/>
 													<int key="NScvFlags">4</int>
@@ -482,6 +485,7 @@
 											</object>
 											<string key="NSFrame">{{17, 36}, {448, 199}}</string>
 											<reference key="NSSuperview" ref="900859224"/>
+											<reference key="NSNextKeyView" ref="399023230"/>
 											<int key="NSsFlags">562</int>
 											<reference key="NSVScroller" ref="477814729"/>
 											<reference key="NSHScroller" ref="827247503"/>
@@ -637,7 +641,7 @@
 									<string key="NSFrame">{{10, 25}, {482, 241}}</string>
 									<reference key="NSSuperview" ref="980212840"/>
 								</object>
-								<string key="NSLabel">Tags</string>
+								<string key="NSLabel">Metadata</string>
 								<object class="NSColor" key="NSColor" id="117260690">
 									<int key="NSColorSpace">6</int>
 									<string key="NSCatalogName">System</string>
@@ -1031,6 +1035,7 @@
 					</object>
 				</object>
 				<string key="NSFrameSize">{480, 272}</string>
+				<reference key="NSSuperview"/>
 				<string key="NSClassName">NSView</string>
 			</object>
 		</object>

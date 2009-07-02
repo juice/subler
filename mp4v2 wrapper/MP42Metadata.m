@@ -8,6 +8,7 @@
 
 #import "MP42Metadata.h"
 #import "MP42Utilities.h"
+#import "RegexKitLite.h"
 
 @interface MP42Metadata (Private)
 
@@ -45,19 +46,43 @@
     return self;
 }
 
-- (NSArray *) availableMetaData
+- (NSString*) stringFromArray:(NSArray *)array
 {
-    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
-			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
-			@"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics",
-			@"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+    NSString *result = [NSString string];
+    for (NSDictionary* name in array) {
+        if ([result length])
+            result = [result stringByAppendingString:@", "];
+        result = [result stringByAppendingString:[name valueForKey:@"name"]];
+    }
+    return result;
 }
 
-- (NSArray *) writableMetaData
+- (NSArray *) dictArrayFromString:(NSString *)data
+{
+    NSString *splitElements  = @",\\s+";
+    NSArray *stringArray = [data componentsSeparatedByRegex:splitElements];
+    NSMutableArray *dictElements = [[NSMutableArray alloc] init];
+    for (NSString *name in stringArray) {
+        [dictElements addObject:[NSDictionary dictionaryWithObject:name forKey:@"name"]];
+    }
+    return dictElements;
+}
+
+- (NSArray *) availableMetadata
+{
+    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
+			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
+			@"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Rating",
+            @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
+            @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+}
+
+- (NSArray *) writableMetadata
 {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics",
+            @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
 			@"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
 }
 
@@ -187,7 +212,6 @@
     if (tags->gapless)
         gapless = *tags->gapless;
 
-
     if (tags->purchaseDate)
         [tagsDict setObject:[NSString stringWithCString:tags->purchaseDate encoding: NSUTF8StringEncoding]
                      forKey:@"Purchase Date"];
@@ -210,6 +234,53 @@
     }
 
     MP4TagsFree(tags);
+
+    /* read the remaining iTMF items */
+    MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(sourceHandle, "com.apple.iTunes", "iTunEXTC");
+    if (list) {
+        uint32_t i;
+        for (i = 0; i < list->size; i++) {
+            MP4ItmfItem* item = &list->elements[i];
+            int j;
+            for (j = 0; j < item->dataList.size; j++) {
+                MP4ItmfData* data = &item->dataList.elements[j];
+                [tagsDict setObject:[NSString stringWithCString:(const char *)data->value length:data->valueSize] 
+                             forKey:@"Rating"];
+            }
+        }
+        MP4ItmfItemListFree(list);
+    }
+
+    list = MP4ItmfGetItemsByMeaning(sourceHandle, "com.apple.iTunes", "iTunMOVI");
+    if (list) {
+        uint32_t i;
+        for (i = 0; i < list->size; i++) {
+            MP4ItmfItem* item = &list->elements[i];
+            int j;
+            for(j = 0; j < item->dataList.size; j++) {
+                MP4ItmfData* data = &item->dataList.elements[j];
+                NSData *xmlData = [NSData dataWithBytes:data->value length:data->valueSize];
+                NSDictionary *dma = (NSDictionary *)[NSPropertyListSerialization
+                                                         propertyListFromData:xmlData
+                                                         mutabilityOption:NSPropertyListMutableContainersAndLeaves
+                                                         format:nil
+                                                         errorDescription:nil];
+                
+                NSString *tag;
+                if ([tag = [self stringFromArray:[dma valueForKey:@"cast"]] length])
+                    [tagsDict setObject:tag forKey:@"Cast"];
+                if ([tag = [self stringFromArray:[dma valueForKey:@"directors"]] length])
+                    [tagsDict setObject:tag forKey:@"Director"];
+                if ([tag = [self stringFromArray:[dma valueForKey:@"codirectors"]] length])
+                    [tagsDict setObject:tag forKey:@"Codirector"];
+                if ([tag = [self stringFromArray:[dma valueForKey:@"producers"]] length])
+                    [tagsDict setObject:tag forKey:@"Producers"];
+                if ([tag = [self stringFromArray:[dma valueForKey:@"screenwriters"]] length])
+                    [tagsDict setObject:tag forKey:@"Screenwriters"];
+            }
+        }
+        MP4ItmfItemListFree(list);
+    }
 }
 
 - (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *)fileHandle
@@ -321,9 +392,8 @@
         NSData *bitmapData;
 
         representations = [artwork representations];
-
         bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations 
-                                                               usingType:NSPNGFileType properties:nil];
+                                                              usingType:NSPNGFileType properties:nil];
 
         newArtwork.data = (void *)[bitmapData bytes];
         newArtwork.size = [bitmapData length];
@@ -339,13 +409,61 @@
     MP4TagsStore(tags, fileHandle);
     MP4TagsFree(tags);
 
+    /* Rewrite extended metadata using the generic iTfm api */
+    if ([tagsDict valueForKey:@"Cast"] || [tagsDict valueForKey:@"Director"] ||
+        [tagsDict valueForKey:@"Codirector"] || [tagsDict valueForKey:@"Producers"] ||
+        [tagsDict valueForKey:@"Screenwriters"]) {
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+        if ([tagsDict valueForKey:@"Cast"]) {
+            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Cast"]] forKey:@"cast"];
+        }
+        if ([tagsDict valueForKey:@"Director"]) {
+            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Director"]] forKey:@"directors"];
+        }
+        if ([tagsDict valueForKey:@"Codirector"]) {
+            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Codirector"]] forKey:@"codirectors"];
+        }
+        if ([tagsDict valueForKey:@"Producers"]) {
+            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Producers"]] forKey:@"producers"];
+        }
+        if ([tagsDict valueForKey:@"Screenwriters"]) {
+            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Screenwriters"]] forKey:@"screenwriters"];
+        }
+        NSData *serializedPlist = [NSPropertyListSerialization
+                                        dataFromPropertyList:dict
+                                        format:NSPropertyListXMLFormat_v1_0
+                                        errorDescription:nil];
+
+        MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunMOVI");
+        if (list) {
+            uint32_t i;
+            for (i = 0; i < list->size; i++) {
+                MP4ItmfItem* item = &list->elements[i];
+                MP4ItmfRemoveItem(fileHandle, item);
+            }
+        }
+        MP4ItmfItemListFree(list);
+
+        MP4ItmfItem* bogus = MP4ItmfItemAlloc( "----", 1 );
+        bogus->mean = strdup( "com.apple.iTunes" );
+        bogus->name = strdup( "iTunMOVI" );
+
+        MP4ItmfData* data = &bogus->dataList.elements[0];
+        data->typeCode = MP4_ITMF_BT_UTF8;
+        data->valueSize = [serializedPlist length];
+        data->value = (uint8_t*)malloc( data->valueSize );
+        memcpy( data->value, [serializedPlist bytes], data->valueSize );
+
+        MP4ItmfAddItem(fileHandle, bogus);
+    }
+
     return YES;
 }
 
 - (BOOL) mergeMetadata: (MP42Metadata *) newMetadata
 {
     NSString * tagValue;
-    for (NSString * key in [self writableMetaData])
+    for (NSString * key in [self writableMetadata])
         if(![tagsDict valueForKey:key])
             if((tagValue = [newMetadata.tagsDict valueForKey:key]))
                 [tagsDict setObject:tagValue forKey:key];

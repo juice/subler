@@ -177,6 +177,8 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
         return @"3GPP Text";
     else if (!strcmp(dataName, "c608"))
         return @"CEA-608";
+    else if (!strcmp(dataName, "c708"))
+        return @"CEA-708";
     else if (!strcmp(dataName, "samr"))
         return @"AMR Narrow Band";
     else if (!strcmp(dataName, "rtp "))

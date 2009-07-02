@@ -23,7 +23,8 @@
 }
 
 - (id) initWithSourcePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle;
-- (NSArray *) writableMetaData;
+- (NSArray *) availableMetadata;
+- (NSArray *) writableMetadata;
 
 - (void) removeTagForKey:(id)aKey;
 - (BOOL) setTag:(id)value forKey:(NSString *)key;
@@ -32,8 +33,8 @@
 
 - (BOOL) mergeMetadata: (MP42Metadata *) newMetadata;
 
-@property(readonly) NSMutableDictionary    *tagsDict;
-@property(readwrite, retain) NSImage                 *artwork;
+@property(readonly) NSMutableDictionary *tagsDict;
+@property(readwrite, retain) NSImage    *artwork;
 @property(readwrite) uint8_t    mediaKind;
 @property(readwrite) uint8_t    contentRating;
 @property(readwrite) uint8_t    hdVideo;

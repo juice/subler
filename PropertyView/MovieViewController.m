@@ -29,7 +29,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (void)awakeFromNib
 {
-    tagsMenu = [[metadata writableMetaData] retain];
+    tagsMenu = [[metadata writableMetadata] retain];
     for (id tag in tagsMenu)
         [tagList addItemWithTitle:tag];
 
@@ -52,7 +52,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
     tabCol = [[[tagsTableView tableColumns] objectAtIndex:1] retain];
 
-    tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:tagsMenu] retain];
+    tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:[metadata availableMetadata]] retain];
 
     [tagsTableView setDoubleAction:@selector(doubleClickAction:)];
     [tagsTableView setTarget:self];
@@ -65,116 +65,93 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     tags = metadata.tagsDict;
 }
 
-- (IBAction) updateArtwork: (id) sender
-{
-    metadata.artwork = [imageView image];
-    metadata.isEdited = YES;
-    metadata.isArtworkEdited = YES;
-
-    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-}
-
-- (IBAction) changeMediaKind: (id) sender
-{
-    uint8_t tagName = [[sender selectedItem] tag];
-
-    if (metadata.mediaKind != tagName) {
-        metadata.mediaKind = tagName;
-        metadata.isEdited = YES;
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-    }
-}
-
-- (IBAction) changecContentRating: (id) sender
-{
-    uint8_t tagName = [[sender selectedItem] tag];
-    
-    if (metadata.contentRating != tagName) {
-        metadata.contentRating = tagName;
-        metadata.isEdited = YES;
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-    }
-}
-
-- (IBAction) changeGapless: (id) sender
-{
-    uint8_t newValue = [sender state];
-
-    if (metadata.gapless != newValue) {
-        metadata.gapless = newValue;
-        metadata.isEdited = YES;
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-    }
-}
-
-- (IBAction) changehdVideo: (id) sender
-{
-    uint8_t newValue = [sender state];
-
-    if (metadata.hdVideo != newValue) {
-        metadata.hdVideo = newValue;
-        metadata.isEdited = YES;
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-    }
-}
-
 - (void) updateTagsArray
 {
     [tagsArray autorelease];
-    tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:tagsMenu] retain];
+    tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:[metadata availableMetadata]] retain];
+}
+
+- (void) add:(NSDictionary *) data
+{
+    NSArray *metadataKeys = [data allKeys];
+
+    for (NSString *key in metadataKeys) {
+        [metadata setTag:[data valueForKey:key] forKey:key];
+    }
+    NSUndoManager *undo = [[self view] undoManager];
+    [[undo prepareWithInvocationTarget:self] remove:data];
+
+    if (![undo isUndoing]) {
+        [undo setActionName:@"Insert"];
+    }
+
+    [self updateTagsArray];
+    [tagsTableView reloadData];
+}
+
+- (void) remove:(NSDictionary *) data
+{
+    NSArray *metadataKeys = [data allKeys];
+
+    for (NSString *key in metadataKeys) {
+        [metadata removeTagForKey:key];
+    }
+    NSUndoManager *undo = [[self view] undoManager];
+    [[undo prepareWithInvocationTarget:self] add:data];
+
+    if (![undo isUndoing]) {
+        [undo setActionName:@"Delete"];
+    }
+
+    [self updateTagsArray];
+    [tagsTableView reloadData];
 }
 
 - (IBAction) addTag: (id) sender
 {
     NSString *tagName = [[sender selectedItem] title];
 
-    if (![metadata.tagsDict valueForKey:tagName]) {
-        [metadata.tagsDict setObject:@"" forKey:tagName];
-        [self updateTagsArray];
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-        [tagsTableView reloadData];
-    }
+    if (![metadata.tagsDict valueForKey:tagName])
+        [self add:[NSDictionary dictionaryWithObject:@"" forKey:tagName]];
 }
 
 - (IBAction) removeTag: (id) sender {
     NSIndexSet *rowIndexes = [tagsTableView selectedRowIndexes];
     NSUInteger current_index = [rowIndexes lastIndex];
-    
+    NSMutableDictionary *tagDict = [[[NSMutableDictionary alloc] init] autorelease];
+
     while (current_index != NSNotFound) {
         if (current_index != -1 && [tagsTableView editedRow] == -1) {
             NSString *tagName = [tagsArray objectAtIndex:current_index];
-            [metadata removeTagForKey:tagName];
-            [self updateTagsArray];
-            
-            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+            [tagDict setObject:[metadata.tagsDict valueForKey:tagName] forKey:tagName];
         }
         current_index = [rowIndexes indexLessThanIndex: current_index];
     }
-    [tagsTableView reloadData];
+    [self remove:tagDict];
 }
 
-- (void) setMetadata:(id)value forKey:(NSString *)key
+- (void) updateMetadata:(id)value forKey:(NSString *)key
 {
-    NSString *oldValue = [[metadata tagsDict] valueForKey:key];
-    
+    NSString *oldValue = [[[metadata tagsDict] valueForKey:key] retain];
+
     if ([metadata setTag:value forKey:key]) {
-        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-        
+
         [tagsTableView noteHeightOfRowsWithIndexesChanged:
-         [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [tagsTableView numberOfRows])]];
-        
+            [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [tagsTableView numberOfRows])]];
+
         NSUndoManager *undo = [[self view] undoManager];
-        [[undo prepareWithInvocationTarget:self] setMetadata:oldValue
+        [[undo prepareWithInvocationTarget:self] updateMetadata:oldValue
                                                       forKey:key];
         if (![undo isUndoing]) {
-            [undo setActionName:@"Tag Editing"];
+            [undo setActionName:@"Editing"];
         }
     }
+    [oldValue release];
 }
 
 - (NSArray *) allSet
 {
-    return [metadata writableMetaData];
+    return [metadata writableMetadata];
 }
 
 - (NSArray *) tvShowSet
@@ -197,14 +174,13 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     else if ([sender tag] == 2)
         metadataKeys = [self tvShowSet];
 
+    NSMutableDictionary *tagDict = [[[NSMutableDictionary alloc] init] autorelease];
     for (NSString *key in metadataKeys) {
         if (![[metadata tagsDict] valueForKey:key])
-            [metadata setTag:@"" forKey:key];
+            [tagDict setValue:@"" forKey:key];
     }
 
-    [self updateTagsArray];
-    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-    [tagsTableView reloadData]; 
+    [self add:tagDict];
 }
 
 /* NSTableView additions for copy & paste and more */
@@ -262,15 +238,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
     NSData *archivedData = [pb dataForType:MetadataPBoardType];
     NSMutableDictionary *data = [NSUnarchiver unarchiveObjectWithData:archivedData];
-    NSArray *metadataKeys = [data allKeys];
 
-    for (NSString *key in metadataKeys) {
-        [metadata setTag:[data valueForKey:key] forKey:key];
-    }
-
-    [self updateTagsArray];
-    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
-    [tagsTableView reloadData]; 
+    [self add:data];
 }
 
 - (NSAttributedString *) boldString: (NSString *) string
@@ -283,6 +252,11 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
     return [[metadata tagsDict] count];
+}
+
+- (NSCell *)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    return [tableColumn dataCell];
 }
 
 - (id) tableView:(NSTableView *)tableView 
@@ -306,7 +280,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     NSString *tagName = [tagsArray objectAtIndex:rowIndex];
 
     if ([tableColumn.identifier isEqualToString:@"value"])
-        [self setMetadata:anObject forKey:tagName];
+        [self updateMetadata:anObject forKey:tagName];
 }
 
 - (CGFloat) tableView: (NSTableView *) tableView
@@ -345,6 +319,83 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         [removeTag setEnabled:YES];
     else
         [removeTag setEnabled:NO];
+}
+
+- (IBAction) updateArtwork: (id) sender
+{
+    metadata.artwork = [imageView image];
+    metadata.isEdited = YES;
+    metadata.isArtworkEdited = YES;
+
+    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+}
+
+- (IBAction) changeMediaKind: (id) sender
+{
+    uint8_t tagName = [[sender selectedItem] tag];
+
+    if (metadata.mediaKind != tagName) {
+        metadata.mediaKind = tagName;
+        metadata.isEdited = YES;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
+}
+
+- (IBAction) changecContentRating: (id) sender
+{
+    uint8_t tagName = [[sender selectedItem] tag];
+
+    if (metadata.contentRating != tagName) {
+        metadata.contentRating = tagName;
+        metadata.isEdited = YES;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
+}
+
+- (IBAction) changeGapless: (id) sender
+{
+    uint8_t newValue;
+    if (sender == gapless)
+        newValue = [sender state];
+    else {
+        newValue = ![gapless state];
+        [gapless setState:newValue];
+    }
+    
+    if (metadata.gapless != newValue) {
+        metadata.gapless = newValue;
+        metadata.isEdited = YES;
+    }
+    
+    NSUndoManager *undo = [[self view] undoManager];
+    [[undo prepareWithInvocationTarget:self] changeGapless: self];
+    
+    if (![undo isUndoing]) {
+        [undo setActionName:@"Check Gapless"];
+    }
+}
+
+- (IBAction) changehdVideo: (id) sender
+{
+    uint8_t newValue;
+    if (sender == hdVideo)
+        newValue = [sender state];
+    else {
+        newValue = ![hdVideo state];
+        [hdVideo setState:newValue];
+    }
+
+    if (metadata.hdVideo != newValue) {
+        metadata.hdVideo = newValue;
+        metadata.isEdited = YES;
+    }
+
+    NSUndoManager *undo = [[self view] undoManager];
+    [[undo prepareWithInvocationTarget:self] changehdVideo: self];
+
+    if (![undo isUndoing]) {
+        [undo setActionName:@"Check HD Video"];
+    }
 }
 
 - (void) dealloc

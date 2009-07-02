@@ -26,6 +26,7 @@
     IBOutlet NSTextField *offsetY;
 
     IBOutlet NSPopUpButton *alternateGroup;
+    IBOutlet NSButton *preserveAspectRatio;
 }
 
 - (void) setTrack:(MP42VideoTrack *) videoTrack;

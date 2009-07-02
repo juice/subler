@@ -40,6 +40,10 @@
     if (sender == trackWidth) {
         i = [trackWidth integerValue];
         if (track.trackWidth != i) {
+            if ([preserveAspectRatio state] == NSOnState) {
+                track.trackHeight = (track.trackHeight / track.trackWidth) * i;
+                [trackHeight setIntegerValue:track.trackHeight];
+            }
             track.trackWidth = i;
 
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
