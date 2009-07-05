@@ -33,6 +33,17 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     for (id tag in tagsMenu)
         [tagList addItemWithTitle:tag];
 
+    ratingCell = [[NSPopUpButtonCell alloc] init];
+    [ratingCell setFont:[NSFont systemFontOfSize:11]];
+    [ratingCell setControlSize:NSSmallControlSize];
+    [ratingCell setBordered:NO];
+    for (NSString *rating in [metadata availableRatings]) {
+        if ([rating length])
+            [[ratingCell menu] addItem:[[[NSMenuItem alloc] initWithTitle:rating action:NULL keyEquivalent:@""] autorelease]];
+        else
+            [[ratingCell menu] addItem:[NSMenuItem separatorItem]];
+    }
+
     NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
     [ps setHeadIndent: -10.0];
     [ps setAlignment:NSRightTextAlignment];
@@ -256,17 +267,39 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (NSCell *)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    return [tableColumn dataCell];
+    NSCell *cell = nil;
+    NSString *tagName = nil;
+    if (tableColumn != nil)
+        tagName= [tagsArray objectAtIndex:row];
+
+    if ([tableColumn.identifier isEqualToString:@"name"]) {
+        cell = [tableColumn dataCell];
+    }
+    else if ([tableColumn.identifier isEqualToString:@"value"]) {
+        if ([tagName isEqualToString:@"Rating"]) {
+            cell = ratingCell;
+        }
+        else
+            cell = [tableColumn dataCell];
+    }
+    else
+        cell = nil;
+
+    return cell;
 }
 
 - (id) tableView:(NSTableView *)tableView 
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
+    NSString *tagName = nil;
+    if (tableColumn != nil)
+        tagName= [tagsArray objectAtIndex:rowIndex];
+
     if ([tableColumn.identifier isEqualToString:@"name"])
         return [self boldString:[tagsArray objectAtIndex:rowIndex]];
 
-    if ([tableColumn.identifier isEqualToString:@"value"])
+    if ([tableColumn.identifier isEqualToString:@"value"]) 
         return [tags objectForKey:[tagsArray objectAtIndex:rowIndex]];
 
     return nil;
@@ -404,6 +437,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [tagsMenu release];
     [tabCol release];
     [detailBoldAttr release];
+    [ratingCell release];
     [super dealloc];
 }
 

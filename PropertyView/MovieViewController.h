@@ -22,8 +22,10 @@
     IBOutlet NSPopUpButton  *contentRating;
     IBOutlet NSButton       *hdVideo;
     IBOutlet NSButton       *gapless;
-
+    
     IBOutlet NSButton       *removeTag;
+    
+    NSPopUpButtonCell       *ratingCell;
 
     NSDictionary    *tags;
     NSArray         *tagsArray;

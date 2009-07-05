@@ -10,6 +10,28 @@
 #import "MP42Utilities.h"
 #import "RegexKitLite.h"
 
+typedef struct iTMF_rating_t
+    {
+        char * rating;
+        char * english_name;
+    } iTMF_rating_t;
+
+static const iTMF_rating_t rating_strings[] = {
+    {"mpaa|G|100|", "G"},
+    {"mpaa|PG|200|", "PG"},
+    {"mpaa|PG-13|300|", "PG-13"},
+    {"mpaa|R|400|", "R" },
+    {"mpaa|NC-17|500|", "NC-17"},
+    {"", ""},
+    {"us-tv|TV-Y|100|", "TV-Y"},
+    {"us-tv|TV-Y7|200|", "TV-Y7"},
+    {"us-tv|TV-G|300|", "TV-G"},
+    {"us-tv|TV-PG|400|", "TV-PG"},
+    {"us-tv|TV-14|500|", "TV-14"},
+    {"us-tv|TV-MA|600|", "TV-MA"},
+    {NULL, NULL},
+};
+
 @interface MP42Metadata (Private)
 
 -(void) readMetaDataFromFileHandle:(MP4FileHandle)fileHandle;
@@ -81,9 +103,19 @@
 {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
-			@"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Lyrics",
+			@"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Rating",
             @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
-			@"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+}
+
+- (NSArray *) availableRatings
+{
+    NSMutableArray *ratingsArray = [[NSMutableArray alloc] init];
+    iTMF_rating_t *rating;
+    for ( rating = (iTMF_rating_t*) rating_strings; rating->english_name; rating++ )
+        [ratingsArray addObject:[NSString stringWithUTF8String:rating->english_name]];
+
+    return [ratingsArray autorelease];
 }
 
 - (void) removeTagForKey:(id)aKey
@@ -94,7 +126,7 @@
 
 - (BOOL) setTag:(id)value forKey:(NSString *)key;
 {
-    if (![[tagsDict valueForKey:key] isEqualToString:value]) {
+    if (![[tagsDict valueForKey:key] isEqualTo:value]) {
         [tagsDict setValue:value forKey:key];
         isEdited = YES;
         return YES;
@@ -244,8 +276,26 @@
             int j;
             for (j = 0; j < item->dataList.size; j++) {
                 MP4ItmfData* data = &item->dataList.elements[j];
-                [tagsDict setObject:[NSString stringWithCString:(const char *)data->value length:data->valueSize] 
-                             forKey:@"Rating"];
+                NSString *rating = [NSString stringWithCString:(const char *)data->value length:data->valueSize];
+                NSString *splitElements  = @"\\|";
+                NSArray *ratingItems = [rating componentsSeparatedByRegex:splitElements];
+                NSInteger ratingIndex = 0;
+                if ([[ratingItems objectAtIndex:0] isEqualToString:@"mpaa"]) {
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"G"]) ratingIndex = MPAA_G;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"PG"]) ratingIndex = MPAA_PG;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"PG-13"]) ratingIndex = MPAA_PG_13;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"R"]) ratingIndex = MPAA_R;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"NC-17"]) ratingIndex = MPAA_NC_17;
+                }
+                else if ([[ratingItems objectAtIndex:0] isEqualToString:@"us-tv"]) {
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-Y"]) ratingIndex = US_TV_Y;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-Y7"]) ratingIndex = US_TV_Y7;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-G"]) ratingIndex = US_TV_G;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-PG"]) ratingIndex = US_TV_PG;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-14"]) ratingIndex = US_TV_14;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-MA"]) ratingIndex = US_TV_MA;
+                }
+                [tagsDict setObject:[NSNumber numberWithInt:ratingIndex] forKey:@"Rating"];
             }
         }
         MP4ItmfItemListFree(list);
@@ -409,7 +459,42 @@
     MP4TagsStore(tags, fileHandle);
     MP4TagsFree(tags);
 
-    /* Rewrite extended metadata using the generic iTfm api */
+    /* Rewrite extended metadata using the generic iTMF api */
+
+    if ([tagsDict valueForKey:@"Rating"]) {
+        MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunEXTC");
+        if (list) {
+            uint32_t i;
+            for (i = 0; i < list->size; i++) {
+                MP4ItmfItem* item = &list->elements[i];
+                MP4ItmfRemoveItem(fileHandle, item);
+            }
+        }
+        MP4ItmfItemListFree(list);
+
+        MP4ItmfItem* newItem = MP4ItmfItemAlloc( "----", 1 );
+        newItem->mean = strdup( "com.apple.iTunes" );
+        newItem->name = strdup( "iTunEXTC" );
+        
+        MP4ItmfData* data = &newItem->dataList.elements[0];
+        data->typeCode = MP4_ITMF_BT_UTF8;
+        data->valueSize = strlen(rating_strings[[[tagsDict valueForKey:@"Rating"] integerValue]].rating);
+        data->value = (uint8_t*)malloc( data->valueSize );
+        memcpy( data->value, rating_strings[[[tagsDict valueForKey:@"Rating"] integerValue]].rating, data->valueSize );
+        
+        MP4ItmfAddItem(fileHandle, newItem);
+    }
+    else {
+        MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunEXTC");
+        if (list) {
+            uint32_t i;
+            for (i = 0; i < list->size; i++) {
+                MP4ItmfItem* item = &list->elements[i];
+                MP4ItmfRemoveItem(fileHandle, item);
+            }
+        }
+    }
+
     if ([tagsDict valueForKey:@"Cast"] || [tagsDict valueForKey:@"Director"] ||
         [tagsDict valueForKey:@"Codirector"] || [tagsDict valueForKey:@"Producers"] ||
         [tagsDict valueForKey:@"Screenwriters"]) {
@@ -444,17 +529,27 @@
         }
         MP4ItmfItemListFree(list);
 
-        MP4ItmfItem* bogus = MP4ItmfItemAlloc( "----", 1 );
-        bogus->mean = strdup( "com.apple.iTunes" );
-        bogus->name = strdup( "iTunMOVI" );
+        MP4ItmfItem* newItem = MP4ItmfItemAlloc( "----", 1 );
+        newItem->mean = strdup( "com.apple.iTunes" );
+        newItem->name = strdup( "iTunMOVI" );
 
-        MP4ItmfData* data = &bogus->dataList.elements[0];
+        MP4ItmfData* data = &newItem->dataList.elements[0];
         data->typeCode = MP4_ITMF_BT_UTF8;
         data->valueSize = [serializedPlist length];
         data->value = (uint8_t*)malloc( data->valueSize );
         memcpy( data->value, [serializedPlist bytes], data->valueSize );
 
-        MP4ItmfAddItem(fileHandle, bogus);
+        MP4ItmfAddItem(fileHandle, newItem);
+    }
+    else {
+        MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunMOVI");
+        if (list) {
+            uint32_t i;
+            for (i = 0; i < list->size; i++) {
+                MP4ItmfItem* item = &list->elements[i];
+                MP4ItmfRemoveItem(fileHandle, item);
+            }
+        }
     }
 
     return YES;
