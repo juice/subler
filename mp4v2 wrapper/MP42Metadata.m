@@ -29,6 +29,8 @@ static const iTMF_rating_t rating_strings[] = {
     {"us-tv|TV-PG|400|", "TV-PG"},
     {"us-tv|TV-14|500|", "TV-14"},
     {"us-tv|TV-MA|600|", "TV-MA"},
+    {"", ""},
+    {"", "Unknown"},
     {NULL, NULL},
 };
 
@@ -103,8 +105,8 @@ static const iTMF_rating_t rating_strings[] = {
 {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
-			@"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Rating",
-            @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
+			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
+            @"Genre", @"Description", @"Long Description", @"Rating",
 			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
 }
 
@@ -295,6 +297,8 @@ static const iTMF_rating_t rating_strings[] = {
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-14"]) ratingIndex = US_TV_14;
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-MA"]) ratingIndex = US_TV_MA;
                 }
+                else
+                    ratingIndex = R_UNKNOWN;
                 [tagsDict setObject:[NSNumber numberWithInt:ratingIndex] forKey:@"Rating"];
             }
         }

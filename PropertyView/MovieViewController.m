@@ -172,7 +172,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (NSArray *) movieSet
 {
-    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"Genre", @"Description", @"Long Description", @"Lyrics", @"Copyright", nil];
+    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Cast", @"Director", @"Screenwriters", @"Genre", @"Description", @"Long Description", @"Rating", @"Copyright", nil];
 }
 
 - (IBAction) addMetadataSet: (id)sender

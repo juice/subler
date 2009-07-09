@@ -21,6 +21,7 @@ enum {
     US_TV_PG    = 9,
     US_TV_14    = 10,
     US_TV_MA    = 11,
+    R_UNKNOWN   = 13,
 } rating_type;
 
 @interface MP42Metadata : NSObject {
