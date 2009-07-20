@@ -28,7 +28,7 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle fileHandle,
     MP4SetTrackIntegerProperty(fileHandle, trackId, "tkhd.alternate_group", 2);
 
     MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.horizontalJustification", 1);
-    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.verticalJustification", 0);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.verticalJustification", -1);
 
     MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.bgColorAlpha", 255);
 
