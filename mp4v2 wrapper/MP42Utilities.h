@@ -25,6 +25,7 @@ int disableTrack(MP4FileHandle fileHandle, MP4TrackId trackId);
 int enableFirstSubtitleTrack(MP4FileHandle fileHandle);
 int enableFirstAudioTrack(MP4FileHandle fileHandle);
 int updateTracksCount(MP4FileHandle fileHandle);
+void updateMoovDuration(MP4FileHandle fileHandle);
 
 MP4TrackId findChapterTrackId(MP4FileHandle fileHandle);
 MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle);

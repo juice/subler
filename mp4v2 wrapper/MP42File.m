@@ -219,8 +219,10 @@
         return NO;
     }
 
-    for (track in tracksToBeDeleted)
+    for (track in tracksToBeDeleted) {
         [self removeMuxedTrack:track];
+        updateMoovDuration(fileHandle);
+    }
 
     for (track in tracks)
         if (track.isEdited) {
