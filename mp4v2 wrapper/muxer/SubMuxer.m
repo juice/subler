@@ -104,13 +104,17 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
 
     // Parse the tags in the line, remove them and create a style record for every style change
     NSRange endRange;
+    NSRange tagEndRange;
     NSRange startRange = [string rangeOfString: @"<"];
     if (startRange.location != NSNotFound) {
         unichar tag = [string characterAtIndex:startRange.location + 1];
         if (tag == 'i') italic++;
         else if (tag == 'b') bold++;
         else if (tag == 'u') underlined++;
-        startRange.length += 2;
+        tagEndRange = [string rangeOfString: @">"];
+        startRange.length = tagEndRange.location - startRange.location +1;
+        if (tagEndRange.location == NSNotFound)
+            startRange.length = 2;
         string = [string stringByReplacingCharactersInRange:startRange withString:@""];
     }
 
@@ -143,13 +147,17 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
                 if (tag2 == 'i') italic--;
                 else if (tag2 == 'b') bold--;
                 else if (tag2 == 'u') underlined--;
-                if ((endRange.location + 3) < [string length])
-                    endRange.length += 3;
+                tagEndRange = [string rangeOfString: @">"];
+                endRange.length = tagEndRange.location - endRange.location +1;
+                if (tagEndRange.location == NSNotFound)
+                    endRange.length = 2;
                 string = [string stringByReplacingCharactersInRange:endRange withString:@""];
             }
             else {
-                if ((endRange.location + 2) < [string length])
-                    endRange.length += 2;
+                tagEndRange = [string rangeOfString: @">"];
+                endRange.length = tagEndRange.location - endRange.location +1;
+                if (tagEndRange.location == NSNotFound)
+                    endRange.length = 2;
                 string = [string stringByReplacingCharactersInRange:endRange withString:@""];
             }
             startRange = endRange;
