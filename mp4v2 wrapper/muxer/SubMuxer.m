@@ -14,7 +14,7 @@
     #import <QuickTime/QuickTime.h>
 #endif
 
-// Create a subtitle track and set default value for the sample description
+// Create a subtitle track and set default values for the sample description
 static MP4TrackId createSubtitleTrack(MP4FileHandle fileHandle,
                                       uint16_t videoTrackWidth,
                                       uint16_t videoTrackHeight,

@@ -11,17 +11,19 @@
 
 enum {
     MPAA_G      = 0,
-    MPAA_PG     = 1,
-    MPAA_PG_13  = 2,
-    MPAA_R      = 3,
-    MPAA_NC_17  = 4,
-    US_TV_Y     = 6,
-    US_TV_Y7    = 7,
-    US_TV_G     = 8,
-    US_TV_PG    = 9,
-    US_TV_14    = 10,
-    US_TV_MA    = 11,
-    R_UNKNOWN   = 13,
+    MPAA_PG,
+    MPAA_PG_13,
+    MPAA_R,
+    MPAA_NC_17,
+    MPAA_UNRATED,
+    US_TV_Y     = 7,
+    US_TV_Y7,
+    US_TV_G,
+    US_TV_PG,
+    US_TV_14,
+    US_TV_MA,
+    US_TV_UNRATED,
+    R_UNKNOWN   = 15,
 } rating_type;
 
 @interface MP42Metadata : NSObject {

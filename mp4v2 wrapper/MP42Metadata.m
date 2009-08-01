@@ -22,6 +22,7 @@ static const iTMF_rating_t rating_strings[] = {
     {"mpaa|PG-13|300|", "PG-13"},
     {"mpaa|R|400|", "R" },
     {"mpaa|NC-17|500|", "NC-17"},
+    {"mpaa|Unrated|???|", "Unrated"},
     {"", ""},
     {"us-tv|TV-Y|100|", "TV-Y"},
     {"us-tv|TV-Y7|200|", "TV-Y7"},
@@ -29,6 +30,7 @@ static const iTMF_rating_t rating_strings[] = {
     {"us-tv|TV-PG|400|", "TV-PG"},
     {"us-tv|TV-14|500|", "TV-14"},
     {"us-tv|TV-MA|600|", "TV-MA"},
+    {"us-tv|Unrated|???|", "Unrated"},
     {"", ""},
     {"", "Unknown"},
     {NULL, NULL},
@@ -288,6 +290,7 @@ static const iTMF_rating_t rating_strings[] = {
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"PG-13"]) ratingIndex = MPAA_PG_13;
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"R"]) ratingIndex = MPAA_R;
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"NC-17"]) ratingIndex = MPAA_NC_17;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"Unrated"]) ratingIndex = MPAA_UNRATED;
                 }
                 else if ([[ratingItems objectAtIndex:0] isEqualToString:@"us-tv"]) {
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-Y"]) ratingIndex = US_TV_Y;
@@ -296,6 +299,7 @@ static const iTMF_rating_t rating_strings[] = {
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-PG"]) ratingIndex = US_TV_PG;
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-14"]) ratingIndex = US_TV_14;
                     if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-MA"]) ratingIndex = US_TV_MA;
+                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"Unrated"]) ratingIndex = US_TV_UNRATED;
                 }
                 else
                     ratingIndex = R_UNKNOWN;
