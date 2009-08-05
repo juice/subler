@@ -219,10 +219,8 @@
         return NO;
     }
 
-    for (track in tracksToBeDeleted) {
+    for (track in tracksToBeDeleted)
         [self removeMuxedTrack:track];
-        updateMoovDuration(fileHandle);
-    }
 
     for (track in tracks)
         if (track.isEdited) {
@@ -249,6 +247,7 @@
         MP4DeleteTrack(fileHandle, track.Id);
 
     updateTracksCount(fileHandle);
+    updateMoovDuration(fileHandle);
     if ([track isMemberOfClass:[MP42SubtitleTrack class]])
         enableFirstSubtitleTrack(fileHandle);
 }
