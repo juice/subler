@@ -10,20 +10,32 @@
 #import "mp4v2.h"
 
 enum {
-    MPAA_G      = 0,
+    MPAA_NR = 0,
+    MPAA_G,
     MPAA_PG,
     MPAA_PG_13,
     MPAA_R,
     MPAA_NC_17,
     MPAA_UNRATED,
-    US_TV_Y     = 7,
+    US_TV_Y     = 8,
     US_TV_Y7,
     US_TV_G,
     US_TV_PG,
     US_TV_14,
     US_TV_MA,
     US_TV_UNRATED,
-    R_UNKNOWN   = 15,
+    UK_MOVIE_NR     = 16,
+    UK_MOVIE_U,
+    UK_MOVIE_Uc,
+    UK_MOVIE_PG,
+    UK_MOVIE_12,
+    UK_MOVIE_12A,
+    UK_MOVIE_15,
+    UK_MOVIE_18,
+    UK_MOVIE_E,
+    UK_MOVIE_UNRATED,
+    UK_TV_CAUTION  = 27,
+    R_UNKNOWN   = 29,
 } rating_type;
 
 @interface MP42Metadata : NSObject {

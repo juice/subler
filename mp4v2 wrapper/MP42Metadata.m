@@ -17,6 +17,7 @@ typedef struct iTMF_rating_t
     } iTMF_rating_t;
 
 static const iTMF_rating_t rating_strings[] = {
+    {"mpaa|NR|000|", "Not Rated"},          // 0
     {"mpaa|G|100|", "G"},
     {"mpaa|PG|200|", "PG"},
     {"mpaa|PG-13|300|", "PG-13"},
@@ -24,7 +25,7 @@ static const iTMF_rating_t rating_strings[] = {
     {"mpaa|NC-17|500|", "NC-17"},
     {"mpaa|Unrated|???|", "Unrated"},
     {"", ""},
-    {"us-tv|TV-Y|100|", "TV-Y"},
+    {"us-tv|TV-Y|100|", "TV-Y"},            // 8
     {"us-tv|TV-Y7|200|", "TV-Y7"},
     {"us-tv|TV-G|300|", "TV-G"},
     {"us-tv|TV-PG|400|", "TV-PG"},
@@ -32,7 +33,20 @@ static const iTMF_rating_t rating_strings[] = {
     {"us-tv|TV-MA|600|", "TV-MA"},
     {"us-tv|Unrated|???|", "Unrated"},
     {"", ""},
-    {"", "Unknown"},
+    {"uk-movie|NR|000|", "Not Rated"},      // 16
+    {"uk-movie|U|100|", "U"},
+    {"uk-movie|Uc|150|", "Uc"},
+    {"uk-movie|PG|200|", "PG"},
+    {"uk-movie|12|300|", "12"},
+    {"uk-movie|12A|325|", "12A"},
+    {"uk-movie|15|350|", "15"},
+    {"uk-movie|18|400|", "18"},
+    {"uk-movie|E|600|", "E" },
+    {"uk-movie|Unrated|???|", "Unrated"},
+    {"", ""},
+    {"uk-tv|Caution|500|", "Caution"},      // 27
+    {"", ""},
+    {"", "Unknown"},                        // 29
     {NULL, NULL},
 };
 
@@ -460,7 +474,7 @@ static const iTMF_rating_t rating_strings[] = {
 
     /* Rewrite extended metadata using the generic iTMF api */
 
-    if ([tagsDict valueForKey:@"Rating"]) {
+    if ([tagsDict valueForKey:@"Rating"] && ([[tagsDict valueForKey:@"Rating"] integerValue] != R_UNKNOWN) ) {
         MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunEXTC");
         if (list) {
             uint32_t i;
