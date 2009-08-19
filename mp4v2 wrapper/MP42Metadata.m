@@ -283,26 +283,17 @@ static const iTMF_rating_t rating_strings[] = {
                 NSString *rating = [NSString stringWithCString:(const char *)data->value length:data->valueSize];
                 NSString *splitElements  = @"\\|";
                 NSArray *ratingItems = [rating componentsSeparatedByRegex:splitElements];
-                NSInteger ratingIndex = 0;
-                if ([[ratingItems objectAtIndex:0] isEqualToString:@"mpaa"]) {
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"G"]) ratingIndex = MPAA_G;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"PG"]) ratingIndex = MPAA_PG;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"PG-13"]) ratingIndex = MPAA_PG_13;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"R"]) ratingIndex = MPAA_R;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"NC-17"]) ratingIndex = MPAA_NC_17;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"Unrated"]) ratingIndex = MPAA_UNRATED;
+                NSInteger ratingIndex = R_UNKNOWN;
+                NSString *ratingCompareString = [NSString stringWithFormat:@"%@|%@|%@|", 
+                                                 [ratingItems objectAtIndex:0],
+                                                 [ratingItems objectAtIndex:1],
+                                                 [ratingItems objectAtIndex:2]];
+                iTMF_rating_t *ratingList;
+                int k = 0;
+                for ( ratingList = (iTMF_rating_t*) rating_strings; ratingList->rating; ratingList++, k++ ) {
+                    if ([ratingCompareString isEqualToString:[NSString stringWithUTF8String:ratingList->rating]])
+                        ratingIndex = k;
                 }
-                else if ([[ratingItems objectAtIndex:0] isEqualToString:@"us-tv"]) {
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-Y"]) ratingIndex = US_TV_Y;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-Y7"]) ratingIndex = US_TV_Y7;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-G"]) ratingIndex = US_TV_G;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-PG"]) ratingIndex = US_TV_PG;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-14"]) ratingIndex = US_TV_14;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"TV-MA"]) ratingIndex = US_TV_MA;
-                    if ([[ratingItems objectAtIndex:1] isEqualToString:@"Unrated"]) ratingIndex = US_TV_UNRATED;
-                }
-                else
-                    ratingIndex = R_UNKNOWN;
                 [tagsDict setObject:[NSNumber numberWithInt:ratingIndex] forKey:@"Rating"];
             }
         }
