@@ -292,10 +292,6 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
-    NSString *tagName = nil;
-    if (tableColumn != nil)
-        tagName= [tagsArray objectAtIndex:rowIndex];
-
     if ([tableColumn.identifier isEqualToString:@"name"])
         return [self boldString:[tagsArray objectAtIndex:rowIndex]];
 

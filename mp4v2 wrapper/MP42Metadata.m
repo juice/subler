@@ -87,7 +87,7 @@ static const iTMF_rating_t rating_strings[] = {
 {
     NSString *splitElements  = @",\\s+";
     NSArray *stringArray = [data componentsSeparatedByRegex:splitElements];
-    NSMutableArray *dictElements = [[NSMutableArray alloc] init];
+    NSMutableArray *dictElements = [[[NSMutableArray alloc] init] autorelease];
     for (NSString *name in stringArray) {
         [dictElements addObject:[NSDictionary dictionaryWithObject:name forKey:@"name"]];
     }
@@ -526,6 +526,7 @@ static const iTMF_rating_t rating_strings[] = {
                                         dataFromPropertyList:dict
                                         format:NSPropertyListXMLFormat_v1_0
                                         errorDescription:nil];
+		[dict release];
 
         MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunMOVI");
         if (list) {
