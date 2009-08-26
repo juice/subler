@@ -176,29 +176,35 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
 NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackId Id)
 {
     const char* dataName = MP4GetTrackMediaDataName(fileHandle, Id);
-    if (!strcmp(dataName, "avc1"))
-        return @"H.264";
-    else if (!strcmp(dataName, "mp4a"))
-        return @"AAC";
-    else if (!strcmp(dataName, "ac-3"))
-        return @"AC-3";
-    else if (!strcmp(dataName, "mp4v"))
-        return @"MPEG-4 Visual";
-    else if (!strcmp(dataName, "text"))
-        return @"Text";
-    else if (!strcmp(dataName, "tx3g"))
-        return @"3GPP Text";
-    else if (!strcmp(dataName, "c608"))
-        return @"CEA-608";
-    else if (!strcmp(dataName, "c708"))
-        return @"CEA-708";
-    else if (!strcmp(dataName, "samr"))
-        return @"AMR Narrow Band";
-    else if (!strcmp(dataName, "rtp "))
-        return @"Hint";
+    if (dataName) {
+        if (!strcmp(dataName, "avc1"))
+            return @"H.264";
+        else if (!strcmp(dataName, "mp4a"))
+            return @"AAC";
+        else if (!strcmp(dataName, "ac-3"))
+            return @"AC-3";
+        else if (!strcmp(dataName, "mp4v"))
+            return @"MPEG-4 Visual";
+        else if (!strcmp(dataName, "text"))
+            return @"Text";
+        else if (!strcmp(dataName, "tx3g"))
+            return @"3GPP Text";
+        else if (!strcmp(dataName, "c608"))
+            return @"CEA-608";
+        else if (!strcmp(dataName, "c708"))
+            return @"CEA-708";
+        else if (!strcmp(dataName, "samr"))
+            return @"AMR Narrow Band";
+        else if (!strcmp(dataName, "rtp "))
+            return @"Hint";
 
-    else
-        return [NSString stringWithUTF8String:dataName];
+        else
+            return [NSString stringWithUTF8String:dataName];
+    }
+    else {
+        return @"Unknown";
+    }
+
 }
 
 NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId Id)
