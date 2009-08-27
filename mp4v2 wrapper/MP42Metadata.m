@@ -298,15 +298,17 @@ static const iTMF_rating_t rating_strings[] = {
                 NSString *splitElements  = @"\\|";
                 NSArray *ratingItems = [rating componentsSeparatedByRegex:splitElements];
                 NSInteger ratingIndex = R_UNKNOWN;
-                NSString *ratingCompareString = [NSString stringWithFormat:@"%@|%@|%@|", 
-                                                 [ratingItems objectAtIndex:0],
-                                                 [ratingItems objectAtIndex:1],
-                                                 [ratingItems objectAtIndex:2]];
-                iTMF_rating_t *ratingList;
-                int k = 0;
-                for ( ratingList = (iTMF_rating_t*) rating_strings; ratingList->rating; ratingList++, k++ ) {
-                    if ([ratingCompareString isEqualToString:[NSString stringWithUTF8String:ratingList->rating]])
-                        ratingIndex = k;
+                if ([ratingItems count] >= 3) {
+                    NSString *ratingCompareString = [NSString stringWithFormat:@"%@|%@|%@|", 
+                                                     [ratingItems objectAtIndex:0],
+                                                     [ratingItems objectAtIndex:1],
+                                                     [ratingItems objectAtIndex:2]];
+                    iTMF_rating_t *ratingList;
+                    int k = 0;
+                    for ( ratingList = (iTMF_rating_t*) rating_strings; ratingList->rating; ratingList++, k++ ) {
+                        if ([ratingCompareString isEqualToString:[NSString stringWithUTF8String:ratingList->rating]])
+                            ratingIndex = k;
+                    }
                 }
                 [tagsDict setObject:[NSNumber numberWithInt:ratingIndex] forKey:@"Rating"];
             }
