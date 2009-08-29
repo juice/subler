@@ -43,7 +43,7 @@
 
     languages = [[NSArray arrayWithObjects:  @"Unknown", @"English", @"French", @"German" , @"Italian", @"Dutch",
 				  @"Swedish" , @"Spanish" , @"Danish" , @"Portuguese", @"Norwegian", @"Hebrew",
-				  @"Japanese", @"Arabic", @"Finnish", @"Greek", @"Icelandic", @"Maltese", @"Turkish",
+				  @"Japanese", @"Arabic", @"Finnish", @"Greek, Modern", @"Icelandic", @"Maltese", @"Turkish",
 				  @"Croatian", @"Chinese", @"Urdu", @"Hindi", @"Thai", @"Korean", @"Lithuanian", @"Polish", 
 				  @"Hungarian", @"Estonian", @"Latvian", @"Northern Sami", @"Faroese", @"Persian", @"Romanian", @"Russian", 
 				  @"Irish", @"Albanian", @"Bulgarian", @"Czech", @"Slovak", @"Slovenian", nil] retain];
