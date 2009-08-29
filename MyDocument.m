@@ -50,7 +50,7 @@
 
     [langSelection addItemsWithTitles:languages];
     [langSelection selectItemWithTitle:@"English"];
-    
+
     MovieViewController *controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
     [controller setFile:mp4File];
     if (controller !=nil){
@@ -63,14 +63,13 @@
     [fileTracksTable registerForDraggedTypes:[NSArray arrayWithObjects:SublerTableViewDataType, nil]];
     [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
                                    NSColorPboardType, NSFilenamesPboardType, nil]];
-    
+
     _optimize = NO;
 }
 
 - (id)initWithType:(NSString *)typeName error:(NSError **)outError
 {
     mp4File = [[MP42File alloc] initWithDelegate:self];
-    
     return [super initWithType:typeName error:outError];
 }
 

@@ -294,7 +294,7 @@ static const iTMF_rating_t rating_strings[] = {
             int j;
             for (j = 0; j < item->dataList.size; j++) {
                 MP4ItmfData* data = &item->dataList.elements[j];
-                NSString *rating = [NSString stringWithCString:(const char *)data->value length:data->valueSize];
+                NSString *rating = [[NSString alloc] initWithBytes:data->value length: data->valueSize encoding:NSUTF8StringEncoding];
                 NSString *splitElements  = @"\\|";
                 NSArray *ratingItems = [rating componentsSeparatedByRegex:splitElements];
                 NSInteger ratingIndex = R_UNKNOWN;

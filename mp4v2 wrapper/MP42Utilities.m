@@ -138,7 +138,10 @@ uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId Id)
         uint64_t hSpacing, vSpacing;
         MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", &hSpacing);
         MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", &vSpacing);
-        return (float) videoWidth / vSpacing * hSpacing;
+        if( hSpacing > 0 && vSpacing > 0)
+            return (float) videoWidth / vSpacing * hSpacing;
+        else
+            return videoWidth;
     }
 
     return videoWidth;
