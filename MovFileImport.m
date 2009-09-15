@@ -30,31 +30,10 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         for (i = 0; i < [tracks count]; i++) {
             [importCheckArray addObject: [NSNumber numberWithBool:YES]];
 
-#if __LP64__
-            //This should work, but it doesn't in current QuickTime
             QTTrack *track = [tracks objectAtIndex:i];
             if ([[track attributeForKey:QTTrackIsChapterTrackAttribute] boolValue])
                 chapterTrackId = [[track attributeForKey:QTTrackIDAttribute] integerValue];
-#endif
         }
-        
-#if !__LP64__
-        if([sourceFile hasChapters]) {
-            long    myCount;
-            long    myTrackCount = GetMovieTrackCount([sourceFile quickTimeMovie]);
-            Track   myTrack = NULL;
-            Track   myChapTrack = NULL;
-
-            for (myCount = 1; myCount <= myTrackCount; myCount++) {
-                myTrack = GetMovieIndTrack([sourceFile quickTimeMovie], myCount);
-                if (GetTrackEnabled(myTrack))
-                    myChapTrack = GetTrackReference(myTrack, kTrackReferenceChapterList, 1);
-                if (myChapTrack != NULL)
-                    chapterTrackId = GetTrackID(myChapTrack);
-                    break;
-            }
-        }
-#endif
     }
 
 	return self;
@@ -201,16 +180,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                     [(MP42VideoTrack*)newTrack setTrackHeight: dimesion.height];
                 }
             }
-
             // Audio
             else if ([mediaType isEqualToString:QTMediaTypeSound])
                 newTrack = [[MP42AudioTrack alloc] init];
-
             // Text
             else if ([mediaType isEqualToString:QTMediaTypeText]) {
                 if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId) {
                     newTrack = [[MP42ChapterTrack alloc] init];
-#if !__LP64__
                     NSArray *chapters = [sourceFile chapters];
 
                     for (NSDictionary *dic in chapters) {
@@ -218,7 +194,6 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                         [(MP42ChapterTrack*)newTrack addChapter:[dic valueForKey:QTMovieChapterName]
                                                        duration:((float)time.time.timeValue / time.time.timeScale)*1000];
                     }
-#endif
                 }
             }
             // Subtitle

@@ -26,6 +26,7 @@ static MP4TrackId createSubtitleTrack(MP4FileHandle fileHandle,
 
     MP4SetTrackDurationPerChunk(fileHandle, trackId, timescale / 8);
     MP4SetTrackIntegerProperty(fileHandle, trackId, "tkhd.alternate_group", 2);
+    MP4SetTrackIntegerProperty(fileHandle, trackId, "tkhd.layer", -1);
 
     MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.horizontalJustification", 1);
     MP4SetTrackIntegerProperty(fileHandle, trackId, "mdia.minf.stbl.stsd.tx3g.verticalJustification", -1);
