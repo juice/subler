@@ -657,7 +657,7 @@ returnCode contextInfo: (void *) contextInfo
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = YES;
-    
+
     [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectMetadataFileDidEnd:returnCode:contextInfo: )

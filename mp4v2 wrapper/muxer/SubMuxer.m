@@ -9,7 +9,6 @@
 #import "SubMuxer.h"
 #import "MP42Utilities.h"
 #import "SubUtilities.h"
-#import <QTKit/QTKit.h>
 #if !__LP64__
     #import <QuickTime/QuickTime.h>
 #endif
@@ -261,10 +260,9 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
 }
 
 #if !__LP64__
-int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
+int muxMOVSubtitleTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcTrackId)
 {
     OSStatus err = noErr;
-    QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
     Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
     Media media = GetTrackMedia(track);
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
@@ -385,7 +383,6 @@ int muxMOVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 
 bail:
     DisposeHandle((Handle) desc);
-    [srcFile release];
 
     return dstTrackId;
 }

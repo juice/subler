@@ -89,7 +89,7 @@
         else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
 #if !__LP64__
             Id = muxMOVSubtitleTrack(fileHandle,
-                                          sourcePath,
+                                          sourceFileHandle,
                                           sourceId);
 #endif
         }

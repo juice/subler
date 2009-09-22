@@ -29,7 +29,6 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         NSInteger i;
         for (i = 0; i < [tracks count]; i++) {
             [importCheckArray addObject: [NSNumber numberWithBool:YES]];
-
             QTTrack *track = [tracks objectAtIndex:i];
             if ([[track attributeForKey:QTTrackIsChapterTrackAttribute] boolValue])
                 chapterTrackId = [[track attributeForKey:QTTrackIDAttribute] integerValue];
@@ -93,7 +92,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
 - (NSString*)langForTrack: (QTTrack *)track;
 {
-    return [NSString stringWithFormat:@"%s", lang_for_qtcode(
+    return [NSString stringWithUTF8String:lang_for_qtcode(
                             [[track attributeForKey:QTTrackLanguageAttribute] longValue])->eng_name];
 }
 
@@ -207,6 +206,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 newTrack.format = [self formatForTrack:track];
                 newTrack.Id = i;
                 newTrack.sourcePath = filePath;
+                newTrack.sourceFileHandle = sourceFile;
                 newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
                 newTrack.language = [self langForTrack:track];
                 [tracks addObject:newTrack];

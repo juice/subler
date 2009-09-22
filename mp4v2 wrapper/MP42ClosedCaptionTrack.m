@@ -70,7 +70,7 @@
         else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
 #if !__LP64__
             Id = muxMOVCCTrack(fileHandle,
-                               sourcePath,
+                               sourceFileHandle,
                                sourceId);
 #endif
         }

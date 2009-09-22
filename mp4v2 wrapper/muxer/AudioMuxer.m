@@ -6,9 +6,9 @@
 //  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
+#import "AudioMuxer.h"
 #import "MP42Utilities.h"
 #import "SubUtilities.h"
-#import <QTKit/QTKit.h>
 #if !__LP64__
     #import <QuickTime/QuickTime.h>
 #endif
@@ -39,10 +39,9 @@ int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath) {
 }
 
 #if !__LP64__
-int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
+int muxMOVAudioTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcTrackId)
 {
     OSStatus err = noErr;
-    QTMovie *srcFile = [[QTMovie alloc] initWithFile:filePath error:nil];
     Track track = [[[srcFile tracks] objectAtIndex:srcTrackId] quickTimeTrack];
     Media media = GetTrackMedia(track);
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
@@ -237,7 +236,6 @@ int muxMOVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
 bail:
     DisposeHandle((Handle) desc);
-    [srcFile release];
 
     return dstTrackId;
 }

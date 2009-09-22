@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "mp4v2.h"
+#import <QTKit/QTKit.h>
 
 int muxSccCCTrack(MP4FileHandle fileHandle, NSString* filePath);
 
 #if !__LP64__
-    int muxMOVCCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
+    int muxMOVCCTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcTrackId);
 #endif
 
 int muxMP4CCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);

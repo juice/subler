@@ -42,7 +42,7 @@
     if (isEdited && !muxed) {
         if ([[sourcePath pathExtension] isEqualToString:@"mov"]) {
 #if !__LP64__
-            Id = muxMOVAudioTrack(fileHandle, sourcePath, sourceId);
+            Id = muxMOVAudioTrack(fileHandle, sourceFileHandle, sourceId);
 #endif
         }
         else if ([[sourcePath pathExtension] isEqualToString:@"aac"])

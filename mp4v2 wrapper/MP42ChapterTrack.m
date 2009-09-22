@@ -44,8 +44,10 @@
 {
     if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
     {
-        name = @"Chapter Track";
-        format = @"Text";
+        if (!name)
+            name = @"Chapter Track";
+        if (!format)
+            format = @"Text";
         chapters = [[NSMutableArray alloc] init];
 
         MP4Chapter_t *chapter_list = NULL;

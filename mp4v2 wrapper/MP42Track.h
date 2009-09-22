@@ -12,6 +12,8 @@
 @interface MP42Track : NSObject {
     MP4TrackId  Id;
     MP4TrackId  sourceId;
+    id          sourceFileHandle;
+    
 	NSString    *sourcePath;
 	NSString    *format;
     NSString    *name;
@@ -32,6 +34,7 @@
 
 @property(readwrite) MP4TrackId Id;
 @property(readwrite) MP4TrackId sourceId;
+@property(readwrite, retain) id sourceFileHandle;
 
 @property(readwrite, retain) NSString *sourcePath;
 @property(readwrite, retain) NSString *format;
