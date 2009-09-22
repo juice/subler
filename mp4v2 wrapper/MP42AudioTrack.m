@@ -40,18 +40,19 @@
         return NO;
 
     if (isEdited && !muxed) {
-        if ([[sourcePath pathExtension] isEqualToString:@"mov"]) {
+        if ([sourceInputType isEqualToString:MP42SourceTypeQuickTime]) {
 #if !__LP64__
             Id = muxMOVAudioTrack(fileHandle, sourceFileHandle, sourceId);
 #endif
         }
-        else if ([[sourcePath pathExtension] isEqualToString:@"aac"])
-            Id = muxAACAdtsStream(fileHandle, sourcePath);
-        else if ([[sourcePath pathExtension] isEqualToString:@"ac3"])
-            Id = muxAC3ElementaryStream(fileHandle, sourcePath);
-        else
+        else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
             Id = muxMP4AudioTrack(fileHandle, sourcePath, sourceId);
-        
+        else {
+            if ([[sourcePath pathExtension] isEqualToString:@"aac"])
+                Id = muxAACAdtsStream(fileHandle, sourcePath);
+            else if ([[sourcePath pathExtension] isEqualToString:@"ac3"])
+                Id = muxAC3ElementaryStream(fileHandle, sourcePath);
+        }        
         muxed = YES;
         enableFirstAudioTrack(fileHandle);
     }

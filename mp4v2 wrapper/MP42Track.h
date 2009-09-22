@@ -6,6 +6,11 @@
 //  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
+static NSString * MP42SourceTypeQuickTime = @"QuickTime";
+static NSString * MP42SourceTypeMP4 = @"MP4";
+static NSString * MP42SourceTypeMatroska = @"Matroska";
+static NSString * MP42SourceTypeRaw = @"Raw";
+
 #import <Foundation/Foundation.h>
 #import "mp4v2.h"
 
@@ -13,11 +18,12 @@
     MP4TrackId  Id;
     MP4TrackId  sourceId;
     id          sourceFileHandle;
-    
-	NSString    *sourcePath;
-	NSString    *format;
-    NSString    *name;
-    NSString    *language;
+    NSString*   sourceInputType;
+
+    NSString*   sourcePath;
+    NSString*   format;
+    NSString*   name;
+    NSString*   language;
     BOOL        enabled;
     uint64_t    alternate_group;
 
@@ -28,13 +34,14 @@
 	uint32_t    timescale; 
 	uint32_t    bitrate; 
 	MP4Duration duration;
-    
+
     NSMutableDictionary *updatedProperty;
 }
 
 @property(readwrite) MP4TrackId Id;
 @property(readwrite) MP4TrackId sourceId;
 @property(readwrite, retain) id sourceFileHandle;
+@property(readwrite, assign) NSString* sourceInputType;
 
 @property(readwrite, retain) NSString *sourcePath;
 @property(readwrite, retain) NSString *format;

@@ -111,6 +111,7 @@
 @synthesize Id;
 @synthesize sourceId;
 @synthesize sourceFileHandle;
+@synthesize sourceInputType;
 
 @synthesize format;
 @synthesize name;

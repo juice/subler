@@ -207,6 +207,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 newTrack.Id = i;
                 newTrack.sourcePath = filePath;
                 newTrack.sourceFileHandle = sourceFile;
+                newTrack.sourceInputType = MP42SourceTypeQuickTime;
                 newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
                 newTrack.language = [self langForTrack:track];
                 [tracks addObject:newTrack];

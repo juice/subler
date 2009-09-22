@@ -67,9 +67,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     return nil;
 }
 
-- (void) tableView: (NSTableView *) tableView 
-    setObjectValue: (id) anObject 
-    forTableColumn: (NSTableColumn *) tableColumn 
+- (void) tableView: (NSTableView *) tableView
+    setObjectValue: (id) anObject
+    forTableColumn: (NSTableColumn *) tableColumn
                row: (NSInteger) rowIndex
 {
     if ([tableColumn.identifier isEqualToString: @"check"])
@@ -88,8 +88,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     NSInteger i;
 
     for (i = 0; i < [sourceFile tracksCount]; i++) {
-        if ([[importCheckArray objectAtIndex: i] boolValue])
-            [tracks addObject:[sourceFile trackAtIndex:i]];
+        if ([[importCheckArray objectAtIndex: i] boolValue]) {
+            MP42Track* track = [sourceFile trackAtIndex:i];
+            track.sourceInputType = MP42SourceTypeMP4;
+            [tracks addObject:track];
+        }
     }
 
     if ([delegate respondsToSelector:@selector(importDone:)]) 

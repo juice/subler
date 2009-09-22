@@ -58,20 +58,13 @@
 {
     if (isEdited && !muxed)
     {
-        if ([[sourcePath pathExtension] caseInsensitiveCompare: @"scc"] == NSOrderedSame) {
+        if ([[sourcePath pathExtension] caseInsensitiveCompare: @"scc"] == NSOrderedSame)
             Id = muxSccCCTrack(fileHandle, sourcePath);
-        }
-        else if ([[sourcePath pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
-                 [[sourcePath pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame) {
-            Id = muxMP4CCTrack(fileHandle,
-                               sourcePath,
-                               sourceId);
-        }
-        else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
+        else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
+            Id = muxMP4CCTrack(fileHandle, sourcePath, sourceId);
+        else if ([sourceInputType isEqualToString:MP42SourceTypeQuickTime]) {
 #if !__LP64__
-            Id = muxMOVCCTrack(fileHandle,
-                               sourceFileHandle,
-                               sourceId);
+            Id = muxMOVCCTrack(fileHandle, sourceFileHandle, sourceId);
 #endif
         }
         if (!Id && (outError != NULL)) {

@@ -707,6 +707,8 @@ returnCode contextInfo: (void *) contextInfo
                      [[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"h264"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"264"] == NSOrderedSame)
                 [self showImportSheet:file];

@@ -80,17 +80,11 @@
                                           trackHeight,
                                           delay);
         }
-        else if ([[sourcePath pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
-                 [[sourcePath pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame) {
-            Id = muxMP4SubtitleTrack(fileHandle,
-                                          sourcePath,
-                                          sourceId);
-        }
-        else if([[sourcePath pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
+        else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
+            Id = muxMP4SubtitleTrack(fileHandle, sourcePath, sourceId);
+        else if ([sourceInputType isEqualToString:MP42SourceTypeQuickTime]) {
 #if !__LP64__
-            Id = muxMOVSubtitleTrack(fileHandle,
-                                          sourceFileHandle,
-                                          sourceId);
+            Id = muxMOVSubtitleTrack(fileHandle, sourceFileHandle, sourceId);
 #endif
         }
 

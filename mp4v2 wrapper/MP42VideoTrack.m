@@ -62,16 +62,15 @@
         return NO;
 
     if (isEdited && !muxed) {
-        if ([[sourcePath pathExtension] isEqualToString:@"mov"]) {
+        if ([sourceInputType isEqualToString:MP42SourceTypeQuickTime]) {
 #if !__LP64__
             Id = muxMOVVideoTrack(fileHandle, sourceFileHandle, sourceId);
 #endif
         }
-        else if ([[sourcePath pathExtension] isEqualToString:@"h264"] ||
-                 [[sourcePath pathExtension] isEqualToString:@"264"])
-            Id = muxH264ElementaryStream(fileHandle, sourcePath, sourceId);
-        else
+        else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
             Id = muxMP4VideoTrack(fileHandle, sourcePath, sourceId);
+        else
+            Id = muxH264ElementaryStream(fileHandle, sourcePath, sourceId);
     }
     if (Id) {
         [super writeToFile:fileHandle error:outError];
