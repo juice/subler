@@ -59,8 +59,8 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                                                  selector:@selector(loadStateChanged:) 
                                                      name:QTMovieLoadStateDidChangeNotification 
                                                    object:sourceFile];
-        
-        loadTimer = [NSTimer scheduledTimerWithTimeInterval:0.5
+
+        loadTimer = [NSTimer scheduledTimerWithTimeInterval:1
                                                      target:self
                                                    selector:@selector(updateUI:)
                                                    userInfo:nil
@@ -69,6 +69,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                                      forMode:NSDefaultRunLoopMode];
         [loadProgressBar setIndeterminate:NO];
         [loadProgressBar setHidden:NO];
+        [loadProgressBar setUsesThreadedAnimation:YES];
     }
 }
 
@@ -81,6 +82,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         [self movieLoaded];
 
         [loadTimer invalidate];
+        loadTimer = nil;
         [tableView reloadData];
     }
     else if (loadState == -1)
