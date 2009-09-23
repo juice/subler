@@ -15,18 +15,24 @@
 	if (self = [super initWithWindowNibName:@"FileImport"])
 	{        
 		delegate = del;
-        filePath = path;
-        sourceFile = [[MP42File alloc] initWithExistingFile:filePath andDelegate:self];
-        importCheckArray = [[NSMutableArray alloc] initWithCapacity:[sourceFile tracksCount]];
-
-        NSInteger i = [sourceFile tracksCount];
-        while (i) {
-            [importCheckArray addObject: [NSNumber numberWithBool:YES]];
-            i--;
-        }
+        filePath = [path retain];
     }
 
 	return self;
+}
+
+- (void)awakeFromNib
+{
+    sourceFile = [[MP42File alloc] initWithExistingFile:filePath andDelegate:self];
+    importCheckArray = [[NSMutableArray alloc] initWithCapacity:[sourceFile tracksCount]];
+    
+    NSInteger i = [sourceFile tracksCount];
+    while (i) {
+        [importCheckArray addObject: [NSNumber numberWithBool:YES]];
+        i--;
+        
+        [addTracksButton setEnabled:YES];        
+    }
 }
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
@@ -102,6 +108,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void) dealloc
 {
+    [filePath release];
     [sourceFile release];
     [importCheckArray release];
     [super dealloc];

@@ -15,6 +15,8 @@
     NSMutableArray  *importCheckArray;
 
     id delegate;
+    IBOutlet NSTableView *tableView;
+    IBOutlet NSButton    *addTracksButton;
 }
 
 - (id)initWithDelegate:(id)del andFile: (NSString *)path;

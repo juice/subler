@@ -17,6 +17,11 @@
     
     NSInteger chapterTrackId;
     id  delegate;
+    
+    IBOutlet NSTableView *tableView;
+    IBOutlet NSButton    *addTracksButton;
+    IBOutlet NSProgressIndicator *loadProgressBar;
+    NSTimer *loadTimer;
 }
 
 - (id)initWithDelegate:(id)del andFile: (NSString *)path;
