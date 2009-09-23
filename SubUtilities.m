@@ -21,7 +21,7 @@
 
 @end
 
-@implementation SubSerializer
+@implementation SBSubSerializer
 -(id)init
 {
 	if (self = [super init]) {
@@ -42,7 +42,7 @@
 
 static CFComparisonResult CompareLinesByBeginTime(const void *a, const void *b, void *unused)
 {
-	SubLine *al = (SubLine*)a, *bl = (SubLine*)b;
+	SBSubLine *al = (SBSubLine*)a, *bl = (SBSubLine*)b;
 	
 	if (al->begin_time > bl->begin_time) return kCFCompareGreaterThan;
 	if (al->begin_time < bl->begin_time) return kCFCompareLessThan;
@@ -61,7 +61,7 @@ static CFComparisonResult CompareLinesByBeginTime(const void *a, const void *b, 
 	return 0;
 }*/
 
--(void)addLine:(SubLine *)line
+-(void)addLine:(SBSubLine *)line
 {
 	if (line->begin_time >= line->end_time) {
 		if (line->begin_time)
@@ -73,7 +73,7 @@ static CFComparisonResult CompareLinesByBeginTime(const void *a, const void *b, 
 	
 	int nlines = [lines count];
 	
-	if (!nlines || line->begin_time > ((SubLine*)[lines objectAtIndex:nlines-1])->begin_time) {
+	if (!nlines || line->begin_time > ((SBSubLine*)[lines objectAtIndex:nlines-1])->begin_time) {
 		[lines addObject:line];
 	} else {
 		CFIndex i = CFArrayBSearchValues((CFArrayRef)lines, CFRangeMake(0, nlines), line, CompareLinesByBeginTime, NULL);
@@ -86,10 +86,10 @@ static CFComparisonResult CompareLinesByBeginTime(const void *a, const void *b, 
 	
 }
 
--(SubLine*)getNextRealSerializedPacket
+-(SBSubLine*)getNextRealSerializedPacket
 {
 	int nlines = [lines count];
-	SubLine *first = [lines objectAtIndex:0];
+	SBSubLine *first = [lines objectAtIndex:0];
     NSMutableString *str;
 	int i;
     
@@ -98,7 +98,7 @@ static CFComparisonResult CompareLinesByBeginTime(const void *a, const void *b, 
 			unsigned maxEndTime = first->end_time;
 			
 			for (i = 1; i < nlines; i++) {
-				SubLine *l = [lines objectAtIndex:i];
+				SBSubLine *l = [lines objectAtIndex:i];
 				
 				if (l->begin_time >= maxEndTime) {
 					goto canOutput;
@@ -117,7 +117,7 @@ canOutput:
 	int deleted = 0;
     
 	for (i = 1; i < nlines; i++) {
-		SubLine *l = [lines objectAtIndex:i];
+		SBSubLine *l = [lines objectAtIndex:i];
 		if (l->begin_time >= end_time) break;
 		
 		//shorten packet end time if another shorter time (begin or end) is found
@@ -131,7 +131,7 @@ canOutput:
 	}
 	
 	for (i = 0; i < nlines; i++) {
-		SubLine *l = [lines objectAtIndex:i - deleted];
+		SBSubLine *l = [lines objectAtIndex:i - deleted];
 		
 		if (l->end_time == end_time) {
 			[lines removeObjectAtIndex:i - deleted];
@@ -139,19 +139,19 @@ canOutput:
 		}
 	}
 	
-	return [[[SubLine alloc] initWithLine:str start:begin_time end:end_time] autorelease];
+	return [[[SBSubLine alloc] initWithLine:str start:begin_time end:end_time] autorelease];
 }
 
--(SubLine*)getSerializedPacket
+-(SBSubLine*)getSerializedPacket
 {
 	int nlines = [lines count];
     
 	if (!nlines) return nil;
 	
-	SubLine *nextline = [lines objectAtIndex:0], *ret;
+	SBSubLine *nextline = [lines objectAtIndex:0], *ret;
 	
 	if (nextline->begin_time > last_end_time) {
-		ret = [[[SubLine alloc] initWithLine:@"\n" start:last_end_time end:nextline->begin_time] autorelease];
+		ret = [[[SBSubLine alloc] initWithLine:@"\n" start:last_end_time end:nextline->begin_time] autorelease];
 	} else {
 		ret = [self getNextRealSerializedPacket];
 	}
@@ -180,7 +180,7 @@ canOutput:
 }
 @end
 
-@implementation SubLine
+@implementation SBSubLine
 -(id)initWithLine:(NSString*)l start:(unsigned)s end:(unsigned)e
 {
 	if (self = [super init]) {
@@ -304,7 +304,7 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 	return res;
 }
 
-int LoadSRTFromPath(NSString *path, SubSerializer *ss)
+int LoadSRTFromPath(NSString *path, SBSubSerializer *ss)
 {
 	NSMutableString *srt = STStandardizeStringNewlines(STLoadFileWithUnknownEncoding(path));
 	if (!srt) return 0;
@@ -346,7 +346,7 @@ int LoadSRTFromPath(NSString *path, SubSerializer *ss)
 			case LINES:
 				[sc scanUpToString:@"\n\n" intoString:&res];
 				[sc scanString:@"\n\n" intoString:nil];
-				SubLine *sl = [[SubLine alloc] initWithLine:res start:startTime end:endTime];
+				SBSubLine *sl = [[SBSubLine alloc] initWithLine:res start:startTime end:endTime];
 				[ss addLine:[sl autorelease]];
 				state = INITIAL;
 				break;

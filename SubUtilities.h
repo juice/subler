@@ -20,17 +20,17 @@
 
 @end
 
-@interface SubLine : NSObject
+@interface SBSubLine : NSObject
 {
 @public
 	NSString *line;
 	unsigned begin_time, end_time;
-	unsigned no; // line number, used only by SubSerializer
+	unsigned no; // line number, used only by SBSubSerializer
 }
 -(id)initWithLine:(NSString*)l start:(unsigned)s end:(unsigned)e;
 @end
 
-@interface SubSerializer : NSObject
+@interface SBSubSerializer : NSObject
 {
 	// input lines, sorted by 1. beginning time 2. original insertion order
 	NSMutableArray *lines;
@@ -39,13 +39,13 @@
 	unsigned last_begin_time, last_end_time;
 	unsigned linesInput;
 }
--(void)addLine:(SubLine *)sline;
+-(void)addLine:(SBSubLine *)sline;
 -(void)setFinished:(BOOL)finished;
--(SubLine*)getSerializedPacket;
+-(SBSubLine*)getSerializedPacket;
 -(BOOL)isEmpty;
 @end
 
 NSMutableString *STStandardizeStringNewlines(NSString *str);
 extern NSString *STLoadFileWithUnknownEncoding(NSString *path);
-int LoadSRTFromPath(NSString *path, SubSerializer *ss);
+int LoadSRTFromPath(NSString *path, SBSubSerializer *ss);
 int LoadChaptersFromPath(NSString *path, NSMutableArray *ss);
