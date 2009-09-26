@@ -166,6 +166,7 @@
 
 - (BOOL) writeToUrl:(NSURL *)url flags:(uint64_t)flags error:(NSError **)outError
 {
+    BOOL success = YES;
     filePath = [url path];
     NSString *fileExtension = [filePath pathExtension];
     char* majorBrand = "mp42";
@@ -194,12 +195,14 @@
                              flags, 1, 1,
                              majorBrand, 0,
                              supportedBrands, supportedBrandsCount);
-    MP4SetTimeScale(fileHandle, 600);
-    MP4Close(fileHandle);
+    if (fileHandle) {
+        MP4SetTimeScale(fileHandle, 600);
+        MP4Close(fileHandle);
 
-    [self updateMP4File:outError];
+        success = [self updateMP4File:outError];
+    }
 
-    return YES;
+    return success;
 }
 
 - (BOOL) updateMP4File:(NSError **)outError
@@ -225,8 +228,9 @@
     for (track in tracks)
         if (track.isEdited) {
             success = [track writeToFile:fileHandle error:outError];
-            if (!success)
+            if (!success) {
                 break;
+            }
         }
 
     if (metadata.isEdited && success)

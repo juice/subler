@@ -103,7 +103,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 }
 
 -(void) updateUI: (id) sender {
-    [loadProgressBar setDoubleValue:[self _percentLoaded] *100];
+    [loadProgressBar setDoubleValue:[self _percentLoaded] * 100];
 }
 
 - (NSString*)formatForTrack: (QTTrack *)track;

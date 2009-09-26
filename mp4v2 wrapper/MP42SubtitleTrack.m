@@ -95,24 +95,26 @@
                                             code:110
                                         userInfo:errorDetail];
         }
-        muxed = YES;
-        enableFirstSubtitleTrack(fileHandle);
+        else {
+            muxed = YES;
+            enableFirstSubtitleTrack(fileHandle);
 
-        MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.width", &trackWidth);
-        MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.height", &trackHeight);
+            MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.width", &trackWidth);
+            MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.height", &trackHeight);
 
-        uint8_t *val;
-        uint8_t nval[36];
-        uint32_t *ptr32 = (uint32_t*) nval;
-        uint32_t size;
+            uint8_t *val;
+            uint8_t nval[36];
+            uint32_t *ptr32 = (uint32_t*) nval;
+            uint32_t size;
 
-        MP4GetTrackBytesProperty(fileHandle ,Id, "tkhd.matrix", &val, &size);
-        memcpy(nval, val, size);
-        offsetX = CFSwapInt32BigToHost(ptr32[6]) / 0x10000;
-        offsetY = CFSwapInt32BigToHost(ptr32[7]) / 0x10000;
-        free(val);
+            MP4GetTrackBytesProperty(fileHandle ,Id, "tkhd.matrix", &val, &size);
+            memcpy(nval, val, size);
+            offsetX = CFSwapInt32BigToHost(ptr32[6]) / 0x10000;
+            offsetY = CFSwapInt32BigToHost(ptr32[7]) / 0x10000;
+            free(val);
 
-        [super writeToFile:fileHandle error:outError];
+            [super writeToFile:fileHandle error:outError];
+        }
         return Id;
     }
     else

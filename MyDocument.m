@@ -112,11 +112,7 @@
     BOOL success = [self saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&outError];
 
     if (!success && outError)
-        [self presentError:outError
-            modalForWindow:documentWindow
-                  delegate:nil
-        didPresentSelector:NULL
-               contextInfo:NULL];
+        NSLog(@"Something has gone wrong");
     else {
         NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                         [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
@@ -128,9 +124,10 @@
         [self setFileModificationDate:[[[NSFileManager defaultManager]  
                                         fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
                                        fileModificationDate]];
+        outError = nil;
     }
 
-    [self performSelectorOnMainThread:@selector(saveDidComplete) withObject:nil waitUntilDone: NO];
+    [self performSelectorOnMainThread:@selector(saveDidComplete:) withObject:outError waitUntilDone: NO];
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
@@ -175,14 +172,22 @@
     _64bit_time = [sender state];
 }
 
-- (void) saveDidComplete
+- (void) saveDidComplete: (NSError *)outError
 {
-    [self reloadFile:self];
-
     [NSApp endSheet: savingWindow];
     [savingWindow orderOut:self];
-
+    
     [optBar stopAnimation:nil];
+
+    if (outError) {
+        [self presentError:outError
+            modalForWindow:documentWindow
+                  delegate:nil
+        didPresentSelector:NULL
+               contextInfo:NULL];
+    }
+    else
+        [self reloadFile:self];
 }
 
 - (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName 

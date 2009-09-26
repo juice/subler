@@ -226,7 +226,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-    SubSerializer *ss = [[SubSerializer alloc] init];
+    SBSubSerializer *ss = [[SBSubSerializer alloc] init];
     success = LoadSRTFromPath(subtitlePath, ss);
     [ss setFinished:YES];
 
@@ -236,7 +236,7 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
         success = subtitleTrackId = createSubtitleTrack(fileHandle, videoWidth, videoHeight, subtitleHeight, 1000);
 
         while (![ss isEmpty]) {
-            SubLine *sl = [ss getSerializedPacket];
+            SBSubLine *sl = [ss getSerializedPacket];
             if (firstSub == 0) {
                 firstSub++;
                 if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->begin_time + delay))
