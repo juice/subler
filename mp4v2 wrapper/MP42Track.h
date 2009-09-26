@@ -6,10 +6,10 @@
 //  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
-static NSString * MP42SourceTypeQuickTime = @"QuickTime";
-static NSString * MP42SourceTypeMP4 = @"MP4";
-static NSString * MP42SourceTypeMatroska = @"Matroska";
-static NSString * MP42SourceTypeRaw = @"Raw";
+extern NSString * const MP42SourceTypeQuickTime;
+extern NSString * const MP42SourceTypeMP4;
+extern NSString * const MP42SourceTypeMatroska;
+extern NSString * const MP42SourceTypeRaw;
 
 #import <Foundation/Foundation.h>
 #import "mp4v2.h"

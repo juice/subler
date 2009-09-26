@@ -27,8 +27,8 @@ int main (int argc, const char * argv[]) {
     char* input_file = NULL;
     char* input_sub = NULL;
     char* input_chap = NULL;
-    char* name = "Subtitle Track";
-    char* language = "English";
+    const char* name = "Subtitle Track";
+    const char* language = "English";
     int delay = 0;
     unsigned int height = 60;
     BOOL removeExisting = false;

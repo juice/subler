@@ -10,6 +10,11 @@
 #import "MP42Utilities.h"
 #import "lang.h"
 
+NSString * const MP42SourceTypeQuickTime = @"QuickTime";
+NSString * const MP42SourceTypeMP4 = @"MP4";
+NSString * const MP42SourceTypeMatroska = @"Matroska";
+NSString * const MP42SourceTypeRaw = @"Raw";
+
 @implementation MP42Track
 
 -(id)init

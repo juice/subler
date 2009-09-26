@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "mp4v2.h"
 
-enum {
+enum rating_type {
     MPAA_NR = 0,
     MPAA_G,
     MPAA_PG,
@@ -36,7 +36,7 @@ enum {
     UK_MOVIE_UNRATED,
     UK_TV_CAUTION  = 27,
     R_UNKNOWN   = 29,
-} rating_type;
+};
 
 @interface MP42Metadata : NSObject {
     NSString                *sourcePath;

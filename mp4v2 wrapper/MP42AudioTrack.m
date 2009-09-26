@@ -62,7 +62,7 @@
     if ([updatedProperty valueForKey:@"volume"] || !muxed)
         MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.volume", volume);
 
-    return YES;
+    return Id;
 }
 
 - (void) dealloc
