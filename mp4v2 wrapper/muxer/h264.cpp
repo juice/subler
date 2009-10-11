@@ -21,7 +21,8 @@
  *                          for his work on ctts creation)
  */
 
-//#define DEBUG_H264 1
+//#define DEBUG_H264 0
+//#define DEBUG_H264_READER 0
 
 static const char*  ProgName = "Subler";
 static int Verbosity = 0;
@@ -33,6 +34,7 @@ static int Verbosity = 0;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h> // read
 #include <inttypes.h>
 #include <sys/types.h>
 #include "mpeg4ip_bitstream.h"
@@ -149,6 +151,8 @@ typedef struct h264_decode_t {
 
 typedef struct nal_reader_t {
     FILE *ifile;
+	int pipeFD;
+	int usePipe;
     uint8_t *buffer;
     uint32_t buffer_on;
     uint32_t buffer_size;
@@ -1170,7 +1174,8 @@ static bool RefreshReader (nal_reader_t *nal,
     printf("refresh - start %u buffer on %u size %u\n", 
            nal_start, nal->buffer_on, nal->buffer_size);
 #endif
-    if (nal_start != 0) {
+    if (nal_start != 0) 
+	{
         if (nal_start > nal->buffer_size) {
 #ifdef DEBUG_H264
             printf("nal start is greater than buffer size\n");
@@ -1191,18 +1196,51 @@ static bool RefreshReader (nal_reader_t *nal,
             }
             nal->buffer_size = bytes_left;
         }
-    } else {
-        if (feof(nal->ifile)) {
+    } 
+	else 
+	{
+        if (!nal->usePipe && feof(nal->ifile)) {
             return false;
         }
         nal->buffer_size_max += 4096 * 4;
         nal->buffer = (uint8_t *)realloc(nal->buffer, nal->buffer_size_max);
     }
-    bytes_read = fread(nal->buffer + nal->buffer_size,
-                       1,
-                       nal->buffer_size_max - nal->buffer_size,
-                       nal->ifile);
-    if (bytes_read == 0) return false;
+	if (nal->usePipe) 
+	{
+		bytes_read = 0; 
+		uint32_t bytes_to_go = nal->buffer_size_max - nal->buffer_size; 
+		uint32_t bytes_read_this_time = 0;
+		while (bytes_to_go)
+		{
+			bytes_read_this_time = read(nal->pipeFD, nal->buffer + nal->buffer_size + bytes_read, bytes_to_go);
+			if (bytes_read_this_time == -1) 
+			{
+				bytes_read_this_time = 0;
+				int err = errno;
+				if (err != EAGAIN)
+				{
+					printf("Error: %i\n", err);
+					break;
+				}
+				
+			}
+			bytes_read += bytes_read_this_time;
+			bytes_to_go -= bytes_read_this_time;
+		}
+		if (bytes_read < nal->buffer_size_max - nal->buffer_size)
+		{
+			printf("Short socket read\n");
+		}
+	}
+	else 
+	{
+		bytes_read = fread(nal->buffer + nal->buffer_size,
+						   1,
+						   nal->buffer_size_max - nal->buffer_size,
+						   nal->ifile);	
+	}
+
+        if (bytes_read == 0) return false;
 #ifdef DEBUG_H264_READER
     printf("read %u of %u\n", bytes_read, 
            nal->buffer_size_max - nal->buffer_size);
@@ -1243,7 +1281,7 @@ static bool LoadNal (nal_reader_t *nal)
 }
 
 extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
-                                   uint32_t timescale, uint32_t mp4FrameDuration)
+                                   uint32_t timescale, uint32_t mp4FrameDuration, int usePipe, int pipeFD)
 {
     bool rc;
     
@@ -1266,7 +1304,9 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     MP4SampleId samplesWritten = 0;
     
     memset(&nal, 0, sizeof(nal));
-    nal.ifile = inFile;
+	nal.usePipe = usePipe;
+	if (usePipe) nal.pipeFD = pipeFD;
+	else nal.ifile = inFile;
     
     if (timescale == 0) {
         fprintf(stderr, "%s: Must specify a timescale when reading H.264 files", 
@@ -1295,14 +1335,19 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
         }
     }	
     
-    rewind(nal.ifile);
-    nal.buffer_size = 0;
-    nal.buffer_on = 0;
-    nal.buffer_size_max = 0;
-    free(nal.buffer);
-    nal.buffer = NULL;
+    if (!usePipe)
+	{
+		rewind(nal.ifile);
+		nal.buffer_size = 0;
+		nal.buffer_on = 0;
+		nal.buffer_size_max = 0;
+		free(nal.buffer);
+		nal.buffer = NULL;
+	}
+    
 
     // create the new video track
+	MP4SetTimeScale(mp4File, timescale);
     MP4TrackId trackId = MP4AddH264VideoTrack(mp4File,
                                               timescale,
                                               mp4FrameDuration,
@@ -1389,7 +1434,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
                 DpbAdd( &h264_dpb, poc, slice_is_idr );
                 nal_is_sync = false;
 #ifdef DEBUG_H264
-                printf("wrote frame %d "U64"\n", nal_buffer_size, thisTime);
+                printf("wrote frame %d\n", nal_buffer_size);
 #endif
                 nal_buffer_size = 0;
             } 
@@ -1487,26 +1532,29 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     
     DpbFlush(&h264_dpb);
     
-    if (h264_dpb.dpb.size_min > 0) {
-        unsigned int ix;
+    if (h264_dpb.dpb.size_min > 0) 
+	{
+        uint32_t ix;
         
-        for (ix = 0; ix < samplesWritten; ix++) {;
-            const int offset = DpbFrameOffset(&h264_dpb, ix);
+        for (ix = 0; ix < samplesWritten; ix++) 
+		{
+            const uint32_t offset = DpbFrameOffset(&h264_dpb, ix);
 #ifdef DEBUG_H264
             printf("dts=%d pts=%d offset=%d\n", ix, ix+offset, offset );
 #endif
-            MP4SetSampleRenderingOffset(mp4File, trackId, 1 + ix, 
-                                        offset * mp4FrameDuration);
+            MP4SetSampleRenderingOffset(mp4File, trackId, 1 + ix, offset * mp4FrameDuration);
         }
         MP4Duration editDuration = MP4ConvertFromTrackDuration(mp4File,
-                                                               trackId,
-                                                               MP4GetTrackDuration(mp4File, trackId),
-                                                               MP4GetTimeScale(mp4File));
+		                                                     trackId,
+		                                                     MP4GetTrackDuration(mp4File, trackId),
+		                                                     MP4GetTimeScale(mp4File));
 
         MP4AddTrackEdit(mp4File, trackId, MP4_INVALID_EDIT_ID, DpbFrameOffset(&h264_dpb, 0) * mp4FrameDuration,
-                        editDuration, 0);
+		              editDuration, 0);
     }
     
     DpbClean(&h264_dpb);
+	free(nal.buffer);
+	close(pipeFD);
     return trackId;
 }

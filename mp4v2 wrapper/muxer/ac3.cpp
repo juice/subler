@@ -105,7 +105,7 @@ static u_int8_t MP4AV_Ac3GetSamplingRateIndex(u_int8_t* pHdr)
 	return ((pHdr[4] & 0xC0) >> 6);
 }
 
-static u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr)
+extern "C" u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr)
 {
 	return Ac3SamplingRates[MP4AV_Ac3GetSamplingRateIndex(pHdr)];
 }

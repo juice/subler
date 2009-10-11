@@ -15,6 +15,7 @@
 #import "ChapterViewController.h"
 #import "MP4FileImport.h"
 #import "MovFileImport.h"
+#import "MKVFileImport.h"
 #import "VideoFramerate.h"
 
 #define SublerTableViewDataType @"SublerTableViewDataType"
@@ -584,7 +585,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
                                                                                     @"aac", @"h264", @"264", @"ac3",
-                                                                                    @"txt", @"srt", @"scc", nil]
+                                                                                    @"txt", @"srt", @"scc", @"mkv", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
                       contextInfo: nil];                                                      
@@ -621,6 +622,8 @@ returnCode contextInfo: (void *) contextInfo
 {
     if ([[filePath pathExtension] isEqualToString:@"mov"])
         importWindow = [[MovFileImport alloc] initWithDelegate:self andFile:filePath];
+	else if ([[filePath pathExtension] isEqualToString:@"mkv"])
+		importWindow = [[MKVFileImport alloc] initWithDelegate:self andFile:filePath];
     else if ([[filePath pathExtension] isEqualToString:@"h264"] || [[filePath pathExtension] isEqualToString:@"264"])
         importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:filePath];
     else

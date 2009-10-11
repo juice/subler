@@ -7,6 +7,7 @@
 //
 
 #import "SubUtilities.h"
+#import "RegexKitLite.h"
 
 @implementation SBSample
 
@@ -430,4 +431,40 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
     }
     
     return 1;
+}
+
+int ParseSSAHeader(NSString *header) {
+    NSScanner *sc = [NSScanner scannerWithString:header];
+	NSString *res=nil;
+	[sc setCharactersToBeSkipped:nil];
+    
+    [sc scanUpToString:@"[Events]" intoString:nil];
+    [sc scanUpToString:@"Format:" intoString:nil];
+
+    return 0;
+}
+
+NSString* StripSSALine(NSString *line){
+    NSUInteger i = 0;
+    
+    NSScanner *sc = [NSScanner scannerWithString:line];
+    for (i = 0; i < 8; i++) {
+        [sc scanUpToString:@"," intoString:nil];
+        [sc scanString:@"," intoString:nil];
+    }
+    
+    [sc scanUpToString:@"" intoString:&line];
+
+    NSRange endRange;
+    NSRange tagEndRange;
+    NSRange startRange = [line rangeOfString: @"}"];
+    while (startRange.location != NSNotFound) {
+        NSRange endRange = [line rangeOfString: @"{"];
+        if (endRange.location != NSNotFound)
+            endRange.length = startRange.location - endRange.location +1;
+            line = [line stringByReplacingCharactersInRange:endRange withString:@""];
+            startRange = [line rangeOfString: @"}"];
+    }
+
+    return line;
 }

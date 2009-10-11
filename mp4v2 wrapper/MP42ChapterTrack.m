@@ -44,7 +44,7 @@
 {
     if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
     {
-        if (!name)
+        if (!name || [name isEqualToString:@"Text Track"])
             name = @"Chapter Track";
         if (!format)
             format = @"Text";

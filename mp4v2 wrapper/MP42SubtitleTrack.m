@@ -87,6 +87,8 @@
             Id = muxMOVSubtitleTrack(fileHandle, sourceFileHandle, sourceId);
 #endif
         }
+        else if ([sourceInputType isEqualToString:MP42SourceTypeMatroska])
+			Id = muxMKVSubtitleTrack(fileHandle, sourcePath, sourceId);
 
         if (!Id && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];

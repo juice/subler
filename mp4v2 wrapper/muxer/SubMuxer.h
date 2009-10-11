@@ -17,3 +17,5 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
 #endif
 
 int muxMP4SubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
+
+int muxMKVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);

@@ -12,7 +12,12 @@
 #if !__LP64__
     #import <QuickTime/QuickTime.h>
 #endif
+#import "MatroskaParser.h"
+#import "MatroskaFile.h"
 #import "lang.h"
+
+#include <sys/socket.h>
+#import <sys/un.h>
 
 static const framerate_t framerates[] =
 { { 2398, 24000, 1001 },
@@ -24,8 +29,19 @@ static const framerate_t framerates[] =
   { 60, 600, 10 },
   { 0, 24000, 1001 } };
 
-MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
-                        uint32_t timescale, uint32_t mp4FrameDuration);
+static const framerate_t framerates_thousand[] =
+{ { 2398, 24000, 1001 },
+	{ 2400, 600, 25 },
+	{ 2500, 600, 24 },
+	{ 2997, 30000, 1001 },
+	{ 3000, 600, 20 },
+	{ 5994, 60000, 1001 },
+	{ 6000, 600, 10 },
+	{ 0, 24000, 1001 } };
+
+MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile, uint32_t timescale, uint32_t mp4FrameDuration, int usePipe, int pipeFD);
+int write_track_to_socket(int socketFD, MatroskaFile *matroskaFile, StdIoStream *ioStream, MP4TrackId srcTrackId);
+void write_nal(int socketFD, const char *data, uint32_t *pos, uint32_t data_size, uint8_t write_nal_size_size);
 
 int muxH264ElementaryStream(MP4FileHandle fileHandle, NSString* filePath, uint32_t frameRateCode) {
     MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
@@ -36,7 +52,7 @@ int muxH264ElementaryStream(MP4FileHandle fileHandle, NSString* filePath, uint32
         if(frameRateCode == framerate->code)
             break;
 
-    dstTrackId = H264Creator(fileHandle, inFile, framerate->timescale, framerate->duration);
+    dstTrackId = H264Creator(fileHandle, inFile, framerate->timescale, framerate->duration, 0, 0);
     fclose(inFile);
 
     return dstTrackId;
@@ -334,3 +350,409 @@ int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
     return dstTrackId;
 }
+
+@implementation SBMatroskaSample
+@synthesize startTime;
+@synthesize endTime;
+@synthesize filePos;
+@synthesize frameSize;
+@synthesize frameFlags;
+
+@end
+
+int muxMKVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
+{
+    MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
+#ifdef H264Mux
+    StdIoStream *ioStream;
+	
+	ioStream = calloc(1, sizeof(StdIoStream)); 
+    MatroskaFile *matroskaFile = openMatroskaFile((char *)[filePath UTF8String], ioStream);
+	
+	TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, srcTrackId);
+	double fr1 = 1.0f / trackInfo->DefaultDuration;
+	double fr2 = fr1 * 1000 * 1000 * 1000 * 100; // nanoseconds
+	
+	uint32_t frameRateCode = lround(fr2);
+	
+	framerate_t * framerate;
+	
+    for (framerate = (framerate_t*) framerates_thousand; framerate->code; framerate++)
+        if(frameRateCode == framerate->code)
+            break;
+	
+	MP4SetVideoProfileLevel(fileHandle, 0x15);
+	
+	int parserSocketFD[2];
+	socketpair(AF_UNIX, SOCK_STREAM, 0, parserSocketFD);
+    
+	dispatch_async(dispatch_get_global_queue(0, 0), ^{
+		write_track_to_socket(parserSocketFD[1], matroskaFile, ioStream, srcTrackId);
+		
+		close(parserSocketFD[1]);
+		close(parserSocketFD[0]);
+		mkv_Close(matroskaFile);
+		fclose(ioStream->fp);
+	});
+	
+	H264Creator(fileHandle, NULL, framerate->timescale, framerate->duration, 1, parserSocketFD[0]);
+#else
+	StdIoStream *ioStream = calloc(1, sizeof(StdIoStream));
+
+    MatroskaFile *matroskaFile = openMatroskaFile((char *)[filePath UTF8String], ioStream);
+	TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, srcTrackId);
+    uint64_t timeScale = mkv_GetFileInfo(matroskaFile)->TimecodeScale / mkv_TruncFloat(trackInfo->TimecodeScale) * 1000;
+
+    if (!strcmp(trackInfo->CodecID, "V_MPEG4/ISO/AVC")) {
+        // Get avcC atom
+        uint8_t* avcCAtom = (uint8_t *)malloc(trackInfo->CodecPrivateSize); // mkv stores h.264 avcC in CodecPrivate
+        memcpy(avcCAtom, trackInfo->CodecPrivate, trackInfo->CodecPrivateSize);
+
+        dstTrackId = MP4AddH264VideoTrack(fileHandle, 90000,
+                                          MP4_INVALID_DURATION,
+                                          trackInfo->AV.Video.PixelWidth, trackInfo->AV.Video.PixelHeight,
+                                          avcCAtom[1],  // AVCProfileIndication
+                                          avcCAtom[2],  // profile_compat
+                                          avcCAtom[3],  // AVCLevelIndication
+                                          avcCAtom[4]); // lengthSizeMinusOne
+
+        SInt64 i;
+        int8_t spsCount = (avcCAtom[5] & 0x1f);
+        uint8_t ptrPos = 6;
+        for (i = 0; i < spsCount; i++) {
+            uint16_t spsSize = (avcCAtom[ptrPos++] << 8) & 0xff00;
+            spsSize += avcCAtom[ptrPos++] & 0xff;
+            MP4AddH264SequenceParameterSet(fileHandle, dstTrackId,
+                                           avcCAtom+ptrPos, spsSize);
+            ptrPos += spsSize;
+        }
+
+        int8_t ppsCount = avcCAtom[ptrPos++];
+        for (i = 0; i < ppsCount; i++) {
+            uint16_t ppsSize = (avcCAtom[ptrPos++] << 8) & 0xff00;
+            ppsSize += avcCAtom[ptrPos++] & 0xff;
+            MP4AddH264PictureParameterSet(fileHandle, dstTrackId,
+                                      avcCAtom+ptrPos, ppsSize);
+            ptrPos += ppsSize;
+        }
+
+        MP4SetVideoProfileLevel(fileHandle, 0x15);
+    }
+    else
+        return MP4_INVALID_TRACK_ID;
+
+	/* mask other tracks because we don't need them */
+	mkv_SetTrackMask(matroskaFile, ~(1 << srcTrackId));
+
+    NSMutableArray *queue = [[NSMutableArray alloc] init];
+    NSMutableArray *offsetsArray = [[NSMutableArray alloc] init];
+    SBMatroskaSample *frameSample = nil, *currentSample = nil;
+	uint64_t        StartTime, EndTime, FilePos, current_time = 0;
+    int64_t         offset, minOffset = 0, duration, next_duration;
+	uint32_t        rt, FrameSize, FrameFlags;
+	uint32_t        fb = 0;
+	void            *frame = NULL;
+
+    int buffer = 0;
+    const int bufferSize = 20;
+    int success = 0;
+    int bufferFlush = 0;
+    int samplesWritten = 0;
+
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    /* read frames from file */
+    while ((success = mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags)) >=-1)
+	{
+        if (success == 0) {
+            frameSample = [[SBMatroskaSample alloc] init];
+            frameSample->startTime = StartTime;
+            frameSample->endTime = EndTime;
+            frameSample->filePos = FilePos;
+            frameSample->frameSize = FrameSize;
+            frameSample->frameFlags = FrameFlags;
+            [queue addObject:frameSample];
+            [frameSample release];
+        }
+        else if (success == -1 && bufferFlush == 1) {
+            // ad a last sample to get the duration for the last frame
+            frameSample = [[SBMatroskaSample alloc] init];
+            frameSample->startTime = [[queue lastObject] endTime];
+            [queue addObject:frameSample];
+            [frameSample release];
+        }
+        if ([queue count] < bufferSize && success == 0)
+            continue;
+        else {
+            currentSample = [queue objectAtIndex:buffer];
+
+            // matroska stores only the start and end time, so we need to recreate
+            // the frame duration and the offset from the start time, the end time is useless
+            // duration calculation
+            duration = [[queue lastObject] startTime] - currentSample->startTime;
+
+            for (SBMatroskaSample *sample in queue)
+                if (sample != currentSample && (sample->startTime >= currentSample->startTime))
+                    if ((next_duration = (sample->startTime - currentSample->startTime)) < duration)
+                        duration = next_duration;
+
+            // offset calculation
+            offset = currentSample->startTime - current_time;
+            // save the minimum offset, used later to keep the all the offset values positive
+            if (offset < minOffset)
+                minOffset = offset;
+            [offsetsArray addObject:[NSNumber numberWithLongLong:offset]];
+
+            current_time += duration;
+
+            if (fseeko(ioStream->fp, currentSample->filePos, SEEK_SET)) {
+                fprintf(stderr,"fseeko(): %s\n", strerror(errno));
+                [offsetsArray release];
+                [queue release];
+                return MP4_INVALID_TRACK_ID;				
+            } 
+
+            if (fb < currentSample->frameSize) {
+                fb = currentSample->frameSize;
+                frame = realloc(frame, fb);
+                if (frame == NULL) {
+                    fprintf(stderr,"Out of memory\n");
+                    [offsetsArray release];
+                    [queue release];
+                    return MP4_INVALID_TRACK_ID;		
+                }
+            }
+
+            size_t rd = fread(frame,1,currentSample->frameSize,ioStream->fp);
+            if (rd != currentSample->frameSize) {
+                if (rd == 0) {
+                    if (feof(ioStream->fp))
+                        fprintf(stderr,"Unexpected EOF while reading frame\n");
+                    else
+                        fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
+                } else
+                    fprintf(stderr,"Short read while reading frame\n");
+                break;
+            }
+
+            MP4WriteSample(fileHandle,
+                           dstTrackId,
+                           frame,
+                           currentSample->frameSize,
+                           duration / (timeScale / 90000.f),
+                           0,
+                           (currentSample->frameFlags & FRAME_KF));
+
+            samplesWritten++;
+            
+            if (buffer >= bufferSize)
+                [queue removeObjectAtIndex:0];
+            if (buffer < bufferSize && success == 0)
+                buffer++;
+
+            if (success == -1) {
+                bufferFlush++;
+                if (bufferFlush >= bufferSize-1)
+                    break;
+            }
+        }
+    }
+
+    if (minOffset != 0) {
+        uint32_t ix = 0;
+        for (NSNumber *frameOffset in offsetsArray) {
+            const uint32_t sample_offset = ([frameOffset longLongValue] - minOffset) / (timeScale / 90000.f);
+            MP4SetSampleRenderingOffset(fileHandle, dstTrackId, 1 + ix++, sample_offset);
+        }
+
+        MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                               dstTrackId,
+                                                               MP4GetTrackDuration(fileHandle, dstTrackId),
+                                                               MP4GetTimeScale(fileHandle));
+        MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, -minOffset / (timeScale / 90000.f),
+                        editDuration, 0);
+    }
+
+    [pool release];
+    [offsetsArray release];
+    [queue release];
+    mkv_Close(matroskaFile);
+    fclose(ioStream->fp);
+#endif
+    return dstTrackId;
+}
+
+int write_track_to_socket(int socketFD, MatroskaFile *matroskaFile, StdIoStream *ioStream, MP4TrackId srcTrackId)
+{
+	
+	TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, srcTrackId);
+	
+	// Get avcC atom
+	char avcCAtom[512]; // mkv stores h.264 avcC in CodecPrivate
+	bzero(&avcCAtom, 512);
+	memcpy(&avcCAtom, trackInfo->CodecPrivate, trackInfo->CodecPrivateSize);
+		
+	// regenerate SPS / PPS NALs from CodecPrivate
+	int codecPrivateSize = trackInfo->CodecPrivateSize;
+	uint8_t m_nal_size_size = 1 + (avcCAtom[4] & 3);
+	int numsps = avcCAtom[5] & 0x1f;
+	
+	for (int i=0; i < 2; i++) // write SPS/PPS twice to simulate file rewind
+	{
+		uint32_t pos = 6;
+		int i;
+		for (i = 0; (i < numsps) && (codecPrivateSize > pos); ++i)
+			write_nal(socketFD, avcCAtom, &pos, codecPrivateSize, 2);
+		
+		if (codecPrivateSize <= pos) return MP4_INVALID_TRACK_ID;
+		
+		int numpps = avcCAtom[pos++];
+		
+		for (i = 0; (i < numpps) && (codecPrivateSize > pos); ++i)
+			write_nal(socketFD, avcCAtom, &pos, codecPrivateSize, 2);
+	}
+	
+	// stream raw track to reader
+	/* mask other tracks because we don't need them */ 
+	mkv_SetTrackMask(matroskaFile, ~(1 << srcTrackId)); 
+	
+	uint64_t              StartTime, EndTime, FilePos; 
+	uint32_t              rt, FrameSize, FrameFlags; 
+	uint32_t              fb = 0; 
+	void              *frame = NULL; 
+	CompressedStream *cs = NULL;
+	
+	
+	/* init zlib decompressor if needed */ 
+	if (trackInfo->CompEnabled) 
+	{ 
+		char err_msg[512];
+		cs = cs_Create(matroskaFile, srcTrackId, err_msg, sizeof(err_msg)); 
+		if (cs == NULL) { 
+			NSLog(@"Can't create decompressor: %s",err_msg); 
+			
+			return MP4_INVALID_TRACK_ID;
+		} 
+	} 
+	
+	/* read frames from file */ 
+	while (mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) 
+	{ 
+        printf("StartTime: %llu EndTime: %llu\n", StartTime, EndTime);
+		if (cs) { 
+			char buffer[1024]; 
+			
+			cs_NextFrame(cs,FilePos,FrameSize); 
+			for (;;) { 
+				int rd = cs_ReadData(cs,buffer,sizeof(buffer)); 
+				if (rd < 0) { 
+					fprintf(stderr,"Error decompressing data: %s\n",cs_GetLastError(cs)); 
+					return MP4_INVALID_TRACK_ID;
+				} 
+				if (rd == 0) 
+					break; 
+				int pos = 0;
+				
+				while (rd > pos)
+					write_nal(socketFD, buffer, &pos, rd, m_nal_size_size);
+				
+			} 
+		} 
+		else 
+		{ 
+			size_t          rd; 
+			
+			if (fseeko(ioStream->fp, FilePos, SEEK_SET)) 
+			{ 
+				fprintf(stderr,"fseeko(): %s\n", strerror(errno)); 
+				
+				return MP4_INVALID_TRACK_ID;				
+			} 
+			
+			if (fb < FrameSize) { 
+				fb = FrameSize; 
+				frame = realloc(frame, fb); 
+				if (frame == NULL) { 
+					fprintf(stderr,"Out of memory\n"); 
+					
+					return MP4_INVALID_TRACK_ID;				
+				} 
+			} 
+			
+			rd = fread(frame,1,FrameSize,ioStream->fp); 
+			if (rd != FrameSize) { 
+				if (rd == 0) { 
+					if (feof(ioStream->fp)) 
+						fprintf(stderr,"Unexpected EOF while reading frame\n"); 
+					else 
+						fprintf(stderr,"Error reading frame: %s\n",strerror(errno)); 
+				} else 
+					fprintf(stderr,"Short read while reading frame\n"); 
+				break;
+			}
+			uint32_t pos = 0;
+			
+			while (FrameSize > pos)
+				write_nal(socketFD, frame, &pos, FrameSize, m_nal_size_size);
+		} 
+	} 
+	
+	return srcTrackId;	
+}
+						   
+
+void write_nal(int socketFD,
+			   const char *data,
+                     uint32_t *pos,
+                     uint32_t data_size,
+                     uint8_t write_nal_size_size)
+{
+	uint8_t s_start_code[4] = { 0x00, 0x00, 0x00, 0x01 }; // stream start code
+
+	int i;
+	uint32_t nal_size = 0;
+	
+	for (i = 0; i < write_nal_size_size; ++i)
+	{
+		nal_size <<= 8;
+		nal_size |= (uint8_t)data[(*pos)++];
+	}
+		
+
+	
+	if ((*pos + nal_size) > data_size)
+		fprintf(stderr, "Track: NAL too big\n");
+	
+	// buffer startcode and NAL
+	uint32_t writebuffersize = 4 + nal_size;
+	uint8_t *writebuffer = malloc(writebuffersize); 
+	memcpy(writebuffer, s_start_code, 4);
+	memcpy(writebuffer+4, data + *pos, nal_size);
+	
+	// write to socket
+	uint32_t bytes_written = 0; 
+	uint32_t bytes_to_go = writebuffersize; 
+	uint32_t bytes_written_this_time = 0;
+	while (bytes_to_go)
+	{
+		bytes_written_this_time = write(socketFD, writebuffer+bytes_written, bytes_to_go);
+		if (bytes_written_this_time == -1)
+		{
+			bytes_written_this_time = 0;
+			if (errno != EAGAIN) 
+			{
+				fprintf(stderr, "error %i", errno);
+				break;
+			}
+		}
+		bytes_written += bytes_written_this_time;
+		bytes_to_go -= bytes_written_this_time;
+	}
+	if (bytes_written < writebuffersize)
+	{
+		printf("Short socket write");
+	}
+	
+	*pos += nal_size;
+	free(writebuffer);
+}
+

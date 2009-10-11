@@ -19,3 +19,5 @@ int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath);
 #endif
 
 int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
+
+int muxMKVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
