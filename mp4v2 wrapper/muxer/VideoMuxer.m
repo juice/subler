@@ -475,9 +475,14 @@ int muxMKVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
             [frameSample release];
         }
         else if (success == -1 && bufferFlush == 1) {
-            // ad a last sample to get the duration for the last frame
+            // add a last sample to get the duration for the last frame
+            SBMatroskaSample *lastSample = [queue lastObject];
+            for (SBMatroskaSample *sample in queue) {
+                if (sample->startTime > lastSample->startTime)
+                    lastSample = sample;
+            }
             frameSample = [[SBMatroskaSample alloc] init];
-            frameSample->startTime = [[queue lastObject] endTime];
+            frameSample->startTime = [lastSample endTime];
             [queue addObject:frameSample];
             [frameSample release];
         }
