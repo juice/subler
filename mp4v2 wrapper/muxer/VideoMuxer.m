@@ -268,6 +268,7 @@ int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         MP4GetTrackIntegerProperty(srcFile, srcTrackId, "mdia.minf.stbl.stsd.*.pasp.hSpacing", &hSpacing);
         MP4GetTrackIntegerProperty(srcFile, srcTrackId, "mdia.minf.stbl.stsd.*.pasp.vSpacing", &vSpacing);
 
+        if ( hSpacing >= 1 && vSpacing >= 1)
         MP4AddPixelAspectRatio(fileHandle, dstTrackId, hSpacing, vSpacing);
     }
 

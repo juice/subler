@@ -96,7 +96,7 @@
                 MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", hSpacing);
                 MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", vSpacing);
             }
-            else if(hSpacing > 1 && vSpacing > 1)
+            else if(hSpacing >= 1 && vSpacing >= 1)
                 MP4AddPixelAspectRatio(fileHandle, Id, hSpacing, vSpacing);
         }
     }
