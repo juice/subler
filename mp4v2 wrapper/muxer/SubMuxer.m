@@ -519,6 +519,7 @@ int muxMKVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 	{
         if (fseeko(ioStream->fp, FilePos, SEEK_SET)) {
             fprintf(stderr,"fseeko(): %s\n", strerror(errno));
+            [ss release];
             return MP4_INVALID_TRACK_ID;	
         }
     
@@ -527,6 +528,7 @@ int muxMKVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
             frame = realloc(frame, fb);
             if (frame == NULL) {
                 fprintf(stderr,"Out of memory\n");
+                [ss release];
                 return MP4_INVALID_TRACK_ID;		
             }
         }
