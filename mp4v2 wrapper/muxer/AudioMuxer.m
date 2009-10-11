@@ -333,9 +333,9 @@ int muxMKVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
     MatroskaFile *matroskaFile = openMatroskaFile((char *)[filePath UTF8String], ioStream);
 	TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, srcTrackId);
-	
+
 	mkv_SetTrackMask(matroskaFile, ~(1 << srcTrackId));
-	
+
 	uint64_t        StartTime, EndTime, FilePos;
 	uint32_t        rt, FrameSize, FrameFlags;
 	uint32_t        fb = 0;
@@ -364,7 +364,6 @@ int muxMKVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
         free(codecPrivate);
     }
     else if (!strcmp(trackInfo->CodecID, "A_AC3")) {
-		
 		// read first header to create track
 		int firstFrame = mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags);
 		if (firstFrame != 0)
@@ -442,6 +441,8 @@ int muxMKVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     }
     else
         return MP4_INVALID_TRACK_ID;
+
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTrackTimeScale(fileHandle, dstTrackId) / 8);
 
     /* read frames from file */
     while (mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0)

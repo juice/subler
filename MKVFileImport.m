@@ -183,7 +183,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (IBAction) addTracks: (id) sender
 {
     NSMutableArray *tracks = [[NSMutableArray alloc] init];
-    NSInteger i;
+    NSUInteger i;
 	
     for (i = 0; i < mkv_GetNumTracks(matroskaFile); i++) 
 	{
@@ -232,7 +232,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
             mkv_GetChapters(matroskaFile, &chapters, &count);
             if (count) {
-                int xi = 0;
+                unsigned int xi = 0;
                 for (xi = 0; xi < chapters->nChildren; xi++) {
                     uint64_t timestamp = (chapters->Children[xi].Start) / 1000000;
                     if (!xi)

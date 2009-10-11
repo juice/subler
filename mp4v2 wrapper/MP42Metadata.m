@@ -291,7 +291,7 @@ static const iTMF_rating_t rating_strings[] = {
         uint32_t i;
         for (i = 0; i < list->size; i++) {
             MP4ItmfItem* item = &list->elements[i];
-            int j;
+            uint32_t j;
             for (j = 0; j < item->dataList.size; j++) {
                 MP4ItmfData* data = &item->dataList.elements[j];
                 NSString *rating = [[NSString alloc] initWithBytes:data->value length: data->valueSize encoding:NSUTF8StringEncoding];
@@ -321,7 +321,7 @@ static const iTMF_rating_t rating_strings[] = {
         uint32_t i;
         for (i = 0; i < list->size; i++) {
             MP4ItmfItem* item = &list->elements[i];
-            int j;
+            uint32_t j;
             for(j = 0; j < item->dataList.size; j++) {
                 MP4ItmfData* data = &item->dataList.elements[j];
                 NSData *xmlData = [NSData dataWithBytes:data->value length:data->valueSize];

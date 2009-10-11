@@ -441,6 +441,9 @@ int muxMKVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     else
         return MP4_INVALID_TRACK_ID;
 
+    
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTrackTimeScale(fileHandle, dstTrackId) / 8);
+
 	/* mask other tracks because we don't need them */
 	mkv_SetTrackMask(matroskaFile, ~(1 << srcTrackId));
 
@@ -453,11 +456,9 @@ int muxMKVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 	uint32_t        fb = 0;
 	void            *frame = NULL;
 
-    int buffer = 0;
-    const int bufferSize = 20;
+    unsigned int buffer = 0, samplesWritten = 0, bufferFlush = 0;
+    const unsigned int bufferSize = 20;
     int success = 0;
-    int bufferFlush = 0;
-    int samplesWritten = 0;
 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     /* read frames from file */

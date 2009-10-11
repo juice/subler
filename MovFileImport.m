@@ -25,7 +25,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
     NSArray *tracks = [sourceFile tracks];
     importCheckArray = [[NSMutableArray alloc] initWithCapacity:[tracks count]];
 
-    NSInteger i;
+    NSUInteger i;
     for (i = 0; i < [tracks count]; i++) {
         [importCheckArray addObject: [NSNumber numberWithBool:YES]];
         QTTrack *track = [tracks objectAtIndex:i];
@@ -229,7 +229,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (IBAction) addTracks: (id) sender
 {
     NSMutableArray *tracks = [[NSMutableArray alloc] init];
-    NSInteger i;
+    NSUInteger i;
 
     for (i = 0; i < [[sourceFile tracks] count]; i++) {
         if ([[importCheckArray objectAtIndex: i] boolValue]) {

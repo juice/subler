@@ -492,16 +492,17 @@ int muxMKVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
         NSString* string = [[NSString alloc] initWithBytes:trackInfo->CodecPrivate
                                                     length:trackInfo->CodecPrivateSize
                                                   encoding:NSUTF8StringEncoding];
-        NSLog(@"%@", string);
         [string release];
-        
+
         // Add Subtitle track
         dstTrackId = createSubtitleTrack(fileHandle, videoWidth, videoHeight, 60, 1000);
-        
+
         ssa = 1;
     } 
     else
         return MP4_INVALID_TRACK_ID;
+
+    MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTrackTimeScale(fileHandle, dstTrackId) / 8);
 
 	/* mask other tracks because we don't need them */
 	mkv_SetTrackMask(matroskaFile, ~(1 << srcTrackId));

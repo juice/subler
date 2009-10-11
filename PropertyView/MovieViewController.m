@@ -132,7 +132,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     NSMutableDictionary *tagDict = [[[NSMutableDictionary alloc] init] autorelease];
 
     while (current_index != NSNotFound) {
-        if (current_index != -1 && [tagsTableView editedRow] == -1) {
+        if ([tagsTableView editedRow] == -1) {
             NSString *tagName = [tagsArray objectAtIndex:current_index];
             [tagDict setObject:[metadata.tagsDict valueForKey:tagName] forKey:tagName];
         }

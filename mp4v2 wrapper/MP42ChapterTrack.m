@@ -55,7 +55,7 @@
 
         MP4GetChapters(fileHandle, &chapter_list, &chapter_count, MP4ChapterTypeQt);
 
-        int i = 1;
+        unsigned int i = 1;
         MP4Duration sum = 0;
         while (i <= chapter_count)
         {

@@ -435,7 +435,6 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
 
 int ParseSSAHeader(NSString *header) {
     NSScanner *sc = [NSScanner scannerWithString:header];
-	NSString *res=nil;
 	[sc setCharactersToBeSkipped:nil];
     
     [sc scanUpToString:@"[Events]" intoString:nil];
@@ -455,8 +454,6 @@ NSString* StripSSALine(NSString *line){
     
     [sc scanUpToString:@"" intoString:&line];
 
-    NSRange endRange;
-    NSRange tagEndRange;
     NSRange startRange = [line rangeOfString: @"}"];
     while (startRange.location != NSNotFound) {
         NSRange endRange = [line rangeOfString: @"{"];

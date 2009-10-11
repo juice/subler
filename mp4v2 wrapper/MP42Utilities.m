@@ -60,7 +60,7 @@ int enableFirstSubtitleTrack(MP4FileHandle fileHandle)
 
 int enableFirstAudioTrack(MP4FileHandle fileHandle)
 {
-    int i, firstTrack = 0;
+    unsigned int i, firstTrack = 0;
     for (i = 0; i < MP4GetNumberOfTracks( fileHandle, 0, 0); i++) {
         const char* trackType = MP4GetTrackType( fileHandle, MP4FindTrackId( fileHandle, i, 0, 0));
         
@@ -78,7 +78,7 @@ int enableFirstAudioTrack(MP4FileHandle fileHandle)
 int updateTracksCount(MP4FileHandle fileHandle)
 {
     MP4TrackId maxTrackId = 0;
-    int i;
+    unsigned int i;
     for (i = 0; i< MP4GetNumberOfTracks( fileHandle, 0, 0); i++ )
         if (MP4FindTrackId(fileHandle, i, 0, 0) > maxTrackId)
             maxTrackId = MP4FindTrackId(fileHandle, i, 0, 0);
@@ -89,7 +89,7 @@ int updateTracksCount(MP4FileHandle fileHandle)
 void updateMoovDuration(MP4FileHandle fileHandle) {
     MP4TrackId trackId = 0;
     MP4Duration maxTrackDuration = 0, trackDuration = 0;
-    int i;
+    unsigned int i;
     for (i = 0; i< MP4GetNumberOfTracks( fileHandle, 0, 0); i++ ) {
         trackId = MP4FindTrackId(fileHandle, i, 0, 0);
         MP4GetTrackIntegerProperty(fileHandle, trackId, "tkhd.duration", &trackDuration);
@@ -103,7 +103,7 @@ MP4TrackId findChapterTrackId(MP4FileHandle fileHandle)
 {
     MP4TrackId trackId = 0;
     uint64_t trackRef;
-    int i;
+    unsigned int i;
     for (i = 0; i< MP4GetNumberOfTracks( fileHandle, 0, 0); i++ ) {
         trackId = MP4FindTrackId(fileHandle, i, 0, 0);
         if (MP4HaveTrackAtom(fileHandle, trackId, "tref.chap")) {
