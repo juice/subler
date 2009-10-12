@@ -16,6 +16,7 @@
 #import "MatroskaFile.h"
 #import "lang.h"
 
+#include "rational.h"
 #include <sys/socket.h>
 #import <sys/un.h>
 
@@ -441,7 +442,14 @@ int muxMKVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     else
         return MP4_INVALID_TRACK_ID;
 
-    
+    AVRational dar, invPixelSize, sar;
+	dar			   = (AVRational){trackInfo->AV.Video.DisplayWidth, trackInfo->AV.Video.DisplayHeight};
+	invPixelSize   = (AVRational){trackInfo->AV.Video.PixelHeight, trackInfo->AV.Video.PixelWidth};
+	sar = av_mul_q(dar, invPixelSize);    
+
+    av_reduce(&sar.num, &sar.den, sar.num, sar.den, fixed1);
+    MP4AddPixelAspectRatio(fileHandle, dstTrackId, sar.num, sar.den);
+
     MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, MP4GetTrackTimeScale(fileHandle, dstTrackId) / 8);
 
 	/* mask other tracks because we don't need them */
@@ -452,8 +460,7 @@ int muxMKVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
     SBMatroskaSample *frameSample = nil, *currentSample = nil;
 	uint64_t        StartTime, EndTime, FilePos, current_time = 0;
     int64_t         offset, minOffset = 0, duration, next_duration;
-	uint32_t        rt, FrameSize, FrameFlags;
-	uint32_t        fb = 0;
+	uint32_t        rt, FrameSize, FrameFlags, fb = 0;
 	void            *frame = NULL;
 
     unsigned int buffer = 0, samplesWritten = 0, bufferFlush = 0;
@@ -462,8 +469,7 @@ int muxMKVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId sr
 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     /* read frames from file */
-    while ((success = mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags)) >=-1)
-	{
+    while ((success = mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags)) >=-1) {
         if (success == 0) {
             frameSample = [[SBMatroskaSample alloc] init];
             frameSample->startTime = StartTime;

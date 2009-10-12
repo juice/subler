@@ -94,12 +94,14 @@
 
             free(val);
 
-            if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp")) {
-                MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", hSpacing);
-                MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", vSpacing);
+            if (hSpacing >= 1 && vSpacing >= 1) {
+                if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp")) {
+                    MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", hSpacing);
+                    MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", vSpacing);
+                }
+                else
+                    MP4AddPixelAspectRatio(fileHandle, Id, hSpacing, vSpacing);
             }
-            else if(hSpacing >= 1 && vSpacing >= 1)
-                MP4AddPixelAspectRatio(fileHandle, Id, hSpacing, vSpacing);
         }
     }
 
