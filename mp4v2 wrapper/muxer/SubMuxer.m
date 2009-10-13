@@ -550,8 +550,10 @@ int muxMKVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
         if (ssa) {
             string = StripSSALine(string);
         }
-        SBSubLine *sl = [[SBSubLine alloc] initWithLine:string start:StartTime/1000000 end:EndTime/1000000];
-        [ss addLine:[sl autorelease]];
+        if ([string length]) {
+            SBSubLine *sl = [[SBSubLine alloc] initWithLine:string start:StartTime/1000000 end:EndTime/1000000];
+            [ss addLine:[sl autorelease]];
+        }
     }
 
     [ss setFinished:YES];
