@@ -14,5 +14,6 @@
 }
 
 - (IBAction) donate:(id)sender;
+- (IBAction) help:(id)sender;
 
 @end
