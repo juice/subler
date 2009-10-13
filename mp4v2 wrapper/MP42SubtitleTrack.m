@@ -92,7 +92,7 @@
 
         if (!Id && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Failed to mux subtitles into mp4 file" forKey:NSLocalizedDescriptionKey];
+            [errorDetail setValue:@"Error: couldn't mux subtitle track" forKey:NSLocalizedDescriptionKey];
             *outError = [NSError errorWithDomain:@"MP42Error"
                                             code:110
                                         userInfo:errorDetail];

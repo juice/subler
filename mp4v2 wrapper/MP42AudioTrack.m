@@ -58,6 +58,13 @@
         muxed = YES;
         enableFirstAudioTrack(fileHandle);
     }
+    if (!Id && (outError != NULL)) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Error: couldn't mux audio track" forKey:NSLocalizedDescriptionKey];
+        *outError = [NSError errorWithDomain:@"MP42Error"
+                                        code:110
+                                    userInfo:errorDetail];
+    }
     if (Id)
         [super writeToFile:fileHandle error:outError];
 

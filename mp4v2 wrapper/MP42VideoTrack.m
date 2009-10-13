@@ -74,7 +74,14 @@
         else
             Id = muxH264ElementaryStream(fileHandle, sourcePath, sourceId);
     }
-    if (Id) {
+    if (!Id && (outError != NULL)) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Error: couldn't mux video track" forKey:NSLocalizedDescriptionKey];
+        *outError = [NSError errorWithDomain:@"MP42Error"
+                                        code:110
+                                    userInfo:errorDetail];
+    }
+    else if (Id) {
         [super writeToFile:fileHandle error:outError];
 
         if (trackWidth && trackHeight) {
