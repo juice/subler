@@ -236,17 +236,11 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
     [ss setFinished:YES];
 
     if (success) {
-        int firstSub = 0;
-
         success = subtitleTrackId = createSubtitleTrack(fileHandle, videoWidth, videoHeight, subtitleHeight, 1000);
 
         while (![ss isEmpty]) {
             SBSubLine *sl = [ss getSerializedPacket];
-            if (firstSub == 0) {
-                firstSub++;
-                if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->begin_time + delay))
-                    break;
-            }
+
             if ([sl->line isEqualToString:@"\n"]) {
                 if (!writeEmptySubtitleSample(fileHandle, subtitleTrackId, sl->end_time - sl->begin_time))
                     break;
@@ -256,6 +250,24 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
                 break;
         }
         writeEmptySubtitleSample(fileHandle, subtitleTrackId, 10);
+    }
+
+    if (delay) {
+        MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                               subtitleTrackId,
+                                                               MP4GetTrackDuration(fileHandle, subtitleTrackId),
+                                                               MP4GetTimeScale(fileHandle));
+        if (delay > 0) {
+            MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                       subtitleTrackId,
+                                                       delay,
+                                                       MP4GetTimeScale(fileHandle));
+
+            MP4AddTrackEdit(fileHandle, subtitleTrackId, MP4_INVALID_EDIT_ID, 0, delayDuration, 1);
+            MP4AddTrackEdit(fileHandle, subtitleTrackId, MP4_INVALID_EDIT_ID, 0, editDuration, 0);
+        }
+        else if (delay < 0)
+            MP4AddTrackEdit(fileHandle, subtitleTrackId, MP4_INVALID_EDIT_ID, -delay, editDuration, 0);
     }
 
     [ss release];
@@ -558,14 +570,8 @@ int muxMKVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
 
     [ss setFinished:YES];
 
-    int firstSub = 0;
     while (![ss isEmpty]) {
         SBSubLine *sl = [ss getSerializedPacket];
-        if (firstSub == 0) {
-            firstSub++;
-            if (!writeEmptySubtitleSample(fileHandle, dstTrackId, sl->begin_time ))
-                break;
-        }
         if ([sl->line isEqualToString:@"\n"]) {
             if (!writeEmptySubtitleSample(fileHandle, dstTrackId, sl->end_time - sl->begin_time))
                 break;
