@@ -46,7 +46,13 @@ static const iTMF_rating_t rating_strings[] = {
     {"", ""},
     {"uk-tv|Caution|500|", "Caution"},      // 27
     {"", ""},
-    {"", "Unknown"},                        // 29
+    {"de-movie|FSK 0|100|", "FSK 0"},		// 29
+    {"de-movie|FSK 6|200|", "FSK 6"},
+    {"de-movie|FSK 12|300|", "FSK 12"},
+    {"de-movie|FSK 16|400|", "FSK 16"},
+    {"de-movie|FSK 18|500|", "FSK 18"},
+    {"", ""},
+    {"", "Unknown"},                        // 35
     {NULL, NULL},
 };
 
