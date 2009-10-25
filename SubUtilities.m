@@ -457,10 +457,13 @@ NSString* StripSSALine(NSString *line){
     NSRange startRange = [line rangeOfString: @"}"];
     while (startRange.location != NSNotFound) {
         NSRange endRange = [line rangeOfString: @"{"];
-        if (endRange.location != NSNotFound)
+        if (endRange.location != NSNotFound && endRange.length != 0) {
             endRange.length = startRange.location - endRange.location +1;
             line = [line stringByReplacingCharactersInRange:endRange withString:@""];
             startRange = [line rangeOfString: @"}"];
+        }
+        else
+            break;
     }
     
     startRange = [line rangeOfString: @"\\N"];
