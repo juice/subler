@@ -25,7 +25,8 @@
 
     NSMutableArray  *tracksToBeDeleted;
     BOOL             hasFileRepresentation;
-
+    BOOL             stopOperation;
+    
 @protected
     NSMutableArray  *tracks;
     MP42Metadata    *metadata;
@@ -50,6 +51,7 @@
 - (BOOL) writeToUrl:(NSURL *)url flags:(uint64_t)flags error:(NSError **)outError;
 - (BOOL) updateMP4File:(NSError **)outError;
 - (void) optimize;
+- (void) stopOperation;
 
 @end
 

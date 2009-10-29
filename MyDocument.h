@@ -41,6 +41,8 @@
     IBOutlet NSTextField    *trackHeight;
     NSString                *subtitleFilePath;
     
+    
+    IBOutlet NSButton *cancelSave;
     BOOL _64bit_data;
     BOOL _64bit_time;
     BOOL _optimize;
@@ -54,5 +56,6 @@
 - (IBAction) setSaveFormat: (id) sender;
 - (IBAction) set64bit_data: (id) sender;
 - (IBAction) set64bit_time: (id) sender;
+- (IBAction) cancelSaveOperation: (id) sender;
 
 @end

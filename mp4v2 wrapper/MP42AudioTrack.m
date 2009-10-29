@@ -47,14 +47,18 @@
         }
         else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
             Id = muxMP4AudioTrack(fileHandle, sourcePath, sourceId);
+
         else if ([sourceInputType isEqualToString:MP42SourceTypeMatroska])
 			Id = muxMKVAudioTrack(fileHandle, sourcePath, sourceId);
-        else {
+
+        else if ([sourceInputType isEqualToString:MP42SourceTypeRaw])
+        {
             if ([[sourcePath pathExtension] isEqualToString:@"aac"])
                 Id = muxAACAdtsStream(fileHandle, sourcePath);
+
             else if ([[sourcePath pathExtension] isEqualToString:@"ac3"])
                 Id = muxAC3ElementaryStream(fileHandle, sourcePath);
-        }        
+        }    
         muxed = YES;
         enableFirstAudioTrack(fileHandle);
     }

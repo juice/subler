@@ -9,7 +9,6 @@
 #import "MP42File.h"
 
 @interface MP42File (Private)
-
 - (void) removeMuxedTrack: (MP42Track *)track;
 
 @end
@@ -226,7 +225,7 @@
         [self removeMuxedTrack:track];
 
     for (track in tracks)
-        if (track.isEdited) {
+        if (track.isEdited && !stopOperation) {
             success = [track writeToFile:fileHandle error:outError];
             if (!success) {
                 break;
@@ -238,6 +237,11 @@
 
     MP4Close(fileHandle);
     return success;
+}
+
+- (void) stopOperation;
+{
+    stopOperation = TRUE;
 }
 
 - (void) removeMuxedTrack: (MP42Track *)track

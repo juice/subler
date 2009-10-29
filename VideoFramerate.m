@@ -36,6 +36,7 @@
     newTrack.Id = [[framerateSelection selectedItem] tag];
     newTrack.sourcePath = filePath;
     newTrack.format = @"H.264";
+    newTrack.sourceInputType = MP42SourceTypeRaw;
 
     [tracks addObject:newTrack];
     [newTrack release];

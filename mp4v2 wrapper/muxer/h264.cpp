@@ -1347,7 +1347,6 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     
 
     // create the new video track
-	MP4SetTimeScale(mp4File, timescale);
     MP4TrackId trackId = MP4AddH264VideoTrack(mp4File,
                                               timescale,
                                               mp4FrameDuration,

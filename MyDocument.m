@@ -172,6 +172,11 @@
     _64bit_time = [sender state];
 }
 
+- (IBAction) cancelSaveOperation: (id) sender {
+    [cancelSave setEnabled:NO];
+    [mp4File stopOperation];
+}
+
 - (void) saveDidComplete: (NSError *)outError
 {
     [NSApp endSheet: savingWindow];
@@ -564,6 +569,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     MP42AudioTrack *newTrack = [[MP42AudioTrack alloc] init];
     newTrack.sourceId = 0;
     newTrack.sourcePath = path;
+    newTrack.sourceInputType = MP42SourceTypeRaw;
     if ([[path pathExtension] isEqualToString:@"ac3"])
         newTrack.format = @"AC-3";
     else

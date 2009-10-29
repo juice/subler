@@ -69,11 +69,14 @@
         }
         else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
             Id = muxMP4VideoTrack(fileHandle, sourcePath, sourceId);
+
 		else if ([sourceInputType isEqualToString:MP42SourceTypeMatroska])
 			Id = muxMKVVideoTrack(fileHandle, sourcePath, sourceId);
-        else
+
+        else if ([sourceInputType isEqualToString:MP42SourceTypeRaw])
             Id = muxH264ElementaryStream(fileHandle, sourcePath, sourceId);
     }
+
     if (!Id && (outError != NULL)) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"Error: couldn't mux video track" forKey:NSLocalizedDescriptionKey];
@@ -85,7 +88,11 @@
         [super writeToFile:fileHandle error:outError];
 
         if (trackWidth && trackHeight) {
-            MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.width", trackWidth);
+            if (muxed)
+                MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.width", trackWidth);
+            else
+                MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.width", trackWidth * hSpacing / vSpacing);
+
             MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.height", trackHeight);
 
             uint8_t *val;
