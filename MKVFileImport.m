@@ -215,6 +215,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 newTrack.Id = i;
                 newTrack.sourcePath = filePath;
                 newTrack.sourceInputType = MP42SourceTypeMatroska;
+
+                double trackTimecodeScale = (mkvTrack->TimecodeScale.v >> 32);
+                SegmentInfo *segInfo = mkv_GetFileInfo(matroskaFile);
+                UInt64 scaledDuration = (UInt64)segInfo->Duration / (UInt32)segInfo->TimecodeScale * trackTimecodeScale;
+
+                newTrack.duration = scaledDuration;
                 newTrack.name = getMatroskaTrackName(mkvTrack);
 				iso639_lang_t *isoLanguage = lang_for_code2(mkvTrack->Language);
 				newTrack.language = [NSString stringWithUTF8String:isoLanguage->eng_name];

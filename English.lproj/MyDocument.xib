@@ -12,8 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="100176"/>
-			<integer value="100129"/>
+			<integer value="100128"/>
 			<integer value="100187"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -1012,7 +1011,7 @@
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="838636882">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1064,7 +1063,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{297, 121}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -2172,8 +2170,10 @@
 					<string>100179.IBPluginDependency</string>
 					<string>100187.IBEditorWindowLastContentRect</string>
 					<string>100187.IBPluginDependency</string>
+					<string>100188.IBAttributePlaceholdersKey</string>
 					<string>100188.IBPluginDependency</string>
 					<string>100189.IBPluginDependency</string>
+					<string>100190.IBAttributePlaceholdersKey</string>
 					<string>100190.IBPluginDependency</string>
 					<string>100191.IBPluginDependency</string>
 					<string>100215.IBPluginDependency</string>
@@ -2287,8 +2287,24 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{491, 588}, {320, 82}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<object class="NSMutableDictionary">
+						<string key="NS.key.0">ToolTip</string>
+						<object class="IBToolTipAttribute" key="NS.object.0">
+							<string key="name">ToolTip</string>
+							<reference key="object" ref="992226451"/>
+							<string key="toolTip">Needed for mp4 larger than 4GB.</string>
+						</object>
+					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<object class="NSMutableDictionary">
+						<string key="NS.key.0">ToolTip</string>
+						<object class="IBToolTipAttribute" key="NS.object.0">
+							<string key="name">ToolTip</string>
+							<reference key="object" ref="976564591"/>
+							<string key="toolTip">Enable 64bit timescale and duration support. Normally it's only needed if a tracks will be longer than 10 hours.</string>
+						</object>
+					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

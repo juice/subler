@@ -53,7 +53,7 @@ extern NSString * const MP42SourceTypeRaw;
 
 @property(readonly) uint32_t timescale;
 @property(readonly) uint32_t bitrate;
-@property(readonly) MP4Duration duration;
+@property(readwrite) MP4Duration duration;
 
 @property(readwrite) BOOL isEdited;
 @property(readwrite) BOOL isDataEdited;

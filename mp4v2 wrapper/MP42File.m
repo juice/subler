@@ -84,15 +84,15 @@
 
 - (void)removeTracksAtIndexes:(NSIndexSet *)indexes
 {
-  NSUInteger index = [indexes firstIndex];
-  while (index != NSNotFound) {    
-    MP42Track *track = [tracks objectAtIndex:index];
-    if (track.muxed)
-      [tracksToBeDeleted addObject:track];    
-    index = [indexes indexGreaterThanIndex:index];
-  }
-  
-  [tracks removeObjectsAtIndexes:indexes]; 
+    NSUInteger index = [indexes firstIndex];
+    while (index != NSNotFound) {    
+        MP42Track *track = [tracks objectAtIndex:index];
+        if (track.muxed)
+            [tracksToBeDeleted addObject:track];    
+        index = [indexes indexGreaterThanIndex:index];
+    }
+
+    [tracks removeObjectsAtIndexes:indexes]; 
 }
 
 - (NSInteger)tracksCount
@@ -227,9 +227,8 @@
     for (track in tracks)
         if (track.isEdited && !stopOperation) {
             success = [track writeToFile:fileHandle error:outError];
-            if (!success) {
+            if (!success)
                 break;
-            }
         }
 
     if (metadata.isEdited && success)
