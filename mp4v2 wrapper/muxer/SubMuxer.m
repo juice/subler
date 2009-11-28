@@ -154,14 +154,14 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
                 else if (tag2 == 'u') underlined--;
                 tagEndRange = [string rangeOfString: @">"];
                 endRange.length = tagEndRange.location - endRange.location +1;
-                if (tagEndRange.location == NSNotFound)
+                if (tagEndRange.location == NSNotFound || endRange.length > [string length])
                     endRange.length = 2;
                 string = [string stringByReplacingCharactersInRange:endRange withString:@""];
             }
             else {
                 tagEndRange = [string rangeOfString: @">"];
                 endRange.length = tagEndRange.location - endRange.location +1;
-                if (tagEndRange.location == NSNotFound)
+                if (tagEndRange.location == NSNotFound || endRange.length > [string length])
                     endRange.length = 2;
                 string = [string stringByReplacingCharactersInRange:endRange withString:@""];
             }
