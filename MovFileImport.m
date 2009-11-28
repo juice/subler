@@ -32,7 +32,27 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         if ([[track attributeForKey:QTTrackIsChapterTrackAttribute] boolValue])
             chapterTrackId = [[track attributeForKey:QTTrackIDAttribute] integerValue];
     }
-
+#if !__LP64__
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_6
+    if([sourceFile hasChapters]) {
+        long    myCount;
+        long    myTrackCount = GetMovieTrackCount([sourceFile quickTimeMovie]);
+        Track   myTrack = NULL;
+        Track   myChapTrack = NULL;
+        
+        for (myCount = 1; myCount <= myTrackCount; myCount++) {
+            myTrack = GetMovieIndTrack([sourceFile quickTimeMovie], myCount);
+            if (GetTrackEnabled(myTrack))
+                myChapTrack = GetTrackReference(myTrack, kTrackReferenceChapterList, 1);
+            if (myChapTrack != NULL)
+                chapterTrackId = GetTrackID(myChapTrack);
+            break;
+        }
+    }
+#endif
+#endif
+    
+    
     [addTracksButton setEnabled:YES];
     [loadProgressBar setHidden:YES];
 }
