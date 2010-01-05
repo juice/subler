@@ -41,18 +41,19 @@ static const iTMF_rating_t rating_strings[] = {
     {"uk-movie|12A|325|", "12A"},
     {"uk-movie|15|350|", "15"},
     {"uk-movie|18|400|", "18"},
-    {"uk-movie|E|600|", "E" },
+    {"uk-movie|R18|600|", "R18"},
+    {"uk-movie|E|0|", "Exempt" },
     {"uk-movie|Unrated|???|", "Unrated"},
     {"", ""},
-    {"uk-tv|Caution|500|", "Caution"},      // 27
+    {"uk-tv|Caution|500|", "Caution"},      // 28
     {"", ""},
-    {"de-movie|FSK 0|100|", "FSK 0"},		// 29
+    {"de-movie|FSK 0|100|", "FSK 0"},		// 30
     {"de-movie|FSK 6|200|", "FSK 6"},
     {"de-movie|FSK 12|300|", "FSK 12"},
     {"de-movie|FSK 16|400|", "FSK 16"},
     {"de-movie|FSK 18|500|", "FSK 18"},
     {"", ""},
-    {"", "Unknown"},                        // 35
+    {"", "Unknown"},                        // 36
     {NULL, NULL},
 };
 

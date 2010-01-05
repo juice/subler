@@ -12,7 +12,6 @@
 @interface AppDelegate : NSObject {
 
     PrefsController *fPrefs;
-    
 }
 
 - (IBAction) showPrefsWindow: (id) sender;

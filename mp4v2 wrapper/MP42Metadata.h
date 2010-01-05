@@ -32,15 +32,16 @@ enum rating_type {
     UK_MOVIE_12A,
     UK_MOVIE_15,
     UK_MOVIE_18,
+    UK_MOVIE_R18,
     UK_MOVIE_E,
     UK_MOVIE_UNRATED,
-    UK_TV_CAUTION  = 27,
-    DE_MOVIE_FSK_0 = 29,
+    UK_TV_CAUTION  = 28,
+    DE_MOVIE_FSK_0 = 30,
     DE_MOVIE_FSK_6,
     DE_MOVIE_FSK_12,
     DE_MOVIE_FSK_16,
     DE_MOVIE_FSK_18,
-    R_UNKNOWN   = 35,
+    R_UNKNOWN   = 36,
 };
 
 @interface MP42Metadata : NSObject {
