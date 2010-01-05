@@ -167,12 +167,12 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (NSArray *) tvShowSet
 {
-    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", nil];
+    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album", @"Release Date", @"Track #", @"Disk #", @"TV Show", @"TV Episode #", @"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", nil];
 }
 
 - (NSArray *) movieSet
 {
-    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Cast", @"Director", @"Screenwriters", @"Genre", @"Description", @"Long Description", @"Rating", @"Copyright", nil];
+    return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Cast", @"Director", @"Screenwriters", @"Genre", @"Description", @"Long Description", @"Rating", @"Copyright", nil];
 }
 
 - (IBAction) addMetadataSet: (id)sender
@@ -180,10 +180,16 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     NSArray *metadataKeys = nil;
     if ([sender tag] == 0)
         metadataKeys = [self allSet];
-    else if ([sender tag] == 1)
+    else if ([sender tag] == 1) {
         metadataKeys = [self movieSet];
-    else if ([sender tag] == 2)
+        metadata.mediaKind = 9;
+        [mediaKind selectItemWithTag:metadata.mediaKind];
+    }
+    else if ([sender tag] == 2) {
         metadataKeys = [self tvShowSet];
+        metadata.mediaKind = 10;
+        [mediaKind selectItemWithTag:metadata.mediaKind];
+    }
 
     NSMutableDictionary *tagDict = [[[NSMutableDictionary alloc] init] autorelease];
     for (NSString *key in metadataKeys) {
