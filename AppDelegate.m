@@ -14,6 +14,15 @@
     return NO;
 }
 
+- (void) showPrefsWindow: (id) sender;
+{
+    if (!fPrefs) {
+        fPrefs = [[PrefsController alloc] init];
+    }
+    [[fPrefs window] center];
+    [fPrefs showWindow:self];
+}
+
 - (IBAction) donate:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL: [NSURL

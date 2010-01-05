@@ -21,6 +21,8 @@
 		948058B6106E07990037A911 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 948058B5106E07990037A911 /* libz.dylib */; };
 		A905E5520FB054B500B926FF /* CCMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A905E5510FB054B500B926FF /* CCMuxer.m */; };
 		A905E58A0FB05A8100B926FF /* MP42ClosedCaptionTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A905E5880FB05A8100B926FF /* MP42ClosedCaptionTrack.m */; };
+		A90B023510F328EA000416F3 /* PrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90B023410F328EA000416F3 /* PrefsController.m */; };
+		A90B023B10F3290A000416F3 /* Prefs.xib in Resources */ = {isa = PBXBuildFile; fileRef = A90B023910F3290A000416F3 /* Prefs.xib */; };
 		A91103E40F321DBA0013D1E0 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A91103930F321CF60013D1E0 /* libuniversaldetector.a */; };
 		A911064B0F323D450013D1E0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A911064A0F323D450013D1E0 /* AppDelegate.m */; };
 		A91E7DEA0F8A2E6800AF387E /* SoundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A91E7DE90F8A2E6800AF387E /* SoundViewController.m */; };
@@ -142,6 +144,9 @@
 		A905E5510FB054B500B926FF /* CCMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMuxer.m; sourceTree = "<group>"; };
 		A905E5880FB05A8100B926FF /* MP42ClosedCaptionTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42ClosedCaptionTrack.m; path = "mp4v2 wrapper/MP42ClosedCaptionTrack.m"; sourceTree = "<group>"; };
 		A905E5890FB05A8100B926FF /* MP42ClosedCaptionTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42ClosedCaptionTrack.h; path = "mp4v2 wrapper/MP42ClosedCaptionTrack.h"; sourceTree = "<group>"; };
+		A90B023310F328EA000416F3 /* PrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefsController.h; sourceTree = "<group>"; };
+		A90B023410F328EA000416F3 /* PrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrefsController.m; sourceTree = "<group>"; };
+		A90B023A10F3290A000416F3 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Prefs.xib; sourceTree = "<group>"; };
 		A91103850F321CF60013D1E0 /* UniversalDetector.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = UniversalDetector.xcodeproj; path = UniversalDetector/UniversalDetector.xcodeproj; sourceTree = "<group>"; };
 		A911049C0F321DFC0013D1E0 /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = UniversalDetector/UniversalDetector.h; sourceTree = "<group>"; };
 		A91106490F323D450013D1E0 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -305,6 +310,8 @@
 				A9AB94D30F73D6DA0049DF8C /* MovFileImport.m */,
 				A9FB9D490F83A6FF00AB791A /* VideoFramerate.h */,
 				A9FB9D4A0F83A6FF00AB791A /* VideoFramerate.m */,
+				A90B023310F328EA000416F3 /* PrefsController.h */,
+				A90B023410F328EA000416F3 /* PrefsController.m */,
 				A95C87AD0F82798200F51A22 /* ButtonToolbarItem.h */,
 				A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
@@ -317,6 +324,8 @@
 		2A37F4AFFDCFA73011CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A91106490F323D450013D1E0 /* AppDelegate.h */,
+				A911064A0F323D450013D1E0 /* AppDelegate.m */,
 				A9744651108313C800C82989 /* common.h */,
 				A96A542010831D710081AA98 /* mathematics.c */,
 				A96A542110831D710081AA98 /* mathematics.h */,
@@ -324,8 +333,6 @@
 				A974463D1083132F00C82989 /* rational.h */,
 				A91F62250FB0A50D00B96B33 /* RegexKitLite.h */,
 				A91F62240FB0A50D00B96B33 /* RegexKitLite.m */,
-				A91106490F323D450013D1E0 /* AppDelegate.h */,
-				A911064A0F323D450013D1E0 /* AppDelegate.m */,
 				32DBCF750370BD2300C91783 /* Subler_Prefix.pch */,
 				A911049C0F321DFC0013D1E0 /* UniversalDetector.h */,
 				A95A60470F4422DB00767D87 /* mp4v2.h */,
@@ -345,6 +352,7 @@
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				1DDD58280DA1D0D100B32029 /* MyDocument.xib */,
+				A90B023910F3290A000416F3 /* Prefs.xib */,
 				1DDD582A0DA1D0D100B32029 /* MainMenu.xib */,
 				A9629D050F56FB2A001D6A75 /* VideoView.xib */,
 				A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */,
@@ -548,6 +556,7 @@
 				A9FB9DC90F83AAC100AB791A /* VideoFramerate.xib in Resources */,
 				A91E7DEE0F8A2F3D00AF387E /* SoundView.xib in Resources */,
 				A941AE1B1074B7A60055022C /* Subler.icns in Resources */,
+				A90B023B10F3290A000416F3 /* Prefs.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,6 +606,7 @@
 				948058AC106E074A0037A911 /* SubMuxer.m in Sources */,
 				A974463F1083132F00C82989 /* rational.c in Sources */,
 				A96A542210831D710081AA98 /* mathematics.c in Sources */,
+				A90B023510F328EA000416F3 /* PrefsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,6 +651,14 @@
 				2A37F4BAFDCFA73011CA2CEA /* English */,
 			);
 			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		A90B023910F3290A000416F3 /* Prefs.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A90B023A10F3290A000416F3 /* English */,
+			);
+			name = Prefs.xib;
 			sourceTree = "<group>";
 		};
 		A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */ = {

@@ -7,12 +7,15 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+#import "PrefsController.h"
 
 @interface AppDelegate : NSObject {
 
+    PrefsController *fPrefs;
+    
 }
 
+- (IBAction) showPrefsWindow: (id) sender;
 - (IBAction) donate:(id)sender;
 - (IBAction) help:(id)sender;
 
