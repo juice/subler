@@ -266,9 +266,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 else {
                     newTrack = [[MP42VideoTrack alloc] init];
 
-                    NSSize dimesion = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
-                    [(MP42VideoTrack*)newTrack setTrackWidth: dimesion.width];
-                    [(MP42VideoTrack*)newTrack setTrackHeight: dimesion.height];
+                    NSSize dimension = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
+                    [(MP42VideoTrack*)newTrack setTrackWidth: dimension.width];
+                    [(MP42VideoTrack*)newTrack setTrackHeight: dimension.height];
                 }
             }
             // Audio

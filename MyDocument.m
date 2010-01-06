@@ -17,6 +17,7 @@
 #import "MovFileImport.h"
 #import "MKVFileImport.h"
 #import "VideoFramerate.h"
+#import "tagChimpController.h"
 
 #define SublerTableViewDataType @"SublerTableViewDataType"
 
@@ -61,6 +62,12 @@
         [targetView addSubview: [propertyView view]];
     }
 
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"rememberWindowSize"] integerValue]) {
+        NSRect frame = [documentWindow frame];
+        frame.size.width = 620;
+        frame.size.height = 420;
+        [documentWindow setFrame:frame display:TRUE];
+    }
     [fileTracksTable registerForDraggedTypes:[NSArray arrayWithObjects:SublerTableViewDataType, nil]];
     [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
                                    NSColorPboardType, NSFilenamesPboardType, nil]];
@@ -293,6 +300,9 @@
     if (action == @selector(deleteTrack:))
         return YES;
 
+    if (action == @selector(searchMetadata:))
+        return YES;
+
     return NO;
 }
 
@@ -304,6 +314,9 @@
     else if (toolbarItem == deleteTrack)
         if ([fileTracksTable selectedRow] != -1 && [NSApp isActive])
                 return YES;
+
+    if (toolbarItem == searchMetadata)
+        return YES;
 
     return NO;
 }
@@ -492,6 +505,14 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     return [languages indexOfObject: string];
 }
 
+- (IBAction) searchMetadata: (id) sender
+{
+    importWindow = [[tagChimpController alloc] initWithDelegate:self];
+    
+    [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
+        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+}
+
 - (IBAction) deleteTrack: (id) sender
 {
     if ([fileTracksTable selectedRow] == -1  || [fileTracksTable editedRow] != -1)
@@ -649,6 +670,13 @@ returnCode contextInfo: (void *) contextInfo
         [fileTracksTable reloadData];
     }
 
+    [NSApp endSheet:[importWindow window]];
+    [[importWindow window] orderOut:self];
+    [importWindow release];
+}
+
+- (void) metadataImportDone: (NSArray*) tracksToBeImported
+{    
     [NSApp endSheet:[importWindow window]];
     [[importWindow window] orderOut:self];
     [importWindow release];

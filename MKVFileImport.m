@@ -199,7 +199,6 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 					
                 [(MP42VideoTrack*)newTrack setTrackWidth:mkvTrack->AV.Video.PixelWidth];
                 [(MP42VideoTrack*)newTrack setTrackHeight:mkvTrack->AV.Video.PixelHeight];
-                
             }
 			
             // Audio

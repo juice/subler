@@ -28,6 +28,7 @@
 
     IBOutlet NSToolbarItem  *addTracks;
     IBOutlet NSToolbarItem  *deleteTrack;
+    IBOutlet NSToolbarItem  *searchMetadata;
 
     NSMutableArray          *languages;
 
@@ -52,6 +53,7 @@
 - (IBAction) addSubtitleTrack: (id) sender;
 - (IBAction) selectFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
+- (IBAction) searchMetadata: (id) sender;
 
 - (IBAction) setSaveFormat: (id) sender;
 - (IBAction) set64bit_data: (id) sender;
