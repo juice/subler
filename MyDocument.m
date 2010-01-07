@@ -675,8 +675,14 @@ returnCode contextInfo: (void *) contextInfo
     [importWindow release];
 }
 
-- (void) metadataImportDone: (NSArray*) tracksToBeImported
-{    
+- (void) metadataImportDone: (MP42Metadata*) metadataToBeImported
+{
+    if (metadataToBeImported) {
+        [mp4File.metadata mergeMetadata:metadataToBeImported];
+        [self tableViewSelectionDidChange:nil];
+        [self updateChangeCount:NSChangeDone];
+    }
+
     [NSApp endSheet:[importWindow window]];
     [[importWindow window] orderOut:self];
     [importWindow release];

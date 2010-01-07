@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class SBTableView;
+@class MP42Metadata;
 
 @interface tagChimpController : NSWindowController {
     NSMutableData   * receivedData;
@@ -23,11 +24,14 @@
     IBOutlet NSTableView         * movieTitleTable;
     IBOutlet SBTableView         * metadataTable;
     
-    NSDictionary    *tags;
-    NSArray         *tagsArray;
+    IBOutlet NSButton            * addButton;
+    
+    NSDictionary    * tags;
+    NSArray         * tagsArray;
 }
 
 - (id)initWithDelegate:(id)del;
+- (IBAction) addMetadata: (id) sender;
 - (IBAction) closeWindow: (id) sender;
 - (IBAction) search: (id) sender;
 - (void) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument;
@@ -35,5 +39,5 @@
 @end
 
 @interface NSObject (tagChimpControllerDelegateMethod)
-- (void) metadataImportDone: (NSArray*) tracksToBeImported;
+- (void) metadataImportDone: (MP42Metadata *) metadataToBeImported;
 @end

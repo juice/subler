@@ -50,6 +50,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         receivedXml = nil;
         [movieTitleTable reloadData];
         [metadataTable reloadData];
+        [addButton setEnabled:NO];
     }
 
     searchTerms = [searchTerms stringByReplacingOccurrencesOfString:@" " withString:@"+"];
@@ -102,6 +103,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         receivedXml = [[NSXMLDocument alloc]initWithData:receivedData options:NSXMLDocumentTidyXML error:nil];
         [self tagChimpXmlToMP42Metadata: receivedXml];
         [movieTitleTable reloadData];
+        [addButton setEnabled:YES];
     }
     [progress setHidden:YES];
     [progress stopAnimation:self];
@@ -122,6 +124,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         MP42Metadata * metadata = [[MP42Metadata alloc] init];
         NSArray *tag = [element nodesForXPath:@"./movieTags/info/movieTitle"
                                               error:&err];
+
         if([tag count])
             [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Name"];
         
@@ -139,6 +142,68 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
                                      error:&err];
         if([tag count])
             [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Description"];
+
+        tag = [element nodesForXPath:@"./movieTags/info/longDescription"
+                               error:&err];
+        if([tag count])
+            [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Long Description"];
+
+        tag = [element nodesForXPath:@"./movieTags/info/rating"
+                                     error:&err];
+        if([tag count])
+            [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Rating"];
+        
+        tag = [element nodesForXPath:@"./movieTags/info/cast/actor"
+                               error:&err];
+        if([tag count]) {
+            NSString* tagValue = nil;
+            for (NSXMLElement* actorName in tag) {
+                if (tagValue)
+                    tagValue = [NSString stringWithFormat:@"%@, %@", tagValue, [actorName stringValue]];
+                else
+                    tagValue = [actorName stringValue];
+            }
+            [metadata setTag:tagValue forKey:@"Cast"];
+        }
+
+        tag = [element nodesForXPath:@"./movieTags/info/directors/director"
+                               error:&err];
+        if([tag count]) {
+            NSString* tagValue = nil;
+            for (NSXMLElement* actorName in tag) {
+                if (tagValue)
+                    tagValue = [NSString stringWithFormat:@"%@, %@", tagValue, [actorName stringValue]];
+                else
+                    tagValue = [actorName stringValue];
+            }
+            [metadata setTag:tagValue forKey:@"Director"];
+        }
+
+        tag = [element nodesForXPath:@"./movieTags/info/producers/producer"
+                               error:&err];
+        if([tag count]) {
+            NSString* tagValue = nil;
+            for (NSXMLElement* actorName in tag) {
+                if (tagValue)
+                    tagValue = [NSString stringWithFormat:@"%@, %@", tagValue, [actorName stringValue]];
+                else
+                    tagValue = [actorName stringValue];
+            }
+            [metadata setTag:tagValue forKey:@"Producers"];
+        }
+
+        tag = [element nodesForXPath:@"./movieTags/info/screenwriters/screenwriter"
+                               error:&err];
+        if([tag count]) {
+            NSString* tagValue = nil;
+            for (NSXMLElement* actorName in tag) {
+                if (tagValue)
+                    tagValue = [NSString stringWithFormat:@"%@, %@", tagValue, [actorName stringValue]];
+                else
+                    tagValue = [actorName stringValue];
+            }
+            [metadata setTag:tagValue forKey:@"Screenwriters"];
+        }
         
         [metadataArray addObject:metadata];
     }
@@ -193,10 +258,21 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     }
 }
 
+- (IBAction) addMetadata: (id) sender
+{
+    if ([delegate respondsToSelector:@selector(metadataImportDone:)]) 
+        [delegate metadataImportDone:[metadataArray objectAtIndex:[movieTitleTable selectedRow]]];
+}
+
 - (IBAction) closeWindow: (id) sender
 {
     if ([delegate respondsToSelector:@selector(importDone:)]) 
         [delegate metadataImportDone:nil];
+}
+
+- (void) dealloc
+{
+    [metadataArray release];
 }
 
 @end

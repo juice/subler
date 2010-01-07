@@ -237,7 +237,7 @@
 																		</object>
 																	</object>
 																	<object class="NSTextFieldCell" key="NSDataCell" id="184144333">
-																		<int key="NSCellFlags">337772096</int>
+																		<int key="NSCellFlags">67239488</int>
 																		<int key="NSCellFlags2">2048</int>
 																		<string key="NSContents">Text Cell</string>
 																		<reference key="NSSupport" ref="253129235"/>
@@ -280,7 +280,7 @@
 																</object>
 															</object>
 															<double key="NSRowHeight">17</double>
-															<int key="NSTvFlags">-692060160</int>
+															<int key="NSTvFlags">-759169024</int>
 															<reference key="NSDelegate"/>
 															<reference key="NSDataSource"/>
 															<int key="NSColumnAutoresizingStyle">4</int>
@@ -402,7 +402,7 @@
 																		<reference key="NSTextColor" ref="678989089"/>
 																	</object>
 																	<object class="NSTextFieldCell" key="NSDataCell" id="830763849">
-																		<int key="NSCellFlags">337772096</int>
+																		<int key="NSCellFlags">67239488</int>
 																		<int key="NSCellFlags2">2048</int>
 																		<string key="NSContents">Text Cell</string>
 																		<reference key="NSSupport" ref="253129235"/>
@@ -429,7 +429,7 @@
 																		<reference key="NSTextColor" ref="678989089"/>
 																	</object>
 																	<object class="NSTextFieldCell" key="NSDataCell" id="298553723">
-																		<int key="NSCellFlags">337772096</int>
+																		<int key="NSCellFlags">67239488</int>
 																		<int key="NSCellFlags2">2048</int>
 																		<string key="NSContents">Text Cell</string>
 																		<reference key="NSSupport" ref="253129235"/>
@@ -439,7 +439,6 @@
 																	</object>
 																	<int key="NSResizingMask">3</int>
 																	<bool key="NSIsResizeable">YES</bool>
-																	<bool key="NSIsEditable">YES</bool>
 																	<reference key="NSTableView" ref="411938668"/>
 																</object>
 															</object>
@@ -538,7 +537,7 @@
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSearchFieldCell" key="NSCell" id="445463091">
 								<int key="NSCellFlags">343014976</int>
-								<int key="NSCellFlags2">268436544</int>
+								<int key="NSCellFlags2">268436480</int>
 								<string key="NSContents"/>
 								<reference key="NSSupport" ref="253129235"/>
 								<reference key="NSControlView" ref="871750718"/>
@@ -720,6 +719,22 @@
 						<reference key="destination" ref="871750718"/>
 					</object>
 					<int key="connectionID">75</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">addMetadata:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="590792675"/>
+					</object>
+					<int key="connectionID">78</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">addButton</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="590792675"/>
+					</object>
+					<int key="connectionID">79</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1134,7 +1149,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">77</int>
+			<int key="maxID">79</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1196,11 +1211,13 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addMetadata:</string>
 							<string>closeWindow:</string>
 							<string>search:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 						</object>
@@ -1209,6 +1226,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addButton</string>
 							<string>delegate</string>
 							<string>metadataTable</string>
 							<string>movieTitleTable</string>
@@ -1217,8 +1235,9 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSButton</string>
 							<string>id</string>
-							<string>NSTableView</string>
+							<string>SBTableView</string>
 							<string>NSTableView</string>
 							<string>NSProgressIndicator</string>
 							<string>NSSearchField</string>
