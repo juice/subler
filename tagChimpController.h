@@ -20,7 +20,8 @@
     NSMutableArray * metadataArray;
     IBOutlet NSProgressIndicator * progress;
     IBOutlet NSSearchField       * searchField;
-    
+    IBOutlet NSMatrix            * videoKind;
+
     IBOutlet NSTableView         * movieTitleTable;
     IBOutlet SBTableView         * metadataTable;
     

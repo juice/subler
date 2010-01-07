@@ -64,6 +64,7 @@
 		A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C055360F6D395B00AF15B5 /* FileImport.xib */; };
 		A9C095800F7B6C8C00170CAF /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
+		A9C4E54110F5F01C00B60B59 /* tagChimp_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */; };
 		A9C8182D0F74D6E300019BFF /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C8182C0F74D6E300019BFF /* QuickTime.framework */; };
 		A9F5EA800F32E55000C057E0 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */; };
 		A9F5EBAE0F32F2DB00C057E0 /* lang.c in Sources */ = {isa = PBXBuildFile; fileRef = A9F5EBAD0F32F2DB00C057E0 /* lang.c */; };
@@ -219,6 +220,7 @@
 		A9C055330F6D394F00AF15B5 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FileImport.xib; sourceTree = "<group>"; };
 		A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
+		A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tagChimp_medium.png; path = images/tagChimp_medium.png; sourceTree = "<group>"; };
 		A9C8182C0F74D6E300019BFF /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		A9F5EA7E0F32E55000C057E0 /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubUtilities.h; path = ../../SubUtilities.h; sourceTree = "<group>"; };
 		A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubUtilities.m; path = ../../SubUtilities.m; sourceTree = "<group>"; };
@@ -373,6 +375,7 @@
 				A9FB9DC80F83AAC100AB791A /* VideoFramerate.xib */,
 				A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */,
 				A996C43110F4CA1D0055C85C /* tagChimp_tiny.png */,
+				A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -570,6 +573,7 @@
 				A90B023B10F3290A000416F3 /* Prefs.xib in Resources */,
 				A9B74A7D10F4B75400C244E4 /* MetadataImport.xib in Resources */,
 				A996C43210F4CA1D0055C85C /* tagChimp_tiny.png in Resources */,
+				A9C4E54110F5F01C00B60B59 /* tagChimp_medium.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

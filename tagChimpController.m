@@ -67,8 +67,25 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         [addButton setEnabled:NO];
     }
 
+    NSString *kind;
+    NSInteger column = [videoKind selectedColumn];
+    switch(column) {
+        case 0:
+            kind = @"Movie";
+            break;
+        case 1:
+            kind = @"TVShow";
+            break;
+        case 2:
+            kind = @"MusicVideo";
+            break;
+        default:
+            NSLog(@"Error in Selected Row");
+            break;
+    }
+
     searchTerms = [searchTerms stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-    NSString *pageUrl = [NSString stringWithFormat:@"https://www.tagchimp.com/ape/search.php?token=10976026764A4CBEE9463B5&type=search&title=%@&totalChapters=0&limit=25&locked=false", searchTerms];
+    NSString *pageUrl = [NSString stringWithFormat:@"https://www.tagchimp.com/ape/search.php?token=10976026764A4CBEE9463B5&type=search&title=%@&totalChapters=0&limit=25&locked=false&videoKind=%@", searchTerms, kind];
 
     // create the request
     NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:pageUrl]
