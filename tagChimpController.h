@@ -28,6 +28,7 @@
     
     NSDictionary    * tags;
     NSArray         * tagsArray;
+    NSDictionary    * detailBoldAttr;
 }
 
 - (id)initWithDelegate:(id)del;

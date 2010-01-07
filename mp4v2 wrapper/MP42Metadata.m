@@ -583,13 +583,15 @@ static const iTMF_rating_t rating_strings[] = {
     NSString * tagValue;
     for (NSString * key in [self writableMetadata])
         if(![tagsDict valueForKey:key])
-            if((tagValue = [newMetadata.tagsDict valueForKey:key]))
+            if(([tagValue = [newMetadata.tagsDict valueForKey:key] length]))
                 [tagsDict setObject:tagValue forKey:key];
 
     if (!artwork) {
         artwork = [newMetadata.artwork retain];
         isArtworkEdited = YES;
     }
+    
+    mediaKind = newMetadata.mediaKind;
 
     isEdited = YES;
     return YES;

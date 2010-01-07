@@ -16,9 +16,23 @@
 {
 	if (self = [super initWithWindowNibName:@"MetadataImport"]) {        
 		delegate = del;
+
+        NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+        [ps setHeadIndent: -10.0];
+        [ps setAlignment:NSRightTextAlignment];
+        detailBoldAttr = [[NSDictionary dictionaryWithObjectsAndKeys:
+                           [NSFont boldSystemFontOfSize:13.0], NSFontAttributeName,
+                           ps, NSParagraphStyleAttributeName,
+                           [NSColor grayColor], NSForegroundColorAttributeName,
+                           nil] retain];
     }
 
 	return self;
+}
+
+- (NSAttributedString *) boldString: (NSString *) string
+{
+    return [[[NSAttributedString alloc] initWithString:string attributes:detailBoldAttr] autorelease];
 }
 
 static NSInteger sortFunction (id ldict, id rdict, void *context) {
@@ -122,22 +136,30 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     
     for (NSXMLElement *element in nodes) {
         MP42Metadata * metadata = [[MP42Metadata alloc] init];
+
         NSArray *tag = [element nodesForXPath:@"./movieTags/info/movieTitle"
                                               error:&err];
-
         if([tag count])
             [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Name"];
-        
+
+        tag = [element nodesForXPath:@"./movieTags/info/kind"
+                                        error:&err];
+        if([tag count]) {
+            NSString *tagValue = [[tag objectAtIndex:0] stringValue];
+            if ([tagValue isEqualToString:@"Movie"])
+                metadata.mediaKind = 9;
+        }
+
         tag = [element nodesForXPath:@"./movieTags/info/releaseDate"
                                      error:&err];
         if([tag count])
             [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Release Date"];
-        
+
         tag = [element nodesForXPath:@"./movieTags/info/genre"
                                      error:&err];
         if([tag count])
             [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Genre"];
-        
+
         tag = [element nodesForXPath:@"./movieTags/info/shortDescription"
                                      error:&err];
         if([tag count])
@@ -152,7 +174,17 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
                                      error:&err];
         if([tag count])
             [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Rating"];
-        
+
+        tag = [element nodesForXPath:@"./movieTags/info/copyright"
+                               error:&err];
+        if([tag count])
+            [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Copyright"];
+
+        tag = [element nodesForXPath:@"./movieTags/info/comments"
+                               error:&err];
+        if([tag count])
+            [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Comments"];
+
         tag = [element nodesForXPath:@"./movieTags/info/cast/actor"
                                error:&err];
         if([tag count]) {
@@ -204,8 +236,22 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
             }
             [metadata setTag:tagValue forKey:@"Screenwriters"];
         }
-        
+
+        tag = [element nodesForXPath:@"./movieTags/info/artist/artistName"
+                               error:&err];
+        if([tag count]) {
+            NSString* tagValue = nil;
+            for (NSXMLElement* actorName in tag) {
+                if (tagValue)
+                    tagValue = [NSString stringWithFormat:@"%@, %@", tagValue, [actorName stringValue]];
+                else
+                    tagValue = [actorName stringValue];
+            }
+            [metadata setTag:tagValue forKey:@"Artist"];
+        }
+
         [metadataArray addObject:metadata];
+        [metadata release];
     }
     
 }
@@ -240,7 +286,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         }
         else {
             if ([aTableColumn.identifier isEqualToString:@"name"])
-                return [tagsArray objectAtIndex:rowIndex];
+                return [self boldString:[tagsArray objectAtIndex:rowIndex]];
     
             if ([aTableColumn.identifier isEqualToString:@"value"]) 
                 return [tags objectForKey:[tagsArray objectAtIndex:rowIndex]];            
@@ -261,7 +307,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 - (IBAction) addMetadata: (id) sender
 {
     if ([delegate respondsToSelector:@selector(metadataImportDone:)]) 
-        [delegate metadataImportDone:[metadataArray objectAtIndex:[movieTitleTable selectedRow]]];
+        [delegate metadataImportDone:[[[metadataArray objectAtIndex:[movieTitleTable selectedRow]] retain] autorelease]];
 }
 
 - (IBAction) closeWindow: (id) sender
@@ -273,6 +319,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 - (void) dealloc
 {
     [metadataArray release];
+    [detailBoldAttr release];
 }
 
 @end

@@ -403,7 +403,7 @@
 																	</object>
 																	<object class="NSTextFieldCell" key="NSDataCell" id="830763849">
 																		<int key="NSCellFlags">67239488</int>
-																		<int key="NSCellFlags2">2048</int>
+																		<int key="NSCellFlags2">67110912</int>
 																		<string key="NSContents">Text Cell</string>
 																		<reference key="NSSupport" ref="253129235"/>
 																		<reference key="NSControlView" ref="411938668"/>
