@@ -20,7 +20,7 @@
     NSMutableArray * metadataArray;
     IBOutlet NSProgressIndicator * progress;
     IBOutlet NSSearchField       * searchField;
-    IBOutlet NSMatrix            * videoKind;
+    IBOutlet NSMenu              * searchFieldMenu;
 
     IBOutlet NSTableView         * movieTitleTable;
     IBOutlet SBTableView         * metadataTable;
@@ -30,11 +30,13 @@
     NSDictionary    * tags;
     NSArray         * tagsArray;
     NSDictionary    * detailBoldAttr;
+    NSInteger         videoKind;
 }
 
 - (id)initWithDelegate:(id)del;
 - (IBAction) addMetadata: (id) sender;
 - (IBAction) closeWindow: (id) sender;
+- (IBAction) searchType: (id) sender;
 - (IBAction) search: (id) sender;
 - (void) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument;
 

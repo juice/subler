@@ -30,6 +30,14 @@
 	return self;
 }
 
+- (void)awakeFromNib {
+    NSMenu *menu = [[NSMenu alloc] init];
+    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Test" action:NULL keyEquivalent:@""];
+    [menu addItem:item];
+    [[searchField cell] setSearchMenuTemplate:searchFieldMenu];
+    [[searchField cell] setPlaceholderString:[[searchFieldMenu itemWithTag:0] title]];
+}
+
 - (NSAttributedString *) boldString: (NSString *) string
 {
     return [[[NSAttributedString alloc] initWithString:string attributes:detailBoldAttr] autorelease];
@@ -47,6 +55,40 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         rc = NSOrderedAscending;
     
     return rc;
+}
+
+- (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
+{
+    SEL action = [anItem action];
+    NSInteger tag = [anItem tag];
+
+    if (tag == NSSearchFieldRecentsTitleMenuItemTag)
+        return NO;
+    
+    if (tag == NSSearchFieldNoRecentsMenuItemTag)
+        return NO;
+    
+    if (tag == videoKind)
+        [(NSMenuItem*)anItem setState:NSOnState];
+    else
+        [(NSMenuItem*)anItem setState:NSOffState];
+    
+    if (action == @selector(selectFile:))
+        return YES;
+    
+    if (action == @selector(deleteTrack:))
+        return YES;
+    
+    if (action == @selector(searchMetadata:))
+        return YES;
+    
+    return YES;
+}
+
+
+- (IBAction) searchType: (NSMenuItem *) sender {
+    videoKind = [sender tag];
+    [[searchField cell] setPlaceholderString:[sender title]];
 }
 
 - (IBAction) search: (id) sender {
@@ -68,8 +110,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     }
 
     NSString *kind;
-    NSInteger column = [videoKind selectedColumn];
-    switch(column) {
+    
+    switch(videoKind) {
         case 0:
             kind = @"Movie";
             break;
@@ -80,12 +122,11 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
             kind = @"MusicVideo";
             break;
         default:
-            NSLog(@"Error in Selected Row");
-            break;
+            kind = @"Movie";
     }
 
     searchTerms = [searchTerms stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-    NSString *pageUrl = [NSString stringWithFormat:@"https://www.tagchimp.com/ape/search.php?token=10976026764A4CBEE9463B5&type=search&title=%@&totalChapters=0&limit=25&locked=false&videoKind=%@", searchTerms, kind];
+    NSString *pageUrl = [NSString stringWithFormat:@"https://www.tagchimp.com/ape/search.php?token=10976026764A4CBEE9463B5&type=search&title=%@&totalChapters=X&limit=20&locked=false&videoKind=%@", searchTerms, kind];
 
     // create the request
     NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:pageUrl]
