@@ -595,6 +595,25 @@
 						<reference key="NSMixedImage" ref="820393258"/>
 						<int key="NSTag">2</int>
 					</object>
+					<object class="NSMenuItem" id="652511148">
+						<reference key="NSMenu" ref="113798557"/>
+						<bool key="NSIsDisabled">YES</bool>
+						<bool key="NSIsSeparator">YES</bool>
+						<string key="NSTitle"/>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="730768380"/>
+						<reference key="NSMixedImage" ref="820393258"/>
+					</object>
+					<object class="NSMenuItem" id="522355817">
+						<reference key="NSMenu" ref="113798557"/>
+						<string key="NSTitle">tagChimp ID</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="730768380"/>
+						<reference key="NSMixedImage" ref="820393258"/>
+						<int key="NSTag">3</int>
+					</object>
 					<object class="NSMenuItem" id="101413913">
 						<reference key="NSMenu" ref="113798557"/>
 						<string key="NSTitle">Amazon ASIN</string>
@@ -602,7 +621,7 @@
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="730768380"/>
 						<reference key="NSMixedImage" ref="820393258"/>
-						<int key="NSTag">3</int>
+						<int key="NSTag">4</int>
 					</object>
 					<object class="NSMenuItem" id="743205375">
 						<reference key="NSMenu" ref="113798557"/>
@@ -611,7 +630,7 @@
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="730768380"/>
 						<reference key="NSMixedImage" ref="820393258"/>
-						<int key="NSTag">4</int>
+						<int key="NSTag">5</int>
 					</object>
 					<object class="NSMenuItem" id="574163167">
 						<reference key="NSMenu" ref="113798557"/>
@@ -620,7 +639,7 @@
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="730768380"/>
 						<reference key="NSMixedImage" ref="820393258"/>
-						<int key="NSTag">5</int>
+						<int key="NSTag">6</int>
 					</object>
 					<object class="NSMenuItem" id="511025239">
 						<reference key="NSMenu" ref="113798557"/>
@@ -629,7 +648,7 @@
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="730768380"/>
 						<reference key="NSMixedImage" ref="820393258"/>
-						<int key="NSTag">6</int>
+						<int key="NSTag">7</int>
 					</object>
 					<object class="NSMenuItem" id="127355238">
 						<reference key="NSMenu" ref="113798557"/>
@@ -877,6 +896,14 @@
 						<reference key="destination" ref="57693477"/>
 					</object>
 					<int key="connectionID">115</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">searchType:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="522355817"/>
+					</object>
+					<int key="connectionID">117</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1150,6 +1177,8 @@
 							<reference ref="210032140"/>
 							<reference ref="127355238"/>
 							<reference ref="57693477"/>
+							<reference ref="522355817"/>
+							<reference ref="652511148"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -1213,6 +1242,16 @@
 						<reference key="object" ref="57693477"/>
 						<reference key="parent" ref="113798557"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">116</int>
+						<reference key="object" ref="522355817"/>
+						<reference key="parent" ref="113798557"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">118</int>
+						<reference key="object" ref="652511148"/>
+						<reference key="parent" ref="113798557"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1233,6 +1272,8 @@
 					<string>111.IBPluginDependency</string>
 					<string>113.IBPluginDependency</string>
 					<string>114.IBPluginDependency</string>
+					<string>116.IBPluginDependency</string>
+					<string>118.IBPluginDependency</string>
 					<string>2.IBPluginDependency</string>
 					<string>25.IBPluginDependency</string>
 					<string>26.IBPluginDependency</string>
@@ -1307,6 +1348,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>SBTableView</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1319,7 +1362,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{724, 406}, {201, 233}}</string>
+					<string>{{724, 376}, {201, 263}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1346,7 +1389,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">115</int>
+			<int key="maxID">118</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

@@ -109,24 +109,50 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         [addButton setEnabled:NO];
     }
 
-    NSString *kind;
+    NSString *searchType;
+    NSString *totalChapters = @"X";
+    NSInteger limit = 10;
+    searchTerms = [searchTerms stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
     switch(videoKind) {
         case 0:
-            kind = @"Movie";
+            searchType = [NSString stringWithFormat:@"&type=search&title=%@&limit=%d&totalChapters=%@&videoKind=Movie",
+                          searchTerms, limit, totalChapters];
             break;
         case 1:
-            kind = @"TVShow";
+            searchType = [NSString stringWithFormat:@"&type=search&title=%@&limit=%d&totalChapters=%@&videoKind=TVShow", 
+                          searchTerms, limit, totalChapters];
             break;
         case 2:
-            kind = @"MusicVideo";
+            searchType = [NSString stringWithFormat:@"&type=search&title=%@&limit=%d&totalChapters=%@&videoKind=MusicVideo", 
+                          searchTerms, limit, totalChapters];
+            break;
+        case 3:
+            searchType = [NSString stringWithFormat:@"&type=lookup&totalChapters=X&id=%@",
+                          searchTerms];
+            break;
+        case 4:
+            searchType = [NSString stringWithFormat:@"&type=lookup&totalChapters=X&amazon=%@",
+                          searchTerms];
+            break;
+        case 5:
+            searchType = [NSString stringWithFormat:@"&type=lookup&totalChapters=X&imdb=%@", 
+                          searchTerms];
+            break;
+        case 6:
+            searchType = [NSString stringWithFormat:@"&type=lookup&totalChapters=X&netflix=%@",
+                          searchTerms];
+            break;
+        case 7:
+            searchType = [NSString stringWithFormat:@"&type=lookup&totalChapters=X&gtin=%@",
+                          searchTerms];
             break;
         default:
-            kind = @"Movie";
+            searchType = [NSString stringWithFormat:@"&type=search&title=%@&limit=%d&totalChapters=%@&videoKind=Movie",
+                          searchTerms, limit, totalChapters];
     }
 
-    searchTerms = [searchTerms stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-    NSString *pageUrl = [NSString stringWithFormat:@"https://www.tagchimp.com/ape/search.php?token=10976026764A4CBEE9463B5&type=search&title=%@&totalChapters=X&limit=20&locked=false&videoKind=%@", searchTerms, kind];
+    NSString *pageUrl = [NSString stringWithFormat:@"https://www.tagchimp.com/ape/search.php?token=10976026764A4CBEE9463B5%@", searchType];
 
     // create the request
     NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:pageUrl]
@@ -208,10 +234,30 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
                 metadata.mediaKind = 9;
         }
 
-        tag = [element nodesForXPath:@"./movieTags/info/releaseDate"
-                                     error:&err];
-        if([tag count])
-            [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Release Date"];
+        tag = [element nodesForXPath:@"./movieTags/info/releaseDateY"
+                               error:&err];
+        if([tag count] && [[[tag objectAtIndex:0] stringValue] integerValue]) {
+            NSInteger year, month, day;
+            year = [[[tag objectAtIndex:0] stringValue] integerValue];
+            
+            tag = [element nodesForXPath:@"./movieTags/info/releaseDateM"
+                                   error:&err];
+            if([tag count])
+                month = [[[tag objectAtIndex:0] stringValue] integerValue];
+
+            tag = [element nodesForXPath:@"./movieTags/info/releaseDateD"
+                                       error:&err];
+            if([tag count])
+                day = [[[tag objectAtIndex:0] stringValue]integerValue];
+
+            [metadata setTag:[NSString stringWithFormat:@"%d-%d-%d",year, month, day] forKey:@"Release Date"];
+        }
+        else {
+            tag = [element nodesForXPath:@"./movieTags/info/releaseDate"
+                                        error:&err];
+            if([tag count])
+                [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Release Date"];
+        }
 
         tag = [element nodesForXPath:@"./movieTags/info/genre"
                                      error:&err];
@@ -311,8 +357,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         [metadataArray addObject:metadata];
         [metadata release];
     }
-    
 }
+
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
     if (receivedXml) {
