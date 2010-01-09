@@ -32,11 +32,15 @@
     NSArray             * tagsArray;
     NSDictionary        * detailBoldAttr;
     NSInteger             videoKind;
+
+    NSTableColumn *tabCol;
+    CGFloat width;
 }
 
 - (id)initWithDelegate:(id)del;
 - (IBAction) addMetadata: (id) sender;
 - (IBAction) closeWindow: (id) sender;
+- (IBAction) tagChimpWebSite: (id) sender;
 - (IBAction) searchType: (id) sender;
 - (IBAction) search: (id) sender;
 - (void) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument;

@@ -31,6 +31,7 @@
 }
 
 - (void)awakeFromNib {
+    tabCol = [[[metadataTable tableColumns] objectAtIndex:1] retain];
     [[searchField cell] setSearchMenuTemplate:searchFieldMenu];
     [[searchField cell] setPlaceholderString:[[searchFieldMenu itemWithTag:0] title]];
 }
@@ -65,20 +66,17 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     if (tag == NSSearchFieldNoRecentsMenuItemTag)
         return NO;
     
+    if (tag == 20)
+        return NO;
+
     if (tag == videoKind)
         [(NSMenuItem*)anItem setState:NSOnState];
     else
         [(NSMenuItem*)anItem setState:NSOffState];
     
-    if (action == @selector(selectFile:))
-        return YES;
-    
-    if (action == @selector(deleteTrack:))
-        return YES;
-    
-    if (action == @selector(searchMetadata:))
-        return YES;
-    
+    if (action == @selector(addMetadata:))
+        return NO;
+
     return YES;
 }
 
@@ -117,8 +115,12 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
                           searchTerms, limit, totalChapters];
             break;
         case 1:
-            searchType = [NSString stringWithFormat:@"&type=search&title=%@&limit=%d&totalChapters=%@&videoKind=TVShow", 
-                          searchTerms, limit, totalChapters];
+            searchType = [NSString stringWithFormat:@"&type=search&show=%@&totalChapters=%@&videoKind=TVShow&season=1", 
+                          searchTerms, totalChapters];
+            break;
+        case 11:
+            searchType = [NSString stringWithFormat:@"&type=search&title=%@&totalChapters=%@&videoKind=TVShow", 
+                          searchTerms, totalChapters];
             break;
         case 2:
             searchType = [NSString stringWithFormat:@"&type=search&title=%@&limit=%d&totalChapters=%@&videoKind=MusicVideo", 
@@ -198,7 +200,6 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         receivedXml = [[NSXMLDocument alloc]initWithData:receivedData options:NSXMLDocumentTidyXML error:nil];
         [self tagChimpXmlToMP42Metadata: receivedXml];
         [movieTitleTable reloadData];
-        [addButton setEnabled:YES];
     }
     [progress setHidden:YES];
     [progress stopAnimation:self];
@@ -212,7 +213,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     NSArray *nodes = [receivedXml nodesForXPath:@"./items/movie" error:&err];
     if (metadataArray)
         [metadataArray release];
-        
+
     metadataArray = [[NSMutableArray alloc] initWithCapacity:[nodes count]];
     
     for (NSXMLElement *element in nodes) {
@@ -352,7 +353,50 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
             }
             [metadata setTag:tagValue forKey:@"Artist"];
         }
+        
+        //TV Show specific tags
+        tag = [element nodesForXPath:@"./movieTags/info/kind"
+                               error:&err];
+        if([tag count])
+            if ([[[tag objectAtIndex:0] stringValue] isEqualToString:@"TV Show"]) {
+                tag = [element nodesForXPath:@"./movieTags/television/showName"
+                                       error:&err];
+                if([tag count])
+                    [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Show"];
+                
+                tag = [element nodesForXPath:@"./movieTags/television/season"
+                                       error:&err];
+                if([tag count])
+                    [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Season"];
+                
+                tag = [element nodesForXPath:@"./movieTags/television/episode"
+                                       error:&err];
+                if([tag count])
+                    [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Episode #"];
 
+                tag = [element nodesForXPath:@"./movieTags/television/episodeID"
+                                       error:&err];
+                if([tag count])
+                    [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Episode ID"];
+                
+                tag = [element nodesForXPath:@"./movieTags/television/network"
+                                       error:&err];
+                if([tag count])
+                    [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Network"];
+                
+                NSInteger track = 0, totalTracks = 0;
+                tag = [element nodesForXPath:@"./movieTags/track/trackNum"
+                                       error:&err];
+                if([tag count])
+                    track = [[[tag objectAtIndex:0] stringValue] integerValue];
+                
+                tag = [element nodesForXPath:@"./movieTags/track/trackTotal"
+                                       error:&err];
+                if([tag count])
+                    totalTracks = [[[tag objectAtIndex:0] stringValue] integerValue];
+                
+                [metadata setTag:[NSString stringWithFormat:@"%d/%d", track, totalTracks] forKey:@"Track #"];
+            }
         [metadataArray addObject:metadata];
         [metadata release];
     }
@@ -403,12 +447,44 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     return nil;
 }
 
+- (CGFloat) tableView: (NSTableView *) tableView
+          heightOfRow: (NSInteger) rowIndex
+{
+    if (!(tableView == movieTitleTable) && width) {
+        NSRect r = NSMakeRect(0,0,width,1000.0);
+        NSTextFieldCell *cell = [tabCol dataCellForRow:rowIndex];	
+        [cell setObjectValue:[tags objectForKey:[tagsArray objectAtIndex:rowIndex]]];
+        CGFloat height = [cell cellSizeForBounds:r].height; // Slow
+        if (height <= 0)
+            height = 17.0; // Ensure miniumum height is 17.0
+
+        return height;
+    }
+    return 17.0;
+}
+
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([movieTitleTable selectedRow] != -1) {
+    if ([movieTitleTable selectedRow] != -1 && [aNotification object] == movieTitleTable) {
         currentMetadata = [metadataArray objectAtIndex:[movieTitleTable selectedRow]];
         tags = currentMetadata.tagsDict;
+        if (tagsArray)
+            [tagsArray release];
         tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:[currentMetadata availableMetadata]] retain];
         [metadataTable reloadData];
+        [addButton setEnabled:YES];
+    }
+    else {
+        [addButton setEnabled:NO];
+    }
+
+}
+
+- (void)tableViewColumnDidResize: (NSNotification* )notification
+{
+    if ([notification object] == metadataTable) {
+        width = [tabCol width];
+        [metadataTable noteHeightOfRowsWithIndexesChanged:
+         [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [metadataTable numberOfRows])]];
     }
 }
 
@@ -424,8 +500,16 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         [delegate metadataImportDone:nil];
 }
 
+- (IBAction) tagChimpWebSite: (id) sender
+{
+    [[NSWorkspace sharedWorkspace] openURL: [NSURL
+                                             URLWithString:@"http://tagchimp.com/donate/"]];
+
+}
+
 - (void) dealloc
 {
+    [tabCol release];
     [metadataArray release];
     [detailBoldAttr release];
     [super dealloc];
