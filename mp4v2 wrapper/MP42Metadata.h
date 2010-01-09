@@ -62,6 +62,8 @@ enum rating_type {
 - (NSArray *) writableMetadata;
 
 - (NSArray *) availableRatings;
+- (NSString *) ratingFromIndex: (NSInteger)index;
+- (NSInteger) ratingIndexFromString: (NSString *)ratingString;
 
 - (void) removeTagForKey:(id)aKey;
 - (BOOL) setTag:(id)value forKey:(NSString *)key;

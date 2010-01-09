@@ -31,9 +31,6 @@
 }
 
 - (void)awakeFromNib {
-    NSMenu *menu = [[NSMenu alloc] init];
-    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Test" action:NULL keyEquivalent:@""];
-    [menu addItem:item];
     [[searchField cell] setSearchMenuTemplate:searchFieldMenu];
     [[searchField cell] setPlaceholderString:[[searchFieldMenu itemWithTag:0] title]];
 }
@@ -111,7 +108,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
     NSString *searchType;
     NSString *totalChapters = @"X";
-    NSInteger limit = 10;
+    NSInteger limit = 20;
     searchTerms = [searchTerms stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
     switch(videoKind) {
@@ -276,8 +273,10 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
         tag = [element nodesForXPath:@"./movieTags/info/rating"
                                      error:&err];
-        if([tag count])
-            [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Rating"];
+        if([tag count]) {
+            NSString* ratingCompareString = [[tag objectAtIndex:0] stringValue];
+            [metadata setTag:[NSNumber numberWithInteger:[metadata ratingIndexFromString:ratingCompareString]] forKey:@"Rating"];
+        }
 
         tag = [element nodesForXPath:@"./movieTags/info/copyright"
                                error:&err];
@@ -391,9 +390,14 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         else {
             if ([aTableColumn.identifier isEqualToString:@"name"])
                 return [self boldString:[tagsArray objectAtIndex:rowIndex]];
-    
-            if ([aTableColumn.identifier isEqualToString:@"value"]) 
-                return [tags objectForKey:[tagsArray objectAtIndex:rowIndex]];            
+
+            if ([aTableColumn.identifier isEqualToString:@"value"]) {
+                NSString *tagName = [tagsArray objectAtIndex:rowIndex];
+                if ([tagName isEqualToString:@"Rating"])
+                    return [currentMetadata ratingFromIndex:[[tags objectForKey:[tagsArray objectAtIndex:rowIndex]] integerValue]];                    
+
+                return [tags objectForKey:[tagsArray objectAtIndex:rowIndex]];
+            }
         }
     }
     return nil;
@@ -401,9 +405,9 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([movieTitleTable selectedRow] != -1) {
-        MP42Metadata *metadata = [metadataArray objectAtIndex:[movieTitleTable selectedRow]];
-        tags = metadata.tagsDict;
-        tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:[metadata availableMetadata]] retain];
+        currentMetadata = [metadataArray objectAtIndex:[movieTitleTable selectedRow]];
+        tags = currentMetadata.tagsDict;
+        tagsArray = [[[tags allKeys] sortedArrayUsingFunction:sortFunction context:[currentMetadata availableMetadata]] retain];
         [metadataTable reloadData];
     }
 }
@@ -424,6 +428,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 {
     [metadataArray release];
     [detailBoldAttr release];
+    [super dealloc];
 }
 
 @end

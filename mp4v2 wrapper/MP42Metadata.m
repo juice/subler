@@ -11,10 +11,10 @@
 #import "RegexKitLite.h"
 
 typedef struct iTMF_rating_t
-    {
-        char * rating;
-        char * english_name;
-    } iTMF_rating_t;
+{
+    char * rating;
+    char * english_name;
+} iTMF_rating_t;
 
 static const iTMF_rating_t rating_strings[] = {
     {"mpaa|NR|000|", "Not Rated"},          // 0
@@ -141,6 +141,22 @@ static const iTMF_rating_t rating_strings[] = {
         [ratingsArray addObject:[NSString stringWithUTF8String:rating->english_name]];
 
     return [ratingsArray autorelease];
+}
+
+- (NSString *) ratingFromIndex: (NSInteger)index {
+    iTMF_rating_t *rating = (iTMF_rating_t*) rating_strings;
+    rating += index;
+    return [NSString stringWithUTF8String:rating->english_name];    
+}
+- (NSInteger) ratingIndexFromString: (NSString *)ratingString{
+    NSInteger ratingIndex = 0;
+    iTMF_rating_t *ratingList;
+    NSInteger k = 0;
+    for ( ratingList = (iTMF_rating_t*) rating_strings; ratingList->english_name; ratingList++, k++ ) {
+        if ([ratingString isEqualToString:[NSString stringWithUTF8String:ratingList->english_name]])
+            ratingIndex = k;
+    }
+    return ratingIndex;
 }
 
 - (void) removeTagForKey:(id)aKey
@@ -583,7 +599,7 @@ static const iTMF_rating_t rating_strings[] = {
     NSString * tagValue;
     for (NSString * key in [self writableMetadata])
         if(![tagsDict valueForKey:key])
-            if(([tagValue = [newMetadata.tagsDict valueForKey:key] length]))
+            if(tagValue = [newMetadata.tagsDict valueForKey:key] )
                 [tagsDict setObject:tagValue forKey:key];
 
     if (!artwork) {

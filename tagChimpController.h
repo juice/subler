@@ -16,7 +16,7 @@
     NSXMLDocument   * receivedXml;
     NSURLConnection * theConnection;
     id delegate;
-
+    
     NSMutableArray * metadataArray;
     IBOutlet NSProgressIndicator * progress;
     IBOutlet NSSearchField       * searchField;
@@ -27,10 +27,11 @@
     
     IBOutlet NSButton            * addButton;
     
-    NSDictionary    * tags;
-    NSArray         * tagsArray;
-    NSDictionary    * detailBoldAttr;
-    NSInteger         videoKind;
+    MP42Metadata        * currentMetadata;
+    NSDictionary        * tags;
+    NSArray             * tagsArray;
+    NSDictionary        * detailBoldAttr;
+    NSInteger             videoKind;
 }
 
 - (id)initWithDelegate:(id)del;
