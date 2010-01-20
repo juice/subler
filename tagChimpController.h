@@ -43,7 +43,7 @@
 - (IBAction) tagChimpWebSite: (id) sender;
 - (IBAction) searchType: (id) sender;
 - (IBAction) search: (id) sender;
-- (void) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument;
+- (NSArray *) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument;
 
 @end
 

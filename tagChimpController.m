@@ -106,7 +106,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
     NSString *searchType;
     NSString *totalChapters = @"X";
-    NSInteger limit = 20;
+    NSInteger limit = 150;
     searchTerms = [searchTerms stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
     switch(videoKind) {
@@ -179,7 +179,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 {
     // this method is called when the server has determined that it
     // has enough information to create the NSURLResponse
-    
+
     // it can be called multiple times, for example in the case of a
     // redirect, so each time we reset the data.
     // receivedData is declared as a method instance elsewhere
@@ -199,6 +199,9 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     if ([receivedData length]) {
         receivedXml = [[NSXMLDocument alloc]initWithData:receivedData options:NSXMLDocumentTidyXML error:nil];
         [self tagChimpXmlToMP42Metadata: receivedXml];
+        if ([metadataArray count]) {
+            [addButton setEnabled:YES];
+        }
         [movieTitleTable reloadData];
     }
     [progress setHidden:YES];
@@ -208,14 +211,14 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 }
 
 
-- (void) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument {
+- (NSArray *) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument {
     NSError *err=nil;
     NSArray *nodes = [receivedXml nodesForXPath:@"./items/movie" error:&err];
     if (metadataArray)
         [metadataArray release];
 
     metadataArray = [[NSMutableArray alloc] initWithCapacity:[nodes count]];
-    
+
     for (NSXMLElement *element in nodes) {
         MP42Metadata * metadata = [[MP42Metadata alloc] init];
 
@@ -363,12 +366,12 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
                                        error:&err];
                 if([tag count])
                     [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Show"];
-                
+
                 tag = [element nodesForXPath:@"./movieTags/television/season"
                                        error:&err];
                 if([tag count])
                     [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Season"];
-                
+
                 tag = [element nodesForXPath:@"./movieTags/television/episode"
                                        error:&err];
                 if([tag count])
@@ -378,23 +381,23 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
                                        error:&err];
                 if([tag count])
                     [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Episode ID"];
-                
+
                 tag = [element nodesForXPath:@"./movieTags/television/network"
                                        error:&err];
                 if([tag count])
                     [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TV Network"];
-                
+
                 NSInteger track = 0, totalTracks = 0;
                 tag = [element nodesForXPath:@"./movieTags/track/trackNum"
                                        error:&err];
                 if([tag count])
                     track = [[[tag objectAtIndex:0] stringValue] integerValue];
-                
+
                 tag = [element nodesForXPath:@"./movieTags/track/trackTotal"
                                        error:&err];
                 if([tag count])
                     totalTracks = [[[tag objectAtIndex:0] stringValue] integerValue];
-                
+
                 [metadata setTag:[NSString stringWithFormat:@"%d/%d", track, totalTracks] forKey:@"Track #"];
             }
         [metadataArray addObject:metadata];
