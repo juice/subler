@@ -616,6 +616,7 @@ static const iTMF_rating_t rating_strings[] = {
 @synthesize isEdited;
 @synthesize isArtworkEdited;
 @synthesize artwork;
+@synthesize artworkURL;
 @synthesize mediaKind;
 @synthesize contentRating;
 @synthesize hdVideo;
@@ -624,6 +625,7 @@ static const iTMF_rating_t rating_strings[] = {
 -(void) dealloc
 {
     [artwork release];
+    [artworkURL release];
     [tagsDict release];
     [super dealloc];
 }

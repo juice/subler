@@ -15,6 +15,7 @@
     NSMutableData   * receivedData;
     NSXMLDocument   * receivedXml;
     NSURLConnection * theConnection;
+    NSURLConnection * artworkConnection;
     id delegate;
     
     NSMutableArray * metadataArray;

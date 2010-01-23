@@ -48,6 +48,7 @@ enum rating_type {
     NSString                *sourcePath;
     NSMutableDictionary     *tagsDict;
     NSImage                 *artwork;
+    NSURL                   *artworkURL;
 
     uint8_t mediaKind;
     uint8_t contentRating;
@@ -74,6 +75,7 @@ enum rating_type {
 
 @property(readonly) NSMutableDictionary *tagsDict;
 @property(readwrite, retain) NSImage    *artwork;
+@property(readwrite, retain) NSURL    *artworkURL;
 @property(readwrite) uint8_t    mediaKind;
 @property(readwrite) uint8_t    contentRating;
 @property(readwrite) uint8_t    hdVideo;

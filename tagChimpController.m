@@ -177,39 +177,47 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    // this method is called when the server has determined that it
-    // has enough information to create the NSURLResponse
-
-    // it can be called multiple times, for example in the case of a
-    // redirect, so each time we reset the data.
-    // receivedData is declared as a method instance elsewhere
     [receivedData setLength:0];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    // append the new data to the receivedData
-    // receivedData is declared as a method instance elsewhere
     [receivedData appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    // release the connection, and the data object
-    if ([receivedData length]) {
-        receivedXml = [[NSXMLDocument alloc]initWithData:receivedData options:NSXMLDocumentTidyXML error:nil];
-        [self tagChimpXmlToMP42Metadata: receivedXml];
-        if ([metadataArray count]) {
-            [addButton setEnabled:YES];
+    if (connection == theConnection) {
+        // release the connection, and the data object
+        if ([receivedData length]) {
+            receivedXml = [[NSXMLDocument alloc]initWithData:receivedData options:NSXMLDocumentTidyXML error:nil];
+            [self tagChimpXmlToMP42Metadata: receivedXml];
+
+            if ([metadataArray count])
+                [addButton setEnabled:YES];
+
+            [movieTitleTable reloadData];
         }
-        [movieTitleTable reloadData];
+    }
+    else if (connection == artworkConnection) {
+        if ([receivedData length]) {
+            NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:receivedData];
+            if (imageRep != nil) {
+                NSImage *artwork = [[NSImage alloc] initWithSize:[imageRep size]];
+                [artwork addRepresentation:imageRep];
+                currentMetadata.artwork = artwork;
+                [artwork release];
+            }
+        }
+        if ([delegate respondsToSelector:@selector(metadataImportDone:)]) 
+            [delegate metadataImportDone:[[currentMetadata retain] autorelease]];
     }
     [progress setHidden:YES];
     [progress stopAnimation:self];
+    [receivedData release];
     [connection release];
     theConnection = nil;
 }
-
 
 - (NSArray *) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument {
     NSError *err=nil;
@@ -400,9 +408,16 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
                 [metadata setTag:[NSString stringWithFormat:@"%d/%d", track, totalTracks] forKey:@"Track #"];
             }
+
+        tag = [element nodesForXPath:@"./movieTags/coverArtLarge"
+                               error:&err];
+        if([tag count])
+            [metadata setArtworkURL:[NSURL URLWithString:[[tag objectAtIndex:0] stringValue]]];
+        
         [metadataArray addObject:metadata];
         [metadata release];
     }
+    return metadataArray;
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
@@ -493,8 +508,33 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (IBAction) addMetadata: (id) sender
 {
-    if ([delegate respondsToSelector:@selector(metadataImportDone:)]) 
-        [delegate metadataImportDone:[[[metadataArray objectAtIndex:[movieTitleTable selectedRow]] retain] autorelease]];
+    MP42Metadata *metadata = [metadataArray objectAtIndex:[movieTitleTable selectedRow]];
+    if (metadata.artworkURL) {
+        NSURLRequest *theRequest=[NSURLRequest requestWithURL:metadata.artworkURL
+                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                              timeoutInterval:60.0];
+    
+        artworkConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
+
+        if (artworkConnection) {
+            receivedData = [[NSMutableData data] retain];
+            [progress startAnimation:self];
+            [progress setHidden:NO];
+            [movieTitleTable setEnabled:NO];
+            [searchField setEnabled:NO];
+        } else {
+            [progress stopAnimation:self];
+            [progress setHidden:YES];
+
+            if ([delegate respondsToSelector:@selector(metadataImportDone:)]) 
+                [delegate metadataImportDone:[[[metadataArray objectAtIndex:[movieTitleTable selectedRow]] retain] autorelease]];
+        }
+    }
+    else {
+        if ([delegate respondsToSelector:@selector(metadataImportDone:)]) 
+            [delegate metadataImportDone:[[[metadataArray objectAtIndex:[movieTitleTable selectedRow]] retain] autorelease]];
+    }
+
 }
 
 - (IBAction) closeWindow: (id) sender
