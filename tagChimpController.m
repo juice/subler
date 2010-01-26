@@ -259,7 +259,10 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
             if([tag count])
                 day = [[[tag objectAtIndex:0] stringValue]integerValue];
 
-            [metadata setTag:[NSString stringWithFormat:@"%d-%d-%d",year, month, day] forKey:@"Release Date"];
+            if (year && month && day)
+                [metadata setTag:[NSString stringWithFormat:@"%d-%d-%d",year, month, day] forKey:@"Release Date"];
+            else if (year)
+                [metadata setTag:[NSString stringWithFormat:@"%d",year] forKey:@"Release Date"];
         }
         else {
             tag = [element nodesForXPath:@"./movieTags/info/releaseDate"

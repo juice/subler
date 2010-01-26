@@ -39,6 +39,14 @@
     return @"MyDocument";
 }
 
+- (void)awakeFromNib
+{
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"rememberWindowSize"] integerValue]) {
+        [documentWindow setFrameAutosaveName:@"documentSave"];
+        [documentWindow setFrameUsingName:@"documentSave"];
+    }
+}
+
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
     [super windowControllerDidLoadNib:aController];
@@ -62,12 +70,6 @@
         [targetView addSubview: [propertyView view]];
     }
 
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"rememberWindowSize"] integerValue]) {
-        NSRect frame = [documentWindow frame];
-        frame.size.width = 620;
-        frame.size.height = 420;
-        [documentWindow setFrame:frame display:TRUE];
-    }
     [fileTracksTable registerForDraggedTypes:[NSArray arrayWithObjects:SublerTableViewDataType, nil]];
     [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
                                    NSColorPboardType, NSFilenamesPboardType, nil]];

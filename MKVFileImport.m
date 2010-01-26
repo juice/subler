@@ -242,7 +242,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                     uint64_t timestamp = (chapters->Children[xi].Start) / 1000000;
                     if (!xi)
                         timestamp = 0;
-                    if (chapters->Children[xi].Display)
+                    if (chapters->Children[xi].Display && strlen(chapters->Children[xi].Display->String))
                         [newTrack addChapter:[NSString stringWithUTF8String:chapters->Children[xi].Display->String]
                                                                    duration:timestamp];
                     else
