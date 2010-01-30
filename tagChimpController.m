@@ -511,6 +511,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (IBAction) addMetadata: (id) sender
 {
+    [addButton setEnabled:NO];
+
     MP42Metadata *metadata = [metadataArray objectAtIndex:[movieTitleTable selectedRow]];
     if (metadata.artworkURL) {
         NSURLRequest *theRequest=[NSURLRequest requestWithURL:metadata.artworkURL
