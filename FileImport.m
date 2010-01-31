@@ -79,7 +79,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"])
         return track.language;
 
-    return nil;}
+    return nil;
+}
 
 - (void) tableView: (NSTableView *) tableView 
     setObjectValue: (id) anObject 
@@ -100,11 +101,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
     NSMutableArray *tracks = [[NSMutableArray alloc] init];
     NSInteger i = 0;
-    
+
     for (MP42Track * track in [fileImporter tracksArray])
         if ([[importCheckArray objectAtIndex: i++] boolValue])
             [tracks addObject:track];
-    
+
     if ([delegate respondsToSelector:@selector(importDone:)]) 
         [delegate importDone:tracks];
     [tracks release];

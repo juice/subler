@@ -11,7 +11,7 @@
 @class MP42FileImporter;
 
 @interface FileImport : NSWindowController {
-	
+
 	NSString               * file;
     NSMutableArray		* importCheckArray;
     MP42FileImporter    * fileImporter;
@@ -33,4 +33,3 @@
 - (void) importDone: (NSArray*) tracksToBeImported;
 
 @end
-

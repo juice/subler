@@ -69,12 +69,13 @@
             }
         }
 
-        if (chapterTrackId > 0) {
-            Chapter* chapters;
-            unsigned count;
+        Chapter* chapters;
+        unsigned count;
+        mkv_GetChapters(matroskaFile, &chapters, &count);
+
+        if (count) {
             MP42ChapterTrack *newTrack = [[MP42ChapterTrack alloc] init];
 
-            mkv_GetChapters(matroskaFile, &chapters, &count);
             if (count) {
                 unsigned int xi = 0;
                 for (xi = 0; xi < chapters->nChildren; xi++) {
