@@ -13,9 +13,7 @@
 #import "VideoViewController.h"
 #import "SoundViewController.h"
 #import "ChapterViewController.h"
-#import "MP4FileImport.h"
-#import "MovFileImport.h"
-#import "MKVFileImport.h"
+#import "FileImport.h"
 #import "VideoFramerate.h"
 #import "tagChimpController.h"
 
@@ -44,6 +42,7 @@
     if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"rememberWindowSize"] integerValue]) {
         [documentWindow setFrameAutosaveName:@"documentSave"];
         [documentWindow setFrameUsingName:@"documentSave"];
+        [splitView setAutosaveName:@"splitViewSave"];
     }
 }
 
@@ -649,14 +648,10 @@ returnCode contextInfo: (void *) contextInfo
 
 - (void) showImportSheet: (NSString *) filePath
 {
-    if ([[filePath pathExtension] isEqualToString:@"mov"])
-        importWindow = [[MovFileImport alloc] initWithDelegate:self andFile:filePath];
-	else if ([[filePath pathExtension] isEqualToString:@"mkv"])
-		importWindow = [[MKVFileImport alloc] initWithDelegate:self andFile:filePath];
-    else if ([[filePath pathExtension] isEqualToString:@"h264"] || [[filePath pathExtension] isEqualToString:@"264"])
-        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:filePath];
+    if ([[filePath pathExtension] isEqualToString:@"h264"] || [[filePath pathExtension] isEqualToString:@"264"])
+        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:[NSURL URLWithString:filePath]];
     else
-        importWindow = [[MP4FileImport alloc] initWithDelegate:self andFile:filePath];
+		importWindow = [[FileImport alloc] initWithDelegate:self andFile:[NSURL URLWithString:filePath]];
 
     [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];

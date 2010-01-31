@@ -325,3 +325,15 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int ve
 
 	return noErr;
 }
+
+BOOL isMuxableTrack(NSString * formatName)
+{
+    NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"AAC", @"AC-3", @"3GPP Text", @"Text", @"ASS", @"SSA",
+                                 @"CEA-608", nil];
+    
+    for (NSString* type in supportedFormats)
+        if ([formatName isEqualToString:type])
+            return YES;
+
+    return NO;
+}

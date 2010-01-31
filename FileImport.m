@@ -2,56 +2,65 @@
 //  FileImport.m
 //  Subler
 //
-//  Created by Damiano Galassi on 15/03/09.
-//  Copyright 2009 Damiano Galassi. All rights reserved.
+//  Created by Ryan Walklin on 10/09/09.
+//  Copyright 2009 Test Toast. All rights reserved.
 //
 
-#import "MP4FileImport.h"
+#import "FileImport.h"
+#import "MP42File.h"
+#import "MP42MkvImporter.h"
+#import "MP42Mp4Importer.h"
+#import "MP42MovImporter.h"
 
-@implementation MP4FileImport
+@implementation FileImport
 
-- (id)initWithDelegate:(id)del andFile: (NSString *)path
+- (id)initWithDelegate:(id)del andFile: (NSURL *)fileUrl
 {
 	if (self = [super initWithWindowNibName:@"FileImport"])
 	{        
 		delegate = del;
-        filePath = [path retain];
-    }
-
+        file = [fileUrl retain];
+	}
 	return self;
 }
 
 - (void)awakeFromNib
 {
-    sourceFile = [[MP42File alloc] initWithExistingFile:filePath andDelegate:self];
-    importCheckArray = [[NSMutableArray alloc] initWithCapacity:[sourceFile tracksCount]];
-    
-    NSInteger i = [sourceFile tracksCount];
+    if ([[[file path] pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
+        [[[file path] pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame)
+        fileImporter = [[MP42MkvImporter alloc] initWithDelegate:delegate andFile:file];
+    else if ([[[file path] pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
+             [[[file path] pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
+             [[[file path] pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame)
+        fileImporter = [[MP42Mp4Importer alloc] initWithDelegate:delegate andFile:file];
+    else if ([[[file path] pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
+        fileImporter = [[MP42MovImporter alloc] initWithDelegate:delegate andFile:file];
+
+    importCheckArray = [[NSMutableArray alloc] initWithCapacity:[[fileImporter tracksArray] count]];
+
+    NSInteger i = [[fileImporter tracksArray] count];
     while (i) {
         [importCheckArray addObject: [NSNumber numberWithBool:YES]];
         i--;
-        
+
         [addTracksButton setEnabled:YES];        
     }
 }
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
-    if( !sourceFile )
-        return 0;
-
-    return [sourceFile tracksCount];
+    return [[fileImporter tracksArray] count];
 }
 
 - (id) tableView:(NSTableView *)tableView 
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
              row:(NSInteger)rowIndex
 {
-    MP42Track *track = [sourceFile trackAtIndex:rowIndex];
+    MP42Track *track = [[fileImporter tracksArray] objectAtIndex:rowIndex];
 
     if (!track)
         return nil;
-    
+
     if( [tableColumn.identifier isEqualToString: @"check"] )
         return [importCheckArray objectAtIndex: rowIndex];
 
@@ -70,12 +79,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"])
         return track.language;
 
-    return nil;
-}
+    return nil;}
 
-- (void) tableView: (NSTableView *) tableView
-    setObjectValue: (id) anObject
-    forTableColumn: (NSTableColumn *) tableColumn
+- (void) tableView: (NSTableView *) tableView 
+    setObjectValue: (id) anObject 
+    forTableColumn: (NSTableColumn *) tableColumn 
                row: (NSInteger) rowIndex
 {
     if ([tableColumn.identifier isEqualToString: @"check"])
@@ -91,16 +99,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (IBAction) addTracks: (id) sender
 {
     NSMutableArray *tracks = [[NSMutableArray alloc] init];
-    NSInteger i;
-
-    for (i = 0; i < [sourceFile tracksCount]; i++) {
-        if ([[importCheckArray objectAtIndex: i] boolValue]) {
-            MP42Track* track = [sourceFile trackAtIndex:i];
-            track.sourceInputType = MP42SourceTypeMP4;
+    NSInteger i = 0;
+    
+    for (MP42Track * track in [fileImporter tracksArray])
+        if ([[importCheckArray objectAtIndex: i++] boolValue])
             [tracks addObject:track];
-        }
-    }
-
+    
     if ([delegate respondsToSelector:@selector(importDone:)]) 
         [delegate importDone:tracks];
     [tracks release];
@@ -108,9 +112,10 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void) dealloc
 {
-    [filePath release];
-    [sourceFile release];
     [importCheckArray release];
+	[file release];
+    [fileImporter release];
+
     [super dealloc];
 }
 

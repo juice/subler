@@ -38,3 +38,4 @@ NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId vid
 NSString* getFilenameLanguage(CFStringRef filename);
 
 ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int versionFlags);
+BOOL isMuxableTrack(NSString * formatName);

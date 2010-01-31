@@ -17,6 +17,7 @@
     IBOutlet NSWindow       *documentWindow;
 
     IBOutlet NSTableView    *fileTracksTable;
+    IBOutlet NSSplitView    *splitView;
 
     IBOutlet NSWindow       *savingWindow;
     IBOutlet NSTextField    *saveOperationName;
