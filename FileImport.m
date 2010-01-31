@@ -2,8 +2,8 @@
 //  FileImport.m
 //  Subler
 //
-//  Created by Ryan Walklin on 10/09/09.
-//  Copyright 2009 Test Toast. All rights reserved.
+//  Created by Damiano Galassi on 31/01/10.
+//  Copyright 2010. All rights reserved.
 //
 
 #import "FileImport.h"
@@ -38,13 +38,13 @@
 
     importCheckArray = [[NSMutableArray alloc] initWithCapacity:[[fileImporter tracksArray] count]];
 
-    NSInteger i = [[fileImporter tracksArray] count];
-    while (i) {
-        [importCheckArray addObject: [NSNumber numberWithBool:YES]];
-        i--;
+    for (MP42Track *track in [fileImporter tracksArray])
+        if (isTrackMuxable(track.format))
+            [importCheckArray addObject: [NSNumber numberWithBool:YES]];
+        else
+            [importCheckArray addObject: [NSNumber numberWithBool:NO]];
 
-        [addTracksButton setEnabled:YES];        
-    }
+    [addTracksButton setEnabled:YES];
 }
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t

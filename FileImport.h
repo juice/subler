@@ -2,8 +2,8 @@
 //  FileImport.h
 //  Subler
 //
-//  Created by Ryan Walklin on 10/09/09.
-//  Copyright 2009 Test Toast. All rights reserved.
+//  Created by Damiano Galassi on 31/01/10.
+//  Copyright 2010. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
