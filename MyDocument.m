@@ -649,9 +649,9 @@ returnCode contextInfo: (void *) contextInfo
 - (void) showImportSheet: (NSString *) filePath
 {
     if ([[filePath pathExtension] isEqualToString:@"h264"] || [[filePath pathExtension] isEqualToString:@"264"])
-        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:[NSURL URLWithString:filePath]];
+        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:filePath];
     else
-		importWindow = [[FileImport alloc] initWithDelegate:self andFile:[NSURL URLWithString:filePath]];
+		importWindow = [[FileImport alloc] initWithDelegate:self andFile:filePath];
 
     [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];

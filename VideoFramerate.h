@@ -9,13 +9,13 @@
 #import <Cocoa/Cocoa.h>
 
 @interface VideoFramerate : NSWindowController {
-    NSURL    *filePath;
+    NSString    *filePath;
     IBOutlet NSPopUpButton  *framerateSelection;
 
     id delegate;
 }
 
-- (id)initWithDelegate:(id)del andFile: (NSURL *)path;
+- (id)initWithDelegate:(id)del andFile: (NSString *)path;
 - (IBAction) closeWindow: (id) sender;
 - (IBAction) addTracks: (id) sender;
 

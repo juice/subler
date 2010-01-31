@@ -11,7 +11,7 @@
 
 @implementation MP42FileImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSURL *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
     if (self = [super init]) {
         delegate = del;

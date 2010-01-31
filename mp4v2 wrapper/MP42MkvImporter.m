@@ -19,11 +19,11 @@
 
 @implementation MP42MkvImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSURL *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
     if (self = [super initWithDelegate:del andFile:fileUrl]) {
         ioStream = calloc(1, sizeof(StdIoStream)); 
-        matroskaFile = openMatroskaFile((char *)[[file path ]UTF8String], ioStream);
+        matroskaFile = openMatroskaFile((char *)[file UTF8String], ioStream);
         
         NSInteger trackCount = mkv_GetNumTracks(matroskaFile);
         tracksArray = [[NSMutableArray alloc] initWithCapacity:trackCount];
@@ -53,7 +53,7 @@
             if (newTrack) {
                 newTrack.format = matroskaCodecIDToHumanReadableName(mkvTrack);
                 newTrack.Id = i;
-                newTrack.sourcePath = [file path];
+                newTrack.sourcePath = file;
                 newTrack.sourceInputType = MP42SourceTypeMatroska;
 
                 double trackTimecodeScale = (mkvTrack->TimecodeScale.v >> 32);

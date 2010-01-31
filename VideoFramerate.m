@@ -11,7 +11,7 @@
 
 @implementation VideoFramerate
 
-- (id)initWithDelegate:(id)del andFile: (NSURL *)path
+- (id)initWithDelegate:(id)del andFile: (NSString *)path
 {
 	if (self = [super initWithWindowNibName:@"VideoFramerate"])
 	{        
@@ -34,7 +34,7 @@
 
     MP42VideoTrack *newTrack = [[MP42VideoTrack alloc] init];
     newTrack.Id = [[framerateSelection selectedItem] tag];
-    newTrack.sourcePath = [filePath path];
+    newTrack.sourcePath = filePath;
     newTrack.format = @"H.264";
     newTrack.sourceInputType = MP42SourceTypeRaw;
 

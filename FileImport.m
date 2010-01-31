@@ -14,7 +14,7 @@
 
 @implementation FileImport
 
-- (id)initWithDelegate:(id)del andFile: (NSURL *)fileUrl
+- (id)initWithDelegate:(id)del andFile: (NSString *)fileUrl
 {
 	if (self = [super initWithWindowNibName:@"FileImport"])
 	{        
@@ -26,14 +26,14 @@
 
 - (void)awakeFromNib
 {
-    if ([[[file path] pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
-        [[[file path] pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame)
+    if ([[file pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
+        [[file pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame)
         fileImporter = [[MP42MkvImporter alloc] initWithDelegate:delegate andFile:file];
-    else if ([[[file path] pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
-             [[[file path] pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
-             [[[file path] pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame)
+    else if ([[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
+             [[file pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
+             [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame)
         fileImporter = [[MP42Mp4Importer alloc] initWithDelegate:delegate andFile:file];
-    else if ([[[file path] pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
+    else if ([[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
         fileImporter = [[MP42MovImporter alloc] initWithDelegate:delegate andFile:file];
 
     importCheckArray = [[NSMutableArray alloc] initWithCapacity:[[fileImporter tracksArray] count]];

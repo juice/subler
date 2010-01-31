@@ -12,7 +12,7 @@
 
 @interface FileImport : NSWindowController {
 	
-	NSURL               * file;
+	NSString               * file;
     NSMutableArray		* importCheckArray;
     MP42FileImporter    * fileImporter;
 
@@ -23,7 +23,7 @@
     NSTimer *loadTimer;
 }
 
-- (id)initWithDelegate:(id)del andFile: (NSURL *)path;
+- (id)initWithDelegate:(id)del andFile: (NSString *)path;
 - (IBAction) closeWindow: (id) sender;
 - (IBAction) addTracks: (id) sender;
 

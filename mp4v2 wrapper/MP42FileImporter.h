@@ -10,7 +10,7 @@
 
 
 @interface MP42FileImporter : NSObject {
-    NSURL   * file;
+    NSString   * file;
     
     NSInteger        chapterTrackId;
     NSMutableArray * tracksArray;
@@ -20,7 +20,7 @@
 
 @property(readonly) NSMutableArray  *tracksArray;
 
-- (id)initWithDelegate:(id)del andFile:(NSURL *)fileUrl;
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl;
 
 @end
 

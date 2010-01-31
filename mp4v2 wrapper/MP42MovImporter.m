@@ -22,16 +22,16 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 @interface MP42MovImporter(Private)
     -(void) movieLoaded;
     -(NSString*)formatForTrack: (QTTrack *)track;
-    - (NSString*)langForTrack: (QTTrack *)track;
+    -(NSString*)langForTrack: (QTTrack *)track;
 @end
 
 @implementation MP42MovImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSURL *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
     if (self = [super initWithDelegate:del andFile:fileUrl]) {
-        sourceFile = [[QTMovie alloc] initWithURL:file error:nil];
-        
+        sourceFile = [[QTMovie alloc] initWithFile:file error:nil];
+
         if ([[sourceFile attributeForKey:QTMovieLoadStateAttribute] longValue] >= QTMovieLoadStateComplete) {
             [self movieLoaded];
         }
@@ -61,13 +61,11 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 -(void) movieLoaded
 {
     NSArray *tracks = [sourceFile tracks];
-    
-    NSUInteger i;
-    for (i = 0; i < [tracks count]; i++) {
-        QTTrack *track = [tracks objectAtIndex:i];
+
+    for (QTTrack *track in [sourceFile tracks])
         if ([[track attributeForKey:QTTrackIsChapterTrackAttribute] boolValue])
             chapterTrackId = [[track attributeForKey:QTTrackIDAttribute] integerValue];
-    }
+
 #if !__LP64__
 #if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_6
     if([sourceFile hasChapters]) {
@@ -87,62 +85,62 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
     }
 #endif
 #endif
-    
+
     tracksArray = [[NSMutableArray alloc] init];
-    
-    for (i = 0; i < [[sourceFile tracks] count]; i++) {
-            QTTrack *track = [[sourceFile tracks] objectAtIndex:i];
-            NSString* mediaType = [track attributeForKey:QTTrackMediaTypeAttribute];
-            MP42Track *newTrack = nil;
-            
-            // Video
-            if ([mediaType isEqualToString:QTMediaTypeVideo]) {
-                if ([[self formatForTrack:track] isEqualToString:@"Text"]) {
-                    newTrack = [[MP42SubtitleTrack alloc] init];
-                    [(MP42SubtitleTrack*)newTrack setTrackWidth:60];
-                }
-                else {
-                    newTrack = [[MP42VideoTrack alloc] init];
-                    
-                    NSSize dimension = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
-                    [(MP42VideoTrack*)newTrack setTrackWidth: dimension.width];
-                    [(MP42VideoTrack*)newTrack setTrackHeight: dimension.height];
-                }
-            }
-            // Audio
-            else if ([mediaType isEqualToString:QTMediaTypeSound])
-                newTrack = [[MP42AudioTrack alloc] init];
-            // Text
-            else if ([mediaType isEqualToString:QTMediaTypeText]) {
-                if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId) {
-                    newTrack = [[MP42ChapterTrack alloc] init];
-                    NSArray *chapters = [sourceFile chapters];
-                    
-                    for (NSDictionary *dic in chapters) {
-                        QTTimeRange time = [[dic valueForKey:QTMovieChapterStartTime] QTTimeRangeValue];
-                        [(MP42ChapterTrack*)newTrack addChapter:[dic valueForKey:QTMovieChapterName]
-                                                       duration:((float)time.time.timeValue / time.time.timeScale)*1000];
-                    }
-                }
-            }
-            // Subtitle
-            else if([mediaType isEqualToString:@"sbtl"])
+
+    NSUInteger i = 0;
+    for (QTTrack *track in [sourceFile tracks]) {
+        NSString* mediaType = [track attributeForKey:QTTrackMediaTypeAttribute];
+        MP42Track *newTrack = nil;
+
+        // Video
+        if ([mediaType isEqualToString:QTMediaTypeVideo]) {
+            if ([[self formatForTrack:track] isEqualToString:@"Text"]) {
                 newTrack = [[MP42SubtitleTrack alloc] init];
-            // Closed Caption
-            else if([mediaType isEqualToString:@"clcp"])
-                newTrack = [[MP42ClosedCaptionTrack alloc] init];
-            
-            if (newTrack) {
-                newTrack.format = [self formatForTrack:track];
-                newTrack.Id = i;
-                newTrack.sourcePath = [file path];
-                newTrack.sourceFileHandle = sourceFile;
-                newTrack.sourceInputType = MP42SourceTypeQuickTime;
-                newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
-                newTrack.language = [self langForTrack:track];
-                [tracksArray addObject:newTrack];
-                [newTrack release];
+                [(MP42SubtitleTrack*)newTrack setTrackWidth:60];
             }
+            else {
+                newTrack = [[MP42VideoTrack alloc] init];
+
+                NSSize dimension = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
+                [(MP42VideoTrack*)newTrack setTrackWidth: dimension.width];
+                [(MP42VideoTrack*)newTrack setTrackHeight: dimension.height];
+            }
+        }
+        // Audio
+        else if ([mediaType isEqualToString:QTMediaTypeSound])
+            newTrack = [[MP42AudioTrack alloc] init];
+        // Text
+        else if ([mediaType isEqualToString:QTMediaTypeText]) {
+            if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId) {
+                newTrack = [[MP42ChapterTrack alloc] init];
+                NSArray *chapters = [sourceFile chapters];
+
+                for (NSDictionary *dic in chapters) {
+                    QTTimeRange time = [[dic valueForKey:QTMovieChapterStartTime] QTTimeRangeValue];
+                    [(MP42ChapterTrack*)newTrack addChapter:[dic valueForKey:QTMovieChapterName]
+                                                    duration:((float)time.time.timeValue / time.time.timeScale)*1000];
+                }
+            }
+        }
+        // Subtitle
+        else if([mediaType isEqualToString:@"sbtl"])
+            newTrack = [[MP42SubtitleTrack alloc] init];
+        // Closed Caption
+        else if([mediaType isEqualToString:@"clcp"])
+            newTrack = [[MP42ClosedCaptionTrack alloc] init];
+
+        if (newTrack) {
+            newTrack.format = [self formatForTrack:track];
+            newTrack.Id = i++;
+            newTrack.sourcePath = file;
+            newTrack.sourceFileHandle = sourceFile;
+            newTrack.sourceInputType = MP42SourceTypeQuickTime;
+            newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
+            newTrack.language = [self langForTrack:track];
+            [tracksArray addObject:newTrack];
+            [newTrack release];
+        }
     }
     //[addTracksButton setEnabled:YES];
     //[loadProgressBar setHidden:YES];
@@ -239,7 +237,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 - (NSString*)langForTrack: (QTTrack *)track
 {
     return [NSString stringWithUTF8String:lang_for_qtcode(
-                                                          [[track attributeForKey:QTTrackLanguageAttribute] longValue])->eng_name];
+                [[track attributeForKey:QTTrackLanguageAttribute] longValue])->eng_name];
 }
 
 - (void) dealloc

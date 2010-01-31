@@ -12,10 +12,10 @@
 
 @implementation MP42Mp4Importer
 
-- (id)initWithDelegate:(id)del andFile:(NSURL *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
     if (self = [super initWithDelegate:del andFile:fileUrl]) {
-        MP42File *sourceFile = [[MP42File alloc] initWithExistingFile:[fileUrl path] andDelegate:self];
+        MP42File *sourceFile = [[MP42File alloc] initWithExistingFile:fileUrl andDelegate:self];
 
         tracksArray = [[sourceFile tracks] retain];
         
