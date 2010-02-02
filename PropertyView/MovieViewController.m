@@ -68,6 +68,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     [tagsTableView setDoubleAction:@selector(doubleClickAction:)];
     [tagsTableView setTarget:self];
     [tagsTableView set_pasteboardTypes:[NSArray arrayWithObject:MetadataPBoardType]];
+    
+    dct = [[NSMutableDictionary alloc] init];
 }
 
 - (void) setFile: (MP42File *)file
@@ -321,14 +323,21 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (CGFloat) tableView: (NSTableView *) tableView
           heightOfRow: (NSInteger) rowIndex
 {
-	NSRect r = NSMakeRect(0,0,width,1000.0);
-	NSTextFieldCell *cell = [tabCol dataCellForRow:rowIndex];	
-	[cell setObjectValue:[tags objectForKey:[tagsArray objectAtIndex:rowIndex]]];
-	CGFloat height = [cell cellSizeForBounds:r].height; // Slow
-	if (height <= 0)
-        height = 14.0; // Ensure miniumum height is 14.0
+    NSString *key = [tagsArray objectAtIndex:rowIndex];
+    NSNumber *height;
 
-	return height;
+    if (!(height = [dct objectForKey:key])) {
+        //calculate new row height
+        NSRect r = NSMakeRect(0,0,width,1000.0);
+        NSTextFieldCell *cell = [tabCol dataCellForRow:rowIndex];	
+        [cell setObjectValue:[tags objectForKey:[tagsArray objectAtIndex:rowIndex]]];
+        CGFloat height = [NSNumber numberWithDouble:[cell cellSizeForBounds:r].height]; // Slow, but we cache it.
+        //if (height <= 0)
+        //    height = 14.0; // Ensure miniumum height is 14.0
+        [dct setObject:height forKey:key];
+    }
+
+	return [height doubleValue];
 }
 
 - (NSString *) tableView: (NSTableView *) aTableView 
@@ -343,6 +352,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void)tableViewColumnDidResize: (NSNotification* )notification
 {
+    [dct removeAllObjects];
     width = [tabCol width];
     [tagsTableView noteHeightOfRowsWithIndexesChanged:
      [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [tagsTableView numberOfRows])]];
@@ -440,6 +450,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [tabCol release];
     [detailBoldAttr release];
     [ratingCell release];
+    [dct release];
     [super dealloc];
 }
 

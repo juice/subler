@@ -121,6 +121,8 @@ NSString* matroskaCodecIDToHumanReadableName(TrackInfo *track)
             return @"ASS";
         else if (!strcmp(track->CodecID, "S_TEXT/SSA"))
             return @"SSA";
+        else if (!strcmp(track->CodecID, "S_VOBSUB"))
+            return @"VobSub";
         else
             return [NSString stringWithUTF8String:track->CodecID];
     }

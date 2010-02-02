@@ -8,10 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 #import "MP42File.h"
+#import "SBTableView.h"
 
-@class SBTableView;
-
-@interface MovieViewController : NSViewController {
+@interface MovieViewController : NSViewController <SBTableViewDelegate> {
     MP42Metadata            *metadata;
 
     IBOutlet NSPopUpButton  *tagList;
@@ -32,6 +31,7 @@
     NSArray         *tagsMenu;
     NSDictionary    *detailBoldAttr;
 
+    NSMutableDictionary  *dct;
     NSTableColumn *tabCol;
     CGFloat width;
 }

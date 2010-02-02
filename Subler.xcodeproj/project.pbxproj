@@ -329,7 +329,6 @@
 				A9AB990C10F4B53F009986EB /* tagChimpController.m */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
 				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
-				9480588F106E032D0037A911 /* mkv wrapper */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -412,6 +411,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		A9C03EB41116DFE700DA6FF6 /* importers */ = {
+			isa = PBXGroup;
+			children = (
+				A99EAC7A1115BED200D89903 /* MP42FileImporter.h */,
+				A99EAC7B1115BED200D89903 /* MP42FileImporter.m */,
+				A99EACA11115C18000D89903 /* MP42MkvImporter.h */,
+				A99EACA21115C18000D89903 /* MP42MkvImporter.m */,
+				A9ED7C4C1115CFBD00423241 /* MP42Mp4Importer.h */,
+				A9ED7C4D1115CFBD00423241 /* MP42Mp4Importer.m */,
+				A9ED7C891115D32E00423241 /* MP42MovImporter.h */,
+				A9ED7C8A1115D32E00423241 /* MP42MovImporter.m */,
+			);
+			name = importers;
+			sourceTree = "<group>";
+		};
 		A9C054A30F6D288D00AF15B5 /* muxer */ = {
 			isa = PBXGroup;
 			children = (
@@ -478,14 +492,8 @@
 				A905E5880FB05A8100B926FF /* MP42ClosedCaptionTrack.m */,
 				A9629C8B0F56F7B6001D6A75 /* MP42Utilities.h */,
 				A9629C8C0F56F7B6001D6A75 /* MP42Utilities.m */,
-				A99EAC7A1115BED200D89903 /* MP42FileImporter.h */,
-				A99EAC7B1115BED200D89903 /* MP42FileImporter.m */,
-				A99EACA11115C18000D89903 /* MP42MkvImporter.h */,
-				A99EACA21115C18000D89903 /* MP42MkvImporter.m */,
-				A9ED7C4C1115CFBD00423241 /* MP42Mp4Importer.h */,
-				A9ED7C4D1115CFBD00423241 /* MP42Mp4Importer.m */,
-				A9ED7C891115D32E00423241 /* MP42MovImporter.h */,
-				A9ED7C8A1115D32E00423241 /* MP42MovImporter.m */,
+				9480588F106E032D0037A911 /* mkv wrapper */,
+				A9C03EB41116DFE700DA6FF6 /* importers */,
 				A9C054A30F6D288D00AF15B5 /* muxer */,
 			);
 			name = "mp4v2 wrapper";

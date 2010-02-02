@@ -52,7 +52,6 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             //[loadProgressBar setHidden:NO];
             //[loadProgressBar setUsesThreadedAnimation:YES];
         }
-        
     }
 
     return self;
@@ -60,8 +59,6 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
 -(void) movieLoaded
 {
-    NSArray *tracks = [sourceFile tracks];
-
     for (QTTrack *track in [sourceFile tracks])
         if ([[track attributeForKey:QTTrackIsChapterTrackAttribute] boolValue])
             chapterTrackId = [[track attributeForKey:QTTrackIDAttribute] integerValue];

@@ -12,7 +12,7 @@
 
 @interface FileImport : NSWindowController {
 
-	NSString               * file;
+	NSString            * file;
     NSMutableArray		* importCheckArray;
     MP42FileImporter    * fileImporter;
 
