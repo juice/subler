@@ -15,4 +15,9 @@
     return self;
 }
 
+- (void)awakeFromNib
+{
+    [[self window] center];
+}
+
 @end

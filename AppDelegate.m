@@ -19,7 +19,6 @@
     if (!fPrefs) {
         fPrefs = [[PrefsController alloc] init];
     }
-    [[fPrefs window] center];
     [fPrefs showWindow:self];
 }
 
