@@ -34,6 +34,7 @@
     NSDictionary        * detailBoldAttr;
     NSInteger             videoKind;
 
+    NSMutableDictionary  *dct;
     NSTableColumn *tabCol;
     CGFloat width;
 }

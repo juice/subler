@@ -34,6 +34,7 @@
     tabCol = [[[metadataTable tableColumns] objectAtIndex:1] retain];
     [[searchField cell] setSearchMenuTemplate:searchFieldMenu];
     [[searchField cell] setPlaceholderString:[[searchFieldMenu itemWithTag:0] title]];
+    dct = [[NSMutableDictionary alloc] init];
 }
 
 - (NSAttributedString *) boldString: (NSString *) string
@@ -472,20 +473,29 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
           heightOfRow: (NSInteger) rowIndex
 {
     if (!(tableView == movieTitleTable) && width) {
-        NSRect r = NSMakeRect(0,0,width,1000.0);
-        NSTextFieldCell *cell = [tabCol dataCellForRow:rowIndex];	
-        [cell setObjectValue:[tags objectForKey:[tagsArray objectAtIndex:rowIndex]]];
-        CGFloat height = [cell cellSizeForBounds:r].height; // Slow
-        if (height <= 0)
-            height = 17.0; // Ensure miniumum height is 17.0
+        NSString *key = [tagsArray objectAtIndex:rowIndex];
+        NSNumber *height;
 
-        return height;
+        if (!(height = [dct objectForKey:key])) {
+            //calculate new row height
+            NSRect r = NSMakeRect(0,0,width,1000.0);
+            NSTextFieldCell *cell = [tabCol dataCellForRow:rowIndex];	
+            [cell setObjectValue:[tags objectForKey:[tagsArray objectAtIndex:rowIndex]]];
+            height = [NSNumber numberWithDouble:[cell cellSizeForBounds:r].height]; // Slow, but we cache it.
+            //if (height <= 0)
+            //    height = 14.0; // Ensure miniumum height is 14.0
+            [dct setObject:height forKey:key];
+        }
+        
+        return [height doubleValue];
+        
     }
     return 17.0;
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([movieTitleTable selectedRow] != -1 && [aNotification object] == movieTitleTable) {
+        [dct removeAllObjects];
         currentMetadata = [metadataArray objectAtIndex:[movieTitleTable selectedRow]];
         tags = currentMetadata.tagsDict;
         if (tagsArray)
@@ -503,6 +513,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 - (void)tableViewColumnDidResize: (NSNotification* )notification
 {
     if ([notification object] == metadataTable) {
+        [dct removeAllObjects];
         width = [tabCol width];
         [metadataTable noteHeightOfRowsWithIndexesChanged:
          [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [metadataTable numberOfRows])]];
@@ -557,6 +568,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (void) dealloc
 {
+    [dct release];
     [tabCol release];
     [metadataArray release];
     [detailBoldAttr release];

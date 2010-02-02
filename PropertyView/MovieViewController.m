@@ -331,7 +331,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         NSRect r = NSMakeRect(0,0,width,1000.0);
         NSTextFieldCell *cell = [tabCol dataCellForRow:rowIndex];	
         [cell setObjectValue:[tags objectForKey:[tagsArray objectAtIndex:rowIndex]]];
-        CGFloat height = [NSNumber numberWithDouble:[cell cellSizeForBounds:r].height]; // Slow, but we cache it.
+        height = [NSNumber numberWithDouble:[cell cellSizeForBounds:r].height]; // Slow, but we cache it.
         //if (height <= 0)
         //    height = 14.0; // Ensure miniumum height is 14.0
         [dct setObject:height forKey:key];
