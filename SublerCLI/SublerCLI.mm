@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "MP42File.h"
+#import "RegexKitLite.h"
 
 void print_help()
 {
@@ -34,6 +35,7 @@ int main (int argc, const char * argv[]) {
     BOOL removeExisting = false;
     BOOL modified = false;
     BOOL optimize = false;
+    char* tags = NULL;
 
     if (argc == 1) {
         print_help();
@@ -41,7 +43,7 @@ int main (int argc, const char * argv[]) {
     }
 
     char opt_char=0;
-    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:c:d:a:l:n:rvhO")) != -1) {
+    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:c:d:a:l:n:t:rvhO")) != -1) {
         switch(opt_char) {
             case 'h':
                 print_help();
@@ -72,6 +74,9 @@ int main (int argc, const char * argv[]) {
             case 'n':
                 name = optarg;
                 break ;
+            case 't':
+                tags = optarg;
+                break ;            
             case 'r':
                 removeExisting = true;
                 break ;
@@ -85,7 +90,7 @@ int main (int argc, const char * argv[]) {
         }
     }
 
-    if (input_file && (input_sub || input_chap || removeExisting))
+    if (input_file && (input_sub || input_chap || removeExisting || tags))
     {
         NSError *outError;
         MP42File *mp4File;
@@ -138,10 +143,57 @@ int main (int argc, const char * argv[]) {
           
           newChapterTrack = [MP42ChapterTrack chapterTrackFromFile:[NSString stringWithCString:input_chap encoding:NSUTF8StringEncoding]];
           
-          if([newChapterTrack chapterCount] > 0 ) {
+          if([newChapterTrack chapterCount] > 0) {
             [mp4File addTrack:newChapterTrack];            
             modified = true;      
           }
+        }
+
+        if (tags) {
+            NSString *searchString = [NSString stringWithCString:tags encoding:NSUTF8StringEncoding];
+            NSString *regexCheck = @"(\\{[^:]*:[^\\}]*\\})*";
+
+            // escaping the {, } and : charachters 
+            NSString *left_normal = @"{";
+            NSString *right_normal = @"}";
+            NSString *semicolon_normal = @":";
+
+            NSString *left_escaped = @"&#123;";
+            NSString *right_escaped = @"&#125;";
+            NSString *semicolon_escaped = @"&#58;";
+
+            if (searchString != nil && [searchString isMatchedByRegex:regexCheck]) {
+
+                NSString *regexSplitArgs = @"^\\{|\\}\\{|\\}$";
+                NSString *regexSplitValue = @"([^:]*):(.*)";
+                NSArray *argsArray = nil;
+                NSString *arg = nil;
+                NSString *key = nil;
+                NSString *value = nil;
+                argsArray = [searchString componentsSeparatedByRegex:regexSplitArgs];
+
+                for (arg in argsArray) {
+                    key = [arg stringByMatching:regexSplitValue capture:1L];
+                    value = [arg stringByMatching:regexSplitValue capture:2L];
+
+                    key = [key stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                    value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+              
+                    value = [value stringByReplacingOccurrencesOfString:left_escaped withString:left_normal];
+                    value = [value stringByReplacingOccurrencesOfString:right_escaped withString:right_normal];
+                    value = [value stringByReplacingOccurrencesOfString:semicolon_escaped withString:semicolon_normal];
+
+                    if (key != nil) {
+                        printf("%s | %s\n", [key cStringUsingEncoding:NSUTF8StringEncoding], [value cStringUsingEncoding:NSUTF8StringEncoding]);          
+                        if (value != nil && [value length] > 0) {                  
+                            [mp4File.metadata setTag:value forKey:key];
+                        } else{
+                            [mp4File.metadata removeTagForKey:key];                  
+                        }
+                        modified = true;
+                    }
+                }
+            }  
         }
 
         if (modified && ![mp4File updateMP4File:&outError]) {
