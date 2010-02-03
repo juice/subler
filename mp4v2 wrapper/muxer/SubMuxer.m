@@ -118,7 +118,7 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
         else if (tag == 'u') underlined++;
         tagEndRange = [string rangeOfString: @">"];
         startRange.length = tagEndRange.location - startRange.location +1;
-        if (tagEndRange.location == NSNotFound)
+        if (tagEndRange.location == NSNotFound || startRange.location > tagEndRange.location || startRange.length > [string length])
             startRange.length = 2;
         string = [string stringByReplacingCharactersInRange:startRange withString:@""];
     }
