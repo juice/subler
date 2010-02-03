@@ -16,6 +16,7 @@ void print_help()
     printf("\t\t-O optimize\n");
     printf("\t\t-h print this help information\n");
     printf("\t\t-v print version\n");
+    printf("\t\t-t set tags {Tag Name:Tag Value}*\n");
 }
 void print_version()
 {
@@ -166,6 +167,8 @@ int main (int argc, const char * argv[]) {
 
                 NSString *regexSplitArgs = @"^\\{|\\}\\{|\\}$";
                 NSString *regexSplitValue = @"([^:]*):(.*)";
+                NSString *regexPositive = @"YES|Yes|yes|1";
+
                 NSArray *argsArray = nil;
                 NSString *arg = nil;
                 NSString *key = nil;
@@ -178,22 +181,49 @@ int main (int argc, const char * argv[]) {
 
                     key = [key stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                     value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-              
+
                     value = [value stringByReplacingOccurrencesOfString:left_escaped withString:left_normal];
                     value = [value stringByReplacingOccurrencesOfString:right_escaped withString:right_normal];
                     value = [value stringByReplacingOccurrencesOfString:semicolon_escaped withString:semicolon_normal];
 
-                    if (key != nil) {
-                        printf("%s | %s\n", [key cStringUsingEncoding:NSUTF8StringEncoding], [value cStringUsingEncoding:NSUTF8StringEncoding]);          
-                        if (value != nil && [value length] > 0) {                  
-                            [mp4File.metadata setTag:value forKey:key];
-                        } else{
-                            [mp4File.metadata removeTagForKey:key];                  
-                        }
-                        modified = true;
+                    if(key != nil) {
+                        if([key isEqualToString:@"Media Kind"]) {
+                            printf("%s | %s\n", [key UTF8String], [value UTF8String]);
+                            modified=[mp4File.metadata setMediaKindFromString:value];
+
+                        } else if ([key isEqualToString:@"Content Rating"]) {
+                            printf("%s | %s\n", [key UTF8String], [value UTF8String]);
+                            modified=[mp4File.metadata setContentRatingFromString:value];
+
+                        } else if ([key isEqualToString:@"HD Video"]) {
+                            if( value != nil && [value length] > 0 && [value isMatchedByRegex:regexPositive]) {
+                                mp4File.metadata.hdVideo = 1;
+                            } else {
+                                mp4File.metadata.hdVideo = 0;
+                            }
+
+                        } else if ([key isEqualToString:@"Gapless"]) {                      
+                            if( value != nil && [value length] > 0 && [value isMatchedByRegex:regexPositive]) {
+                                mp4File.metadata.gapless = 1;
+                            } else {
+                              mp4File.metadata.gapless = 0;
+                            }
+
+                        } else if ([key isEqualToString:@"Artwork"]) {                      
+                            modified = [mp4File.metadata setArtworkFromFilePath:value];
+                      
+                        } else {
+                            printf("%s | %s\n", [key UTF8String], [value UTF8String]);          
+                            if (value != nil && [value length] > 0) {                  
+                                [mp4File.metadata setTag:value forKey:key];
+                            } else{
+                                [mp4File.metadata removeTagForKey:key];                  
+                            }
+                            modified = true;
+                        }                    
                     }
                 }
-            }  
+            }
         }
 
         if (modified && ![mp4File updateMP4File:&outError]) {

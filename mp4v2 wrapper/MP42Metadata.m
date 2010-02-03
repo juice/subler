@@ -10,6 +10,36 @@
 #import "MP42Utilities.h"
 #import "RegexKitLite.h"
 
+typedef struct mediaKind_t
+{
+    uint8_t stik;
+    NSString *english_name;
+} mediaKind_t;
+
+static const mediaKind_t mediaKind_strings[] = {
+    {1, @"Music"},
+    {2, @"Audiobook"},
+    {6, @"Music Video"},
+    {9, @"Movie"},
+    {10, @"TV Show"},
+    {11, @"Booklet"},
+    {14, @"Ringtone"},  
+    {0, NULL},
+};
+
+typedef struct contentRating_t
+{
+    uint8_t rtng;
+    NSString *english_name;
+} contentRating_t;
+
+static const contentRating_t contentRating_strings[] = {
+    {0, @"None"},
+    {2, @"Clean"},
+    {4, @"Explicit"},
+    {0, NULL},
+};
+
 typedef struct iTMF_rating_t
 {
     char * rating;
@@ -131,6 +161,52 @@ static const iTMF_rating_t rating_strings[] = {
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Description", @"Long Description", @"Rating",
 			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+}
+
+- (BOOL) setMediaKindFromString:(NSString *)mediaKindString;
+{
+    mediaKind_t *mediaKindList;
+    for (mediaKindList = (mediaKind_t*) mediaKind_strings; mediaKindList->english_name; mediaKindList++) {
+        if ([mediaKindString isEqualToString:mediaKindList->english_name]) {
+            mediaKind = mediaKindList->stik;
+            return YES;      
+        }
+    }
+    return NO;
+}
+
+- (BOOL) setContentRatingFromString:(NSString *)contentRatingString;
+{
+    contentRating_t *contentRatingList;
+    for ( contentRatingList = (contentRating_t*) contentRating_strings; contentRatingList->english_name; contentRatingList++) {
+        if ([contentRatingString isEqualToString:contentRatingList->english_name]) {
+            contentRating = contentRatingList->rtng;
+            return YES;      
+        }
+    }
+    return NO;
+}
+
+- (BOOL) setArtworkFromFilePath:(NSString *)imageFilePath;
+{
+    if(imageFilePath != nil && [imageFilePath length] > 0) {
+        NSImage *artworkImage = nil;
+        artworkImage = [[NSImage alloc] initByReferencingFile:imageFilePath];
+        if([artworkImage isValid]) {
+            [artwork release];
+            artwork = artworkImage;
+            isArtworkEdited = YES;
+            return YES;
+        } else {
+            [artworkImage release];
+            return NO;
+        }
+    } else {
+        [artwork release];
+        artwork = nil;
+        isArtworkEdited = YES;
+        return YES;
+    }
 }
 
 - (NSArray *) availableRatings

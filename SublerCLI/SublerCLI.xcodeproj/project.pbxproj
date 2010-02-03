@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8DD76F9A0486AA7600D96B5E /* SublerCLI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* SublerCLI.mm */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* SublerCLI.1 */; };
 		A90C272410AF31D700991030 /* MatroskaFile.c in Sources */ = {isa = PBXBuildFile; fileRef = A90C272010AF31D700991030 /* MatroskaFile.c */; };
@@ -42,6 +41,7 @@
 		A9EAE11A0F6E7FB1002853C9 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */; };
 		A9EAE11B0F6E7FB1002853C9 /* VideoMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */; };
 		A9EAE11E0F6E7FBB002853C9 /* MP42AudioTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */; };
+		CB7C2FD51118A236001C2594 /* SublerCLI.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB7C2FD41118A236001C2594 /* SublerCLI.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,7 +89,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		08FB7796FE84155DC02AAC07 /* SublerCLI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SublerCLI.mm; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SublerCLI_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* SublerCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SublerCLI; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +150,7 @@
 		A9EAE11C0F6E7FBB002853C9 /* MP42AudioTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42AudioTrack.h; sourceTree = "<group>"; };
 		A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42AudioTrack.m; sourceTree = "<group>"; };
 		C6859EA3029092ED04C91782 /* SublerCLI.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SublerCLI.1; sourceTree = "<group>"; };
+		CB7C2FD41118A236001C2594 /* SublerCLI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SublerCLI.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,7 +203,7 @@
 				A90C273E10AF325900991030 /* common.h */,
 				A98ED2FF0F59E01400885A49 /* mp4v2 wrapper */,
 				32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */,
-				08FB7796FE84155DC02AAC07 /* SublerCLI.mm */,
+				CB7C2FD41118A236001C2594 /* SublerCLI.mm */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -384,7 +384,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DD76F9A0486AA7600D96B5E /* SublerCLI.mm in Sources */,
 				A98ED2FE0F59E00E00885A49 /* SubUtilities.m in Sources */,
 				A98ED30C0F59E01400885A49 /* MP42ChapterTrack.m in Sources */,
 				A98ED30D0F59E01400885A49 /* MP42File.m in Sources */,
@@ -409,6 +408,7 @@
 				A90C272510AF31D700991030 /* MatroskaParser.c in Sources */,
 				A90C273110AF31FA00991030 /* rational.c in Sources */,
 				A90C274710AF327500991030 /* mathematics.c in Sources */,
+				CB7C2FD51118A236001C2594 /* SublerCLI.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
