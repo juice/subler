@@ -119,7 +119,7 @@ static const iTMF_rating_t rating_strings[] = {
 {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
-			@"TV Network", @"TV Episode ID", @"TV Season", @"Genre", @"Description", @"Long Description", @"Rating",
+			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating",
             @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
 }
@@ -129,7 +129,7 @@ static const iTMF_rating_t rating_strings[] = {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
-            @"Genre", @"Description", @"Long Description", @"Rating",
+            @"Description", @"Long Description", @"Rating",
 			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
 }
 
