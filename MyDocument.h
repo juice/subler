@@ -60,5 +60,6 @@
 - (IBAction) set64bit_data: (id) sender;
 - (IBAction) set64bit_time: (id) sender;
 - (IBAction) cancelSaveOperation: (id) sender;
+- (IBAction) sendToExternalApp: (id) sender;
 
 @end

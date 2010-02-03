@@ -185,6 +185,13 @@
     [mp4File stopOperation];
 }
 
+- (IBAction) sendToExternalApp: (id) sender {        
+    /* send to itunes after save */
+    NSAppleScript *myScript = [[NSAppleScript alloc] initWithSource: [NSString stringWithFormat: @"%@%@%@", @"tell application \"iTunes\" to open (POSIX file \"", [[self fileURL] path], @"\")"]];
+    [myScript executeAndReturnError: nil];
+    [myScript release];
+}
+
 - (void) saveDidComplete: (NSError *)outError
 {
     [NSApp endSheet: savingWindow];
@@ -302,6 +309,9 @@
         return YES;
 
     if (action == @selector(searchMetadata:))
+        return YES;
+        
+    if (action == @selector(sendToExternalApp:))
         return YES;
 
     return NO;
