@@ -188,11 +188,9 @@ int main (int argc, const char * argv[]) {
 
                     if(key != nil) {
                         if([key isEqualToString:@"Media Kind"]) {
-                            printf("%s | %s\n", [key UTF8String], [value UTF8String]);
                             modified=[mp4File.metadata setMediaKindFromString:value];
 
                         } else if ([key isEqualToString:@"Content Rating"]) {
-                            printf("%s | %s\n", [key UTF8String], [value UTF8String]);
                             modified=[mp4File.metadata setContentRatingFromString:value];
 
                         } else if ([key isEqualToString:@"HD Video"]) {
@@ -210,10 +208,13 @@ int main (int argc, const char * argv[]) {
                             }
 
                         } else if ([key isEqualToString:@"Artwork"]) {                      
-                            modified = [mp4File.metadata setArtworkFromFilePath:value];
-                      
+                          modified = [mp4File.metadata setArtworkFromFilePath:value];
+                          
+                        } else if ([key isEqualToString:@"Rating"]) {                      
+                          NSString *rating_index = [[NSNumber numberWithInt:[mp4File.metadata ratingIndexFromString:value]] stringValue];
+                          modified = [mp4File.metadata setTag:rating_index forKey:key];
+                          
                         } else {
-                            printf("%s | %s\n", [key UTF8String], [value UTF8String]);          
                             if (value != nil && [value length] > 0) {                  
                                 [mp4File.metadata setTag:value forKey:key];
                             } else{
