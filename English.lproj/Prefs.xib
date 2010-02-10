@@ -138,7 +138,7 @@
 							<reference key="NSSuperview" ref="1006"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="140138106">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">Remember Size</string>
 								<reference key="NSSupport" ref="1049682653"/>

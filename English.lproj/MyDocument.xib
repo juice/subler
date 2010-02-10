@@ -38,7 +38,7 @@
 			<object class="NSWindowTemplate" id="275939982">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{201, 540}, {620, 420}}</string>
+				<string key="NSWindowRect">{{201, 540}, {620, 450}}</string>
 				<int key="NSWTFlags">1886912512</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -334,7 +334,7 @@
 														<object class="NSTableView" id="355153569">
 															<reference key="NSNextResponder" ref="586671699"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{620, 114}</string>
+															<string key="NSFrameSize">{620, 115}</string>
 															<reference key="NSSuperview" ref="586671699"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="712811294">
@@ -656,7 +656,7 @@
 															<int key="NSTableViewDraggingDestinationStyle">0</int>
 														</object>
 													</object>
-													<string key="NSFrame">{{1, 17}, {620, 114}}</string>
+													<string key="NSFrame">{{1, 17}, {620, 115}}</string>
 													<reference key="NSSuperview" ref="287999566"/>
 													<reference key="NSNextKeyView" ref="355153569"/>
 													<reference key="NSDocView" ref="355153569"/>
@@ -698,7 +698,7 @@
 												</object>
 												<reference ref="98013410"/>
 											</object>
-											<string key="NSFrameSize">{622, 132}</string>
+											<string key="NSFrameSize">{622, 133}</string>
 											<reference key="NSSuperview" ref="374668425"/>
 											<reference key="NSNextKeyView" ref="586671699"/>
 											<int key="NSsFlags">562</int>
@@ -710,23 +710,23 @@
 											<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 										</object>
 									</object>
-									<string key="NSFrameSize">{622, 132}</string>
+									<string key="NSFrameSize">{622, 133}</string>
 									<reference key="NSSuperview" ref="168405590"/>
 									<string key="NSClassName">NSView</string>
 								</object>
 								<object class="NSCustomView" id="810902173">
 									<reference key="NSNextResponder" ref="168405590"/>
 									<int key="NSvFlags">264</int>
-									<string key="NSFrame">{{0, 141}, {622, 280}}</string>
+									<string key="NSFrame">{{0, 142}, {622, 309}}</string>
 									<reference key="NSSuperview" ref="168405590"/>
 									<string key="NSClassName">NSView</string>
 								</object>
 							</object>
-							<string key="NSFrame">{{-1, 0}, {622, 421}}</string>
+							<string key="NSFrame">{{-1, 0}, {622, 451}}</string>
 							<reference key="NSSuperview" ref="568628114"/>
 						</object>
 					</object>
-					<string key="NSFrameSize">{620, 420}</string>
+					<string key="NSFrameSize">{620, 450}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
@@ -2437,9 +2437,9 @@
 					<real value="0.0"/>
 					<real value="0.0"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{321, 441}, {620, 420}}</string>
+					<string>{{321, 411}, {620, 450}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{321, 441}, {620, 420}}</string>
+					<string>{{321, 411}, {620, 450}}</string>
 					<integer value="1"/>
 					<string>{{201, 387}, {507, 413}}</string>
 					<boolean value="NO"/>
@@ -2492,12 +2492,14 @@
 							<string>deleteTrack:</string>
 							<string>searchMetadata:</string>
 							<string>selectFile:</string>
+							<string>sendToExternalApp:</string>
 							<string>set64bit_data:</string>
 							<string>set64bit_time:</string>
 							<string>setSaveFormat:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2563,21 +2565,7 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">MKVFileImport.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">MP4FileImport.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">MovFileImport.h</string>
+						<string key="minorKey">FileImport.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2592,6 +2580,13 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">mp4v2 wrapper/MP42File.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">mp4v2 wrapper/MP42FileImporter.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
