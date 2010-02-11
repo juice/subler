@@ -315,6 +315,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                row: (NSInteger) rowIndex
 {
     NSString *tagName = [tagsArray objectAtIndex:rowIndex];
+    [dct removeAllObjects];
 
     if ([tableColumn.identifier isEqualToString:@"value"])
         [self updateMetadata:anObject forKey:tagName];
