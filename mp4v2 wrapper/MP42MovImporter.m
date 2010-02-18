@@ -126,6 +126,8 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         // Closed Caption
         else if([mediaType isEqualToString:@"clcp"])
             newTrack = [[MP42ClosedCaptionTrack alloc] init];
+        else
+            newTrack = [[MP42Track alloc] init];
 
         if (newTrack) {
             newTrack.format = [self formatForTrack:track];
