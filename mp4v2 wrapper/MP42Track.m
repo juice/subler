@@ -47,6 +47,7 @@ NSString * const MP42SourceTypeRaw = @"Raw";
                                                    MP4GetTrackDuration(fileHandle, Id),
                                                    MP4_MSECS_TIME_SCALE);
             timescale = MP4GetTrackTimeScale(fileHandle, Id);
+            startOffset = getTrackStartOffset(fileHandle, Id);
 
             uint64_t temp;
             MP4GetTrackIntegerProperty(fileHandle, Id, "tkhd.flags", &temp);
@@ -155,6 +156,13 @@ NSString * const MP42SourceTypeRaw = @"Raw";
     alternate_group = newGroup;
     isEdited = YES;
     [updatedProperty setValue:@"True" forKey:@"alternate_group"];
+}
+
+@synthesize startOffset;
+
+- (void) setStartOffset:(int64_t)newOffset
+{
+    
 }
 
 @synthesize timescale;

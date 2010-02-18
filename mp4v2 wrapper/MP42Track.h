@@ -26,6 +26,7 @@ extern NSString * const MP42SourceTypeRaw;
     NSString*   language;
     BOOL        enabled;
     uint64_t    alternate_group;
+    int64_t     startOffset;
 
     BOOL    isEdited;
     BOOL    isDataEdited;
@@ -50,6 +51,7 @@ extern NSString * const MP42SourceTypeRaw;
 
 @property(readwrite) BOOL     enabled;
 @property(readwrite) uint64_t alternate_group;
+@property(readwrite) int64_t  startOffset;
 
 @property(readonly) uint32_t timescale;
 @property(readonly) uint32_t bitrate;

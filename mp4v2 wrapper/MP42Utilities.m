@@ -337,3 +337,25 @@ BOOL isTrackMuxable(NSString * formatName)
 
     return NO;
 }
+
+int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
+{
+    MP4Duration trackDuration = 0;
+    uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(fileHandle, Id);
+
+    while (i <= trackEditCount) {
+        MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, i);
+        MP4Duration editDuration = MP4GetTrackEditDuration(fileHandle, Id, i);
+
+
+        trackDuration += editDuration;
+
+        int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
+        
+        NSLog(@"Track %d, Edit Media Start = %qu, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
+
+        i++;
+    }
+
+    return 1;
+}

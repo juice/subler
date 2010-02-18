@@ -39,3 +39,5 @@ NSString* getFilenameLanguage(CFStringRef filename);
 
 ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int versionFlags);
 BOOL isTrackMuxable(NSString * formatName);
+
+int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id);
