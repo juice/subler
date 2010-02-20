@@ -251,23 +251,8 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
         }
         writeEmptySubtitleSample(fileHandle, subtitleTrackId, 10);
 
-        if (delay) {
-            MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
-                                                                   subtitleTrackId,
-                                                                   MP4GetTrackDuration(fileHandle, subtitleTrackId),
-                                                                   MP4GetTimeScale(fileHandle));
-            if (delay > 0) {
-                MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
-                                                                    subtitleTrackId,
-                                                                    delay,
-                                                                    MP4GetTimeScale(fileHandle));
-
-                MP4AddTrackEdit(fileHandle, subtitleTrackId, MP4_INVALID_EDIT_ID, 0, delayDuration, 1);
-                MP4AddTrackEdit(fileHandle, subtitleTrackId, MP4_INVALID_EDIT_ID, 0, editDuration, 0);
-            }
-            else if (delay < 0)
-                MP4AddTrackEdit(fileHandle, subtitleTrackId, MP4_INVALID_EDIT_ID, -delay, editDuration, 0);
-        }
+        if (delay)
+            setTrackStartOffset(fileHandle, subtitleTrackId, delay);
     }
 
     [ss release];

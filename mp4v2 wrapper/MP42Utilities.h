@@ -41,3 +41,4 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int ve
 BOOL isTrackMuxable(NSString * formatName);
 
 int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id);
+void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset);

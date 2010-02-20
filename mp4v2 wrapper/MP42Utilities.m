@@ -347,15 +347,47 @@ int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
         MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, i);
         MP4Duration editDuration = MP4GetTrackEditDuration(fileHandle, Id, i);
 
+        MP4Timestamp test = (uint32_t)-1;
+        if (editMediaStart == ((uint32_t)-1))
+            NSLog(@"Edit media start = -1");
 
         trackDuration += editDuration;
 
         int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
-        
-        NSLog(@"Track %d, Edit Media Start = %qu, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
+
+        NSLog(@"Track %d, Edit Media Start = %lld, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
 
         i++;
     }
 
     return 1;
+}
+
+void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset) {
+    if (offset) {
+        MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                               Id,
+                                                               MP4GetTrackDuration(fileHandle, Id),
+                                                               MP4GetTimeScale(fileHandle));
+        if (offset > 0) {
+            MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                                    Id,
+                                                                    offset,
+                                                                    MP4GetTimeScale(fileHandle));
+
+            MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, -1, delayDuration, 0);
+            MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, 0, editDuration, 0);
+            
+            MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.duration", editDuration + delayDuration);
+        }
+        else if (offset < 0) {
+            MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                                    Id,
+                                                                    -offset,
+                                                                    MP4GetTimeScale(fileHandle));
+
+            MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, -offset, editDuration - delayDuration, 0);
+            MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.duration", editDuration - delayDuration);
+        }
+    }
 }
