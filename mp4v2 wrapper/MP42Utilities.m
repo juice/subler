@@ -363,12 +363,18 @@ int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
     return 1;
 }
 
-void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset) {
-    if (offset) {
-        MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
-                                                               Id,
-                                                               MP4GetTrackDuration(fileHandle, Id),
-                                                               MP4GetTimeScale(fileHandle));
+void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset)
+{
+    uint32_t trackEditsCount = MP4GetTrackNumberOfEdits(fileHandle, Id);
+
+    // If there is no existing edit list, just add some new ones at the start and do the usual stuff.
+    if (offset && !trackEditsCount) {
+        MP4Duration editDuration, totalDuration;
+
+        editDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                   Id,
+                                                   MP4GetTrackDuration(fileHandle, Id),
+                                                   MP4GetTimeScale(fileHandle));
         if (offset > 0) {
             MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
                                                                     Id,
@@ -377,8 +383,8 @@ void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset
 
             MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, -1, delayDuration, 0);
             MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, 0, editDuration, 0);
-            
-            MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.duration", editDuration + delayDuration);
+
+            totalDuration = editDuration + delayDuration;
         }
         else if (offset < 0) {
             MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
@@ -387,7 +393,24 @@ void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset
                                                                     MP4GetTimeScale(fileHandle));
 
             MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, -offset, editDuration - delayDuration, 0);
-            MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.duration", editDuration - delayDuration);
+            totalDuration = editDuration - delayDuration;
         }
+
+        // Update the duration in tkhd, the value must be the sum of the durations of all track's edits.
+        MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.duration", totalDuration);
+
+        // Update the duration in mvhd.
+        updateMoovDuration(fileHandle);
+    }
+    // If the mp4 contains already some edits list, try to reuse them
+    else if (offset && trackEditsCount) {
+        if (offset > 0) {
+            
+        }
+        else if (offset < 0) {
+            
+        }
+
+        NSLog(@"Not implemented");
     }
 }
