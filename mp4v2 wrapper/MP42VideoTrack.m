@@ -108,13 +108,15 @@
 
             free(val);
 
-            if (hSpacing >= 1 && vSpacing >= 1) {
-                if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp")) {
-                    MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", hSpacing);
-                    MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", vSpacing);
+            if ([updatedProperty valueForKey:@"hSpacing"] || [updatedProperty valueForKey:@"vSpacing"]) {
+                if (hSpacing >= 1 && vSpacing >= 1) {
+                    if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp")) {
+                        MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", hSpacing);
+                        MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", vSpacing);
+                    }
+                    else
+                        MP4AddPixelAspectRatio(fileHandle, Id, hSpacing, vSpacing);
                 }
-                else
-                    MP4AddPixelAspectRatio(fileHandle, Id, hSpacing, vSpacing);
             }
         }
     }
@@ -134,7 +136,20 @@
 @synthesize trackHeight;
 
 @synthesize hSpacing;
+- (void) setHSpacing: (uint64_t) newValue
+{
+    hSpacing = newValue;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"hSpacing"];
+}
+
 @synthesize vSpacing;
+- (void) setVSpacing: (uint64_t) newValue
+{
+    vSpacing = newValue;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"vSpacing"];
+}
 
 @synthesize offsetX;
 @synthesize offsetY;
