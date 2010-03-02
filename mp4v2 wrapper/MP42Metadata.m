@@ -252,45 +252,60 @@ static const iTMF_rating_t rating_strings[] = {
         return NO;
 }
 
+- (NSString *) stringFromMetadata:(const char*)cString {
+    NSString *string;
+    
+    if (string = [NSString stringWithCString:cString encoding: NSUTF8StringEncoding])
+        return string;
+
+    if (string = [NSString stringWithCString:cString encoding: NSASCIIStringEncoding])
+        return string;
+    
+    if (string = [NSString stringWithCString:cString encoding: NSUTF16StringEncoding])
+        return string;
+
+    return @"";
+}
+
 -(void) readMetaDataFromFileHandle:(MP4FileHandle)sourceHandle
 {
     const MP4Tags* tags = MP4TagsAlloc();
     MP4TagsFetch( tags, sourceHandle );
 
     if (tags->name)
-        [tagsDict setObject:[NSString stringWithCString:tags->name encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->name]
                      forKey:@"Name"];
 
     if (tags->artist)
-        [tagsDict setObject:[NSString stringWithCString:tags->artist encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->artist]
                      forKey:@"Artist"];
 
     if (tags->albumArtist)
-        [tagsDict setObject:[NSString stringWithCString:tags->albumArtist encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->albumArtist]
                      forKey:@"Album Artist"];
 
     if (tags->album)
-        [tagsDict setObject:[NSString stringWithCString:tags->album encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->album]
                      forKey:@"Album"];
 
     if (tags->grouping)
-        [tagsDict setObject:[NSString stringWithCString:tags->grouping encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->grouping]
                      forKey:@"Grouping"];
 
     if (tags->composer)
-        [tagsDict setObject:[NSString stringWithCString:tags->composer encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->composer]
                      forKey:@"Composer"];
 
     if (tags->comments)
-        [tagsDict setObject:[NSString stringWithCString:tags->comments encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->comments]
                      forKey:@"Comments"];
 
     if (tags->genre)
-        [tagsDict setObject:[NSString stringWithCString:tags->genre encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->genre]
                      forKey:@"Genre"];
 
     if (tags->releaseDate)
-        [tagsDict setObject:[NSString stringWithCString:tags->releaseDate encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->releaseDate]
                      forKey:@"Release Date"];
 
     if (tags->track)
@@ -306,11 +321,11 @@ static const iTMF_rating_t rating_strings[] = {
                      forKey:@"Tempo"];
 
     if (tags->tvShow)
-        [tagsDict setObject:[NSString stringWithCString:tags->tvShow encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->tvShow]
                      forKey:@"TV Show"];
 
     if (tags->tvEpisodeID)
-        [tagsDict setObject:[NSString stringWithCString:tags->tvEpisodeID encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->tvEpisodeID]
                      forKey:@"TV Episode ID"];
 
     if (tags->tvSeason)
@@ -322,31 +337,31 @@ static const iTMF_rating_t rating_strings[] = {
                      forKey:@"TV Episode #"];
 
     if (tags->tvNetwork)
-        [tagsDict setObject:[NSString stringWithCString:tags->tvNetwork encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->tvNetwork]
                      forKey:@"TV Network"];
 
     if (tags->description)
-        [tagsDict setObject:[NSString stringWithCString:tags->description encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->description]
                      forKey:@"Description"];
 
     if (tags->longDescription)
-        [tagsDict setObject:[NSString stringWithCString:tags->longDescription encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->longDescription]
                      forKey:@"Long Description"];
 
     if (tags->lyrics)
-        [tagsDict setObject:[NSString stringWithCString:tags->lyrics encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->lyrics]
                      forKey:@"Lyrics"];
 
     if (tags->copyright)
-        [tagsDict setObject:[NSString stringWithCString:tags->copyright encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->copyright]
                      forKey:@"Copyright"];
 
     if (tags->encodingTool)
-        [tagsDict setObject:[NSString stringWithCString:tags->encodingTool encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->encodingTool]
                      forKey:@"Encoding Tool"];
 
     if (tags->encodedBy)
-        [tagsDict setObject:[NSString stringWithCString:tags->encodedBy encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->encodedBy]
                      forKey:@"Encoded By"];
 
     if (tags->hdVideo)
@@ -362,11 +377,11 @@ static const iTMF_rating_t rating_strings[] = {
         gapless = *tags->gapless;
 
     if (tags->purchaseDate)
-        [tagsDict setObject:[NSString stringWithCString:tags->purchaseDate encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->purchaseDate]
                      forKey:@"Purchase Date"];
 
     if (tags->iTunesAccount)
-        [tagsDict setObject:[NSString stringWithCString:tags->iTunesAccount encoding: NSUTF8StringEncoding]
+        [tagsDict setObject:[self stringFromMetadata:tags->iTunesAccount]
                      forKey:@"iTunes Account"];
     
     if (tags->cnID)
