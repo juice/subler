@@ -198,6 +198,8 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
             return @"CEA-708";
         else if (!strcmp(dataName, "samr"))
             return @"AMR Narrow Band";
+        else if (!strcmp(dataName, "jpeg"))
+            return @"M-JPEG";
         else if (!strcmp(dataName, "rtp "))
             return @"Hint";
 
