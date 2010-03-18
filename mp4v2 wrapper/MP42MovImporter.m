@@ -29,7 +29,10 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
 - (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
-    if (self = [super initWithDelegate:del andFile:fileUrl]) {
+    if (self = [super init]) {
+        delegate = del;
+        file = [fileUrl retain];
+
         sourceFile = [[QTMovie alloc] initWithFile:file error:nil];
 
         if ([[sourceFile attributeForKey:QTMovieLoadStateAttribute] longValue] >= QTMovieLoadStateComplete) {

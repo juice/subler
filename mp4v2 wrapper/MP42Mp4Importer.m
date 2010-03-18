@@ -14,7 +14,10 @@
 
 - (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
-    if (self = [super initWithDelegate:del andFile:fileUrl]) {
+    if (self = [super init]) {
+        delegate = del;
+        file = [fileUrl retain];
+
         MP42File *sourceFile = [[MP42File alloc] initWithExistingFile:fileUrl andDelegate:self];
 
         tracksArray = [[sourceFile tracks] retain];

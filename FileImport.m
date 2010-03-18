@@ -8,9 +8,7 @@
 
 #import "FileImport.h"
 #import "MP42File.h"
-#import "MP42MkvImporter.h"
-#import "MP42Mp4Importer.h"
-#import "MP42MovImporter.h"
+#import "MP42FileImporter.h"
 
 @implementation FileImport
 
@@ -26,15 +24,7 @@
 
 - (void)awakeFromNib
 {
-    if ([[file pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
-        [[file pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame)
-        fileImporter = [[MP42MkvImporter alloc] initWithDelegate:delegate andFile:file];
-    else if ([[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
-             [[file pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
-             [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame)
-        fileImporter = [[MP42Mp4Importer alloc] initWithDelegate:delegate andFile:file];
-    else if ([[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
-        fileImporter = [[MP42MovImporter alloc] initWithDelegate:delegate andFile:file];
+    fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:file];
 
     importCheckArray = [[NSMutableArray alloc] initWithCapacity:[[fileImporter tracksArray] count]];
 

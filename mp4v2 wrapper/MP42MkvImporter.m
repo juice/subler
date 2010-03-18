@@ -21,14 +21,17 @@
 
 - (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
-    if (self = [super initWithDelegate:del andFile:fileUrl]) {
+    if (self = [super init]) {
+        delegate = del;
+        file = [fileUrl retain];
+
         ioStream = calloc(1, sizeof(StdIoStream)); 
         matroskaFile = openMatroskaFile((char *)[file UTF8String], ioStream);
         
         NSInteger trackCount = mkv_GetNumTracks(matroskaFile);
         tracksArray = [[NSMutableArray alloc] initWithCapacity:trackCount];
         
-        NSUInteger i;
+        NSInteger i;
         
         for (i = 0; i < trackCount; i++) {
             TrackInfo *mkvTrack = mkv_GetTrackInfo(matroskaFile, i);
