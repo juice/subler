@@ -247,7 +247,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         tag = [element nodesForXPath:@"./movieTags/info/releaseDateY"
                                error:&err];
         if([tag count] && [[[tag objectAtIndex:0] stringValue] integerValue]) {
-            NSInteger year, month, day;
+            NSInteger year = 0, month = 0, day = 0;
             year = [[[tag objectAtIndex:0] stringValue] integerValue];
             
             tag = [element nodesForXPath:@"./movieTags/info/releaseDateM"
