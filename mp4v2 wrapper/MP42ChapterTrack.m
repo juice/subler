@@ -104,7 +104,8 @@
 
     if (isDataEdited) {
         MP4Chapter_t * fileChapters = 0;
-        uint32_t i, refTrackDuration, sum = 0, chapterCount = 0;
+        uint32_t i, refTrackDuration, chapterCount = 0;
+        uint64_t sum = 0;
 
         // get the list of chapters
         MP4GetChapters(fileHandle, &fileChapters, &chapterCount, MP4ChapterTypeQt);
