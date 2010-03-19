@@ -224,6 +224,7 @@
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tagChimp_medium.png; path = images/tagChimp_medium.png; sourceTree = "<group>"; };
 		A9C8182C0F74D6E300019BFF /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		A9D1C2031125454B0088168C /* h264.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = h264.h; sourceTree = "<group>"; };
 		A9ED7C4C1115CFBD00423241 /* MP42Mp4Importer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42Mp4Importer.h; path = "mp4v2 wrapper/MP42Mp4Importer.h"; sourceTree = "<group>"; };
 		A9ED7C4D1115CFBD00423241 /* MP42Mp4Importer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42Mp4Importer.m; path = "mp4v2 wrapper/MP42Mp4Importer.m"; sourceTree = "<group>"; };
 		A9ED7C891115D32E00423241 /* MP42MovImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42MovImporter.h; path = "mp4v2 wrapper/MP42MovImporter.h"; sourceTree = "<group>"; };
@@ -439,6 +440,7 @@
 				A9C054CF0F6D2D9800AF15B5 /* VideoMuxer.m */,
 				A9F5EA7E0F32E55000C057E0 /* SubUtilities.h */,
 				A9F5EA7F0F32E55000C057E0 /* SubUtilities.m */,
+				A9D1C2031125454B0088168C /* h264.h */,
 				A9BB60680F833D2E005CD0BB /* h264.cpp */,
 				A9BB60780F83452D005CD0BB /* aac.cpp */,
 				A9BB60DA0F834F18005CD0BB /* ac3.cpp */,
@@ -825,7 +827,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = 4.2;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SIGN_COMPARE = YES;

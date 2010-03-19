@@ -21,8 +21,7 @@
  *                          for his work on ctts creation)
  */
 
-//#define DEBUG_H264 0
-//#define DEBUG_H264_READER 0
+//#define DEBUG_H264 1
 
 static const char*  ProgName = "Subler";
 static int Verbosity = 0;
@@ -34,165 +33,10 @@ static int Verbosity = 0;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h> // read
 #include <inttypes.h>
 #include <sys/types.h>
 #include "mpeg4ip_bitstream.h"
-
-#define H264_START_CODE 0x000001
-#define H264_PREVENT_3_BYTE 0x000003
-
-#define H264_PROFILE_BASELINE 66
-#define H264_PROFILE_MAIN 77
-#define H264_PROFILE_EXTENDED 88
-
-#define H264_NAL_TYPE_NON_IDR_SLICE 1
-#define H264_NAL_TYPE_DP_A_SLICE 2
-#define H264_NAL_TYPE_DP_B_SLICE 3
-#define H264_NAL_TYPE_DP_C_SLICE 0x4
-#define H264_NAL_TYPE_IDR_SLICE 0x5
-#define H264_NAL_TYPE_SEI 0x6
-#define H264_NAL_TYPE_SEQ_PARAM 0x7
-#define H264_NAL_TYPE_PIC_PARAM 0x8
-#define H264_NAL_TYPE_ACCESS_UNIT 0x9
-#define H264_NAL_TYPE_END_OF_SEQ 0xa
-#define H264_NAL_TYPE_END_OF_STREAM 0xb
-#define H264_NAL_TYPE_FILLER_DATA 0xc
-#define H264_NAL_TYPE_SEQ_EXTENSION 0xd
-
-#define H264_TYPE_P 0
-#define H264_TYPE_B 1
-#define H264_TYPE_I 2
-#define H264_TYPE_SP 3
-#define H264_TYPE_SI 4
-#define H264_TYPE2_P 5
-#define H264_TYPE2_B 6
-#define H264_TYPE2_I 7
-#define H264_TYPE2_SP 8
-#define H264_TYPE2_SI 9
-
-#define H264_TYPE_IS_P(t) ((t) == H264_TYPE_P || (t) == H264_TYPE2_P)
-#define H264_TYPE_IS_B(t) ((t) == H264_TYPE_B || (t) == H264_TYPE2_B)
-#define H264_TYPE_IS_I(t) ((t) == H264_TYPE_I || (t) == H264_TYPE2_I)
-#define H264_TYPE_IS_SP(t) ((t) == H264_TYPE_SP || (t) == H264_TYPE2_SP)
-#define H264_TYPE_IS_SI(t) ((t) == H264_TYPE_SI || (t) == H264_TYPE2_SI)
-
-#define HAVE_SLICE_I 0x1
-#define HAVE_SLICE_P 0x2
-#define HAVE_SLICE_B 0x4
-#define HAVE_SLICE_SI 0x8
-#define HAVE_SLICE_SP 0x10
-#define HAVE_ALL_SLICES 0x1f
-#define HAVE_ALL_BUT_B_SLICES 0x1b
-
-typedef struct h264_decode_t {
-    uint8_t profile;
-    uint8_t level;
-    uint32_t chroma_format_idc;
-    uint8_t residual_colour_transform_flag;
-    uint32_t bit_depth_luma_minus8;
-    uint32_t bit_depth_chroma_minus8;
-    uint8_t qpprime_y_zero_transform_bypass_flag;
-    uint8_t seq_scaling_matrix_present_flag;
-    uint32_t log2_max_frame_num_minus4;
-    uint32_t log2_max_pic_order_cnt_lsb_minus4;
-    uint32_t pic_order_cnt_type;
-    uint8_t frame_mbs_only_flag;
-    uint8_t mb_adaptive_frame_field_flag;
-    uint8_t direct_8x8_inference_flag;
-    uint32_t frame_crop_left_offset;
-    uint32_t frame_crop_right_offset;
-    uint32_t frame_crop_top_offset;
-    uint32_t frame_crop_bottom_offset;
-    uint8_t aspect_ratio_info_present_flag;
-    uint8_t aspect_ratio_idc;
-    uint8_t pic_order_present_flag;
-    uint8_t delta_pic_order_always_zero_flag;
-    int32_t offset_for_non_ref_pic;
-    int32_t offset_for_top_to_bottom_field;
-    uint32_t pic_order_cnt_cycle_length;
-    int16_t offset_for_ref_frame[256];
-    
-    uint8_t nal_ref_idc;
-    uint8_t nal_unit_type;
-    
-    uint8_t field_pic_flag;
-    uint8_t bottom_field_flag;
-    uint32_t frame_num;
-    uint32_t idr_pic_id;
-    uint32_t pic_order_cnt_lsb;
-    int32_t delta_pic_order_cnt_bottom;
-    int32_t delta_pic_order_cnt[2];
-    
-    uint32_t pic_width, pic_height;
-    uint32_t sar_width, sar_height;
-    uint32_t slice_type;
-    
-    /* POC state */
-    int32_t  pic_order_cnt;        /* can be < 0 */
-    
-    uint32_t  pic_order_cnt_msb;
-    uint32_t  pic_order_cnt_msb_prev;
-    uint32_t  pic_order_cnt_lsb_prev;
-    uint32_t  frame_num_prev;
-    int32_t  frame_num_offset;
-    int32_t  frame_num_offset_prev;
-    
-    uint8_t NalHrdBpPresentFlag;
-    uint8_t VclHrdBpPresentFlag;
-    uint8_t CpbDpbDelaysPresentFlag;
-    uint8_t pic_struct_present_flag;
-    uint8_t cpb_removal_delay_length_minus1;
-    uint8_t dpb_output_delay_length_minus1;
-    uint8_t time_offset_length;
-    uint32_t cpb_cnt_minus1;
-    uint8_t initial_cpb_removal_delay_length_minus1;
-} h264_decode_t;
-
-typedef struct nal_reader_t {
-    FILE *ifile;
-	int pipeFD;
-	int usePipe;
-    uint8_t *buffer;
-    uint32_t buffer_on;
-    uint32_t buffer_size;
-    uint32_t buffer_size_max;
-} nal_reader_t;
-
-typedef struct
-    {
-        struct
-        {
-            int size_min;
-            int next;
-            int cnt;
-            int idx[17];
-            int poc[17];
-        } dpb;
-        
-        int cnt;
-        int cnt_max;
-        int *frame;
-    } h264_dpb_t;
-
-static uint8_t exp_golomb_bits[256] = {
-8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 
-3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 
-2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 
-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 
-};
+#include "h264.h"
 
 uint32_t h264_ue (CBitstream *bs)
 {
@@ -269,8 +113,8 @@ extern "C" bool h264_is_start_code (const uint8_t *pBuf)
         pBuf[1] == 0 && 
         ((pBuf[2] == 1) ||
          ((pBuf[2] == 0) && pBuf[3] == 1))) {
-        return true;
-    }
+            return true;
+        }
     return false;
 }
 
@@ -285,9 +129,9 @@ extern "C" uint32_t h264_find_next_start_code (const uint8_t *pBuf,
         pBuf[1] == 0 && 
         ((pBuf[2] == 1) ||
          ((pBuf[2] == 0) && pBuf[3] == 1))) {
-        pBuf += 3;
-        offset = 3;
-    }
+            pBuf += 3;
+            offset = 3;
+        }
     val = 0xffffffff;
     while (offset < bufLen - 3) {
         val <<= 8;
@@ -393,7 +237,7 @@ extern "C" void h264_vui_parameters (h264_decode_t *dec, CBitstream *bs)
             dec->sar_height = bs->GetBits(16);
         }
     }
-
+    
 #if 0
     temp = bs->GetBits(1);
     printf("    overscan_info_present_flag: %u\n", temp);
@@ -435,7 +279,7 @@ extern "C" void h264_vui_parameters (h264_decode_t *dec, CBitstream *bs)
         h264_hrd_parameters(dec, bs);
     }
     uint32_t temp2;
-
+    
     temp2 = bs->GetBits(1);
     printf("    vcl_hrd_parameters_present_flag: %u\n", temp2);
     if (temp2) {
@@ -523,7 +367,7 @@ int h264_read_seq_info (const uint8_t *buffer,
         dec->frame_mbs_only_flag = bs.GetBits(1);
         dec->pic_height = 
         (2 - dec->frame_mbs_only_flag) * PicHeightInMapUnits * 16;
-
+        
         if (!dec->frame_mbs_only_flag) {
             dec->mb_adaptive_frame_field_flag = bs.GetBits(1);
         }
@@ -545,7 +389,7 @@ int h264_read_seq_info (const uint8_t *buffer,
         if (dummy) {
             h264_vui_parameters(dec, &bs);
         }
-
+        
     } catch (...) {
         return -1;
     }
@@ -574,9 +418,9 @@ extern "C" int h264_find_slice_type (const uint8_t *buffer,
     return 0;
 }
 
-int h264_read_slice_info (const uint8_t *buffer, 
-                          uint32_t buflen, 
-                          h264_decode_t *dec)
+extern "C" int h264_read_slice_info (const uint8_t *buffer, 
+                                     uint32_t buflen, 
+                                     h264_decode_t *dec)
 {
     uint32_t header;
     uint8_t tmp[512]; /* Enough for the begining of the slice header */
@@ -796,11 +640,11 @@ extern "C" int h264_detect_boundary (const uint8_t *buffer,
                 (decode->nal_ref_idc == 0 ||
                  new_decode.nal_ref_idc == 0)) {
 #ifdef BOUND_VERBOSE
-                printf("nal ref idc values differ\n");
+                    printf("nal ref idc values differ\n");
 #endif
-                ret = 1;
-                break;
-            }
+                    ret = 1;
+                    break;
+                }
             if (decode->frame_num == new_decode.frame_num &&
                 decode->pic_order_cnt_type == new_decode.pic_order_cnt_type) {
                 if (decode->pic_order_cnt_type == 0) {
@@ -922,17 +766,17 @@ extern "C" const char *h264_get_frame_type (h264_decode_t *dec)
 extern "C" uint32_t h264_get_frame_dependency (h264_decode_t *dec)
 {
     uint32_t dflags = 0;
-
+    
     if (dec->nal_ref_idc)
         dflags |= MP4_SDT_HAS_DEPENDENTS;
     else
         dflags |= MP4_SDT_HAS_NO_DEPENDENTS; /* disposable */
-
+    
     if (dec->nal_unit_type != H264_NAL_TYPE_IDR_SLICE) {
         if (H264_TYPE_IS_P(dec->slice_type)) dflags |= MP4_SDT_EARLIER_DISPLAY_TIMES_ALLOWED;
         if (H264_TYPE_IS_I(dec->slice_type)) dflags |= MP4_SDT_EARLIER_DISPLAY_TIMES_ALLOWED;;
     }
-
+    
     return dflags;
 }
 
@@ -1174,8 +1018,7 @@ static bool RefreshReader (nal_reader_t *nal,
     printf("refresh - start %u buffer on %u size %u\n", 
            nal_start, nal->buffer_on, nal->buffer_size);
 #endif
-    if (nal_start != 0) 
-	{
+    if (nal_start != 0) {
         if (nal_start > nal->buffer_size) {
 #ifdef DEBUG_H264
             printf("nal start is greater than buffer size\n");
@@ -1196,51 +1039,18 @@ static bool RefreshReader (nal_reader_t *nal,
             }
             nal->buffer_size = bytes_left;
         }
-    } 
-	else 
-	{
-        if (!nal->usePipe && feof(nal->ifile)) {
+    } else {
+        if (feof(nal->ifile)) {
             return false;
         }
         nal->buffer_size_max += 4096 * 4;
         nal->buffer = (uint8_t *)realloc(nal->buffer, nal->buffer_size_max);
     }
-	if (nal->usePipe) 
-	{
-		bytes_read = 0; 
-		uint32_t bytes_to_go = nal->buffer_size_max - nal->buffer_size; 
-		uint32_t bytes_read_this_time = 0;
-		while (bytes_to_go)
-		{
-			bytes_read_this_time = read(nal->pipeFD, nal->buffer + nal->buffer_size + bytes_read, bytes_to_go);
-			if (bytes_read_this_time == -1) 
-			{
-				bytes_read_this_time = 0;
-				int err = errno;
-				if (err != EAGAIN)
-				{
-					printf("Error: %i\n", err);
-					break;
-				}
-				
-			}
-			bytes_read += bytes_read_this_time;
-			bytes_to_go -= bytes_read_this_time;
-		}
-		if (bytes_read < nal->buffer_size_max - nal->buffer_size)
-		{
-			printf("Short socket read\n");
-		}
-	}
-	else 
-	{
-		bytes_read = fread(nal->buffer + nal->buffer_size,
-						   1,
-						   nal->buffer_size_max - nal->buffer_size,
-						   nal->ifile);	
-	}
-
-        if (bytes_read == 0) return false;
+    bytes_read = fread(nal->buffer + nal->buffer_size,
+                       1,
+                       nal->buffer_size_max - nal->buffer_size,
+                       nal->ifile);
+    if (bytes_read == 0) return false;
 #ifdef DEBUG_H264_READER
     printf("read %u of %u\n", bytes_read, 
            nal->buffer_size_max - nal->buffer_size);
@@ -1281,7 +1091,7 @@ static bool LoadNal (nal_reader_t *nal)
 }
 
 extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
-                                   uint32_t timescale, uint32_t mp4FrameDuration, int usePipe, int pipeFD)
+                                   uint32_t timescale, uint32_t mp4FrameDuration)
 {
     bool rc;
     
@@ -1304,9 +1114,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     MP4SampleId samplesWritten = 0;
     
     memset(&nal, 0, sizeof(nal));
-	nal.usePipe = usePipe;
-	if (usePipe) nal.pipeFD = pipeFD;
-	else nal.ifile = inFile;
+    nal.ifile = inFile;
     
     if (timescale == 0) {
         fprintf(stderr, "%s: Must specify a timescale when reading H.264 files", 
@@ -1335,17 +1143,13 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
         }
     }	
     
-    if (!usePipe)
-	{
-		rewind(nal.ifile);
-		nal.buffer_size = 0;
-		nal.buffer_on = 0;
-		nal.buffer_size_max = 0;
-		free(nal.buffer);
-		nal.buffer = NULL;
-	}
+    rewind(nal.ifile);
+    nal.buffer_size = 0;
+    nal.buffer_on = 0;
+    nal.buffer_size_max = 0;
+    free(nal.buffer);
+    nal.buffer = NULL;
     
-
     // create the new video track
     MP4TrackId trackId = MP4AddH264VideoTrack(mp4File,
                                               timescale,
@@ -1433,7 +1237,7 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
                 DpbAdd( &h264_dpb, poc, slice_is_idr );
                 nal_is_sync = false;
 #ifdef DEBUG_H264
-                printf("wrote frame %d\n", nal_buffer_size);
+                printf("wrote frame %d "U64"\n", nal_buffer_size, thisTime);
 #endif
                 nal_buffer_size = 0;
             } 
@@ -1531,29 +1335,26 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     
     DpbFlush(&h264_dpb);
     
-    if (h264_dpb.dpb.size_min > 0) 
-	{
-        uint32_t ix;
+    if (h264_dpb.dpb.size_min > 0) {
+        unsigned int ix;
         
-        for (ix = 0; ix < samplesWritten; ix++) 
-		{
-            const uint32_t offset = DpbFrameOffset(&h264_dpb, ix);
+        for (ix = 0; ix < samplesWritten; ix++) {;
+            const int offset = DpbFrameOffset(&h264_dpb, ix);
 #ifdef DEBUG_H264
             printf("dts=%d pts=%d offset=%d\n", ix, ix+offset, offset );
 #endif
-            MP4SetSampleRenderingOffset(mp4File, trackId, 1 + ix, offset * mp4FrameDuration);
+            MP4SetSampleRenderingOffset(mp4File, trackId, 1 + ix, 
+                                        offset * mp4FrameDuration);
         }
         MP4Duration editDuration = MP4ConvertFromTrackDuration(mp4File,
-		                                                     trackId,
-		                                                     MP4GetTrackDuration(mp4File, trackId),
-		                                                     MP4GetTimeScale(mp4File));
-
+                                                               trackId,
+                                                               MP4GetTrackDuration(mp4File, trackId),
+                                                               MP4GetTimeScale(mp4File));
+        
         MP4AddTrackEdit(mp4File, trackId, MP4_INVALID_EDIT_ID, DpbFrameOffset(&h264_dpb, 0) * mp4FrameDuration,
-		              editDuration, 0);
+                        editDuration, 0);
     }
     
     DpbClean(&h264_dpb);
-	free(nal.buffer);
-	close(pipeFD);
     return trackId;
 }
