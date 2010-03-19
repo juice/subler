@@ -82,6 +82,13 @@
     return [super initWithType:typeName error:outError];
 }
 
++ (BOOL)canConcurrentlyReadDocumentsOfType:(NSString *)type
+{
+    return YES;
+}
+
+#pragma mark Read methods
+
 - (void) reloadFile: (id) sender
 {
     if ([self fileURL]) {
@@ -92,6 +99,38 @@
         [self tableViewSelectionDidChange:nil];
     }
 }
+
+- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
+{
+    mp4File = [[MP42File alloc] initWithExistingFile:[absoluteURL path] andDelegate:self];
+    
+    if ( outError != NULL && !mp4File ) {
+		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
+        
+        return NO;
+	}
+    
+    return YES;
+}
+
+- (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
+{
+    [mp4File release];
+    mp4File = [[MP42File alloc] initWithExistingFile:[absoluteURL path] andDelegate:self];
+    
+    [fileTracksTable reloadData];
+    [self tableViewSelectionDidChange:nil];
+    [self updateChangeCount:NSChangeCleared];
+    
+    if ( outError != NULL && !mp4File ) {
+		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];   
+        
+        return NO;
+	}
+    return YES;
+}
+
+#pragma mark Save methods
 
 // Hook into the flow to fork a thread
 - (void)saveToURL:(NSURL *)absoluteURL
@@ -138,17 +177,66 @@
     [self performSelectorOnMainThread:@selector(saveDidComplete:) withObject:outError waitUntilDone: NO];
 }
 
+- (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName 
+        forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError;
+{
+    BOOL success = NO;
+    uint64_t flags = 0;
+
+	switch (saveOperation)
+	{
+		case NSSaveOperation:
+            // movie file already exists, so we'll just update
+            // the movie resource
+            success = [mp4File updateMP4File:outError];
+            break;
+		case NSSaveAsOperation:
+            if (_64bit_data) flags += 0x01;
+            if (_64bit_time) flags += 0x02;
+            success = [mp4File writeToUrl:absoluteURL flags:flags error:outError];
+            break;
+		case NSSaveToOperation:
+            // not implemented
+            break;
+	}
+    if (_optimize)
+    {
+        [saveOperationName setStringValue:@"Optimizing…"];
+        [mp4File optimize];
+        _optimize = NO;
+    }
+    return success;
+}
+
+- (void) saveDidComplete: (NSError *)outError
+{
+    [NSApp endSheet: savingWindow];
+    [savingWindow orderOut:self];
+    
+    [optBar stopAnimation:nil];
+    
+    if (outError) {
+        [self presentError:outError
+            modalForWindow:documentWindow
+                  delegate:nil
+        didPresentSelector:NULL
+               contextInfo:NULL];
+    }
+    
+    [self reloadFile:self];
+}
+
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
     _currentSavePanel = savePanel;
     [savePanel setExtensionHidden:NO];
     [savePanel setAccessoryView:saveView];
-
+    
     NSArray *formats = [self writableTypesForSaveOperation:NSSaveAsOperation];
     [fileFormat removeAllItems];
     for (id format in formats)
         [fileFormat addItemWithTitle:format];
-
+    
     return YES;
 }
 
@@ -185,6 +273,12 @@
     [mp4File stopOperation];
 }
 
+- (void) saveAndOptimize: (id)sender
+{
+    _optimize = YES;
+    [self saveDocument:sender];
+}
+
 - (IBAction) sendToExternalApp: (id) sender {        
     /* send to itunes after save */
     NSAppleScript *myScript = [[NSAppleScript alloc] initWithSource: [NSString stringWithFormat: @"%@%@%@", @"tell application \"iTunes\" to open (POSIX file \"", [[self fileURL] path], @"\")"]];
@@ -192,90 +286,7 @@
     [myScript release];
 }
 
-- (void) saveDidComplete: (NSError *)outError
-{
-    [NSApp endSheet: savingWindow];
-    [savingWindow orderOut:self];
-    
-    [optBar stopAnimation:nil];
-
-    if (outError) {
-        [self presentError:outError
-            modalForWindow:documentWindow
-                  delegate:nil
-        didPresentSelector:NULL
-               contextInfo:NULL];
-    }
-
-    [self reloadFile:self];
-}
-
-- (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName 
-        forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError;
-{
-    BOOL success = NO;
-    uint64_t flags = 0;
-
-	switch (saveOperation)
-	{
-		case NSSaveOperation:
-            // movie file already exists, so we'll just update
-            // the movie resource
-            success = [mp4File updateMP4File:outError];
-            break;
-		case NSSaveAsOperation:
-            if (_64bit_data) flags += 0x01;
-            if (_64bit_time) flags += 0x02;
-            success = [mp4File writeToUrl:absoluteURL flags:flags error:outError];
-            break;
-		case NSSaveToOperation:
-            // not implemented
-            break;
-	}
-    if (_optimize)
-    {
-        [saveOperationName setStringValue:@"Optimizing…"];
-        [mp4File optimize];
-        _optimize = NO;
-    }
-    return success;
-}
-
-- (void) saveAndOptimize: (id)sender
-{
-    _optimize = YES;
-    [self saveDocument:sender];
-}
-
-- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
-{
-    mp4File = [[MP42File alloc] initWithExistingFile:[absoluteURL path] andDelegate:self];
-
-    if ( outError != NULL && !mp4File ) {
-		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
-
-        return NO;
-	}
-
-    return YES;
-}
-
-- (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
-{
-    [mp4File release];
-    mp4File = [[MP42File alloc] initWithExistingFile:[absoluteURL path] andDelegate:self];
-
-    [fileTracksTable reloadData];
-    [self tableViewSelectionDidChange:nil];
-    [self updateChangeCount:NSChangeCleared];
-
-    if ( outError != NULL && !mp4File ) {
-		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];   
-        
-        return NO;
-	}
-    return YES;
-}
+#pragma mark Interface validation
 
 - (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
 {
@@ -332,7 +343,8 @@
     return NO;
 }
 
-// Tableview datasource methods
+#pragma mark table datasource
+
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
     if( !mp4File )
@@ -515,6 +527,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 - (NSUInteger)comboBoxCell:(NSComboBoxCell *)comboBoxCell indexOfItemWithStringValue:(NSString *)string {
     return [languages indexOfObject: string];
 }
+
+#pragma mark Various things
 
 - (IBAction) searchMetadata: (id) sender
 {
