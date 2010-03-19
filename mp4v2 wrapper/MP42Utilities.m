@@ -14,7 +14,7 @@
 NSString *SMPTEStringFromTime( long long time, long timeScale )
 {
     NSString *SMPTE_string;
-    int hour, minute, second, frame;
+    long long hour, minute, second, frame;
     long long result;
 
     result = time / timeScale; // second
@@ -45,7 +45,7 @@ int disableTrack(MP4FileHandle fileHandle, MP4TrackId trackId)
 
 int enableFirstSubtitleTrack(MP4FileHandle fileHandle)
 {
-    int i, firstTrack = 0;
+    unsigned int i, firstTrack = 0;
     for (i = 0; i < MP4GetNumberOfTracks( fileHandle, 0, 0); i++) {
         const char* trackType = MP4GetTrackType( fileHandle, MP4FindTrackId( fileHandle, i, 0, 0));
         
@@ -108,7 +108,7 @@ MP4TrackId findChapterTrackId(MP4FileHandle fileHandle)
         trackId = MP4FindTrackId(fileHandle, i, 0, 0);
         if (MP4HaveTrackAtom(fileHandle, trackId, "tref.chap")) {
             MP4GetTrackIntegerProperty(fileHandle, trackId, "tref.chap.entries.trackId", &trackRef);
-            return trackRef;
+            return (MP4TrackId) trackRef;
         }
     }
     return 0;
@@ -139,7 +139,7 @@ uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId Id)
         MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.hSpacing", &hSpacing);
         MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*.pasp.vSpacing", &vSpacing);
         if( hSpacing > 0 && vSpacing > 0)
-            return (float) videoWidth / vSpacing * hSpacing;
+            return  (uint16_t) (videoWidth / (float) vSpacing * (float) hSpacing);
         else
             return videoWidth;
     }
@@ -202,6 +202,10 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
             return @"M-JPEG";
         else if (!strcmp(dataName, "rtp "))
             return @"Hint";
+        else if (!strcmp(dataName, "drms"))
+            return @"FairPlay Sound";
+        else if (!strcmp(dataName, "drmi"))
+            return @"FairPlay Video";
 
         else
             return [NSString stringWithUTF8String:dataName];
