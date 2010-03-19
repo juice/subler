@@ -346,18 +346,18 @@ int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
     uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(fileHandle, Id);
 
     while (i <= trackEditCount) {
-        MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, i);
+        //MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, i);
         MP4Duration editDuration = MP4GetTrackEditDuration(fileHandle, Id, i);
 
-        MP4Timestamp test = (uint32_t)-1;
-        if (editMediaStart == ((uint32_t)-1))
-            NSLog(@"Edit media start = -1");
+        //MP4Timestamp test = (uint32_t)-1;
+        //if (editMediaStart == ((uint32_t)-1))
+        //    NSLog(@"Edit media start = -1");
 
         trackDuration += editDuration;
 
-        int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
+        //int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
 
-        NSLog(@"Track %d, Edit Media Start = %lld, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
+        //NSLog(@"Track %d, Edit Media Start = %lld, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
 
         i++;
     }
