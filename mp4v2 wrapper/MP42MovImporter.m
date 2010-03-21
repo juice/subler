@@ -225,6 +225,9 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         case TimeCodeMediaType:
             result = @"Timecode";
             break;
+        case kJPEGCodecType:
+            result = @"Photo - JPEG";
+            break;
         default:
             result = @"Unknown";
             break;

@@ -9,7 +9,6 @@
 #import <Cocoa/Cocoa.h>
 
 @class MP42File;
-@class MP4FileImport;
 
 @interface MyDocument : NSDocument
 {

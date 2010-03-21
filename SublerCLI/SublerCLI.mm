@@ -20,7 +20,7 @@ void print_help()
 }
 void print_version()
 {
-    printf("\t\tversion 0.9.2\n");
+    printf("\t\tversion 0.9.6\n");
 }
 
 int main (int argc, const char * argv[]) {
@@ -227,7 +227,7 @@ int main (int argc, const char * argv[]) {
             }
         }
 
-        if (modified && ![mp4File updateMP4File:&outError]) {
+        if (modified && ![mp4File updateMP4FileWithAttributes:nil error:&outError]) {
             printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
             return -1;
         }

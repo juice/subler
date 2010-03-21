@@ -14,7 +14,7 @@
 NSString *SMPTEStringFromTime( long long time, long timeScale )
 {
     NSString *SMPTE_string;
-    long long hour, minute, second, frame;
+    int hour, minute, second, frame;
     long long result;
 
     result = time / timeScale; // second
@@ -199,7 +199,7 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
         else if (!strcmp(dataName, "samr"))
             return @"AMR Narrow Band";
         else if (!strcmp(dataName, "jpeg"))
-            return @"M-JPEG";
+            return @"Photo - JPEG";
         else if (!strcmp(dataName, "rtp "))
             return @"Hint";
         else if (!strcmp(dataName, "drms"))
@@ -335,7 +335,7 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int ve
 BOOL isTrackMuxable(NSString * formatName)
 {
     NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"AAC", @"AC-3", @"3GPP Text", @"Text", @"Plain Text", @"ASS", @"SSA",
-                                 @"CEA-608", nil];
+                                 @"CEA-608", @"Photo - JPEG", nil];
     
     for (NSString* type in supportedFormats)
         if ([formatName isEqualToString:type])

@@ -181,19 +181,21 @@
         forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError;
 {
     BOOL success = NO;
-    uint64_t flags = 0;
+    NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
+        [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
 
 	switch (saveOperation)
 	{
 		case NSSaveOperation:
             // movie file already exists, so we'll just update
             // the movie resource
-            success = [mp4File updateMP4File:outError];
+            success = [mp4File updateMP4FileWithAttributes:attributes error:outError];
             break;
 		case NSSaveAsOperation:
-            if (_64bit_data) flags += 0x01;
-            if (_64bit_time) flags += 0x02;
-            success = [mp4File writeToUrl:absoluteURL flags:flags error:outError];
+            if (_64bit_data) [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42Create64BitData];
+            if (_64bit_time) [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42Create64BitTime];
+            success = [mp4File writeToUrl:absoluteURL withAttributes:attributes error:outError];
             break;
 		case NSSaveToOperation:
             // not implemented
@@ -205,6 +207,7 @@
         [mp4File optimize];
         _optimize = NO;
     }
+    [attributes release];
     return success;
 }
 

@@ -17,6 +17,10 @@
 #import "MP42Metadata.h"
 #import "MP42Utilities.h"
 
+extern NSString * const MP42Create64BitData;
+extern NSString * const MP42Create64BitTime;
+extern NSString * const MP42CreateChaptersPreviewTrack;
+
 @interface MP42File : NSObject {
 @private
     MP4FileHandle  fileHandle;
@@ -26,7 +30,7 @@
     NSMutableArray  *tracksToBeDeleted;
     BOOL             hasFileRepresentation;
     BOOL             stopOperation;
-    
+
 @protected
     NSMutableArray  *tracks;
     MP42Metadata    *metadata;
@@ -48,8 +52,8 @@
 - (void) removeTracksAtIndexes:(NSIndexSet *)indexes;
 - (void) moveTrackAtIndex:(NSUInteger)index toIndex:(NSUInteger)newIndex;
 
-- (BOOL) writeToUrl:(NSURL *)url flags:(uint64_t)flags error:(NSError **)outError;
-- (BOOL) updateMP4File:(NSError **)outError;
+- (BOOL) writeToUrl:(NSURL *)url withAttributes:(NSDictionary *)attributes error:(NSError **)outError;
+- (BOOL) updateMP4FileWithAttributes:(NSDictionary *)attributes error:(NSError **)outError;
 - (void) optimize;
 - (void) stopOperation;
 

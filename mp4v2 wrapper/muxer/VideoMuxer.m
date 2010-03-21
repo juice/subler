@@ -134,6 +134,14 @@ int muxMOVVideoTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcT
             DisposeHandle(imgDescExt);
         }
     }
+    else if ((*imgDesc)->cType == kJPEGCodecType) {
+        // Add video track
+        dstTrackId = MP4AddMJpegVideoTrack(fileHandle,
+                                           GetMediaTimeScale(media),
+                                           MP4_INVALID_DURATION,
+                                           (*imgDesc)->width,
+                                           (*imgDesc)->height);
+    }
     else
         goto bail;
 
