@@ -303,7 +303,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                                      nil];
     NSError *outError;
     qtMovie = [[QTMovie alloc] initWithAttributes:movieAttributes error:&outError];
-    //[qtMovie detachFromCurrentThread];
     if (outError)
         NSLog(@"Error: %@", [outError localizedDescription]);
     else
@@ -312,7 +311,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
 - (void) closeQTMovieOnTheMainThread:(QTMovie*)qtMovie {
     if (qtMovie) {
-        [qtMovie attachToCurrentThread];
         [qtMovie release];
     }
 }
@@ -333,7 +331,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     if (chapterTrack && !jpegTrack) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         QTMovie * qtMovie;
-        NSMutableArray * previewImages = [NSMutableArray arrayWithCapacity:[chapterTrack chapterCount]];
         NSMutableDictionary * dict = [NSMutableDictionary dictionaryWithObject:[NSURL fileURLWithPath:filePath] forKey:@"URL"];
         // QTMovie objects must always be create on the main thread.
         [self performSelectorOnMainThread:@selector(openQTMovieOnTheMainThread:)
@@ -344,25 +341,20 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         if (!qtMovie)
             return NO;
 
-        //[QTMovie enterQTKitOnThread];
-        //[qtMovie attachToCurrentThread];
-
-        NSArray * subtitleTracks = [qtMovie tracksOfMediaType:@"sbtl"];
-        for (QTTrack* qtTrack in subtitleTracks)
+        for (QTTrack* qtTrack in [qtMovie tracksOfMediaType:@"sbtl"])
             [qtTrack setAttribute:[NSNumber numberWithBool:NO] forKey:QTTrackEnabledAttribute];
 
-        for (SBSample * chapter in [chapterTrack chapters]) {
-            QTTime time;
-            time.flags = 0;
-            time.timeScale = 1000;
-            time.timeValue = [chapter timestamp] + 500; // Add an half second offset, hopefully it will get a better image
-                                                        // if there is a fade
-            NSImage *chapterImage = [qtMovie frameImageAtTime:time];
-            [previewImages addObject:chapterImage];
-        }
+        NSMutableArray * previewImages = [NSMutableArray arrayWithCapacity:[chapterTrack chapterCount]];
 
-        //[qtMovie detachFromCurrentThread];
-        //[QTMovie exitQTKitOnThread];
+        for (SBSample * chapter in [chapterTrack chapters]) {
+            QTTime chapterTime = {
+                [chapter timestamp] + 600, // Add a short offset, hopefully it will get a better image
+                1000,                      // if there is a fade
+                0
+            };
+
+            [previewImages addObject:[qtMovie frameImageAtTime:chapterTime]];
+        }
 
         // Release the movie, we don't want to keep it open while we are writing in it using another library.
         // I am not sure if it is safe to release a QTMovie from a background thread, let's do it on the main just to be sure.
@@ -370,6 +362,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                                withObject:qtMovie 
                             waitUntilDone:YES];
 
+        // Reopen the mp4v2 fileHandle
         fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
         if (fileHandle == MP4_INVALID_FILE_HANDLE)
             return NO;
@@ -377,7 +370,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
         if (!refTrack)
             refTrack = 1;
-
+        
         MP4Duration refTrackDuration = MP4ConvertFromTrackDuration(fileHandle,
                                                        refTrack,
                                                        MP4GetTrackDuration(fileHandle, refTrack),
@@ -389,8 +382,10 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             imageSize.height = maxWidth / imageSize.width * imageSize.height;
             imageSize.width = maxWidth;
         }
+
         jpegTrack = MP4AddMJpegVideoTrack(fileHandle, 1000, MP4_INVALID_DURATION, imageSize.width, imageSize.height);
         MP4SetTrackIntegerProperty(fileHandle, jpegTrack, "tkhd.layer", 1);
+        MP4SetTrackName(fileHandle, jpegTrack, "Title Track");
         disableTrack(fileHandle, jpegTrack);
 
         NSInteger i = 0;
@@ -411,16 +406,19 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                                                                              usingType:NSTIFFFileType properties:nil];
             NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:repData];
             NSBitmapImageRep *output = nil;
-            NSImage * scratch = [[[NSImage alloc] initWithSize:imageSize] autorelease];
+            NSImage * scratch = [[NSImage alloc] initWithSize:imageSize];
+            NSRect newRect = NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height);
 
             [scratch lockFocus];
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-            [rep drawInRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height)];
-            output = [[[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect(0,0,imageSize.width, imageSize.height)] autorelease];
+            [rep drawInRect:newRect];
+            output = [[NSBitmapImageRep alloc] initWithFocusedViewRect:newRect];
             [scratch unlockFocus];
 
             NSData * jpegData = [output representationUsingType:NSJPEGFileType 
                                                                properties:nil];
+            [scratch release];
+            [output release];
 
             i+= 1;
             MP4WriteSample(fileHandle,
@@ -434,7 +432,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             [previewImages removeObjectAtIndex:0];
         }
 
-        MP4SetTrackName(fileHandle, jpegTrack, "Title Track");
         MP4RemoveAllTrackReferences(fileHandle, "tref.chap", refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", [chapterTrack Id], refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", jpegTrack, refTrack);
@@ -444,7 +441,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         return YES;
     }
     else if (chapterTrack && jpegTrack) {
-        // We already have all the tracks, hook them up.
+        // We already have all the tracks, so hook them up.
         fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
         if (fileHandle == MP4_INVALID_FILE_HANDLE)
             return NO;
@@ -452,7 +449,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
         if (!refTrack)
             refTrack = 1;
-
+        
         MP4RemoveAllTrackReferences(fileHandle, "tref.chap", refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", [chapterTrack Id], refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", jpegTrack, refTrack);
