@@ -8,6 +8,7 @@ void print_help()
     printf("\t\t-i set input file\n");
     printf("\t\t-s set subtitle input file\n");
     printf("\t\t-c set chapter input file\n");
+    printf("\t\t-p create chapters preview images\n");
     printf("\t\t-d set delay in ms\n");
     printf("\t\t-a set height in pixel\n");
     printf("\t\t-l set track language (i.e. English)\n");
@@ -34,6 +35,7 @@ int main (int argc, const char * argv[]) {
     int delay = 0;
     unsigned int height = 60;
     BOOL removeExisting = false;
+    BOOL chapterPreview = false;
     BOOL modified = false;
     BOOL optimize = false;
     char* tags = NULL;
@@ -44,7 +46,7 @@ int main (int argc, const char * argv[]) {
     }
 
     char opt_char=0;
-    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:c:d:a:l:n:t:rvhO")) != -1) {
+    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:c:d:a:l:n:t:prvhO")) != -1) {
         switch(opt_char) {
             case 'h':
                 print_help();
@@ -79,11 +81,14 @@ int main (int argc, const char * argv[]) {
                 tags = optarg;
                 break ;            
             case 'r':
-                removeExisting = true;
+                removeExisting = YES;
                 break ;
             case 'O':
-                optimize = true;
+                optimize = YES;
                 break ;
+            case 'p':
+                chapterPreview = YES;
+                break;
             default:
                 print_help();
                 exit(-1);
@@ -91,7 +96,11 @@ int main (int argc, const char * argv[]) {
         }
     }
 
-    if (input_file && (input_sub || input_chap || removeExisting || tags))
+    NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
+    if (chapterPreview)
+        [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
+
+    if (input_file && (input_sub || input_chap || removeExisting || tags || chapterPreview))
     {
         NSError *outError;
         MP42File *mp4File;
@@ -226,8 +235,11 @@ int main (int argc, const char * argv[]) {
                 }
             }
         }
+        
+        if (chapterPreview)
+            modified = true;
 
-        if (modified && ![mp4File updateMP4FileWithAttributes:nil error:&outError]) {
+        if (modified && ![mp4File updateMP4FileWithAttributes:attributes error:&outError]) {
             printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
             return -1;
         }
@@ -248,6 +260,7 @@ int main (int argc, const char * argv[]) {
         printf("Done.\n");
     }
 
+    [attributes release];
     [pool drain];
     return 0;
 }
