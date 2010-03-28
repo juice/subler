@@ -338,7 +338,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                                withObject:dict 
                             waitUntilDone:YES];
         qtMovie = [dict valueForKey:@"QTMovieObject"];
-
+        [dict release];
         //[QTMovie enterQTKitOnThread];
         //[qtMovie attachToCurrentThread];
 
@@ -391,7 +391,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
         jpegTrack = MP4AddMJpegVideoTrack(fileHandle, 1000, MP4_INVALID_DURATION, imageSize.width, imageSize.height);
         MP4SetTrackIntegerProperty(fileHandle, jpegTrack, "tkhd.layer", 1);
-        MP4SetTrackName(fileHandle, jpegTrack, "Title Track");
         disableTrack(fileHandle, jpegTrack);
 
         NSInteger i = 0;
@@ -441,7 +440,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         MP4AddTrackReference(fileHandle, "tref.chap", jpegTrack, refTrack);
         MP4Close(fileHandle);
 
-        [dict release];
         [pool release];
         return YES;
     }
