@@ -329,7 +329,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         if ([track.format isEqualToString:@"Photo - JPEG"])
             jpegTrack = track.Id;
 
-    
     if (chapterTrack && !jpegTrack) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         QTMovie * qtMovie;
@@ -353,8 +352,8 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
         for (SBSample * chapter in [chapterTrack chapters]) {
             QTTime chapterTime = {
-                [chapter timestamp] + 600, // Add a short offset, hopefully it will get a better image
-                1000,                      // if there is a fade
+                [chapter timestamp] + 1500, // Add a short offset, hopefully it will get a better image
+                1000,                       // if there is a fade
                 0
             };
 
@@ -377,7 +376,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
         if (!refTrack)
             refTrack = 1;
-        
+
         MP4Duration refTrackDuration = MP4ConvertFromTrackDuration(fileHandle,
                                                        refTrack,
                                                        MP4GetTrackDuration(fileHandle, refTrack),
@@ -409,24 +408,23 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                 duration = refTrackDuration - sumDuration;
 
             // Scale the image.
-            NSData *repData = [[previewImages objectAtIndex:0] TIFFRepresentation];
-            NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:repData];
             NSBitmapImageRep *output = nil;
-            NSImage * scratch = [[NSImage alloc] initWithSize:imageSize];
             NSRect newRect = NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height);
+            NSImage * scratch = [[NSImage alloc] initWithSize:imageSize];
+
+            [[previewImages objectAtIndex:0] setSize:imageSize];
 
             [scratch lockFocus];
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-            [rep drawInRect:newRect];
+            [[previewImages objectAtIndex:0] drawInRect:newRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
             output = [[NSBitmapImageRep alloc] initWithFocusedViewRect:newRect];
             [scratch unlockFocus];
 
-            NSData * jpegData = [output representationUsingType:NSJPEGFileType 
-                                                               properties:nil];
+            NSData * jpegData = [output representationUsingType:NSJPEGFileType properties:nil];
             [scratch release];
             [output release];
 
-            i+= 1;
+            i++;
             MP4WriteSample(fileHandle,
                            jpegTrack,
                            [jpegData bytes],
@@ -460,6 +458,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         MP4RemoveAllTrackReferences(fileHandle, "tref.chap", refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", [chapterTrack Id], refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", jpegTrack, refTrack);
+        disableTrack(fileHandle, jpegTrack);
         MP4Close(fileHandle);
     }
     return NO;
