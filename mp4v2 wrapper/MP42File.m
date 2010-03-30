@@ -407,21 +407,25 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                 duration = refTrackDuration - sumDuration;
 
             // Scale the image.
-            NSBitmapImageRep *output = nil;
             NSRect newRect = NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height);
-            NSImage * scratch = [[NSImage alloc] initWithSize:imageSize];
-
-            [[previewImages objectAtIndex:0] setSize:imageSize];
-
-            [scratch lockFocus];
-            [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+            NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+                                                                               pixelsWide:newRect.size.width
+                                                                               pixelsHigh:newRect.size.height
+                                                                            bitsPerSample:8
+                                                                          samplesPerPixel:4
+                                                                                 hasAlpha:YES
+                                                                                 isPlanar:NO
+                                                                           colorSpaceName:NSCalibratedRGBColorSpace
+                                                                             bitmapFormat:NSAlphaFirstBitmapFormat
+                                                                              bytesPerRow:0
+                                                                             bitsPerPixel:32];
+            [NSGraphicsContext saveGraphicsState];
+            [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:bitmap]];
             [[previewImages objectAtIndex:0] drawInRect:newRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-            output = [[NSBitmapImageRep alloc] initWithFocusedViewRect:newRect];
-            [scratch unlockFocus];
+            [NSGraphicsContext restoreGraphicsState];
 
-            NSData * jpegData = [output representationUsingType:NSJPEGFileType properties:nil];
-            [scratch release];
-            [output release];
+            NSData * jpegData = [bitmap representationUsingType:NSJPEGFileType properties:nil];
+            [bitmap release];
 
             i++;
             MP4WriteSample(fileHandle,
