@@ -149,7 +149,7 @@ static const iTMF_rating_t rating_strings[] = {
 {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
-			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating",
+			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating", @"Studio",
             @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
 }
@@ -159,7 +159,7 @@ static const iTMF_rating_t rating_strings[] = {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
-            @"Description", @"Long Description", @"Rating",
+            @"Studio", @"Description", @"Long Description", @"Rating",
 			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
 }
 
@@ -456,6 +456,8 @@ static const iTMF_rating_t rating_strings[] = {
                     [tagsDict setObject:tag forKey:@"Producers"];
                 if ([tag = [self stringFromArray:[dma valueForKey:@"screenwriters"]] length])
                     [tagsDict setObject:tag forKey:@"Screenwriters"];
+                if ([tag = [dma valueForKey:@"studio"] length])
+                    [tagsDict setObject:tag forKey:@"Studio"];
             }
         }
         MP4ItmfItemListFree(list);
@@ -642,6 +644,9 @@ static const iTMF_rating_t rating_strings[] = {
         }
         if ([tagsDict valueForKey:@"Screenwriters"]) {
             [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Screenwriters"]] forKey:@"screenwriters"];
+        }
+        if ([tagsDict valueForKey:@"Studio"]) {
+            [dict setObject:[tagsDict valueForKey:@"Studio"] forKey:@"studio"];
         }
         NSData *serializedPlist = [NSPropertyListSerialization
                                         dataFromPropertyList:dict
