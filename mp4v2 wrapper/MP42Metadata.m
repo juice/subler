@@ -151,7 +151,7 @@ static const iTMF_rating_t rating_strings[] = {
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
             @"Studio", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
-            @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+            @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"XID", nil];
 }
 
 - (NSArray *) writableMetadata
@@ -160,7 +160,7 @@ static const iTMF_rating_t rating_strings[] = {
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Studio", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
-			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
+			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"XID", nil];
 }
 
 - (BOOL) setMediaKindFromString:(NSString *)mediaKindString;
@@ -384,9 +384,13 @@ static const iTMF_rating_t rating_strings[] = {
         [tagsDict setObject:[self stringFromMetadata:tags->iTunesAccount]
                      forKey:@"iTunes Account"];
     
-    if (tags->cnID)
-        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->cnID]
-                     forKey:@"cnID"];
+    if (tags->contentID)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->contentID]
+                     forKey:@"contentID"];
+
+    if (tags->xid)
+        [tagsDict setObject:[self stringFromMetadata:tags->xid]
+                     forKey:@"XID"];    
 
     if (tags->artwork) {
         NSData *imageData = [NSData dataWithBytes:tags->artwork->data length:tags->artwork->size];
@@ -562,12 +566,14 @@ static const iTMF_rating_t rating_strings[] = {
 
     MP4TagsSetContentRating(tags, &contentRating);
 
-    if ([tagsDict valueForKey:@"cnID"]) {
-        const uint32_t i = [[tagsDict valueForKey:@"cnID"] integerValue];
-        MP4TagsSetCNID(tags, &i);
+    if ([tagsDict valueForKey:@"contentID"]) {
+        const uint32_t i = [[tagsDict valueForKey:@"contentID"] integerValue];
+        MP4TagsSetContentID(tags, &i);
     }
     else
-        MP4TagsSetCNID(tags, NULL);
+        MP4TagsSetContentID(tags, NULL);
+
+    MP4TagsSetXID(tags, [[tagsDict valueForKey:@"XID"] UTF8String]);
 
     if (artwork && isArtworkEdited) {
         MP4TagArtwork newArtwork;
