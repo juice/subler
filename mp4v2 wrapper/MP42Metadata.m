@@ -149,8 +149,8 @@ static const iTMF_rating_t rating_strings[] = {
 {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
-			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating", @"Studio",
-            @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
+			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
+            @"Studio", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
 }
 
@@ -159,7 +159,7 @@ static const iTMF_rating_t rating_strings[] = {
     return [NSArray arrayWithObjects:  @"Name", @"Artist", @"Album Artist", @"Album", @"Grouping", @"Composer",
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
-            @"Studio", @"Description", @"Long Description", @"Rating",
+            @"Studio", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
 			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"cnID", nil];
 }
 
@@ -425,6 +425,8 @@ static const iTMF_rating_t rating_strings[] = {
                     }
                 }
                 [tagsDict setObject:[NSNumber numberWithInt:ratingIndex] forKey:@"Rating"];
+                if ([ratingItems count] >= 4)
+                    [tagsDict setObject:[ratingItems objectAtIndex:3] forKey:@"Rating Annotation"];
             }
         }
         MP4ItmfItemListFree(list);
@@ -608,10 +610,14 @@ static const iTMF_rating_t rating_strings[] = {
         newItem->name = strdup( "iTunEXTC" );
         
         MP4ItmfData* data = &newItem->dataList.elements[0];
+        NSString * ratingString = [NSString stringWithUTF8String:
+                                   rating_strings[[[tagsDict valueForKey:@"Rating"] integerValue]].rating];
+        if ([[tagsDict valueForKey:@"Rating Annotation"] length] && [ratingString length])
+            ratingString = [ratingString stringByAppendingString:[tagsDict valueForKey:@"Rating Annotation"]];
         data->typeCode = MP4_ITMF_BT_UTF8;
-        data->valueSize = strlen(rating_strings[[[tagsDict valueForKey:@"Rating"] integerValue]].rating);
+        data->valueSize = strlen([ratingString UTF8String]);
         data->value = (uint8_t*)malloc( data->valueSize );
-        memcpy( data->value, rating_strings[[[tagsDict valueForKey:@"Rating"] integerValue]].rating, data->valueSize );
+        memcpy( data->value, [ratingString UTF8String], data->valueSize );
         
         MP4ItmfAddItem(fileHandle, newItem);
     }
