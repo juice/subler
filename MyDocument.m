@@ -640,7 +640,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
                                                                                     @"aac", @"h264", @"264", @"ac3",
-                                                                                    @"txt", @"srt", @"scc", @"mkv", nil]
+                                                                                    @"txt", @"srt", @"smi", @"scc", @"mkv", nil]
                    modalForWindow: documentWindow modalDelegate: self
                    didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
                       contextInfo: nil];                                                      
@@ -769,7 +769,8 @@ returnCode contextInfo: (void *) contextInfo
                 [self addChapterTrack:file];
             else if ([[file pathExtension] caseInsensitiveCompare: @"scc"] == NSOrderedSame)
                 [self addCCTrack:file];
-            else if ([[file pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame)
+            else if ([[file pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame)
                 [self addSubtitleTrack:file
                                  delay:0
                                 height:60

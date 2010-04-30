@@ -74,7 +74,8 @@
 {
     if (isEdited && !muxed)
     {
-        if ([[sourcePath pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
+        if ([[sourcePath pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame ||
+            [[sourcePath pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame) {
             Id = muxSRTSubtitleTrack(fileHandle,
                                           sourcePath,
                                           trackHeight,

@@ -48,6 +48,8 @@
 NSMutableString *STStandardizeStringNewlines(NSString *str);
 extern NSString *STLoadFileWithUnknownEncoding(NSString *path);
 int LoadSRTFromPath(NSString *path, SBSubSerializer *ss);
+int LoadSMIFromPath(NSString *path, SBSubSerializer *ss, int subCount);
+
 int LoadChaptersFromPath(NSString *path, NSMutableArray *ss);
 int ParseSSAHeader(NSString *header);
 NSString *StripSSALine(NSString *line);

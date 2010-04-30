@@ -415,6 +415,7 @@
 		A9C03EB41116DFE700DA6FF6 /* importers */ = {
 			isa = PBXGroup;
 			children = (
+				9480588F106E032D0037A911 /* mkv wrapper */,
 				A99EAC7A1115BED200D89903 /* MP42FileImporter.h */,
 				A99EAC7B1115BED200D89903 /* MP42FileImporter.m */,
 				A99EACA11115C18000D89903 /* MP42MkvImporter.h */,
@@ -494,7 +495,6 @@
 				A905E5880FB05A8100B926FF /* MP42ClosedCaptionTrack.m */,
 				A9629C8B0F56F7B6001D6A75 /* MP42Utilities.h */,
 				A9629C8C0F56F7B6001D6A75 /* MP42Utilities.m */,
-				9480588F106E032D0037A911 /* mkv wrapper */,
 				A9C03EB41116DFE700DA6FF6 /* importers */,
 				A9C054A30F6D288D00AF15B5 /* muxer */,
 			);

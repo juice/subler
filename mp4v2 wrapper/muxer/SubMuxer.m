@@ -232,7 +232,13 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
     SBSubSerializer *ss = [[SBSubSerializer alloc] init];
-    success = LoadSRTFromPath(subtitlePath, ss);
+    if ([[subtitlePath pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
+        success = LoadSRTFromPath(subtitlePath, ss);
+    }
+    else if ([[subtitlePath pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame) {
+        success = LoadSMIFromPath(subtitlePath, ss, 1);
+    }
+
     [ss setFinished:YES];
 
     if (success) {
