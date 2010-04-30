@@ -352,9 +352,11 @@ int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
     while (i <= trackEditCount) {
         MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, i);
         MP4Duration editDuration = MP4GetTrackEditDuration(fileHandle, Id, i);
+        int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
 
         uint64_t editListVersion = 0;
         MP4GetTrackIntegerProperty(fileHandle, Id, "edts.elst.version", &editListVersion);
+
         if (editListVersion == 0 && editMediaStart == ((uint32_t)-1))
                 offset += MP4ConvertFromMovieDuration(fileHandle, editDuration, MP4_MILLISECONDS_TIME_SCALE);
         else if (editListVersion == 1 && editMediaStart == ((uint64_t)-1))
@@ -362,10 +364,7 @@ int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
         else if (i == 1)
             offset -= MP4ConvertFromTrackDuration(fileHandle, Id, editMediaStart, MP4_MILLISECONDS_TIME_SCALE);
 
-        int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
-
         NSLog(@"Track %d, Edit Media Start = %lld, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
-
         i++;
     }
 

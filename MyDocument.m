@@ -327,6 +327,9 @@
         
     if (action == @selector(sendToExternalApp:))
         return YES;
+    
+    if (action == @selector(setTrackOffset:) && [fileTracksTable selectedRow] != -1)
+        return YES;
 
     return NO;
 }
@@ -539,6 +542,21 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     
     [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+}
+
+- (IBAction) setTrackOffset: (id) sender
+{
+    [offset setStringValue:[NSString stringWithFormat:@"%d",
+                            [[[mp4File tracks] objectAtIndex:[fileTracksTable selectedRow]] startOffset]]];
+
+    [NSApp beginSheet:offsetWindow modalForWindow:documentWindow
+        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+}
+
+- (IBAction) closeOffsetSheet: (id) sender
+{
+    [NSApp endSheet: offsetWindow];
+    [offsetWindow orderOut:self];
 }
 
 - (IBAction) deleteTrack: (id) sender

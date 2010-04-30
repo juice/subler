@@ -41,7 +41,9 @@
     IBOutlet NSTextField    *delay;
     IBOutlet NSTextField    *trackHeight;
     NSString                *subtitleFilePath;
-    
+
+    IBOutlet NSWindow       *offsetWindow;
+    IBOutlet NSTextField    *offset;
     
     IBOutlet NSButton *cancelSave;
     BOOL _64bit_data;
@@ -54,6 +56,9 @@
 - (IBAction) selectFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 - (IBAction) searchMetadata: (id) sender;
+
+- (IBAction) setTrackOffset: (id) sender;
+- (IBAction) closeOffsetSheet: (id) sender;
 
 - (IBAction) setSaveFormat: (id) sender;
 - (IBAction) set64bit_data: (id) sender;
