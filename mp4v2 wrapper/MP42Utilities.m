@@ -346,27 +346,32 @@ BOOL isTrackMuxable(NSString * formatName)
 
 int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
 {
-    MP4Duration trackDuration = 0;
+    int64_t offset = 0;
     uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(fileHandle, Id);
 
     while (i <= trackEditCount) {
-        //MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, i);
+        MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, i);
         MP4Duration editDuration = MP4GetTrackEditDuration(fileHandle, Id, i);
 
-        //MP4Timestamp test = (uint32_t)-1;
-        //if (editMediaStart == ((uint32_t)-1))
-        //    NSLog(@"Edit media start = -1");
+        uint64_t editListVersion = 0;
+        MP4GetTrackIntegerProperty(fileHandle, Id, "edts.elst.version", &editListVersion);
+        if (editListVersion == 0 && editMediaStart == ((uint32_t)-1))
+                offset += MP4ConvertFromMovieDuration(fileHandle, editDuration, MP4_MILLISECONDS_TIME_SCALE);
+        else if (editListVersion == 1 && editMediaStart == ((uint64_t)-1))
+                offset += MP4ConvertFromMovieDuration(fileHandle, editDuration, MP4_MILLISECONDS_TIME_SCALE);
+        else if (i == 1)
+            offset -= MP4ConvertFromTrackDuration(fileHandle, Id, editMediaStart, MP4_MILLISECONDS_TIME_SCALE);
 
-        trackDuration += editDuration;
+        int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
 
-        //int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
-
-        //NSLog(@"Track %d, Edit Media Start = %lld, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
+        NSLog(@"Track %d, Edit Media Start = %lld, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
 
         i++;
     }
 
-    return 1;
+    NSLog(@"Track %d offset: %d ms", Id, offset);
+
+    return offset;
 }
 
 void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset)
