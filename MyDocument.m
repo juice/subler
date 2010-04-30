@@ -658,7 +658,8 @@ returnCode contextInfo: (void *) contextInfo
         [fileExtension isEqualToString:@"ac3"])
         [self addAudioTrack:[sheet.filenames objectAtIndex: 0]];
 
-    else if ([fileExtension caseInsensitiveCompare: @"srt"] == NSOrderedSame)
+    else if ([fileExtension caseInsensitiveCompare: @"srt"] == NSOrderedSame ||
+             [fileExtension caseInsensitiveCompare: @"smi"] == NSOrderedSame)
         [self performSelectorOnMainThread:@selector(showSubititleWindow:)
                                withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
 
