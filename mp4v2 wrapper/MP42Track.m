@@ -87,6 +87,8 @@ NSString * const MP42SourceTypeRaw = @"Raw";
         }
     if ([updatedProperty valueForKey:@"alternate_group"] || !muxed)
         MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", alternate_group);
+    if ([updatedProperty valueForKey:@"start_offset"] || !muxed)
+        setTrackStartOffset(fileHandle, Id, startOffset);
     if ([updatedProperty valueForKey:@"language"] || !muxed)
         MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
     if ([updatedProperty valueForKey:@"enabled"] || !muxed) {
@@ -162,6 +164,9 @@ NSString * const MP42SourceTypeRaw = @"Raw";
 
 - (void) setStartOffset:(int64_t)newOffset
 {
+    startOffset = newOffset;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"start_offset"];
     
 }
 

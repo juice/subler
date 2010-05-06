@@ -214,7 +214,7 @@ static int writeEmptySubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrack
     return Err;
 }
 
-int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16_t subtitleHeight, int16_t delay) {
+int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16_t subtitleHeight) {
     BOOL success = YES;
     MP4TrackId subtitleTrackId, videoTrack;
     uint16_t videoWidth, videoHeight;
@@ -256,9 +256,6 @@ int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16
                 break;
         }
         writeEmptySubtitleSample(fileHandle, subtitleTrackId, 10);
-
-        if (delay)
-            setTrackStartOffset(fileHandle, subtitleTrackId, delay);
     }
 
     [ss release];

@@ -350,38 +350,54 @@ int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
     uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(fileHandle, Id);
 
     while (i <= trackEditCount) {
-        MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, i);
         MP4Duration editDuration = MP4GetTrackEditDuration(fileHandle, Id, i);
-        int8_t editDwell = MP4GetTrackEditDwell(fileHandle, Id, i);
+        MP4Timestamp editMediaTime = MP4GetTrackEditMediaStart(fileHandle, Id, i);
+        int8_t editMediaRate = MP4GetTrackEditDwell(fileHandle, Id, i);
 
         uint64_t editListVersion = 0;
         MP4GetTrackIntegerProperty(fileHandle, Id, "edts.elst.version", &editListVersion);
 
-        if (editListVersion == 0 && editMediaStart == ((uint32_t)-1))
+        if (editListVersion == 0 && editMediaTime == ((uint32_t)-1))
                 offset += MP4ConvertFromMovieDuration(fileHandle, editDuration, MP4_MILLISECONDS_TIME_SCALE);
-        else if (editListVersion == 1 && editMediaStart == ((uint64_t)-1))
+        else if (editListVersion == 1 && editMediaTime == ((uint64_t)-1))
                 offset += MP4ConvertFromMovieDuration(fileHandle, editDuration, MP4_MILLISECONDS_TIME_SCALE);
         else if (i == 1)
-            offset -= MP4ConvertFromTrackDuration(fileHandle, Id, editMediaStart, MP4_MILLISECONDS_TIME_SCALE);
+            offset -= MP4ConvertFromTrackDuration(fileHandle, Id, editMediaTime, MP4_MILLISECONDS_TIME_SCALE);
 
-        NSLog(@"Track %d, Edit Media Start = %lld, Edit duration: %qu Dwell:%d", Id, editMediaStart, editDuration, editDwell);
+        //NSLog(@"Track %d, Media Time = %lld, Segment Duration: %qu Media Rate:%d", Id, editMediaTime, editDuration, editMediaRate);
         i++;
     }
 
-    NSLog(@"Track %d offset: %d ms", Id, offset);
+    //NSLog(@"Track %d offset: %d ms", Id, offset);
 
     return offset;
+}
+
+MP4Duration getTrackDuration(MP4FileHandle fileHandle, MP4TrackId trackId)
+{
+    uint32_t trackEditsCount = MP4GetTrackNumberOfEdits(fileHandle, trackId);
+    MP4Duration duration = 0;
+    int i = 1;
+    
+    while( i <= trackEditsCount) {
+        duration += MP4GetTrackEditDuration(fileHandle, trackId, i);
+        i++;
+    }
+    
+    if (duration == 0)
+        duration = MP4GetTrackDuration(fileHandle, trackId);
+    
+    return duration;
 }
 
 void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset)
 {
     uint32_t trackEditsCount = MP4GetTrackNumberOfEdits(fileHandle, Id);
+    offset = MP4ConvertToTrackDuration(fileHandle, Id, offset, MP4_MILLISECONDS_TIME_SCALE);
 
     // If there is no existing edit list, just add some new ones at the start and do the usual stuff.
     if (offset && !trackEditsCount) {
-        MP4Duration editDuration, totalDuration;
-
-        editDuration = MP4ConvertFromTrackDuration(fileHandle,
+        MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
                                                    Id,
                                                    MP4GetTrackDuration(fileHandle, Id),
                                                    MP4GetTimeScale(fileHandle));
@@ -393,8 +409,6 @@ void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset
 
             MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, -1, delayDuration, 0);
             MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, 0, editDuration, 0);
-
-            totalDuration = editDuration + delayDuration;
         }
         else if (offset < 0) {
             MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
@@ -403,24 +417,94 @@ void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset
                                                                     MP4GetTimeScale(fileHandle));
 
             MP4AddTrackEdit(fileHandle, Id, MP4_INVALID_EDIT_ID, -offset, editDuration - delayDuration, 0);
-            totalDuration = editDuration - delayDuration;
         }
-
-        // Update the duration in tkhd, the value must be the sum of the durations of all track's edits.
-        MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.duration", totalDuration);
-
-        // Update the duration in mvhd.
-        updateMoovDuration(fileHandle);
     }
     // If the mp4 contains already some edits list, try to reuse them
-    else if (offset && trackEditsCount) {
-        if (offset > 0) {
+    else if (trackEditsCount) {
+        if (offset >= 0) {
+            // Remove all the empty edit lists
+            while (MP4GetTrackNumberOfEdits(fileHandle, Id)) {
+                uint64_t editListVersion = 0;
+                MP4Timestamp editMediaTime = MP4GetTrackEditMediaStart(fileHandle, Id, 1);
+
+                MP4GetTrackIntegerProperty(fileHandle, Id, "edts.elst.version", &editListVersion);
+                
+                if (editListVersion == 0 && editMediaTime == ((uint32_t)-1))
+                    MP4DeleteTrackEdit(fileHandle, Id, 1);
+                else if (editListVersion == 1 && editMediaTime == ((uint64_t)-1))
+                    MP4DeleteTrackEdit(fileHandle, Id, 1);
+                else {
+                    if (getTrackStartOffset(fileHandle, Id) < 0) {
+                        MP4Duration oldEditDuration = MP4GetTrackEditDuration(fileHandle, Id, 1);
+                        MP4Duration oldEditMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, 1);
+                        oldEditMediaStart = MP4ConvertFromTrackDuration(fileHandle,
+                                                                        Id,
+                                                                        oldEditMediaStart,
+                                                                        MP4GetTimeScale(fileHandle));
+                        MP4SetTrackEditDuration(fileHandle, Id, 1, oldEditDuration + oldEditMediaStart);
+                        MP4SetTrackEditMediaStart(fileHandle, Id, 1, 0);
+
+                    }
+                    break;
+                }
+            }
+
+            MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                                    Id,
+                                                                    offset,
+                                                                    MP4GetTimeScale(fileHandle));
             
+            if (offset != 0)
+                MP4AddTrackEdit(fileHandle, Id, 1, -1, delayDuration, 0);
         }
         else if (offset < 0) {
-            
-        }
+            // First remove all the empty edit lists
+            while (MP4GetTrackNumberOfEdits(fileHandle, Id)) {
+                uint64_t editListVersion = 0;
+                MP4Timestamp editMediaTime = MP4GetTrackEditMediaStart(fileHandle, Id, 1);
+                
+                MP4GetTrackIntegerProperty(fileHandle, Id, "edts.elst.version", &editListVersion);
+                
+                if (editListVersion == 0 && editMediaTime == ((uint32_t)-1))
+                    MP4DeleteTrackEdit(fileHandle, Id, 1);
+                else if (editListVersion == 1 && editMediaTime == ((uint64_t)-1))
+                    MP4DeleteTrackEdit(fileHandle, Id, 1);
+                else
+                    break;
+            }
+            // If there is already an edit list reuse it
+            if (MP4GetTrackNumberOfEdits(fileHandle, Id)) {
 
-        NSLog(@"Not implemented");
+                MP4Duration oldEditDuration = MP4GetTrackEditDuration(fileHandle, Id, 1);
+                MP4Duration oldEditMediaStart = MP4GetTrackEditMediaStart(fileHandle, Id, 1);
+                oldEditMediaStart = MP4ConvertFromTrackDuration(fileHandle,
+                                                                Id,
+                                                                oldEditMediaStart,
+                                                                MP4GetTimeScale(fileHandle));
+                MP4Duration newOffsetDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                                        Id,
+                                                                        -offset,
+                                                                        MP4GetTimeScale(fileHandle));
+
+                MP4SetTrackEditDuration(fileHandle, Id, 1, oldEditDuration + oldEditMediaStart - newOffsetDuration);
+                MP4SetTrackEditMediaStart(fileHandle, Id, 1, -offset);
+            }
+            // Else create a new one.
+            else {
+                MP4Duration delayDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                                        Id,
+                                                                        -offset,
+                                                                        MP4GetTimeScale(fileHandle));
+
+                MP4AddTrackEdit(fileHandle, Id, 1, -1, delayDuration, 0);
+            }
+        }
     }
+
+    // Update the duration in tkhd, the value must be the sum of the durations of all track's edits.
+    MP4Duration totalDuration = getTrackDuration(fileHandle, Id);
+    MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.duration", totalDuration);
+    
+    // Update the duration in mvhd.
+    updateMoovDuration(fileHandle);
 }

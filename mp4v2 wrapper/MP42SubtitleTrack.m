@@ -45,7 +45,7 @@
         name = @"Subtitle Track";
         format = @"3GPP Text";
         sourcePath = [filePath retain];
-        delay = subDelay;
+        [self setStartOffset:subDelay];
         trackHeight = subHeight;
         if (!subLanguage)
             [self setLanguage: @"English"];
@@ -77,9 +77,8 @@
         if ([[sourcePath pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame ||
             [[sourcePath pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame) {
             Id = muxSRTSubtitleTrack(fileHandle,
-                                          sourcePath,
-                                          trackHeight,
-                                          delay);
+                                     sourcePath,
+                                     trackHeight);
         }
         else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
             Id = muxMP4SubtitleTrack(fileHandle, sourcePath, sourceId);
@@ -133,7 +132,5 @@
 {
     [super dealloc];
 }
-
-@synthesize delay;
 
 @end

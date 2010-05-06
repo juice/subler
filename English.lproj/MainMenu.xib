@@ -1231,11 +1231,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">setTrackOffset:</string>
+						<string key="label">showTrackOffsetSheet:</string>
 						<reference key="source" ref="1014"/>
 						<reference key="destination" ref="662127929"/>
 					</object>
-					<int key="connectionID">569</int>
+					<int key="connectionID">570</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2164,7 +2164,7 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{442, 443}, {240, 273}}</string>
+					<string>{{432, 339}, {240, 273}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>{{197, 734}, {243, 243}}</string>
@@ -2211,7 +2211,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>{{525, 802}, {197, 73}}</string>
-					<string>{{324, 716}, {344, 20}}</string>
+					<string>{{314, 612}, {344, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>{74, 862}</string>
@@ -2306,7 +2306,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">569</int>
+			<int key="maxID">570</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2370,6 +2370,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>addSubtitleTrack:</string>
 							<string>cancelSaveOperation:</string>
+							<string>closeOffsetSheet:</string>
 							<string>closeSheet:</string>
 							<string>deleteTrack:</string>
 							<string>searchMetadata:</string>
@@ -2379,9 +2380,12 @@
 							<string>set64bit_time:</string>
 							<string>setSaveFormat:</string>
 							<string>setTrackOffset:</string>
+							<string>showTrackOffsetSheet:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2409,6 +2413,8 @@
 							<string>fileTracksTable</string>
 							<string>importWindow</string>
 							<string>langSelection</string>
+							<string>offset</string>
+							<string>offsetWindow</string>
 							<string>optBar</string>
 							<string>saveOperationName</string>
 							<string>saveView</string>
@@ -2430,6 +2436,8 @@
 							<string>NSTableView</string>
 							<string>id</string>
 							<string>NSPopUpButton</string>
+							<string>NSTextField</string>
+							<string>NSWindow</string>
 							<string>NSProgressIndicator</string>
 							<string>NSTextField</string>
 							<string>NSView</string>

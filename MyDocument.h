@@ -57,6 +57,7 @@
 - (IBAction) deleteTrack: (id) sender;
 - (IBAction) searchMetadata: (id) sender;
 
+- (IBAction) showTrackOffsetSheet: (id) sender;
 - (IBAction) setTrackOffset: (id) sender;
 - (IBAction) closeOffsetSheet: (id) sender;
 

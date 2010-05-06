@@ -10,7 +10,7 @@
 #import "mp4v2.h"
 #import <QTKit/QTKit.h>
 
-int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16_t subtitleHeight, int16_t delay);
+int muxSRTSubtitleTrack(MP4FileHandle fileHandle, NSString* subtitlePath, uint16_t subtitleHeight);
 
 #if !__LP64__
     int muxMOVSubtitleTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcTrackId);
