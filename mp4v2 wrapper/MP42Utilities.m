@@ -352,7 +352,7 @@ int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id)
     while (i <= trackEditCount) {
         MP4Duration editDuration = MP4GetTrackEditDuration(fileHandle, Id, i);
         MP4Timestamp editMediaTime = MP4GetTrackEditMediaStart(fileHandle, Id, i);
-        int8_t editMediaRate = MP4GetTrackEditDwell(fileHandle, Id, i);
+        //int8_t editMediaRate = MP4GetTrackEditDwell(fileHandle, Id, i);
 
         uint64_t editListVersion = 0;
         MP4GetTrackIntegerProperty(fileHandle, Id, "edts.elst.version", &editListVersion);
@@ -393,7 +393,10 @@ MP4Duration getTrackDuration(MP4FileHandle fileHandle, MP4TrackId trackId)
 void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset)
 {
     uint32_t trackEditsCount = MP4GetTrackNumberOfEdits(fileHandle, Id);
-    offset = MP4ConvertToTrackDuration(fileHandle, Id, offset, MP4_MILLISECONDS_TIME_SCALE);
+    if (offset > 0)
+        offset = MP4ConvertToTrackDuration(fileHandle, Id, offset, MP4_MILLISECONDS_TIME_SCALE);
+    else 
+        offset = -(MP4ConvertToTrackDuration(fileHandle, Id, -offset, MP4_MILLISECONDS_TIME_SCALE));
 
     // If there is no existing edit list, just add some new ones at the start and do the usual stuff.
     if (offset && !trackEditsCount) {
