@@ -195,6 +195,7 @@ static const iTMF_rating_t rating_strings[] = {
         if([artworkImage isValid]) {
             [artwork release];
             artwork = artworkImage;
+            isEdited =YES;
             isArtworkEdited = YES;
             return YES;
         } else {
@@ -204,6 +205,7 @@ static const iTMF_rating_t rating_strings[] = {
     } else {
         [artwork release];
         artwork = nil;
+        isEdited =YES;
         isArtworkEdited = YES;
         return YES;
     }
@@ -235,7 +237,7 @@ static const iTMF_rating_t rating_strings[] = {
     return ratingIndex;
 }
 
-- (void) removeTagForKey:(id)aKey
+- (void) removeTagForKey:(NSString *)aKey
 {
     [tagsDict removeObjectForKey:aKey];
     isEdited = YES;
@@ -243,7 +245,50 @@ static const iTMF_rating_t rating_strings[] = {
 
 - (BOOL) setTag:(id)value forKey:(NSString *)key;
 {
-    if (![[tagsDict valueForKey:key] isEqualTo:value]) {
+    NSString *regexPositive = @"YES|Yes|yes|1";
+
+    if ([key isEqualToString:@"HD Video"]) {
+        if( value != nil && [value length] > 0 && [value isMatchedByRegex:regexPositive]) {
+            hdVideo = 1;
+            isEdited = YES;
+        }
+        else {
+            hdVideo = 0;
+            isEdited = YES;
+        }
+            return YES;
+    }
+    else if ([key isEqualToString:@"Gapless"]) {
+        if( value != nil && [value length] > 0 && [value isMatchedByRegex:regexPositive]) {
+            gapless = 1;
+            isEdited = YES;
+        }
+        else {
+            gapless = 0;
+            isEdited = YES;
+        }
+        return YES;
+    }
+    else if ([key isEqualToString:@"Content Rating"]) {
+        isEdited = YES;
+        return [self setContentRatingFromString:value];
+        
+    }
+    else if ([key isEqualToString:@"Media Kind"]) {
+        isEdited = YES;
+        return [self setMediaKindFromString:value];
+    }
+    else if ([key isEqualToString:@"Artwork"])
+        return [self setArtworkFromFilePath:value];
+    
+    else if ([key isEqualToString:@"Rating"] && ![[tagsDict valueForKey:key] isEqualTo:value]) {                      
+        NSString *rating_index = [[NSNumber numberWithInt:[self ratingIndexFromString:value]] stringValue];
+        [tagsDict setValue:rating_index forKey:key];
+        isEdited = YES;
+        return YES;
+    }
+
+    else if (![[tagsDict valueForKey:key] isEqualTo:value]) {
         [tagsDict setValue:value forKey:key];
         isEdited = YES;
         return YES;

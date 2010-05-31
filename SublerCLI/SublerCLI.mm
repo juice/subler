@@ -116,7 +116,7 @@ int main (int argc, const char * argv[]) {
           for (track in mp4File.tracks)
             if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
               [subtitleTrackIndexes addIndex:[mp4File.tracks indexOfObject:track]];
-               modified = true;
+               modified = YES;
             }
                               
           [mp4File removeTracksAtIndexes:subtitleTrackIndexes];
@@ -132,7 +132,7 @@ int main (int argc, const char * argv[]) {
                                                                                                    encoding:NSUTF8StringEncoding]];
             track.name = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
             [mp4File addTrack:track];
-            modified = true;
+            modified = YES;
         }
       
         if (input_chap) {
@@ -148,14 +148,14 @@ int main (int argc, const char * argv[]) {
           
           if(oldChapterTrack != NULL) {
             [mp4File removeTrackAtIndex:[mp4File.tracks indexOfObject:oldChapterTrack]];
-            modified = true;
+            modified = YES;
           }
           
           newChapterTrack = [MP42ChapterTrack chapterTrackFromFile:[NSString stringWithCString:input_chap encoding:NSUTF8StringEncoding]];
           
           if([newChapterTrack chapterCount] > 0) {
             [mp4File addTrack:newChapterTrack];            
-            modified = true;      
+            modified = YES;      
           }
         }
 
@@ -176,7 +176,6 @@ int main (int argc, const char * argv[]) {
 
                 NSString *regexSplitArgs = @"^\\{|\\}\\{|\\}$";
                 NSString *regexSplitValue = @"([^:]*):(.*)";
-                NSString *regexPositive = @"YES|Yes|yes|1";
 
                 NSArray *argsArray = nil;
                 NSString *arg = nil;
@@ -196,48 +195,20 @@ int main (int argc, const char * argv[]) {
                     value = [value stringByReplacingOccurrencesOfString:semicolon_escaped withString:semicolon_normal];
 
                     if(key != nil) {
-                        if([key isEqualToString:@"Media Kind"]) {
-                            modified=[mp4File.metadata setMediaKindFromString:value];
-
-                        } else if ([key isEqualToString:@"Content Rating"]) {
-                            modified=[mp4File.metadata setContentRatingFromString:value];
-
-                        } else if ([key isEqualToString:@"HD Video"]) {
-                            if( value != nil && [value length] > 0 && [value isMatchedByRegex:regexPositive]) {
-                                mp4File.metadata.hdVideo = 1;
-                            } else {
-                                mp4File.metadata.hdVideo = 0;
-                            }
-
-                        } else if ([key isEqualToString:@"Gapless"]) {                      
-                            if( value != nil && [value length] > 0 && [value isMatchedByRegex:regexPositive]) {
-                                mp4File.metadata.gapless = 1;
-                            } else {
-                              mp4File.metadata.gapless = 0;
-                            }
-
-                        } else if ([key isEqualToString:@"Artwork"]) {                      
-                          modified = [mp4File.metadata setArtworkFromFilePath:value];
-                          
-                        } else if ([key isEqualToString:@"Rating"]) {                      
-                          NSString *rating_index = [[NSNumber numberWithInt:[mp4File.metadata ratingIndexFromString:value]] stringValue];
-                          modified = [mp4File.metadata setTag:rating_index forKey:key];
-                          
-                        } else {
-                            if (value != nil && [value length] > 0) {                  
-                                [mp4File.metadata setTag:value forKey:key];
-                            } else{
-                                [mp4File.metadata removeTagForKey:key];                  
-                            }
-                            modified = true;
-                        }                    
+                        if (value != nil && [value length] > 0) {                  
+                            [mp4File.metadata setTag:value forKey:key];
+                        }
+                        else {
+                            [mp4File.metadata removeTagForKey:key];                  
+                        }
+                        modified = YES;
                     }
                 }
             }
         }
         
         if (chapterPreview)
-            modified = true;
+            modified = YES;
 
         if (modified && ![mp4File updateMP4FileWithAttributes:attributes error:&outError]) {
             printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
