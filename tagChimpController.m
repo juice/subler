@@ -290,8 +290,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         tag = [element nodesForXPath:@"./movieTags/info/rating"
                                      error:&err];
         if([tag count]) {
-            NSString* ratingCompareString = [[tag objectAtIndex:0] stringValue];
-            [metadata setTag:[NSNumber numberWithInteger:[metadata ratingIndexFromString:ratingCompareString]] forKey:@"Rating"];
+            NSString* rating = [[tag objectAtIndex:0] stringValue];
+            [metadata setTag:rating forKey:@"Rating"];
         }
 
         tag = [element nodesForXPath:@"./movieTags/info/copyright"

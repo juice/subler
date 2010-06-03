@@ -281,9 +281,14 @@ static const iTMF_rating_t rating_strings[] = {
     else if ([key isEqualToString:@"Artwork"])
         return [self setArtworkFromFilePath:value];
     
-    else if ([key isEqualToString:@"Rating"] && ![[tagsDict valueForKey:key] isEqualTo:value]) {                      
-        NSString *rating_index = [[NSNumber numberWithInt:[self ratingIndexFromString:value]] stringValue];
-        [tagsDict setValue:rating_index forKey:key];
+    else if ([key isEqualToString:@"Rating"] && ![[tagsDict valueForKey:key] isEqualTo:value]) {
+        if ([value isKindOfClass:[NSNumber class]])
+            [tagsDict setValue:value forKey:key];
+        else {
+            NSString *rating_index = [[NSNumber numberWithInt:[self ratingIndexFromString:value]] stringValue];
+            [tagsDict setValue:rating_index forKey:key];
+        }
+
         isEdited = YES;
         return YES;
     }
