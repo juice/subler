@@ -87,7 +87,7 @@ NSString * const MP42SourceTypeRaw = @"Raw";
         }
     if ([updatedProperty valueForKey:@"alternate_group"] || !muxed)
         MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", alternate_group);
-    if ([updatedProperty valueForKey:@"start_offset"] || !muxed)
+    if ([updatedProperty valueForKey:@"start_offset"])
         setTrackStartOffset(fileHandle, Id, startOffset);
     if ([updatedProperty valueForKey:@"language"] || !muxed)
         MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
