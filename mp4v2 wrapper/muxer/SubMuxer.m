@@ -492,6 +492,7 @@ int muxMKVSubtitleTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId
         NSString* string = [[NSString alloc] initWithBytes:trackInfo->CodecPrivate
                                                     length:trackInfo->CodecPrivateSize
                                                   encoding:NSUTF8StringEncoding];
+        ParseSSAHeader(string);
         [string release];
 
         // Add Subtitle track

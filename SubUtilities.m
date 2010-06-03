@@ -721,10 +721,23 @@ int LoadSMIFromPath(NSString *path, SBSubSerializer *ss, int subCount)
 }
 
 int ParseSSAHeader(NSString *header) {
+    NSString *info;
+    NSString *styles;
+    NSString *splitLine  = @"\\n+";
+    NSArray * stylesArray;
+
+    //NSLog(@"%@", header);
     NSScanner *sc = [NSScanner scannerWithString:header];
 	[sc setCharactersToBeSkipped:nil];
 
-    [sc scanUpToString:@"[Events]" intoString:nil];
+    [sc scanUpToString:@"[V4+ Styles]" intoString:&info];
+    if (info) {
+    }
+    [sc scanUpToString:@"[Events]" intoString:&styles];
+    if (styles) {
+        stylesArray = [styles componentsSeparatedByRegex:splitLine];
+        //NSLog(@"%@", styles);
+    }
     [sc scanUpToString:@"Format:" intoString:nil];
 
     return 0;
@@ -739,14 +752,29 @@ NSString* StripSSALine(NSString *line){
         [sc scanString:@"," intoString:nil];
     }
 
-    [sc scanUpToString:@"" intoString:&line];
+    line = [[sc string]substringFromIndex:[sc scanLocation]];
 
     NSRange startRange = [line rangeOfString: @"}"];
     while (startRange.location != NSNotFound) {
         NSRange endRange = [line rangeOfString: @"{"];
         if (endRange.location != NSNotFound && endRange.length != 0) {
+            NSString * replacement = @"";
+            if (endRange.location + 3 <= [line length]) {
+                unichar tag = [line characterAtIndex:endRange.location + 2];
+                unichar tagState = [line characterAtIndex:endRange.location + 3];
+                if (tagState == '1') {
+                    if (tag == 'i') replacement = @"<i>";
+                    else if (tag == 'b') replacement = @"<b>";
+                    else if (tag == 'u') replacement = @"<u>";
+                }
+                else if (tagState == '0'){
+                    if (tag == 'i') replacement = @"</i>";
+                    else if (tag == 'b') replacement = @"</b>";
+                    else if (tag == 'u') replacement = @"</u>";
+                }
+            }
             endRange.length = startRange.location - endRange.location +1;
-            line = [line stringByReplacingCharactersInRange:endRange withString:@""];
+            line = [line stringByReplacingCharactersInRange:endRange withString:replacement];
             startRange = [line rangeOfString: @"}"];
         }
         else
@@ -756,8 +784,15 @@ NSString* StripSSALine(NSString *line){
     startRange = [line rangeOfString: @"\\N"];
     while (startRange.location != NSNotFound) {
         startRange.length = 2;
-        line = [line stringByReplacingCharactersInRange:startRange withString:@" "];
+        line = [line stringByReplacingCharactersInRange:startRange withString:@"\n"];
         startRange = [line rangeOfString: @"\\N"];
+    }
+    
+    startRange = [line rangeOfString: @"\\n"];
+    while (startRange.location != NSNotFound) {
+        startRange.length = 2;
+        line = [line stringByReplacingCharactersInRange:startRange withString:@"\n"];
+        startRange = [line rangeOfString: @"\\n"];
     }
 
     return line;
