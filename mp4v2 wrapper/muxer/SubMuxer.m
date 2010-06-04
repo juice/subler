@@ -9,6 +9,7 @@
 #import "SubMuxer.h"
 #import "MP42Utilities.h"
 #import "SubUtilities.h"
+#import "RegexKitLite.h"
 #if !__LP64__
     #import <QuickTime/QuickTime.h>
 #endif
@@ -177,13 +178,29 @@ static NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, si
     return string;
 }
 
+static NSString* removeNewLines(NSString* string) {
+    NSMutableString *mutableString     = [NSMutableString stringWithString:string];
+    NSString        *regexString       = @"\\n";
+    NSString        *replaceWithString = @" ";
+    NSUInteger       replacedCount     = 0UL;
+
+    replacedCount = [mutableString replaceOccurrencesOfRegex:regexString withString:replaceWithString];
+    if (replacedCount > 2)
+        return mutableString;
+    else
+        return string;
+}
+
 static int writeSubtitleSample(MP4FileHandle file, MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration)
 {
     int Err;
     u_int8_t styleAtom[2048];
     size_t styleSize = 0;
 
+    string = removeNewLines(string);
+
     string = createStyleAtomForString(string, styleAtom, &styleSize);
+    
 
     const size_t stringLength = strlen([string UTF8String]);
     u_int8_t buffer[2048];
