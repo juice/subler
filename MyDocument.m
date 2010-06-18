@@ -69,6 +69,8 @@
         [targetView addSubview: [propertyView view]];
     }
 
+    [documentWindow recalculateKeyViewLoop];
+    
     [fileTracksTable registerForDraggedTypes:[NSArray arrayWithObjects:SublerTableViewDataType, nil]];
     [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
                                    NSColorPboardType, NSFilenamesPboardType, nil]];
@@ -468,6 +470,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     // embed the current view to our host view
 	[targetView addSubview: [propertyView view]];
+    [documentWindow recalculateKeyViewLoop];
 
 	// make sure we automatically resize the controller's view to the current window size
 	[[propertyView view] setFrame: [targetView bounds]];
