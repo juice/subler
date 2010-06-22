@@ -305,13 +305,13 @@ static const iTMF_rating_t rating_strings[] = {
 - (NSString *) stringFromMetadata:(const char*)cString {
     NSString *string;
     
-    if (string = [NSString stringWithCString:cString encoding: NSUTF8StringEncoding])
+    if ((string = [NSString stringWithCString:cString encoding: NSUTF8StringEncoding]))
         return string;
 
-    if (string = [NSString stringWithCString:cString encoding: NSASCIIStringEncoding])
+    if ((string = [NSString stringWithCString:cString encoding: NSASCIIStringEncoding]))
         return string;
     
-    if (string = [NSString stringWithCString:cString encoding: NSUTF16StringEncoding])
+    if ((string = [NSString stringWithCString:cString encoding: NSUTF16StringEncoding]))
         return string;
 
     return @"";
@@ -757,7 +757,7 @@ static const iTMF_rating_t rating_strings[] = {
     NSString * tagValue;
     for (NSString * key in [self writableMetadata])
         if(![tagsDict valueForKey:key])
-            if(tagValue = [newMetadata.tagsDict valueForKey:key] )
+            if((tagValue = [newMetadata.tagsDict valueForKey:key]))
                 [tagsDict setObject:tagValue forKey:key];
 
     if (!artwork) {
