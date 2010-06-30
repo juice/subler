@@ -591,6 +591,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [mp4File addTrack:[MP42ChapterTrack chapterTrackFromFile:path]];
 
     [fileTracksTable reloadData];
+    [self tableViewSelectionDidChange:nil];
     [self updateChangeCount:NSChangeDone];
 }
 
