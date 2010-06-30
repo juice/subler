@@ -32,7 +32,7 @@
 
 - (void) addChapter:(NSString *)title duration:(uint64_t)timestamp
 {
-    SBSample *newChapter = [[SBSample alloc] init];
+    SBTextSample *newChapter = [[SBTextSample alloc] init];
     newChapter.title = title;
     newChapter.timestamp = timestamp;
 
@@ -59,7 +59,7 @@
         MP4Duration sum = 0;
         while (i <= chapter_count)
         {
-            SBSample *chapter = [[SBSample alloc] init];
+            SBTextSample *chapter = [[SBTextSample alloc] init];
             chapter.title = [NSString stringWithCString:chapter_list[i-1].title encoding: NSUTF8StringEncoding];
             chapter.timestamp = sum;
             sum = chapter_list[i-1].duration + sum;
@@ -132,11 +132,11 @@
                                                            MP4_MSECS_TIME_SCALE);
 
             for (i = 0; i < chapterCount; i++) {
-                SBSample * chapter = [chapters objectAtIndex:i];
+                SBTextSample * chapter = [chapters objectAtIndex:i];
                 strcpy(fileChapters[i].title, [[chapter title] UTF8String]);
                 
                 if (i+1 < chapterCount && sum < refTrackDuration) {
-                    SBSample * nextChapter = [chapters objectAtIndex:i+1];
+                    SBTextSample * nextChapter = [chapters objectAtIndex:i+1];
                     fileChapters[i].duration = nextChapter.timestamp - chapter.timestamp;
                     sum = nextChapter.timestamp;
                 }

@@ -9,7 +9,7 @@
 #import "SubUtilities.h"
 #import "RegexKitLite.h"
 
-@implementation SBSample
+@implementation SBTextSample
 
 -(void) dealloc
 {
@@ -394,7 +394,7 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
                     [sc scanUpToString:@"\n" intoString:&res];
                     [sc scanString:@"\n" intoString:nil];
 
-                    SBSample *chapter = [[SBSample alloc] init];
+                    SBTextSample *chapter = [[SBTextSample alloc] init];
                     chapter.timestamp = time;
                     chapter.title = res;
                     [ss addObject:chapter];
@@ -419,7 +419,7 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
                     [sc scanUpToString:@"\n" intoString:&res];
                     [sc scanString:@"\n" intoString:nil];
 
-                    SBSample *chapter = [[SBSample alloc] init];
+                    SBTextSample *chapter = [[SBTextSample alloc] init];
                     chapter.timestamp = time;
                     chapter.title = res;
                     [ss addObject:chapter];

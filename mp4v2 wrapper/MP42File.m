@@ -350,14 +350,16 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
         NSMutableArray * previewImages = [NSMutableArray arrayWithCapacity:[chapterTrack chapterCount]];
 
-        for (SBSample * chapter in [chapterTrack chapters]) {
+        for (SBTextSample * chapter in [chapterTrack chapters]) {
             QTTime chapterTime = {
-                [chapter timestamp] + 1500, // Add a short offset, hopefully it will get a better image
+                [chapter timestamp] + 1500, // Add a short offset, hopefully we will get a better image
                 1000,                       // if there is a fade
                 0
             };
 
-            [previewImages addObject:[qtMovie frameImageAtTime:chapterTime]];
+            NSImage *previewImage = [qtMovie frameImageAtTime:chapterTime];
+            if (previewImage)
+                [previewImages addObject:previewImage];
         }
 
         //[qtMovie detachFromCurrentThread];
@@ -367,6 +369,12 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         [self performSelectorOnMainThread:@selector(closeQTMovieOnTheMainThread:)
                                withObject:qtMovie 
                             waitUntilDone:YES];
+
+        // If we haven't got enought images, return.
+        if ([previewImages count] != [[chapterTrack chapters] count]) {
+            [pool release];
+            return NO;
+        }
 
         // Reopen the mp4v2 fileHandle
         fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
@@ -396,9 +404,9 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         NSInteger i = 0;
         MP4Duration duration = 0, sumDuration = 0;
 
-        for (SBSample *chapterT in [chapterTrack chapters]) {
+        for (SBTextSample *chapterT in [chapterTrack chapters]) {
             if (i < ([chapterTrack chapterCount] -1)) {
-                SBSample *next = [[chapterTrack chapters] objectAtIndex:i+1];
+                SBTextSample *next = [[chapterTrack chapters] objectAtIndex:i+1];
                 MP4Duration nextDuration = [next timestamp];
                 duration = nextDuration - sumDuration;
                 sumDuration += duration;

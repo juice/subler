@@ -10,7 +10,7 @@
 #import "UniversalDetector.h"
 #import "mp4v2.h"
 
-@interface SBSample : NSObject {
+@interface SBTextSample : NSObject {
     MP4Duration timestamp;
     NSString *title;
 }
