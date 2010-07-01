@@ -385,7 +385,9 @@ MP4Duration getTrackDuration(MP4FileHandle fileHandle, MP4TrackId trackId)
     }
     
     if (duration == 0)
-        duration = MP4GetTrackDuration(fileHandle, trackId);
+        duration = MP4ConvertFromTrackDuration(fileHandle, trackId,
+                                               MP4GetTrackDuration(fileHandle, trackId),
+                                               MP4GetTimeScale(fileHandle));
     
     return duration;
 }
