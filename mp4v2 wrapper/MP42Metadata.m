@@ -47,23 +47,24 @@ typedef struct iTMF_rating_t
 } iTMF_rating_t;
 
 static const iTMF_rating_t rating_strings[] = {
-    {"mpaa|NR|000|", "Not Rated"},          // 0
+    {"--", "-- United States"},
+    {"mpaa|NR|000|", "Not Rated"},          // 1
     {"mpaa|G|100|", "G"},
     {"mpaa|PG|200|", "PG"},
     {"mpaa|PG-13|300|", "PG-13"},
     {"mpaa|R|400|", "R" },
     {"mpaa|NC-17|500|", "NC-17"},
     {"mpaa|Unrated|???|", "Unrated"},
-    {"", ""},
-    {"us-tv|TV-Y|100|", "TV-Y"},            // 8
+    {"--", ""},
+    {"us-tv|TV-Y|100|", "TV-Y"},            // 9
     {"us-tv|TV-Y7|200|", "TV-Y7"},
     {"us-tv|TV-G|300|", "TV-G"},
     {"us-tv|TV-PG|400|", "TV-PG"},
     {"us-tv|TV-14|500|", "TV-14"},
     {"us-tv|TV-MA|600|", "TV-MA"},
     {"us-tv|Unrated|???|", "Unrated"},
-    {"", ""},
-    {"uk-movie|NR|000|", "Not Rated"},      // 16
+    {"--", "-- United Kingdom"},
+    {"uk-movie|NR|000|", "Not Rated"},      // 17
     {"uk-movie|U|100|", "U"},
     {"uk-movie|Uc|150|", "Uc"},
     {"uk-movie|PG|200|", "PG"},
@@ -74,22 +75,22 @@ static const iTMF_rating_t rating_strings[] = {
     {"uk-movie|R18|600|", "R18"},
     {"uk-movie|E|0|", "Exempt" },
     {"uk-movie|Unrated|???|", "Unrated"},
-    {"", ""},
-    {"uk-tv|Caution|500|", "Caution"},      // 28
-    {"", ""},
-    {"de-movie|FSK 0|100|", "FSK 0"},		// 30
+    {"--", ""},
+    {"uk-tv|Caution|500|", "Caution"},      // 29
+    {"--", "-- Germany"},
+    {"de-movie|FSK 0|100|", "FSK 0"},		// 31
     {"de-movie|FSK 6|200|", "FSK 6"},
     {"de-movie|FSK 12|300|", "FSK 12"},
     {"de-movie|FSK 16|400|", "FSK 16"},
     {"de-movie|FSK 18|500|", "FSK 18"},
-    {"", ""},
-    {"au-movie|G|100|", "G"},		// 36
+    {"--", "-- Australia"},
+    {"au-movie|G|100|", "G"},               // 37
     {"au-movie|PG|200|", "PG"},
     {"au-movie|M|350|", "M"},
     {"au-movie|MA15+|375|", "MA 15+"},
     {"au-movie|R18+|400|", "R18+"},
-    {"", ""},
-    {"au-tv|P|100|", "P"},		// 42
+    {"--", ""},
+    {"au-tv|P|100|", "P"},                  // 43
     {"au-tv|C|200|", "C"},
     {"au-tv|G|300|", "G"},
     {"au-tv|PG|400|", "PG"},
@@ -97,8 +98,8 @@ static const iTMF_rating_t rating_strings[] = {
     {"au-tv|MA15+|550|", "MA 15+"},
     {"au-tv|AV15+|575|", "AV 15+"},
     {"au-tv|R18+|600|", "R18+"},
-    {"", ""},
-    {"", "Unknown"},                        // 50
+    {"--", ""},
+    {"--", "Unknown"},                        // 51
     {NULL, NULL},
 };
 

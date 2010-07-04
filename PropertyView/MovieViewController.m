@@ -34,12 +34,24 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         [tagList addItemWithTitle:tag];
 
     ratingCell = [[NSPopUpButtonCell alloc] init];
+    [ratingCell setAutoenablesItems:NO];
     [ratingCell setFont:[NSFont systemFontOfSize:11]];
     [ratingCell setControlSize:NSSmallControlSize];
     [ratingCell setBordered:NO];
     for (NSString *rating in [metadata availableRatings]) {
-        if ([rating length])
-            [[ratingCell menu] addItem:[[[NSMenuItem alloc] initWithTitle:rating action:NULL keyEquivalent:@""] autorelease]];
+        if ([rating length]) {
+            NSMenuItem *item;
+            if ([rating characterAtIndex:0] == '-') {
+                item = [[[NSMenuItem alloc] initWithTitle:[rating substringFromIndex:3] action:NULL keyEquivalent:@""] autorelease];
+                [item setEnabled:NO];
+                [[ratingCell menu] addItem:item];
+            }
+            else {
+                item = [[[NSMenuItem alloc] initWithTitle:rating action:NULL keyEquivalent:@""] autorelease];
+                [item setIndentationLevel:1];
+                [[ratingCell menu] addItem:item];
+            }
+        }
         else
             [[ratingCell menu] addItem:[NSMenuItem separatorItem]];
     }
