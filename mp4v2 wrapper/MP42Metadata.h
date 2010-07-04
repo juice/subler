@@ -41,7 +41,20 @@ enum rating_type {
     DE_MOVIE_FSK_12,
     DE_MOVIE_FSK_16,
     DE_MOVIE_FSK_18,
-    R_UNKNOWN   = 36,
+    AU_MOVIE_G_0 = 36,
+    AU_MOVIE_PG,
+    AU_MOVIE_M,
+    AU_MOVIE_MA_15,
+    AU_MOVIE_R18,
+    AU_TV_P = 42,
+    AU_TV_C,
+    AU_TV_G,
+    AU_TV_PG,
+    AU_TV_M,
+    AU_TV_MA15,
+    AU_TV_AV15,
+    AU_TV_R18,
+    R_UNKNOWN   = 50,
 };
 
 @interface MP42Metadata : NSObject {
