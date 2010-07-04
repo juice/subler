@@ -513,3 +513,32 @@ void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset
     // Update the duration in mvhd.
     updateMoovDuration(fileHandle);
 }
+
+int copyTrackEditLists (MP4FileHandle fileHandle, MP4TrackId srcTrackId, MP4TrackId dstTrackId) {
+    MP4Duration trackDuration = 0;
+    uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(fileHandle, srcTrackId);
+    while (i <= trackEditCount) {
+        MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, srcTrackId, i);
+        MP4Duration editDuration = MP4ConvertFromMovieDuration(fileHandle,
+                                                               MP4GetTrackEditDuration(fileHandle, srcTrackId, i),
+                                                               MP4GetTimeScale(fileHandle));
+        trackDuration += editDuration;
+        int8_t editDwell = MP4GetTrackEditDwell(fileHandle, srcTrackId, i);
+        
+        MP4AddTrackEdit(fileHandle, dstTrackId, i, editMediaStart, editDuration, editDwell);
+        i++;
+    }
+    if (trackEditCount)
+        MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.duration", trackDuration);
+    else {
+        uint32_t firstFrameOffset = MP4GetSampleRenderingOffset(fileHandle, dstTrackId, 1);
+        MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                               srcTrackId,
+                                                               MP4GetTrackDuration(fileHandle, srcTrackId),
+                                                               MP4GetTimeScale(fileHandle));
+        MP4AddTrackEdit(fileHandle, dstTrackId, MP4_INVALID_EDIT_ID, firstFrameOffset,
+                        editDuration, 0);
+    }
+    
+    return 1;
+}

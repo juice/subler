@@ -385,11 +385,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         if (!refTrack)
             refTrack = 1;
 
-        MP4Duration refTrackDuration = MP4ConvertFromTrackDuration(fileHandle,
-                                                       refTrack,
-                                                       MP4GetTrackDuration(fileHandle, refTrack),
-                                                       MP4_MSECS_TIME_SCALE);
-
         CGFloat maxWidth = 640;
         NSSize imageSize = [[previewImages objectAtIndex:0] size];
         if (imageSize.width > maxWidth) {
@@ -397,22 +392,17 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             imageSize.width = maxWidth;
         }
 
-        jpegTrack = MP4AddMJpegVideoTrack(fileHandle, 1000, MP4_INVALID_DURATION, imageSize.width, imageSize.height);
+        jpegTrack = MP4AddMJpegVideoTrack(fileHandle, MP4GetTrackTimeScale(fileHandle, [chapterTrack Id]),
+                                          MP4_INVALID_DURATION, imageSize.width, imageSize.height);
         MP4SetTrackIntegerProperty(fileHandle, jpegTrack, "tkhd.layer", 1);
+        copyTrackEditLists(fileHandle, [chapterTrack Id], jpegTrack);
         disableTrack(fileHandle, jpegTrack);
 
         NSInteger i = 0;
-        MP4Duration duration = 0, sumDuration = 0;
+        MP4Duration duration = 0;
 
         for (SBTextSample *chapterT in [chapterTrack chapters]) {
-            if (i < ([chapterTrack chapterCount] -1)) {
-                SBTextSample *next = [[chapterTrack chapters] objectAtIndex:i+1];
-                MP4Duration nextDuration = [next timestamp];
-                duration = nextDuration - sumDuration;
-                sumDuration += duration;
-            }
-            else
-                duration = refTrackDuration - sumDuration;
+            duration = MP4GetSampleDuration(fileHandle, [chapterTrack Id], i+1);
 
             // Scale the image.
             NSRect newRect = NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height);
