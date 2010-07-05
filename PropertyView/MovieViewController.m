@@ -41,7 +41,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     for (NSString *rating in [metadata availableRatings]) {
         if ([rating length]) {
             NSMenuItem *item;
-            if ([rating characterAtIndex:0] == '-') {
+            if ([rating hasPrefix:@"--"]) {
                 item = [[[NSMenuItem alloc] initWithTitle:[rating substringFromIndex:3] action:NULL keyEquivalent:@""] autorelease];
                 [item setEnabled:NO];
                 [[ratingCell menu] addItem:item];

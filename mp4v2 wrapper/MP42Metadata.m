@@ -98,8 +98,20 @@ static const iTMF_rating_t rating_strings[] = {
     {"au-tv|MA15+|550|", "MA 15+"},
     {"au-tv|AV15+|575|", "AV 15+"},
     {"au-tv|R18+|600|", "R18+"},
+    {"--", "-- France"},
+    {"fr-movie|Tout Public|100|", "Tout Public"},     // 52
+    {"fr-movie|-10|100|", "-10"},
+    {"fr-movie|-12|300|", "-12"},
+    {"fr-movie|-16|375|", "-16"},
+    {"fr-movie|-18|400|", "-18"},
+    {"fr-movie|Unrated|???|", "Unrated"},
     {"--", ""},
-    {"--", "Unknown"},                        // 51
+    {"fr-tv|-10|100|", "-10"},              // 59
+    {"fr-tv|-12|200|", "-12"},
+    {"fr-tv|-16|500|", "-16"},
+    {"fr-tv|-18|600|", "-18"},
+    {"--", ""},
+    {"--", "Unknown"},                      // 64
     {NULL, NULL},
 };
 
