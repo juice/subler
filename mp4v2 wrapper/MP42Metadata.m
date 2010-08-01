@@ -78,19 +78,25 @@ static const iTMF_rating_t rating_strings[] = {
     {"--", ""},
     {"uk-tv|Caution|500|", "Caution"},      // 29
     {"--", "-- Germany"},
-    {"de-movie|FSK 0|100|", "FSK 0"},		// 31
-    {"de-movie|FSK 6|200|", "FSK 6"},
-    {"de-movie|FSK 12|300|", "FSK 12"},
-    {"de-movie|FSK 16|400|", "FSK 16"},
-    {"de-movie|FSK 18|500|", "FSK 18"},
+    {"de-movie|ab 0 Jahren|75|", "ab 0 Jahren"},		// 31
+    {"de-movie|ab 6 Jahren|100|", "ab 6 Jahren"},
+    {"de-movie|ab 12 Jahren|200|", "ab 12 Jahren"},
+    {"de-movie|ab 16 Jahren|500|", "ab 16 Jahren"},
+    {"de-movie|ab 18 Jahren|600|", "ab 18 Jahren"},
+    {"--", ""},
+    {"de-tv|ab 0 Jahren|75|", "ab 0 Jahren"},		// 37
+    {"de-tv|ab 6 Jahren|100|", "ab 6 Jahren"},
+    {"de-tv|ab 12 Jahren|200|", "ab 12 Jahren"},
+    {"de-tv|ab 16 Jahren|500|", "ab 16 Jahren"},
+    {"de-tv|ab 18 Jahren|600|", "ab 18 Jahren"},
     {"--", "-- Australia"},
-    {"au-movie|G|100|", "G"},               // 37
+    {"au-movie|G|100|", "G"},               // 43
     {"au-movie|PG|200|", "PG"},
     {"au-movie|M|350|", "M"},
     {"au-movie|MA15+|375|", "MA 15+"},
     {"au-movie|R18+|400|", "R18+"},
     {"--", ""},
-    {"au-tv|P|100|", "P"},                  // 43
+    {"au-tv|P|100|", "P"},                  // 49
     {"au-tv|C|200|", "C"},
     {"au-tv|G|300|", "G"},
     {"au-tv|PG|400|", "PG"},
@@ -99,19 +105,19 @@ static const iTMF_rating_t rating_strings[] = {
     {"au-tv|AV15+|575|", "AV 15+"},
     {"au-tv|R18+|600|", "R18+"},
     {"--", "-- France"},
-    {"fr-movie|Tout Public|100|", "Tout Public"},     // 52
+    {"fr-movie|Tout Public|100|", "Tout Public"},     // 58
     {"fr-movie|-10|100|", "-10"},
     {"fr-movie|-12|300|", "-12"},
     {"fr-movie|-16|375|", "-16"},
     {"fr-movie|-18|400|", "-18"},
     {"fr-movie|Unrated|???|", "Unrated"},
     {"--", ""},
-    {"fr-tv|-10|100|", "-10"},              // 59
+    {"fr-tv|-10|100|", "-10"},              // 65
     {"fr-tv|-12|200|", "-12"},
     {"fr-tv|-16|500|", "-16"},
     {"fr-tv|-18|600|", "-18"},
     {"--", ""},
-    {"--", "Unknown"},                      // 64
+    {"--", "Unknown"},                      // 70
     {NULL, NULL},
 };
 
