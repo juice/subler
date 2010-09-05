@@ -25,6 +25,7 @@
     IBOutlet NSButton       *removeTag;
     
     NSPopUpButtonCell       *ratingCell;
+    NSComboBoxCell          *genreCell;
 
     NSDictionary    *tags;
     NSArray         *tagsArray;

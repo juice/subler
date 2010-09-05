@@ -89,6 +89,8 @@ enum rating_type {
 - (NSString *) ratingFromIndex: (NSInteger)index;
 - (NSInteger) ratingIndexFromString: (NSString *)ratingString;
 
+- (NSArray *) availableGenres;
+
 - (void) removeTagForKey:(NSString *)aKey;
 - (BOOL) setTag:(id)value forKey:(NSString *)key;
 - (BOOL) setMediaKindFromString:(NSString *)mediaKindString;

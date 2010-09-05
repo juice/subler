@@ -56,6 +56,17 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
             [[ratingCell menu] addItem:[NSMenuItem separatorItem]];
     }
 
+    genreCell = [[NSComboBoxCell alloc] init];
+    [genreCell setCompletes:YES];
+    [genreCell setFont:[NSFont systemFontOfSize:11]];
+    [genreCell setDrawsBackground:NO];
+    [genreCell setBezeled:NO];
+    [genreCell setButtonBordered:NO];
+    [genreCell setControlSize:NSSmallControlSize];
+    [genreCell setIntercellSpacing:NSMakeSize(1.0, 1.0)];
+    [genreCell setEditable:YES];
+    [genreCell addItemsWithObjectValues:[metadata availableGenres]];
+	
     NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
     [ps setHeadIndent: -10.0];
     [ps setAlignment:NSRightTextAlignment];
@@ -299,6 +310,9 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         if ([tagName isEqualToString:@"Rating"]) {
             cell = ratingCell;
         }
+        else if ([tagName isEqualToString:@"Genre"]) {
+            cell = genreCell;
+        }
         else
             cell = [tableColumn dataCell];
     }
@@ -463,6 +477,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [tabCol release];
     [detailBoldAttr release];
     [ratingCell release];
+    [genreCell release];
     [dct release];
     [super dealloc];
 }

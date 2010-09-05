@@ -271,6 +271,13 @@ static const iTMF_rating_t rating_strings[] = {
     return ratingIndex;
 }
 
+- (NSArray *) availableGenres
+{
+    return [NSArray arrayWithObjects:  @"Animation", @"Classic TV", @"Comedy", @"Drama", 
+            @"Fitness & Workout", @"Kids", @"Non-Fiction", @"Reality TV", @"Sci-Fi & Fantasy",
+            @"Sports", nil];
+}
+
 - (void) removeTagForKey:(NSString *)aKey
 {
     [tagsDict removeObjectForKey:aKey];
