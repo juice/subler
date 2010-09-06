@@ -9,6 +9,7 @@
 #import "tagChimpController.h"
 #import "SBTableView.h"
 #import "MP42File.h"
+#import "MyDocument.h"
 
 @implementation tagChimpController
 
@@ -28,6 +29,35 @@
     }
 
 	return self;
+}
+
+- (void)windowDidLoad
+{
+    [super windowDidLoad];
+
+    NSString *filename = nil;
+    MP42File *mp4File = [((MyDocument *) delegate) mp4File];
+    for (NSUInteger i = 0; i < [mp4File tracksCount]; i++) {
+        MP42Track *track = [mp4File trackAtIndex:i];
+        if ([track sourcePath]) {
+            filename = [[track sourcePath] lastPathComponent];
+            break;
+        }
+    }
+    if (!filename) return;
+    
+    NSDictionary *parsed = [tagChimpController parseFilename:filename];
+    if (!parsed) return;
+    
+    if ([@"tv" isEqualToString:(NSString *) [parsed valueForKey:@"type"]]) {
+        videoKind = 12;
+        [searchField setStringValue:[NSString stringWithFormat:@"%@ - S%@E%@", [parsed valueForKey:@"show"],
+                                     [parsed valueForKey:@"season"], [parsed valueForKey:@"episode"]]];
+    } else {
+        videoKind = 0;
+        [searchField setStringValue:[parsed valueForKey:@"title"]];
+    }
+    [self search:nil];
 }
 
 - (void)awakeFromNib {
@@ -87,8 +117,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     [[searchField cell] setPlaceholderString:[sender title]];
 }
 
-- (IBAction) search: (id) sender {
-    // url
+- (IBAction) search: (id) sender
+{
     NSString *searchTerms = [searchField stringValue];
     if (![searchTerms length])
         return;
@@ -118,6 +148,15 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         case 1:
             searchType = [NSString stringWithFormat:@"&type=search&show=%@&totalChapters=%@&videoKind=TVShow&season=1", 
                           searchTerms, totalChapters];
+            break;
+        case 12:
+            ;
+            NSDictionary *parsed = [tagChimpController parseFilename:[searchField stringValue]];
+            if (!parsed || ![[parsed valueForKey:@"type"] isEqualToString:@"tv"]) 
+                return;
+            NSString *show = [[parsed valueForKey:@"show"] stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+            searchType = [NSString stringWithFormat:@"&type=search&limit=%d&show=%@&season=%@&episode=%@&totalChapters=%@", 
+                          limit, show, [parsed valueForKey:@"season"], [parsed valueForKey:@"episode"], totalChapters];
             break;
         case 11:
             searchType = [NSString stringWithFormat:@"&type=search&title=%@&totalChapters=%@&videoKind=TVShow", 
@@ -174,6 +213,61 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
         [progress setHidden:YES];
     }
 
+}
+
++ (NSDictionary *) parseFilename: (NSString *) filename
+{
+    NSMutableDictionary *results = nil;
+    
+    if (!filename || ![filename length]) {
+        return results;
+    }
+    
+    NSTask *task = [[NSTask alloc] init];
+    [task setLaunchPath:@"/usr/bin/perl"];
+    
+    NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:3];
+    NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:@"ParseFilename" ofType:@""];
+    [args addObject:[NSString stringWithFormat:@"-I%@/lib", path]];
+    [args addObject:[NSString stringWithFormat:@"%@/ParseFilename.pl", path]];
+    [args addObject:filename];
+    [task setArguments:args];
+
+    NSPipe *stdOut = [[NSPipe alloc] init];
+    NSFileHandle *stdOutWrite = [stdOut fileHandleForWriting];
+    [task setStandardOutput:stdOutWrite];
+    
+    [task launch];
+    [task waitUntilExit];
+    [stdOutWrite closeFile];
+    
+    NSData *outputData = [[stdOut fileHandleForReading] readDataToEndOfFile];
+    NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
+    NSArray *lines = [outputString componentsSeparatedByString:@"\n"];
+
+    if ([lines count]) {
+        if ([(NSString *) [lines objectAtIndex:0] isEqualToString:@"tv"]) {
+            if ([lines count] >= 4) {
+                results = [[NSMutableDictionary alloc] initWithCapacity:4];
+                [results setValue:@"tv" forKey:@"type"];
+                [results setValue:[lines objectAtIndex:1] forKey:@"show"];
+                [results setValue:[lines objectAtIndex:2] forKey:@"season"];
+                [results setValue:[lines objectAtIndex:3] forKey:@"episode"];
+            }
+        } else if ([(NSString *) [lines objectAtIndex:0] isEqualToString:@"movie"]) {
+            if ([lines count] >= 2) {
+                results = [[NSMutableDictionary alloc] initWithCapacity:4];
+                [results setValue:@"movie" forKey:@"type"];
+                [results setValue:[lines objectAtIndex:1] forKey:@"title"];
+            }
+        }
+    }
+
+    [outputString release];
+    [stdOut release];
+    [args release];
+    [task release];
+    return results;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response

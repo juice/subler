@@ -245,6 +245,10 @@
 		A9FD5EC60F3C8A4800817716 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/MovieView.xib; sourceTree = "<group>"; };
 		A9FD5ECD0F3C8AF100817716 /* MovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MovieViewController.h; path = PropertyView/MovieViewController.h; sourceTree = "<group>"; };
 		A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MovieViewController.m; path = PropertyView/MovieViewController.m; sourceTree = "<group>"; };
+		CD4A86AA1234AFA10054970A /* Simple.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = Simple.pm; sourceTree = "<group>"; };
+		CD4A86AC1234AFA10054970A /* Roman.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = Roman.pm; sourceTree = "<group>"; };
+		CD4A86AF1234AFA10054970A /* Filename.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = Filename.pm; sourceTree = "<group>"; };
+		CD4A86B01234AFA10054970A /* ParseFilename.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = ParseFilename.pl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -378,6 +382,7 @@
 				A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */,
 				A996C43110F4CA1D0055C85C /* tagChimp_tiny.png */,
 				A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */,
+				CD4A86A71234AFA10054970A /* ParseFilename */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -501,6 +506,50 @@
 			name = "mp4v2 wrapper";
 			sourceTree = "<group>";
 		};
+		CD4A86A71234AFA10054970A /* ParseFilename */ = {
+			isa = PBXGroup;
+			children = (
+				CD4A86A81234AFA10054970A /* lib */,
+				CD4A86B01234AFA10054970A /* ParseFilename.pl */,
+			);
+			name = ParseFilename;
+			path = Utilities/ParseFilename;
+			sourceTree = "<group>";
+		};
+		CD4A86A81234AFA10054970A /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				CD4A86A91234AFA10054970A /* Debug */,
+				CD4A86AB1234AFA10054970A /* Text */,
+				CD4A86AD1234AFA10054970A /* Video */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		CD4A86A91234AFA10054970A /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				CD4A86AA1234AFA10054970A /* Simple.pm */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
+		CD4A86AB1234AFA10054970A /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				CD4A86AC1234AFA10054970A /* Roman.pm */,
+			);
+			path = Text;
+			sourceTree = "<group>";
+		};
+		CD4A86AD1234AFA10054970A /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				CD4A86AF1234AFA10054970A /* Filename.pm */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -509,6 +558,7 @@
 			buildConfigurationList = C05733C708A9546B00998B17 /* Build configuration list for PBXNativeTarget "Subler" */;
 			buildPhases = (
 				8D15AC2B0486D014006FF6A4 /* Resources */,
+				CD71C7691234BE7D004A5383 /* Copy ParseFilename */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
 				A984DB5E0F52D68E001A20B2 /* CopyFiles */,
@@ -598,6 +648,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CD71C7691234BE7D004A5383 /* Copy ParseFilename */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy ParseFilename";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -pr \"${SRCROOT}/Utilities/ParseFilename\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D15AC300486D014006FF6A4 /* Sources */ = {

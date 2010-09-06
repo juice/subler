@@ -837,4 +837,8 @@ returnCode contextInfo: (void *) contextInfo
     [super dealloc];
 }
 
+-(MP42File *) mp4File {
+    return mp4File;
+}
+
 @end

@@ -45,6 +45,7 @@
 - (IBAction) tagChimpWebSite: (id) sender;
 - (IBAction) searchType: (id) sender;
 - (IBAction) search: (id) sender;
++ (NSDictionary *) parseFilename: (NSString *) filename;
 - (NSArray *) tagChimpXmlToMP42Metadata: (NSXMLDocument *) xmlDocument;
 
 @end
