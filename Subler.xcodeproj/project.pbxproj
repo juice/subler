@@ -661,8 +661,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp -pr \"${SRCROOT}/Utilities/ParseFilename\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"";
+			shellPath = /bin/bash;
+			shellScript = "SRC=\"${SRCROOT}/Utilities/ParseFilename\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ParseFilename\"\n\nmkdir -p \"${DEST}/lib\"\nmkdir -p \"${DEST}/lib/Debug\"\nmkdir -p \"${DEST}/lib/Text\"\nmkdir -p \"${DEST}/lib/Video\"\ncp -p \"${SRC}/ParseFilename.pl\" \"${DEST}\"\ncp -p \"${SRC}/lib/Debug/Simple.pm\" \"${DEST}/lib/Debug/\"\ncp -p \"${SRC}/lib/Text/Roman.pm\" \"${DEST}/lib/Text/\"\ncp -p \"${SRC}/lib/Video/Filename.pm\" \"${DEST}/lib/Video/\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
