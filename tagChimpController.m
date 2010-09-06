@@ -468,6 +468,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
                                error:&err];
         if([tag count])
             if ([[[tag objectAtIndex:0] stringValue] isEqualToString:@"TV Show"]) {
+                metadata.mediaKind = 10;
                 tag = [element nodesForXPath:@"./movieTags/television/showName"
                                        error:&err];
                 if([tag count])
