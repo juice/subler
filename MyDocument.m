@@ -722,7 +722,20 @@ returnCode contextInfo: (void *) contextInfo
 {
     if (tracksToBeImported) {
         for (id track in tracksToBeImported)
+        {
             [mp4File addTrack:track];
+            if ([track isKindOfClass:[MP42VideoTrack class]])
+            {
+                uint64_t tw = (uint64_t) [((MP42VideoTrack *) track) trackWidth];
+                uint64_t th = (uint64_t) [((MP42VideoTrack *) track) trackHeight];
+                if ((tw >= 1024) && (th >= 720))
+                {
+                    [mp4File.metadata setTag:@"YES" forKey:@"HD Video"];
+                    [self tableViewSelectionDidChange:nil];
+                    [self updateChangeCount:NSChangeDone];
+                }
+            }
+        }
 
         [self updateChangeCount:NSChangeDone];
         [fileTracksTable reloadData];
