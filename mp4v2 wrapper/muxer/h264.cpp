@@ -1358,3 +1358,49 @@ extern "C" MP4TrackId H264Creator (MP4FileHandle mp4File, FILE* inFile,
     DpbClean(&h264_dpb);
     return trackId;
 }
+
+extern "C" uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height, uint8_t *profile, uint8_t *level)
+{
+    
+    bool have_seq = false;
+    uint8_t nal_type;
+    nal_reader_t nal;
+    h264_decode_t h264_dec;
+    FILE *inFile;
+    
+    inFile = fopen(filePath, "r");
+    if (inFile == NULL) return 0;
+    
+    memset(&nal, 0, sizeof(nal));
+    nal.ifile = inFile;
+    
+    while (have_seq == false) {
+        if (LoadNal(&nal) == false) {
+            // fprintf(stderr, "%s: Could not find sequence header\n", ProgName);
+            fclose(inFile);
+            return 0;
+        }
+        nal_type = h264_nal_unit_type(nal.buffer);
+        if (nal_type == H264_NAL_TYPE_SEQ_PARAM) {
+            have_seq = true;
+            uint32_t offset;
+            if (nal.buffer[2] == 1) offset = 3;
+            else offset = 4;
+            // skip the nal type byte
+            if (h264_read_seq_info(nal.buffer, nal.buffer_on, &h264_dec) == -1)
+            {
+                // fprintf(stderr, "%s: Could not decode Sequence header\n", ProgName);
+                fclose(inFile);
+                return 0;
+            }
+            fclose(inFile);
+            *pic_width = h264_dec.pic_width;
+            *pic_height = h264_dec.pic_height;
+            *profile = h264_dec.profile;
+            *level = h264_dec.level;
+            return 1;
+        }
+    }
+    fclose(inFile);
+    return 0;
+}

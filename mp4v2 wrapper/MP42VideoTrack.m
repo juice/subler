@@ -40,6 +40,13 @@
             hSpacing = 1;
             vSpacing = 1;
         }
+        
+        if ([format isEqualToString:@"H.264"]) {
+            MP4GetTrackH264ProfileLevel(fileHandle, trackID, &origProfile, &origLevel);
+            newProfile = origProfile;
+            newLevel = origLevel;
+        }
+        
     }
 
     return self;
@@ -118,6 +125,17 @@
                         MP4AddPixelAspectRatio(fileHandle, Id, hSpacing, vSpacing);
                 }
             }
+            
+            if ([format isEqualToString:@"H.264"]) {
+                if ([updatedProperty valueForKey:@"profile"]) {
+                    MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*[0].avcC.AVCProfileIndication", newProfile);
+                    origProfile = newProfile;
+                }
+                if ([updatedProperty valueForKey:@"level"]) {
+                    MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.*[0].avcC.AVCLevelIndication", newLevel);
+                    origLevel = newLevel;
+                }
+            }
         }
     }
 
@@ -136,22 +154,15 @@
 @synthesize trackHeight;
 
 @synthesize hSpacing;
-- (void) setHSpacing: (uint64_t) newValue
-{
-    hSpacing = newValue;
-    isEdited = YES;
-    [updatedProperty setValue:@"True" forKey:@"hSpacing"];
-}
-
 @synthesize vSpacing;
-- (void) setVSpacing: (uint64_t) newValue
-{
-    vSpacing = newValue;
-    isEdited = YES;
-    [updatedProperty setValue:@"True" forKey:@"vSpacing"];
-}
 
 @synthesize offsetX;
 @synthesize offsetY;
+
+@synthesize origProfile;
+@synthesize origLevel;
+
+@synthesize newProfile;
+@synthesize newLevel;
 
 @end

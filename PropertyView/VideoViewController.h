@@ -26,12 +26,17 @@
     IBOutlet NSTextField *offsetY;
 
     IBOutlet NSPopUpButton *alternateGroup;
+    IBOutlet NSPopUpButton *videoProfile;
+
     IBOutlet NSButton *preserveAspectRatio;
+    
+    IBOutlet NSMenuItem *profileLevelUnchanged;
 }
 
 - (void) setTrack:(MP42VideoTrack *) videoTrack;
 - (IBAction) setSize: (id) sender;
 - (IBAction) setPixelAspect: (id) sender;
 - (IBAction) setAltenateGroup: (id) sender;
+- (IBAction) setProfileLevel: (id) sender;
 
 @end

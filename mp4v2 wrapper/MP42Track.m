@@ -176,5 +176,6 @@ NSString * const MP42SourceTypeRaw = @"Raw";
 @synthesize isEdited;
 @synthesize isDataEdited;
 @synthesize muxed;
+@synthesize updatedProperty;
 
 @end

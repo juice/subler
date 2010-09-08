@@ -43,6 +43,10 @@
 
                 [(MP42VideoTrack*)newTrack setTrackWidth:mkvTrack->AV.Video.PixelWidth];
                 [(MP42VideoTrack*)newTrack setTrackHeight:mkvTrack->AV.Video.PixelHeight];
+                [(MP42VideoTrack*)newTrack setWidth:mkvTrack->AV.Video.PixelWidth];
+                [(MP42VideoTrack*)newTrack setHeight:mkvTrack->AV.Video.PixelHeight];
+                [(MP42VideoTrack*)newTrack setHSpacing:1];
+                [(MP42VideoTrack*)newTrack setVSpacing:1];
             }
 
             // Audio
@@ -58,7 +62,18 @@
                 newTrack.Id = i;
                 newTrack.sourcePath = file;
                 newTrack.sourceInputType = MP42SourceTypeMatroska;
-
+                
+                if ([newTrack.format isEqualToString:@"H.264"]) {
+                    uint8_t* avcCAtom = (uint8_t *)malloc(mkvTrack->CodecPrivateSize); // mkv stores h.264 avcC in CodecPrivate
+                    memcpy(avcCAtom, mkvTrack->CodecPrivate, mkvTrack->CodecPrivateSize);
+                    if (mkvTrack->CodecPrivateSize >= 3) {
+                        [(MP42VideoTrack*)newTrack setOrigProfile:avcCAtom[1]];
+                        [(MP42VideoTrack*)newTrack setNewProfile:avcCAtom[1]];
+                        [(MP42VideoTrack*)newTrack setOrigLevel:avcCAtom[3]];
+                        [(MP42VideoTrack*)newTrack setNewLevel:avcCAtom[3]];
+                    }
+                }
+                    
                 double trackTimecodeScale = (mkvTrack->TimecodeScale.v >> 32);
                 SegmentInfo *segInfo = mkv_GetFileInfo(matroskaFile);
                 UInt64 scaledDuration = (UInt64)segInfo->Duration / (UInt32)segInfo->TimecodeScale * trackTimecodeScale;

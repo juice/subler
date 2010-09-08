@@ -85,6 +85,8 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                 NSSize dimension = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
                 [(MP42VideoTrack*)newTrack setTrackWidth: dimension.width];
                 [(MP42VideoTrack*)newTrack setTrackHeight: dimension.height];
+                [(MP42VideoTrack*)newTrack setWidth: dimension.width];
+                [(MP42VideoTrack*)newTrack setHeight: dimension.height];
             }
         }
         // Audio

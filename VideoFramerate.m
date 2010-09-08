@@ -8,6 +8,7 @@
 
 #import "VideoFramerate.h"
 #import "MP42File.h"
+#import "h264.h"
 
 @implementation VideoFramerate
 
@@ -28,6 +29,8 @@
         [delegate importDone:nil];
 }
 
+uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height, uint8_t *profile, uint8_t *level);
+
 - (IBAction) addTracks: (id) sender
 {   
     NSMutableArray *tracks = [[NSMutableArray alloc] init];
@@ -37,6 +40,16 @@
     newTrack.sourcePath = filePath;
     newTrack.format = @"H.264";
     newTrack.sourceInputType = MP42SourceTypeRaw;
+    
+    uint32_t tw, th;
+    uint8_t profile, level;
+    if (H264Info([filePath cStringUsingEncoding:NSASCIIStringEncoding], &tw, &th, &profile, &level)) {
+        newTrack.width = newTrack.trackWidth = tw;
+        newTrack.height = newTrack.trackHeight = th;
+        newTrack.hSpacing = newTrack.vSpacing = 1;
+        newTrack.origProfile = newTrack.newProfile = profile;
+        newTrack.origLevel = newTrack.newLevel = level;
+    }
 
     [tracks addObject:newTrack];
     [newTrack release];

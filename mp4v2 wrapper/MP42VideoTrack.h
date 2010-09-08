@@ -1,5 +1,5 @@
 //
-//  MP42SubtitleTrack.h
+//  MP42VideoTrack.h
 //  Subler
 //
 //  Created by Damiano Galassi on 31/01/09.
@@ -15,6 +15,8 @@
     uint64_t hSpacing, vSpacing;
 
     uint32_t offsetX, offsetY;
+    uint8_t origProfile, origLevel;
+    uint8_t newProfile, newLevel;
 }
 
 @property(readwrite) uint64_t width;
@@ -28,5 +30,10 @@
 
 @property(readwrite) uint32_t offsetX;
 @property(readwrite) uint32_t offsetY;
+
+@property(readwrite) uint8_t origProfile;
+@property(readwrite) uint8_t origLevel;
+@property(readwrite) uint8_t newProfile;
+@property(readwrite) uint8_t newLevel;
 
 @end

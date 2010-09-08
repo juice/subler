@@ -61,6 +61,8 @@ extern NSString * const MP42SourceTypeRaw;
 @property(readwrite) BOOL isDataEdited;
 @property(readwrite) BOOL muxed;
 
+@property(readwrite, retain) NSMutableDictionary *updatedProperty;
+
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError;
 

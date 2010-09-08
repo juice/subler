@@ -11,6 +11,51 @@
 
 @implementation VideoViewController
 
+static NSString *getProfileName(uint8_t profile) {
+    switch (profile) {
+        case 66:
+            return @"Baseline";
+        case 77:
+            return @"Main";
+        case 88:
+            return @"Extended";
+        case 100:
+            return @"High";
+        case 110:
+            return @"High 10";
+        case 122:
+            return @"High 4:2:2";
+        case 144:
+            return @"High 4:4:4";
+        default:
+            return @"Unknown profile";
+    }
+}
+
+static NSString *getLevelName(uint8_t level) {
+    switch (level) {
+        case 10:
+        case 20:
+        case 30:
+        case 40:
+        case 50:
+            return [NSString stringWithFormat:@"%u", level/10];
+        case 11:
+        case 12:
+        case 13:
+        case 21:
+        case 22:
+        case 31:
+        case 32:
+        case 41:
+        case 42:
+        case 51:
+            return [NSString stringWithFormat:@"%u.%u", level/10, level % 10];
+        default:
+            return [NSString stringWithFormat:@"unknown level %x", level];
+    }
+}
+
 - (void) awakeFromNib
 {
     [sampleWidth setStringValue: [NSString stringWithFormat:@"%d", track.width]];
@@ -26,6 +71,25 @@
     [offsetY setStringValue: [NSString stringWithFormat:@"%d", track.offsetY]];
     
     [alternateGroup selectItemAtIndex:track.alternate_group];
+
+    if ([track.format isEqualToString:@"H.264"] && track.origProfile && track.origLevel) {
+        [profileLevelUnchanged setTitle:[NSString stringWithFormat:@"Current profile: %@ @ %@", 
+                                         getProfileName(track.origProfile), getLevelName(track.origLevel)]];
+        if ((track.origProfile == track.newProfile) && (track.origLevel == track.newLevel)) {
+            [videoProfile selectItemWithTag:1];
+        } else {
+            if ((track.newProfile == 66) && (track.newLevel == 21)) {
+                [videoProfile selectItemWithTag:21];
+            } else if ((track.newProfile == 77) && (track.newLevel == 31)) {
+                [videoProfile selectItemWithTag:31];
+            } else if ((track.newProfile == 100) && (track.newLevel == 41)) {
+                [videoProfile selectItemWithTag:41];
+            }
+        }
+    } else {
+        [videoProfile setEnabled:NO];
+    }
+    
 }
 
 - (void) setTrack:(MP42VideoTrack *) videoTrack
@@ -90,6 +154,7 @@
             
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
+            [track.updatedProperty setValue:@"True" forKey:@"hSpacing"];
         }
     }
     else if (sender == vSpacing) {
@@ -99,6 +164,7 @@
             
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
+            [track.updatedProperty setValue:@"True" forKey:@"vSpacing"];
         }
     }
 }
@@ -112,6 +178,37 @@
         track.alternate_group = tagName;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
+}
+
+- (IBAction) setProfileLevel: (id) sender
+{
+    uint8_t tagName = [[sender selectedItem] tag];
+    switch (tagName) {
+        case 1:
+            track.newProfile = track.origProfile;
+            track.newLevel = track.origLevel;
+            [track.updatedProperty setValue:nil forKey:@"profile"];
+            [track.updatedProperty setValue:nil forKey:@"level"];
+            return;
+        case 21:
+            track.newProfile = 66;
+            track.newLevel = 21;
+            break;
+        case 31:
+            track.newProfile = 77;
+            track.newLevel = 31;
+            break;
+        case 41:
+            track.newProfile = 100;
+            track.newLevel = 41;
+            break;
+        default:
+            return;
+    }
+    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    [track.updatedProperty setValue:@"True" forKey:@"profile"];
+    [track.updatedProperty setValue:@"True" forKey:@"level"];
+    track.isEdited = YES;
 }
 
 @end
