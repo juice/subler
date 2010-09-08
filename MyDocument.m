@@ -722,20 +722,7 @@ returnCode contextInfo: (void *) contextInfo
 {
     if (tracksToBeImported) {
         for (id track in tracksToBeImported)
-        {
             [mp4File addTrack:track];
-            if ([track isKindOfClass:[MP42VideoTrack class]])
-            {
-                uint64_t tw = (uint64_t) [((MP42VideoTrack *) track) trackWidth];
-                uint64_t th = (uint64_t) [((MP42VideoTrack *) track) trackHeight];
-                if ((tw >= 1024) && (th >= 720))
-                {
-                    [mp4File.metadata setTag:@"YES" forKey:@"HD Video"];
-                    [self tableViewSelectionDidChange:nil];
-                    [self updateChangeCount:NSChangeDone];
-                }
-            }
-        }
 
         [self updateChangeCount:NSChangeDone];
         [fileTracksTable reloadData];
@@ -752,6 +739,19 @@ returnCode contextInfo: (void *) contextInfo
         [mp4File.metadata mergeMetadata:metadataToBeImported];
         [self tableViewSelectionDidChange:nil];
         [self updateChangeCount:NSChangeDone];
+        for (MP42Track *track in mp4File.tracks)
+            if ([track isKindOfClass:[MP42VideoTrack class]])
+            {
+                uint64_t tw = (uint64_t) [((MP42VideoTrack *) track) trackWidth];
+                uint64_t th = (uint64_t) [((MP42VideoTrack *) track) trackHeight];
+                if ((tw >= 1024) && (th >= 720))
+                {
+                    [mp4File.metadata setTag:@"YES" forKey:@"HD Video"];
+                }
+                [self tableViewSelectionDidChange:nil];
+                [self updateChangeCount:NSChangeDone];
+            }
+        
     }
 
     [NSApp endSheet:[importWindow window]];
