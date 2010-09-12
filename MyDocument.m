@@ -195,8 +195,8 @@
             success = [mp4File updateMP4FileWithAttributes:attributes error:outError];
             break;
 		case NSSaveAsOperation:
-            if (_64bit_data) [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42Create64BitData];
-            if (_64bit_time) [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42Create64BitTime];
+            if ([_64bit_data state]) [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42Create64BitData];
+            if ([_64bit_time state]) [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42Create64BitTime];
             success = [mp4File writeToUrl:absoluteURL withAttributes:attributes error:outError];
             break;
 		case NSSaveToOperation:
@@ -261,16 +261,6 @@
         default:
             break;
     }
-}
-
-- (IBAction) set64bit_data: (id) sender
-{
-    _64bit_data = [sender state];
-}
-
-- (IBAction) set64bit_time: (id) sender
-{
-    _64bit_time = [sender state];
 }
 
 - (IBAction) cancelSaveOperation: (id) sender {

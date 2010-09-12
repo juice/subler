@@ -46,9 +46,9 @@
     IBOutlet NSTextField    *offset;
     
     IBOutlet NSButton *cancelSave;
-    BOOL _64bit_data;
-    BOOL _64bit_time;
-    BOOL _optimize;
+    IBOutlet NSButton *_64bit_data;
+    IBOutlet NSButton *_64bit_time;
+    BOOL _optimize;;
 }
 
 - (IBAction) closeSheet: (id) sender;
