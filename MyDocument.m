@@ -242,6 +242,21 @@
     for (id format in formats)
         [fileFormat addItemWithTitle:format];
     
+    // note this is only available in Mac OS X 10.6+
+    if ([savePanel respondsToSelector:@selector(setNameFieldStringValue:)]) {
+        NSString *filename = nil;
+        for (NSUInteger i = 0; i < [mp4File tracksCount]; i++) {
+            MP42Track *track = [mp4File trackAtIndex:i];
+            if ([track sourcePath]) {
+                filename = [[[track sourcePath] lastPathComponent] stringByDeletingPathExtension];
+                break;
+            }
+        }
+        if (filename) {
+            [savePanel performSelector:@selector(setNameFieldStringValue:) withObject:filename];
+        }
+    }
+    
     return YES;
 }
 
