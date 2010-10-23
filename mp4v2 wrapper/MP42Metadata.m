@@ -750,17 +750,18 @@ static const genreType_t genreType_strings[] = {
 
     MP4TagsSetComments(tags, [[tagsDict valueForKey:@"Comments"] UTF8String]);
 
-    MP4TagsSetGenre(tags, [[tagsDict valueForKey:@"Genre"] UTF8String]);
-
     uint16_t genreType = [self genreIndexFromString:[tagsDict valueForKey:@"Genre"]];
     if (genreType) {
+        MP4TagsSetGenre(tags, NULL);
         MP4TagsSetGenreType(tags, &genreType);
     }
-    else
+    else {
         MP4TagsSetGenreType(tags, NULL);
-    
+        MP4TagsSetGenre(tags, [[tagsDict valueForKey:@"Genre"] UTF8String]);
+    }
+
     MP4TagsSetReleaseDate(tags, [[tagsDict valueForKey:@"Release Date"] UTF8String]);
-    
+
     if ([tagsDict valueForKey:@"Track #"]) {
         MP4TagTrack dtrack; int trackNum = 0, totalTrackNum = 0;
         char separator;
