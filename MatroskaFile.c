@@ -8,9 +8,10 @@
  */
 
 #include <stdlib.h> 
-#include <stdio.h> 
+#include <stdio.h>
 #include <errno.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "MatroskaParser.h"
 #include "MatroskaFile.h"
@@ -87,7 +88,7 @@ void  StdIoFree(StdIoStream *st, void *mem) {
 /* progress report handler for lengthy operations 
  * returns 0 to abort operation, nonzero to continue 
  */ 
-int   StdIoProgress(StdIoStream *st, uint64_t cur, uint64_t max) { 
+int StdIoProgress(StdIoStream *st, uint64_t cur, uint64_t max) { 
 	return 1; 
 } 
 
