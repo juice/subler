@@ -31,7 +31,7 @@
 - (IBAction) help:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL: [NSURL
-                                             URLWithString:@"http://code.google.com/p/subler/w/list"]];
+                                             URLWithString:@"http://code.google.com/p/subler/wiki/Documentation"]];
 }
 
 @end
