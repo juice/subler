@@ -21,7 +21,7 @@ void print_help()
 }
 void print_version()
 {
-    printf("\t\tversion 0.9.9\n");
+    printf("\t\tversion 0.10\n");
 }
 
 int main (int argc, const char * argv[]) {
