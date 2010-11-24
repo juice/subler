@@ -290,7 +290,7 @@ bail:
 
 int muxMP4CCTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId)
 {
-    MP4FileHandle srcFile = MP4Read([filePath UTF8String], MP4_DETAILS_ERROR || MP4_DETAILS_READ);
+    MP4FileHandle srcFile = MP4Read([filePath UTF8String], MP4_DETAILS_ERROR | MP4_DETAILS_READ);
     MP4TrackId videoTrack;
     float subtitleHeight;
     uint16_t videoWidth, videoHeight;
