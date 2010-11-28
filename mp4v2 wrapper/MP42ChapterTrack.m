@@ -14,7 +14,7 @@
 
 - (id) init
 {
-    if (self = [super init])
+    if ((self = [super init]))
     {
         name = @"Chapter Track";
         format = @"Text";
@@ -42,7 +42,7 @@
 
 - (id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
+    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
     {
         if (!name || [name isEqualToString:@"Text Track"])
             name = @"Chapter Track";
@@ -75,7 +75,7 @@
 
 - (id) initWithTextFile:(NSString *)filePath
 {
-    if (self = [super init])
+    if ((self = [super init]))
     {
         name = @"Chapter Track";
         format = @"Text";

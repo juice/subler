@@ -112,11 +112,11 @@
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<int key="NSState">1</int>
-									<object class="NSCustomResource" key="NSOnImage" id="707179934">
+									<object class="NSCustomResource" key="NSOnImage" id="663142116">
 										<string key="NSClassName">NSImage</string>
 										<string key="NSResourceName">NSMenuCheckmark</string>
 									</object>
-									<object class="NSCustomResource" key="NSMixedImage" id="527277073">
+									<object class="NSCustomResource" key="NSMixedImage" id="86134853">
 										<string key="NSClassName">NSImage</string>
 										<string key="NSResourceName">NSMenuMixedState</string>
 									</object>
@@ -136,8 +136,8 @@
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="707179934"/>
-											<reference key="NSMixedImage" ref="527277073"/>
+											<reference key="NSOnImage" ref="663142116"/>
+											<reference key="NSMixedImage" ref="86134853"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<int key="NSTag">24</int>
 											<reference key="NSTarget" ref="56643987"/>
@@ -148,8 +148,8 @@
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="707179934"/>
-											<reference key="NSMixedImage" ref="527277073"/>
+											<reference key="NSOnImage" ref="663142116"/>
+											<reference key="NSMixedImage" ref="86134853"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<int key="NSTag">25</int>
 											<reference key="NSTarget" ref="56643987"/>
@@ -160,8 +160,8 @@
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="707179934"/>
-											<reference key="NSMixedImage" ref="527277073"/>
+											<reference key="NSOnImage" ref="663142116"/>
+											<reference key="NSMixedImage" ref="86134853"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<int key="NSTag">2997</int>
 											<reference key="NSTarget" ref="56643987"/>
@@ -172,8 +172,8 @@
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="707179934"/>
-											<reference key="NSMixedImage" ref="527277073"/>
+											<reference key="NSOnImage" ref="663142116"/>
+											<reference key="NSMixedImage" ref="86134853"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<int key="NSTag">30</int>
 											<reference key="NSTarget" ref="56643987"/>
@@ -184,8 +184,8 @@
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="707179934"/>
-											<reference key="NSMixedImage" ref="527277073"/>
+											<reference key="NSOnImage" ref="663142116"/>
+											<reference key="NSMixedImage" ref="86134853"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<int key="NSTag">50</int>
 											<reference key="NSTarget" ref="56643987"/>
@@ -196,8 +196,8 @@
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="707179934"/>
-											<reference key="NSMixedImage" ref="527277073"/>
+											<reference key="NSOnImage" ref="663142116"/>
+											<reference key="NSMixedImage" ref="86134853"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<int key="NSTag">5994</int>
 											<reference key="NSTarget" ref="56643987"/>
@@ -208,8 +208,8 @@
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="707179934"/>
-											<reference key="NSMixedImage" ref="527277073"/>
+											<reference key="NSOnImage" ref="663142116"/>
+											<reference key="NSMixedImage" ref="86134853"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<int key="NSTag">60</int>
 											<reference key="NSTarget" ref="56643987"/>

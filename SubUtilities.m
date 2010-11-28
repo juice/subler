@@ -8,6 +8,7 @@
 
 #import "SubUtilities.h"
 #import "RegexKitLite.h"
+#import "MP42Sample.h"
 
 @implementation SBTextSample
 
@@ -25,7 +26,7 @@
 @implementation SBSubSerializer
 -(id)init
 {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		lines = [[NSMutableArray alloc] init];
 		finished = NO;
 		last_begin_time = last_end_time = 0;
@@ -184,7 +185,7 @@ canOutput:
 @implementation SBSubLine
 -(id)initWithLine:(NSString*)l start:(unsigned)s end:(unsigned)e
 {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		if ([l characterAtIndex:[l length]-1] != '\n') l = [l stringByAppendingString:@"\n"];
 		line = [l retain];
 		begin_time = s;
@@ -437,7 +438,7 @@ static int parse_SYNC(NSString *str)
 {
 	NSScanner *sc = [NSScanner scannerWithString:str];
     
-	int res;
+	int res = 0;
     
 	if ([sc scanString:@"START=" intoString:nil])
 		[sc scanInt:&res];
@@ -723,8 +724,8 @@ int LoadSMIFromPath(NSString *path, SBSubSerializer *ss, int subCount)
 int ParseSSAHeader(NSString *header) {
     NSString *info;
     NSString *styles;
-    NSString *splitLine  = @"\\n+";
-    NSArray * stylesArray;
+    //NSString *splitLine  = @"\\n+";
+    //NSArray * stylesArray;
 
     //NSLog(@"%@", header);
     NSScanner *sc = [NSScanner scannerWithString:header];
@@ -735,7 +736,7 @@ int ParseSSAHeader(NSString *header) {
     }
     [sc scanUpToString:@"[Events]" intoString:&styles];
     if (styles) {
-        stylesArray = [styles componentsSeparatedByRegex:splitLine];
+        //stylesArray = [styles componentsSeparatedByRegex:splitLine];
         //NSLog(@"%@", styles);
     }
     [sc scanUpToString:@"Format:" intoString:nil];
@@ -797,3 +798,182 @@ NSString* StripSSALine(NSString *line){
 
     return line;
 }
+
+#define STYLE_BOLD 1
+#define STYLE_ITALIC 2
+#define STYLE_UNDERLINED 4
+
+u_int8_t* createStyleRecord(u_int16_t startChar, u_int16_t endChar, u_int16_t fontID, u_int8_t flags, u_int8_t* style)
+{
+    style[0] = (startChar >> 8) & 0xff; // startChar
+    style[1] = startChar & 0xff;
+    style[2] = (endChar >> 8) & 0xff;   // endChar
+    style[3] = endChar & 0xff;
+    style[4] = (fontID >> 8) & 0xff;    // font-ID
+    style[5] = fontID & 0xff;
+    style[6] = flags;   // face-style-flags: 1 bold; 2 italic; 4 underline
+    style[7] = 24;      // font-size
+    style[8] = 255;     // r
+    style[9] = 255;     // g
+    style[10] = 255;    // b
+    style[11] = 255;    // a
+    
+    return style;
+}
+
+size_t closeStyleAtom(u_int16_t styleCount, u_int8_t* styleAtom)
+{
+    size_t styleSize = 10 + (styleCount * 12);
+    styleAtom[0] = 0;
+    styleAtom[1] = 0;
+    styleAtom[2] = (styleSize >> 8) & 0xff;
+    styleAtom[3] = styleSize & 0xff;
+    styleAtom[8] = (styleCount >> 8) & 0xff;
+    styleAtom[9] = styleCount & 0xff;
+    
+    return styleSize;
+}
+
+NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *size)
+{
+    u_int16_t styleCount = 0;
+    memcpy(buffer + 4, "styl", 4);
+    
+    u_int8_t italic = 0;
+    u_int8_t bold = 0;
+    u_int8_t underlined = 0;
+    
+    // Parse the tags in the line, remove them and create a style record for every style change
+    NSRange endRange;
+    NSRange tagEndRange;
+    NSRange startRange = [string rangeOfString: @"<"];
+    if (startRange.location != NSNotFound) {
+        unichar tag = [string characterAtIndex:startRange.location + 1];
+        if (tag == 'i') italic++;
+        else if (tag == 'b') bold++;
+        else if (tag == 'u') underlined++;
+        tagEndRange = [string rangeOfString: @">"];
+        startRange.length = tagEndRange.location - startRange.location +1;
+        if (tagEndRange.location == NSNotFound || startRange.location > tagEndRange.location || startRange.length > [string length])
+            startRange.length = 2;
+        string = [string stringByReplacingCharactersInRange:startRange withString:@""];
+    }
+    
+    while (startRange.location != NSNotFound) {
+        endRange = [string rangeOfString: @"<"];
+        if (endRange.location == NSNotFound)
+            endRange.location = [string length] -1;
+        
+        u_int8_t styl = 0;
+        if (italic) styl |= STYLE_ITALIC;
+        if (bold) styl |= STYLE_BOLD;
+        if (underlined) styl |= STYLE_UNDERLINED;
+        
+        if (styl && startRange.location != endRange.location) {
+            u_int8_t styleRecord[12];
+            createStyleRecord(startRange.location, endRange.location, 1, styl, styleRecord);
+            memcpy(buffer + 10 + (12 * styleCount), styleRecord, 12);
+            styleCount++;
+        }
+        
+        endRange = [string rangeOfString: @"<"];
+        if (endRange.location != NSNotFound && (endRange.location + 1) < [string length]) {
+            unichar tag = [string characterAtIndex:endRange.location + 1];
+            if (tag == 'i') italic++;
+            else if (tag == 'b') bold++;
+            else if (tag == 'u') underlined++;
+            
+            if (tag == '/' && (endRange.location + 2) < [string length]) {
+                unichar tag2 = [string characterAtIndex:endRange.location + 2];
+                if (tag2 == 'i') italic--;
+                else if (tag2 == 'b') bold--;
+                else if (tag2 == 'u') underlined--;
+                tagEndRange = [string rangeOfString: @">"];
+                endRange.length = tagEndRange.location - endRange.location +1;
+                if (tagEndRange.location == NSNotFound || endRange.length > [string length])
+                    endRange.length = 2;
+                string = [string stringByReplacingCharactersInRange:endRange withString:@""];
+            }
+            else {
+                tagEndRange = [string rangeOfString: @">"];
+                endRange.length = tagEndRange.location - endRange.location +1;
+                if (tagEndRange.location == NSNotFound || endRange.length > [string length])
+                    endRange.length = 2;
+                string = [string stringByReplacingCharactersInRange:endRange withString:@""];
+            }
+            startRange = endRange;
+        }
+        else
+            break;
+    }
+    
+    if (styleCount)
+        *size = closeStyleAtom(styleCount, buffer);
+    
+    return string;
+}
+
+NSString* removeNewLines(NSString* string) {
+    NSMutableString *mutableString     = [NSMutableString stringWithString:string];
+    NSString        *regexString       = @"\\n";
+    NSString        *replaceWithString = @" ";
+    NSUInteger       replacedCount     = 0UL;
+    
+    replacedCount = [mutableString replaceOccurrencesOfRegex:regexString withString:replaceWithString];
+    if (replacedCount > 2)
+        return mutableString;
+    else
+        return string;
+}
+
+MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration)
+{
+    uint8_t *sampleData = NULL;
+    u_int8_t styleAtom[2048];
+    size_t styleSize = 0;
+    
+    string = removeNewLines(string);
+    
+    string = createStyleAtomForString(string, styleAtom, &styleSize);
+    
+    
+    const size_t stringLength = strlen([string UTF8String]);
+    u_int8_t buffer[2048];
+    memcpy(buffer+2, [string UTF8String], stringLength);
+    memcpy(buffer+2+stringLength, styleAtom, styleSize);
+    buffer[0] = (stringLength >> 8) & 0xff;
+    buffer[1] = stringLength & 0xff;
+    
+    sampleData = malloc(stringLength + styleSize + 2);
+    memcpy(sampleData, buffer, stringLength + styleSize + 2);
+    
+    MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
+    sample->sampleData = sampleData;
+    sample->sampleSize = stringLength + styleSize + 2;
+    sample->sampleDuration = duration;
+    sample->sampleOffset = 0;
+    sample->sampleTimestamp = duration;
+    sample->sampleIsSync = true;
+    sample->sampleTrackId = subtitleTrackId;
+    
+    return sample;
+}
+
+MP42SampleBuffer* copyEmptySubtitleSample(MP4TrackId subtitleTrackId, MP4Duration duration)
+{
+    uint8_t *sampleData = NULL;
+    u_int8_t empty[2] = {0,0};
+
+    sampleData = malloc(2);
+    memcpy(sampleData, empty, 2);
+    
+    MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
+    sample->sampleData = sampleData;
+    sample->sampleSize = 2;
+    sample->sampleDuration = duration;
+    sample->sampleOffset = 0;
+    sample->sampleTimestamp = duration;
+    sample->sampleIsSync = true;
+    sample->sampleTrackId = subtitleTrackId;
+    
+    return sample;}

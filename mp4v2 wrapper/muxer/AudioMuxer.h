@@ -18,6 +18,4 @@ int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath);
     int muxMOVAudioTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcTrackId);
 #endif
 
-int muxMP4AudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
-
 int muxMKVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);

@@ -54,3 +54,8 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss);
 int ParseSSAHeader(NSString *header);
 NSString *StripSSALine(NSString *line);
 
+@class MP42SampleBuffer;
+
+MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration);
+MP42SampleBuffer* copyEmptySubtitleSample(MP4TrackId subtitleTrackId, MP4Duration duration);
+

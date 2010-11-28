@@ -325,7 +325,8 @@ static const genreType_t genreType_strings[] = {
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
             @"Studio", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
-            @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"XID", nil];
+            @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"artistID", @"playlistID", @"genreID", @"composerID",
+            @"XID", @"Sort Name", @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
 }
 
 - (NSArray *) writableMetadata
@@ -640,15 +641,56 @@ static const genreType_t genreType_strings[] = {
     if (tags->iTunesAccount)
         [tagsDict setObject:[self stringFromMetadata:tags->iTunesAccount]
                      forKey:@"iTunes Account"];
-    
+
     if (tags->contentID)
         [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->contentID]
                      forKey:@"contentID"];
+
+    if (tags->artistID)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->artistID]
+                     forKey:@"artistID"];
+
+    if (tags->playlistID)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->playlistID]
+                     forKey:@"playlistID"];
+
+    if (tags->genreID)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->genreID]
+                     forKey:@"genreID"];
+
+    if (tags->composerID)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->composerID]
+                     forKey:@"composerID"];
 
     if (tags->xid)
         [tagsDict setObject:[self stringFromMetadata:tags->xid]
                      forKey:@"XID"];    
 
+    if (tags->sortName)
+        [tagsDict setObject:[self stringFromMetadata:tags->sortName]
+                     forKey:@"Sort Name"];
+
+    if (tags->sortArtist)
+        [tagsDict setObject:[self stringFromMetadata:tags->sortArtist]
+                     forKey:@"Sort Artist"];
+
+    if (tags->sortAlbumArtist)
+        [tagsDict setObject:[self stringFromMetadata:tags->sortAlbumArtist]
+                     forKey:@"Sort Album Artist"];
+
+    if (tags->sortAlbum)
+        [tagsDict setObject:[self stringFromMetadata:tags->sortAlbum]
+                     forKey:@"Sort Album"];
+
+    if (tags->sortComposer)
+        [tagsDict setObject:[self stringFromMetadata:tags->sortComposer]
+                     forKey:@"Sort Composer"];
+
+    if (tags->sortTVShow)
+        [tagsDict setObject:[self stringFromMetadata:tags->sortTVShow]
+                     forKey:@"Sort TV Show"];
+    
+    
     if (tags->artwork) {
         NSData *imageData = [NSData dataWithBytes:tags->artwork->data length:tags->artwork->size];
         NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
@@ -905,7 +947,7 @@ static const genreType_t genreType_strings[] = {
 
     if ([tagsDict valueForKey:@"Cast"] || [tagsDict valueForKey:@"Director"] ||
         [tagsDict valueForKey:@"Codirector"] || [tagsDict valueForKey:@"Producers"] ||
-        [tagsDict valueForKey:@"Screenwriters"]) {
+        [tagsDict valueForKey:@"Screenwriters"] || [tagsDict valueForKey:@"Studio"]) {
         NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
         if ([tagsDict valueForKey:@"Cast"]) {
             [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Cast"]] forKey:@"cast"];

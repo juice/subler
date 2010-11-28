@@ -13,7 +13,7 @@
 
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
+    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
     {
         height = MP4GetTrackVideoHeight(fileHandle, Id);
         width = MP4GetTrackVideoWidth(fileHandle, Id);
@@ -54,7 +54,7 @@
 
 -(id) init
 {
-    if (self = [super init])
+    if ((self = [super init]))
     {
         name = @"Video Track";
         language = @"Unknown";
@@ -68,29 +68,6 @@
     if (!fileHandle)
         return NO;
 
-    if (isEdited && !muxed) {
-        if ([sourceInputType isEqualToString:MP42SourceTypeQuickTime]) {
-#if !__LP64__
-            Id = muxMOVVideoTrack(fileHandle, sourceFileHandle, sourceId);
-#endif
-        }
-        else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
-            Id = muxMP4VideoTrack(fileHandle, sourcePath, sourceId);
-
-		else if ([sourceInputType isEqualToString:MP42SourceTypeMatroska])
-			Id = muxMKVVideoTrack(fileHandle, sourcePath, sourceId);
-
-        else if ([sourceInputType isEqualToString:MP42SourceTypeRaw])
-            Id = muxH264ElementaryStream(fileHandle, sourcePath, sourceId);
-    }
-
-    if (!Id && (outError != NULL)) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        [errorDetail setValue:@"Error: couldn't mux video track" forKey:NSLocalizedDescriptionKey];
-        *outError = [NSError errorWithDomain:@"MP42Error"
-                                        code:110
-                                    userInfo:errorDetail];
-    }
     else if (Id) {
         [super writeToFile:fileHandle error:outError];
 
@@ -153,8 +130,30 @@
 @synthesize trackWidth;
 @synthesize trackHeight;
 
-@synthesize hSpacing;
-@synthesize vSpacing;
+
+- (uint64_t) hSpacing {
+    return hSpacing;
+}
+
+- (void) setHSpacing:(uint64_t)newHSpacing
+{
+    hSpacing = newHSpacing;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"hSpacing"];
+    
+}
+
+- (uint64_t) vSpacing {
+    return vSpacing;
+}
+
+- (void) setVSpacing:(uint64_t)newVSpacing
+{
+    vSpacing = newVSpacing;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"vSpacing"];
+    
+}
 
 @synthesize offsetX;
 @synthesize offsetY;

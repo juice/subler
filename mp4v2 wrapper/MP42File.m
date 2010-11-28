@@ -24,7 +24,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
 - (id)initWithDelegate:(id)del;
 {
-    if (self = [super init]) {
+    if ((self = [super init])) {
         delegate = del;
         hasFileRepresentation = NO;
         tracks = [[NSMutableArray alloc] init];
@@ -38,7 +38,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
 - (id)initWithExistingFile:(NSString *)path andDelegate:(id)del;
 {
-    if (self = [super init])
+    if ((self = [super init]))
 	{
         delegate = del;
 
@@ -120,6 +120,12 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     track.muxed = NO;
     track.isEdited = YES;
     track.isDataEdited = YES;
+    if (trackNeedConversion(track.format)) {
+        track.needConversion = YES;
+    }
+    else
+        track.needConversion = NO;
+
     track.language = track.language;
     track.name = track.name;
     if ([track isMemberOfClass:[MP42ChapterTrack class]]) {
@@ -179,9 +185,12 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     char* supportedBrands[4];
     uint32_t supportedBrandsCount = 0;
     uint32_t flags = 0;
-    if ([[attributes valueForKey:MP42Create64BitData] integerValue])
+
+    if ([[attributes valueForKey:MP42Create64BitData] boolValue]){
+        NSLog(@"64Bit Data");
         flags += 0x01;
-    if ([[attributes valueForKey:MP42Create64BitTime] integerValue])
+    }
+    if ([[attributes valueForKey:MP42Create64BitTime] boolValue])
         flags += 0x02;
 
     if ([fileExtension isEqualToString:@"m4v"]) {
@@ -236,6 +245,17 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     for (track in tracksToBeDeleted)
         [self removeMuxedTrack:track];
 
+    MP42Muxer *muxer = [[MP42Muxer alloc] initWithDelegate:self];
+    for (track in tracks)
+        if (!(track.muxed) && !stopOperation) {
+            [muxer addTrack:track];
+    }
+
+    [muxer prepareWork:fileHandle];
+    [muxer work:fileHandle];
+    
+    [muxer release];
+
     for (track in tracks)
         if (track.isEdited && !stopOperation) {
             success = [track writeToFile:fileHandle error:outError];
@@ -248,7 +268,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
     MP4Close(fileHandle);
 
-    if ([[attributes valueForKey:@"ChaptersPreview"] integerValue])
+    if ([[attributes valueForKey:@"ChaptersPreview"] boolValue])
         [self createChaptersPreview];
 
     return success;
@@ -259,34 +279,28 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     stopOperation = TRUE;
 }
 
+- (void)progressStatus: (CGFloat)progress {
+    if ([delegate respondsToSelector:@selector(progressStatus:)]) 
+        [delegate progressStatus:progress];
+}
+
 - (void) removeMuxedTrack: (MP42Track *)track
 {
     if (!fileHandle)
         return;
 
     // We have to handle a few special cases here.
-    if ([track isMemberOfClass:[MP42ChapterTrack class]])
-        MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
+    if ([track isMemberOfClass:[MP42ChapterTrack class]]) {
+        MP4ChapterType err = MP4DeleteChapters(fileHandle, MP4ChapterTypeAny, track.Id);
+        if (err == 0)
+            MP4DeleteTrack(fileHandle, track.Id);
+    }
     else
         MP4DeleteTrack(fileHandle, track.Id);
-    
-    if ([track.format isEqualToString:@"Photo - JPEG"]) {
-        MP42ChapterTrack * chapterTrack = nil;
-        MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
-        if (!refTrack)
-            refTrack = 1;
-        
-        MP4RemoveAllTrackReferences(fileHandle, "tref.chap", refTrack);
-        for (MP42Track * track in tracks)
-            if ([track isMemberOfClass:[MP42ChapterTrack class]])
-                chapterTrack = (MP42ChapterTrack*) track;
-        
-        if (chapterTrack)
-            MP4AddTrackReference(fileHandle, "tref.chap", [chapterTrack Id], refTrack);
-    }
 
     updateTracksCount(fileHandle);
     updateMoovDuration(fileHandle);
+
     if ([track isMemberOfClass:[MP42SubtitleTrack class]])
         enableFirstSubtitleTrack(fileHandle);
 }

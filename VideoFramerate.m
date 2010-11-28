@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 01/04/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
 #import "VideoFramerate.h"
@@ -14,7 +14,7 @@
 
 - (id)initWithDelegate:(id)del andFile: (NSString *)path
 {
-	if (self = [super initWithWindowNibName:@"VideoFramerate"])
+	if ((self = [super initWithWindowNibName:@"VideoFramerate"]))
 	{        
 		delegate = del;
         filePath = [path retain];

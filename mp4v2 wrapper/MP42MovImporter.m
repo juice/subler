@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 31/01/10.
-//  Copyright 2010 Apple Inc. All rights reserved.
+//  Copyright 2010 Damiano Galassi All rights reserved.
 //
 
 #import "MP42MovImporter.h"
@@ -29,7 +29,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
 - (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
-    if (self = [super init]) {
+    if ((self = [super init])) {
         delegate = del;
         file = [fileUrl retain];
 
@@ -225,6 +225,14 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 {
     return [NSString stringWithUTF8String:lang_for_qtcode(
                 [[track attributeForKey:QTTrackLanguageAttribute] longValue])->eng_name];
+}
+
+- (NSSize)sizeForTrack:(MP42Track *)track
+{
+    MP4TrackId srcTrackId = [track sourceId];
+    MP42VideoTrack* currentTrack = [tracksArray objectAtIndex:srcTrackId];
+    
+    return NSMakeSize([currentTrack width], [currentTrack height]);
 }
 
 - (void) dealloc

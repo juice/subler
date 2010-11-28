@@ -38,7 +38,11 @@ NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId vid
 NSString* getFilenameLanguage(CFStringRef filename);
 
 ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int versionFlags);
+CFDataRef DescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate);
+CFDataRef DescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate);
+
 BOOL isTrackMuxable(NSString * formatName);
+BOOL trackNeedConversion(NSString * formatName);
 
 int64_t getTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id);
 void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset);

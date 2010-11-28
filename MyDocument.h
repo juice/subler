@@ -48,7 +48,7 @@
     IBOutlet NSButton *cancelSave;
     IBOutlet NSButton *_64bit_data;
     IBOutlet NSButton *_64bit_time;
-    BOOL _optimize;;
+    BOOL _optimize;
 }
 
 - (IBAction) closeSheet: (id) sender;

@@ -16,6 +16,7 @@
 #import "MP42ChapterTrack.h"
 #import "MP42Metadata.h"
 #import "MP42Utilities.h"
+#import "MP42Muxer.h"
 
 extern NSString * const MP42Create64BitData;
 extern NSString * const MP42Create64BitTime;
@@ -60,6 +61,6 @@ extern NSString * const MP42CreateChaptersPreviewTrack;
 @end
 
 @interface NSObject (MP42FileDelegateMethod)
-- (void)optimizeDidComplete;
+- (void)progressStatus: (CGFloat)progress;
 
 @end

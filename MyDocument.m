@@ -218,7 +218,6 @@
     [NSApp endSheet: savingWindow];
     [savingWindow orderOut:self];
     
-    [optBar stopAnimation:nil];
     
     if (outError) {
         [self presentError:outError
@@ -297,6 +296,17 @@
 }
 
 #pragma mark Interface validation
+
+- (void)progressStatus: (CGFloat)progress {
+    [self performSelectorOnMainThread:@selector(updateProgressBar:)
+                           withObject:[NSNumber numberWithDouble:progress] waitUntilDone: NO];
+
+}
+
+- (void)updateProgressBar: (NSNumber *)progress {
+    [optBar setIndeterminate:NO];
+    [optBar setDoubleValue:[progress doubleValue]];
+}
 
 - (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
 {
@@ -696,11 +706,6 @@ returnCode contextInfo: (void *) contextInfo
         [fileExtension isEqualToString:@"ac3"])
         [self addAudioTrack:[sheet.filenames objectAtIndex: 0]];
 
-    else if ([fileExtension caseInsensitiveCompare: @"srt"] == NSOrderedSame ||
-             [fileExtension caseInsensitiveCompare: @"smi"] == NSOrderedSame)
-        [self performSelectorOnMainThread:@selector(showSubititleWindow:)
-                               withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
-
     else if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
          [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
 
@@ -823,10 +828,7 @@ returnCode contextInfo: (void *) contextInfo
                 [self addCCTrack:file];
             else if ([[file pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame)
-                [self addSubtitleTrack:file
-                                 delay:0
-                                height:60
-                              language:getFilenameLanguage((CFStringRef)file)];
+                [self showImportSheet:file];
             else if ([[file pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame ||

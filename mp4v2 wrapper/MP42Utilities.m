@@ -331,13 +331,147 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int ve
 
 	return noErr;
 }
+enum {
+	// these are atoms/extension types defined by XiphQT for their codecs
+	kCookieTypeOggSerialNo = 'oCtN',
+    
+	kCookieTypeVorbisHeader = 'vCtH',
+	kCookieTypeVorbisComments = 'vCt#',
+	kCookieTypeVorbisCodebooks = 'vCtC',
+	kCookieTypeVorbisFirstPageNo = 'vCtN',
+    
+	kCookieTypeSpeexHeader = 'sCtH',
+	kCookieTypeSpeexComments = 'sCt#',
+	kCookieTypeSpeexExtraHeader	= 'sCtX',
+    
+	kCookieTypeFLACStreaminfo = 'fCtS',
+	kCookieTypeFLACMetadata = 'fCtM',
+};
+
+// xiph-qt expects these this sound extension to have been created from first 3 packets
+// which are stored in CodecPrivate in Matroska
+CFDataRef DescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate)
+{
+	if (codecPrivateSize) {
+        CFMutableDataRef sndDescExt = CFDataCreateMutable(NULL, 0);
+        
+		unsigned char *privateBuf;
+		size_t privateSize;
+		uint8_t numPackets;
+		int offset = 1, i;
+		UInt32 uid = 0;
+        
+		privateSize = codecPrivateSize;
+		privateBuf = (unsigned char *) codecPrivate;
+		numPackets = privateBuf[0] + 1;
+        
+		int packetSizes[numPackets];
+		memset(packetSizes, 0, sizeof(packetSizes));
+        
+		// get the sizes of the packets
+		packetSizes[numPackets - 1] = privateSize - 1;
+		int packetNum = 0;
+		for (i = 1; packetNum < numPackets - 1; i++) {
+			packetSizes[packetNum] += privateBuf[i];
+			if (privateBuf[i] < 255) {
+				packetSizes[numPackets - 1] -= packetSizes[packetNum];
+				packetNum++;
+			}
+			offset++;
+		}
+		packetSizes[numPackets - 1] -= offset - 1;
+        
+		if (offset+packetSizes[0]+packetSizes[1]+packetSizes[2] > privateSize) {
+            CFRelease(sndDescExt);
+			return NULL;
+		}
+        
+		// first packet
+		uint32_t serial_header_atoms[3+2] = { EndianU32_NtoB(3*4), 
+			EndianU32_NtoB(kCookieTypeOggSerialNo), 
+			EndianU32_NtoB(uid),
+			EndianU32_NtoB(packetSizes[0] + 2*4), 
+			EndianU32_NtoB(kCookieTypeVorbisHeader) };
+        
+        CFDataAppendBytes(sndDescExt, (UInt8 *)serial_header_atoms, sizeof(serial_header_atoms));
+        CFDataAppendBytes(sndDescExt, &privateBuf[offset], packetSizes[0]);
+        
+		// second packet
+		uint32_t atomhead2[2] = { EndianU32_NtoB(packetSizes[1] + sizeof(atomhead2)), 
+			EndianU32_NtoB(kCookieTypeVorbisComments) };
+        CFDataAppendBytes(sndDescExt, (UInt8 *)atomhead2, sizeof(atomhead2));
+        CFDataAppendBytes(sndDescExt, &privateBuf[offset + packetSizes[0]], packetSizes[1]);
+        
+		// third packet
+		uint32_t atomhead3[2] = { EndianU32_NtoB(packetSizes[2] + sizeof(atomhead3)), 
+			EndianU32_NtoB(kCookieTypeVorbisCodebooks) };
+        CFDataAppendBytes(sndDescExt, (UInt8 *)atomhead3, sizeof(atomhead3));
+        CFDataAppendBytes(sndDescExt, &privateBuf[offset + packetSizes[1] + packetSizes[0]], packetSizes[2]);
+        
+        return sndDescExt;
+	}
+	return NULL;
+}
+
+// xiph-qt expects these this sound extension to have been created in this way
+// from the packets which are stored in the CodecPrivate element in Matroska
+CFDataRef DescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate)
+{	
+	if (codecPrivateSize) {
+        CFMutableDataRef sndDescExt = CFDataCreateMutable(NULL, 0);
+		UInt32 uid = 0;
+
+		size_t privateSize = codecPrivateSize;
+		UInt8 *privateBuf = (unsigned char *) codecPrivate, *privateEnd = privateBuf + privateSize;
+
+		unsigned long serialnoatom[3] = { EndianU32_NtoB(sizeof(serialnoatom)), 
+			EndianU32_NtoB(kCookieTypeOggSerialNo), 
+			EndianU32_NtoB(uid) };
+
+        CFDataAppendBytes(sndDescExt, (UInt8 *)serialnoatom, sizeof(serialnoatom));
+
+		privateBuf += 4; // skip 'fLaC'
+
+		while ((privateEnd - privateBuf) > 4) {
+			uint32_t packetHeader = EndianU32_BtoN(*(uint32_t*)privateBuf);
+			int lastPacket = packetHeader >> 31, blockType = (packetHeader >> 24) & 0x7F;
+			uint32_t packetSize = (packetHeader & 0xFFFFFF) + 4;
+			uint32_t xiphHeader[2] = {EndianU32_NtoB(packetSize + sizeof(xiphHeader)),
+				EndianU32_NtoB(blockType ? kCookieTypeFLACMetadata : kCookieTypeFLACStreaminfo)};
+
+			if ((privateEnd - privateBuf) < packetSize)
+				break;
+
+            CFDataAppendBytes(sndDescExt, (UInt8 *)xiphHeader, sizeof(xiphHeader));
+            CFDataAppendBytes(sndDescExt, privateBuf, packetSize);
+            
+			privateBuf += packetSize;
+            
+			if (lastPacket)
+				break;
+		}
+
+		return sndDescExt;	
+	}
+	return nil;
+}
 
 BOOL isTrackMuxable(NSString * formatName)
 {
     NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"AAC", @"AC-3", @"3GPP Text", @"Text", @"Plain Text", @"ASS", @"SSA",
-                                 @"CEA-608", @"Photo - JPEG", nil];
-    
+                                 @"CEA-608", @"Photo - JPEG", @"Vorbis", nil];
+
     for (NSString* type in supportedFormats)
+        if ([formatName isEqualToString:type])
+            return YES;
+
+    return NO;
+}
+
+BOOL trackNeedConversion(NSString * formatName) {
+    NSArray* supportedConversionFormats = [NSArray arrayWithObjects:@"Vorbis", @"DTS", @"Flac", @"Mp3", @"AC-3", nil];
+
+    for (NSString* type in supportedConversionFormats)
         if ([formatName isEqualToString:type])
             return YES;
 

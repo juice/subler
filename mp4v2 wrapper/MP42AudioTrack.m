@@ -14,7 +14,7 @@
 
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
+    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
     {
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.volume", &volume);
     }
@@ -24,7 +24,7 @@
 
 -(id) init
 {
-    if (self = [super init])
+    if ((self = [super init]))
     {
         name = @"Sound Track";
         language = @"Unknown";
@@ -39,36 +39,6 @@
     if (!fileHandle)
         return NO;
 
-    if (isEdited && !muxed) {
-        if ([sourceInputType isEqualToString:MP42SourceTypeQuickTime]) {
-#if !__LP64__
-            Id = muxMOVAudioTrack(fileHandle, sourceFileHandle, sourceId);
-#endif
-        }
-        else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
-            Id = muxMP4AudioTrack(fileHandle, sourcePath, sourceId);
-
-        else if ([sourceInputType isEqualToString:MP42SourceTypeMatroska])
-			Id = muxMKVAudioTrack(fileHandle, sourcePath, sourceId);
-
-        else if ([sourceInputType isEqualToString:MP42SourceTypeRaw])
-        {
-            if ([[sourcePath pathExtension] isEqualToString:@"aac"])
-                Id = muxAACAdtsStream(fileHandle, sourcePath);
-
-            else if ([[sourcePath pathExtension] isEqualToString:@"ac3"])
-                Id = muxAC3ElementaryStream(fileHandle, sourcePath);
-        }    
-        muxed = YES;
-        enableFirstAudioTrack(fileHandle);
-    }
-    if (!Id && (outError != NULL)) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        [errorDetail setValue:@"Error: couldn't mux audio track" forKey:NSLocalizedDescriptionKey];
-        *outError = [NSError errorWithDomain:@"MP42Error"
-                                        code:110
-                                    userInfo:errorDetail];
-    }
     if (Id)
         [super writeToFile:fileHandle error:outError];
 
@@ -94,5 +64,7 @@
 {
     return volume;
 }
+
+@synthesize channels;
 
 @end

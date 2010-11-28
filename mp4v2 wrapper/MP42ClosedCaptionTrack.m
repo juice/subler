@@ -14,7 +14,7 @@
 
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if (self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])
+    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
     {
     }
 
@@ -23,7 +23,7 @@
 
 -(id) init
 {
-    if (self = [super init])
+    if ((self = [super init]))
     {
         name = @"Closed Caption Track";
         format = @"CEA-608";
@@ -34,7 +34,7 @@
 
 - (id) initWithSCCFile:(NSString *)filePath
 {
-    if (self = [super init])
+    if ((self = [super init]))
     {
         name = @"Closed Caption Track";
         format = @"CEA-608";

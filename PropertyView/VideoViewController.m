@@ -151,20 +151,18 @@ static NSString *getLevelName(uint8_t level) {
         i = [hSpacing integerValue];
         if (track.hSpacing != i) {
             track.hSpacing = i;
-            
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
-            [track.updatedProperty setValue:@"True" forKey:@"hSpacing"];
         }
     }
     else if (sender == vSpacing) {
         i = [vSpacing integerValue];
         if (track.vSpacing != i) {
             track.vSpacing = i;
-            
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
             track.isEdited = YES;
-            [track.updatedProperty setValue:@"True" forKey:@"vSpacing"];
         }
     }
 }

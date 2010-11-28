@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 06/01/10.
-//  Copyright 2010 __MyCompanyName__. All rights reserved.
+//  Copyright 2010 Damiano Galassi. All rights reserved.
 //
 
 #import "tagChimpController.h"
@@ -15,7 +15,7 @@
 
 - (id)initWithDelegate:(id)del
 {
-	if (self = [super initWithWindowNibName:@"MetadataImport"]) {        
+	if ((self = [super initWithWindowNibName:@"MetadataImport"])) {        
 		delegate = del;
 
         NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
@@ -267,7 +267,8 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     [stdOut release];
     [args release];
     [task release];
-    return results;
+
+    return [results autorelease];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response

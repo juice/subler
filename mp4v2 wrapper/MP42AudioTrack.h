@@ -11,8 +11,10 @@
 
 @interface MP42AudioTrack : MP42Track {
     float volume;
+    unsigned int channels;
 }
 
 @property float volume;
+@property unsigned int channels;
 
 @end
