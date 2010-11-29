@@ -199,6 +199,26 @@
             
             [[track trackImporterHelper] setActiveTrack:track];
         }
+        // Closed Caption text track
+        else if ([track isMemberOfClass:[MP42ClosedCaptionTrack class]]) {
+            NSSize videoSize = [[track trackImporterHelper] sizeForTrack:track];
+
+            if (!videoSize.width) {
+                MP4TrackId videoTrack;
+
+                videoTrack = findFirstVideoTrack(fileHandle);
+                if (videoTrack) {
+                    videoSize.width = getFixedVideoWidth(fileHandle, videoTrack);
+                    videoSize.height = MP4GetTrackVideoHeight(fileHandle, videoTrack);
+                }
+                else {
+                    videoSize.width = 640;
+                    videoSize.height = 480;
+                }
+            }
+
+            dstTrackId = MP4AddCCTrack(fileHandle, timeScale, videoSize.width, videoSize.height);
+        }
         else {
             continue;
         }
@@ -223,8 +243,11 @@
     NSUInteger currentNumber = 0;
     NSInteger tracksNumber = [trackImportersArray count];
 
-    if (tracksNumber == 0)
+    if (tracksNumber == 0) {
+        [pool release];
+        [trackImportersArray release];
         return;
+    }
 
     for (id importerHelper in trackImportersArray) {
         MP42SampleBuffer * sampleBuffer;

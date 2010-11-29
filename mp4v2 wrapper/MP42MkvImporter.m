@@ -299,12 +299,12 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 		int firstFrame = mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags);
 		if (firstFrame != 0)
 		{
-			return MP4_INVALID_TRACK_ID;
+			return nil;
 		}
 
 		if (fseeko(ioStream->fp, FilePos, SEEK_SET)) {
             fprintf(stderr,"fseeko(): %s\n", strerror(errno));
-            return MP4_INVALID_TRACK_ID;				
+            return nil;				
         } 
 
         if (fb < FrameSize) {
@@ -312,7 +312,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
             frame = realloc(frame, fb);
             if (frame == NULL) {
                 fprintf(stderr,"Out of memory\n");
-                return MP4_INVALID_TRACK_ID;		
+                return nil;		
             }
         }
 
@@ -327,12 +327,14 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                     fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
             } else
                 fprintf(stderr,"Short read while reading frame\n");
-			return MP4_INVALID_TRACK_ID; // we should be able to read at least one frame
+			return nil; // we should be able to read at least one frame
         }
+        else
+            return nil;
 
 		// parse AC3 header
 		// collect all the necessary meta information
-		u_int32_t samplesPerSecond;
+		// u_int32_t samplesPerSecond;
 		uint32_t fscod, frmsizecod, bsid, bsmod, acmod, lfeon;
 		uint32_t lfe_offset = 4;
 
@@ -351,7 +353,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 		}
 		lfeon = (*(frame+6) >> lfe_offset) & 0x1;
 
-		samplesPerSecond = MP4AV_Ac3GetSamplingRate(frame);
+		// samplesPerSecond = MP4AV_Ac3GetSamplingRate(frame);
         
         mkv_Seek(matroskaFile, 0, 0);
         
@@ -388,7 +390,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
     uint8_t         * frame = NULL;
 
     MP42Track           * track;
-    MatroskaTrackHelper * trackHelper;
+    MatroskaTrackHelper * trackHelper = nil;
     MatroskaSample      * frameSample = nil, * currentSample = nil;
     int64_t             offset, minOffset = 0, duration, next_duration;
 
@@ -420,6 +422,11 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                 trackHelper = fTrack.trackDemuxerHelper;
                 track = fTrack;
             }
+        }
+        
+        if (trackHelper == nil) {
+            NSLog(@"trackHelper is nil, aborting");
+            return;
         }
 
         TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, Track);

@@ -60,13 +60,7 @@
     {
         if ([[sourcePath pathExtension] caseInsensitiveCompare: @"scc"] == NSOrderedSame)
             Id = muxSccCCTrack(fileHandle, sourcePath);
-        else if ([sourceInputType isEqualToString:MP42SourceTypeMP4])
-            Id = muxMP4CCTrack(fileHandle, sourcePath, sourceId);
-        else if ([sourceInputType isEqualToString:MP42SourceTypeQuickTime]) {
-#if !__LP64__
-            Id = muxMOVCCTrack(fileHandle, sourceFileHandle, sourceId);
-#endif
-        }
+
         if (!Id && (outError != NULL)) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
             [errorDetail setValue:@"Failed to mux closed captions into mp4 file" forKey:NSLocalizedDescriptionKey];
