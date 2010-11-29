@@ -219,11 +219,10 @@
         }
     }
 
-
     CGFloat status = 0;
     NSUInteger currentNumber = 0;
     NSInteger tracksNumber = [trackImportersArray count];
-    
+
     if (tracksNumber == 0)
         return;
 
@@ -275,7 +274,7 @@
     }
 
     [trackImportersArray release];
-    
+
     // Write the last samples from the encoder
     for (MP42Track * track in workingTracks) {
         if([track isMemberOfClass:[MP42AudioTrack class]] && track.needConversion) {
@@ -293,7 +292,7 @@
                 else {
                     usleep(50);
                 }
-                
+
             }
             NSData *magicCookie = [track.trackConverterHelper magicCookie];
             MP4SetTrackESConfiguration(fileHandle, track.Id,

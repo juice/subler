@@ -17,5 +17,3 @@ int muxAC3ElementaryStream(MP4FileHandle fileHandle, NSString* filePath);
 #if !__LP64__
     int muxMOVAudioTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcTrackId);
 #endif
-
-int muxMKVAudioTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);

@@ -30,7 +30,6 @@
 - (void)setActiveTrack:(MP42Track *)track;
 
 - (MP42SampleBuffer*)copyNextSample;
-- (MP42SampleBuffer*)nextSampleForTrack:(MP42Track *)track;
 - (CGFloat)progress;
 
 @end

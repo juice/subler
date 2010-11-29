@@ -374,282 +374,40 @@ NSString* getMatroskaTrackName(TrackInfo *track)
         return nil;
 }
 
-// Methods to extract a single track samples
-
-- (void) fillTrackSampleBuffer:(MP42Track *)track
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-    //NSInteger count = 0;
-    NSLog(@"I'm alive!");
-
-    if (!matroskaFile)
-        return;
-
-    MP4TrackId srcTrackId = [track sourceId];
-    MatroskaTrackHelper* trackHelper = track.trackDemuxerHelper;
-
-    /* mask other tracks because we don't need them */
-    mkv_SetTrackMask(matroskaFile, ~(1 << srcTrackId));
-    
-    TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, [track sourceId]);
-    
-    while (1) {
-        while ([trackHelper->samplesBuffer count] >= 100) {
-            usleep(200);
-        }
-
-        if (trackInfo->Type == TT_AUDIO) {
-            uint64_t        StartTime, EndTime, FilePos;
-            uint32_t        rt, FrameSize, FrameFlags;
-            uint8_t         *frame = NULL;
-            
-            /* read frames from file */
-            if (mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) != 0) {
-                mkv_Seek(matroskaFile, 0, 0);
-                break;
-            }
-            
-            trackHelper->samplesWritten++;
-            
-            if (fseeko(ioStream->fp, FilePos, SEEK_SET)) {
-                fprintf(stderr,"fseeko(): %s\n", strerror(errno));
-                break;				
-            }
-
-            frame = malloc(FrameSize);
-            if (frame == NULL) {
-                fprintf(stderr,"Out of memory\n");
-                break;		
-            }
-
-            size_t rd = fread(frame,1,FrameSize,ioStream->fp);
-            if (rd != FrameSize) {
-                if (rd == 0) {
-                    if (feof(ioStream->fp))
-                        fprintf(stderr,"Unexpected EOF while reading frame\n");
-                    else
-                        fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
-                } else
-                    fprintf(stderr,"Short read while reading frame\n");
-            }
-            
-            MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
-            sample->sampleData = frame;
-            sample->sampleSize = FrameSize;
-            sample->sampleDuration = 1024;//EndTime - StartTime;
-            sample->sampleOffset = 0;
-            sample->sampleTimestamp = StartTime;
-            sample->sampleIsSync = FrameFlags & FRAME_KF;
-            sample->sampleTrackId = track.Id;
-            
-            @synchronized(trackHelper->samplesBuffer) {
-                [trackHelper->samplesBuffer addObject:sample];
-            }
-            
-            progress = fileDuration / StartTime * 100.0f;
-        }
-        
-        if (trackInfo->Type == TT_VIDEO) {
-            uint64_t timeScale = mkv_GetFileInfo(matroskaFile)->TimecodeScale / mkv_TruncFloat(trackInfo->TimecodeScale) * 1000;
-
-            MatroskaSample *frameSample = nil, *currentSample = nil;
-            uint64_t        StartTime, EndTime, FilePos;
-            int64_t         offset, minOffset = 0, duration, next_duration;
-            uint32_t        rt, FrameSize, FrameFlags;
-            void            *frame = NULL;
-            
-            unsigned int bufferFlush = 0;
-            const unsigned int bufferSize = 20;
-            int success = 0;
-            
-            /* read frames from file */
-            while ((success = mkv_ReadFrame(matroskaFile, 0, &rt, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags)) >=-1) {
-                if (success == 0) {
-                    frameSample = [[MatroskaSample alloc] init];
-                    frameSample->startTime = StartTime;
-                    frameSample->endTime = EndTime;
-                    frameSample->filePos = FilePos;
-                    frameSample->frameSize = FrameSize;
-                    frameSample->frameFlags = FrameFlags;
-                    [trackHelper->queue addObject:frameSample];
-                    [frameSample release];
-                }
-                else if (success == -1 && bufferFlush == 1) {
-                    // add a last sample to get the duration for the last frame
-                    MatroskaSample *lastSample = [trackHelper->queue lastObject];
-                    for (MatroskaSample *sample in trackHelper->queue) {
-                        if (sample->startTime > lastSample->startTime)
-                            lastSample = sample;
-                    }
-                    frameSample = [[MatroskaSample alloc] init];
-                    frameSample->startTime = [lastSample endTime];
-                    [trackHelper->queue addObject:frameSample];
-                    [frameSample release];
-                }
-                if ([trackHelper->queue count] < bufferSize && success == 0)
-                    continue;
-                else {
-                    currentSample = [trackHelper->queue objectAtIndex:trackHelper->buffer];
-                    
-                    // matroska stores only the start and end time, so we need to recreate
-                    // the frame duration and the offset from the start time, the end time is useless
-                    // duration calculation
-                    duration = [[trackHelper->queue lastObject] startTime] - currentSample->startTime;
-                    
-                    for (MatroskaSample *sample in trackHelper->queue)
-                        if (sample != currentSample && (sample->startTime >= currentSample->startTime))
-                            if ((next_duration = (sample->startTime - currentSample->startTime)) < duration)
-                                duration = next_duration;
-                    
-                    // offset calculation
-                    offset = currentSample->startTime - trackHelper->current_time;
-                    // save the minimum offset, used later to keep the all the offset values positive
-                    if (offset < minOffset)
-                        minOffset = offset;
-                    [trackHelper->offsetsArray addObject:[NSNumber numberWithLongLong:offset]];
-                    
-                    trackHelper->current_time += duration;
-                    
-                    if (fseeko(ioStream->fp, currentSample->filePos, SEEK_SET)) {
-                        fprintf(stderr,"fseeko(): %s\n", strerror(errno));
-                        [trackHelper->offsetsArray release];
-                        [trackHelper->queue release];
-                        break;				
-                    } 
-
-                    frame = malloc(currentSample->frameSize);
-                    if (frame == NULL) {
-                        fprintf(stderr,"Out of memory\n");
-                        [trackHelper->offsetsArray release];
-                        [trackHelper->queue release];
-                        break;		
-                    }
-                    
-                    size_t rd = fread(frame,1,currentSample->frameSize,ioStream->fp);
-                    if (rd != currentSample->frameSize) {
-                        if (rd == 0) {
-                            if (feof(ioStream->fp))
-                                fprintf(stderr,"Unexpected EOF while reading frame\n");
-                            else
-                                fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
-                        } else
-                            fprintf(stderr,"Short read while reading frame\n");
-                        break;
-                    }
-                    
-                    MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
-                    sample->sampleData = frame;
-                    sample->sampleSize = currentSample->frameSize;
-                    sample->sampleDuration = duration / (timeScale / 90000.f);
-                    sample->sampleOffset = offset / (timeScale / 90000.f);
-                    sample->sampleTimestamp = StartTime;
-                    sample->sampleIsSync = currentSample->frameFlags & FRAME_KF;
-                    sample->sampleTrackId = track.Id;
-                    
-                    trackHelper->samplesWritten++;
-                    
-                    if (trackHelper->buffer >= bufferSize)
-                        [trackHelper->queue removeObjectAtIndex:0];
-                    if (trackHelper->buffer < bufferSize && success == 0)
-                        trackHelper->buffer++;
-                    
-                    if (success == -1) {
-                        trackHelper->bufferFlush++;
-                        if (trackHelper->bufferFlush >= bufferSize-1) {
-                            mkv_Seek(matroskaFile, 0, 0);
-                            break;
-                        }
-                    }
-                    
-                    @synchronized(trackHelper->samplesBuffer) {
-                        [trackHelper->samplesBuffer addObject:sample];
-                    }
-                }
-            }
-            NSLog(@"Video reader work done");
-            break;
-        }
-    }
-    readerStatus = 1;
-    [pool release];
-}
-
-- (MP42SampleBuffer*)nextSampleForTrack:(MP42Track *)track
-{
-    if (!matroskaFile)
-        return nil;
-
-    MatroskaTrackHelper* trackHelper = track.trackDemuxerHelper;
-    if (trackHelper == nil) {
-        trackHelper = [[MatroskaTrackHelper alloc] init];
-        track.trackDemuxerHelper = trackHelper;
-    }    
-
-    if (!dataReader && !readerStatus) {
-        dataReader = [[NSThread alloc] initWithTarget:self selector:@selector(fillTrackSampleBuffer:) object:track];
-        [dataReader setName:@"Matroska Demuxer"];
-        [dataReader start];
-    }
-
-    while (![trackHelper->samplesBuffer count] && !readerStatus)
-        usleep(2000);
-
-    if (readerStatus)
-        if ([trackHelper->samplesBuffer count] == 0) {
-            readerStatus = 0;
-            dataReader = nil;
-            return nil;
-        }
-
-    MP42SampleBuffer* sample;
-    
-    @synchronized(trackHelper->samplesBuffer) {
-        sample = [trackHelper->samplesBuffer objectAtIndex:0];
-        [trackHelper->samplesBuffer removeObjectAtIndex:0];
-    }
-
-    return sample;
-}
-
 // Methods to extract all the samples from the active tracks at the same time
 
 - (void) fillMovieSampleBuffer: (id)sender
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    //NSInteger count = 0;
-    NSLog(@"I'm alive!");
-    
+
     if (!matroskaFile)
         return;
-    
-    // = track.trackDemuxerHelper;
-    
+
+    uint64_t        StartTime, EndTime, FilePos;
+    uint32_t        Track, FrameSize, FrameFlags;
+    uint8_t         * frame = NULL;
+
+    MP42Track           * track;
+    MatroskaTrackHelper * trackHelper;
+    MatroskaSample      * frameSample = nil, * currentSample = nil;
+    int64_t             offset, minOffset = 0, duration, next_duration;
+
+    unsigned int bufferFlush = 0;
+    const unsigned int bufferSize = 20;
+    int success = 0;    
+
     /* mask other tracks because we don't need them */
     unsigned int TrackMask = ~0;
+
     for (MP42Track* track in activeTracks){
         TrackMask &= ~(1 << [track sourceId]);
         if (track.trackDemuxerHelper == nil) {
             track.trackDemuxerHelper = [[MatroskaTrackHelper alloc] init];
         }    
-        
     }
+
     mkv_SetTrackMask(matroskaFile, TrackMask);
 
-    uint64_t        StartTime, EndTime, FilePos;
-    uint32_t        Track, FrameSize, FrameFlags;
-    uint8_t         *frame = NULL;
-    
-    MP42Track *track;
-    MatroskaTrackHelper* trackHelper;
-    MatroskaSample *frameSample = nil, *currentSample = nil;
-    int64_t         offset, minOffset = 0, duration, next_duration;
-    
-    unsigned int bufferFlush = 0;
-    const unsigned int bufferSize = 20;
-    int success = 0;    
-    
     while ((success = mkv_ReadFrame(matroskaFile, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags)) >=0 /*=-1*/) {
         while ([samplesBuffer count] >= 200) {
             usleep(200);
@@ -685,7 +443,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                 fprintf(stderr,"Out of memory\n");
                 break;		
             }
-            
+
             size_t rd = fread(frame + trackInfo->CompMethodPrivateSize,1,FrameSize,ioStream->fp);
             if (rd != FrameSize) {
                 if (rd == 0) {
@@ -696,24 +454,24 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                 } else
                     fprintf(stderr,"Short read while reading frame\n");
             }
-            
+
             MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
             sample->sampleData = frame;
             sample->sampleSize = FrameSize;
-            sample->sampleDuration = 1024;//EndTime - StartTime;
+            sample->sampleDuration = MP4_INVALID_DURATION;
             sample->sampleOffset = 0;
             sample->sampleTimestamp = StartTime;
             sample->sampleIsSync = YES;
             sample->sampleTrackId = track.Id;
             if(track.needConversion)
                 sample->sampleSourceTrack = track;
-            
+
             @synchronized(samplesBuffer) {
                 [samplesBuffer addObject:sample];
                 [sample release];
             }
         }
-        
+
         if (trackInfo->Type == TT_SUB) {
             if (!trackHelper->ss)
                 trackHelper->ss = [[SBSubSerializer alloc] init];
@@ -796,6 +554,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                 // save the minimum offset, used later to keep the all the offset values positive
                 if (offset < minOffset)
                     minOffset = offset;
+
                 [trackHelper->offsetsArray addObject:[NSNumber numberWithLongLong:offset]];
 
                 trackHelper->current_time += duration;
@@ -829,7 +588,6 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                     break;
                 }
 
-
                 MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
                 sample->sampleData = frame;
                 sample->sampleSize = currentSample->frameSize + trackInfo->CompMethodPrivateSize;
@@ -838,14 +596,14 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                 sample->sampleTimestamp = StartTime;
                 sample->sampleIsSync = currentSample->frameFlags & FRAME_KF;
                 sample->sampleTrackId = track.Id;
-                
+
                 trackHelper->samplesWritten++;
-                
+
                 if (trackHelper->buffer >= bufferSize)
                     [trackHelper->queue removeObjectAtIndex:0];
                 if (trackHelper->buffer < bufferSize && success == 0)
                     trackHelper->buffer++;
-                
+
                 if (success == -1) {
                     trackHelper->bufferFlush++;
                     if (trackHelper->bufferFlush >= bufferSize-1) {
@@ -853,7 +611,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                         break;
                     }
                 }
-                
+
                 @synchronized(samplesBuffer) {
                     [samplesBuffer addObject:sample];
                     [sample release];
@@ -861,7 +619,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
             }
         }        
     }
-    
+
     for (MP42Track* track in activeTracks){
         trackHelper = track.trackDemuxerHelper;
         if (trackHelper->ss) {
@@ -899,7 +657,6 @@ NSString* getMatroskaTrackName(TrackInfo *track)
         }
     }
 
-    NSLog(@"Reader work done");
     readerStatus = 1;
     [pool release];
 }
@@ -935,14 +692,14 @@ NSString* getMatroskaTrackName(TrackInfo *track)
         [sample retain];
         [samplesBuffer removeObjectAtIndex:0];
     }
-    
+
     return sample;
 }
 
 - (void)setActiveTrack:(MP42Track *)track {
     if (!activeTracks)
         activeTracks = [[NSMutableArray alloc] init];
-    
+
     [activeTracks addObject:track];
 }
 
