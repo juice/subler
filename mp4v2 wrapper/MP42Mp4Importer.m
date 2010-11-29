@@ -13,8 +13,9 @@
 
 @interface Mp4TrackHelper : NSObject {
 @public
-    MP4SampleId currentSampleId;
-    MP4Timestamp currentTime;    
+    MP4SampleId     currentSampleId;
+    uint64_t        totalSampleNumber;
+    MP4Timestamp    currentTime;
 }
 @end
 
@@ -234,16 +235,20 @@
 
     NSInteger tracksNumber = [activeTracks count];
     NSInteger tracksDone = 0;
+    Mp4TrackHelper * trackHelper;
 
-    for (MP42Track* track in activeTracks){
+    for (MP42Track * track in activeTracks) {
         if (track.trackDemuxerHelper == nil) {
             track.trackDemuxerHelper = [[Mp4TrackHelper alloc] init];
+
+            trackHelper = track.trackDemuxerHelper;
+            trackHelper->totalSampleNumber = MP4GetTrackNumberOfSamples(fileHandle, [track Id]);
+            MP4GetTrack
         }
     }
 
-    Mp4TrackHelper* trackHelper;
 
-    for (MP42Track* track in activeTracks) {
+    for (MP42Track * track in activeTracks) {
         while (1) {
             while ([samplesBuffer count] >= 200) {
                 usleep(200);
@@ -283,11 +288,15 @@
                 [samplesBuffer addObject:sample];
                 [sample release];
             }
+            
+            progress = ((trackHelper->currentSampleId / (CGFloat) trackHelper->totalSampleNumber ) * 100 / tracksNumber) +
+                        (tracksDone / (CGFloat) tracksNumber * 100);
         }
     }
+
     if (tracksDone >= tracksNumber)
         readerStatus = 1;
-    
+
     [pool release];
 }
 
@@ -331,6 +340,10 @@
         activeTracks = [[NSMutableArray alloc] init];
     
     [activeTracks addObject:track];
+}
+
+- (CGFloat)progress {
+    return progress;
 }
 
 - (void) dealloc

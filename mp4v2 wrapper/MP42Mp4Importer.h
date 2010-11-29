@@ -18,6 +18,8 @@
 
     NSMutableArray *activeTracks;
     NSMutableArray *samplesBuffer;
+    
+    CGFloat progress;
 }
 
 @end

@@ -95,12 +95,12 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 
         ioStream = calloc(1, sizeof(StdIoStream)); 
         matroskaFile = openMatroskaFile((char *)[file UTF8String], ioStream);
-        
+
         NSInteger trackCount = mkv_GetNumTracks(matroskaFile);
         tracksArray = [[NSMutableArray alloc] initWithCapacity:trackCount];
-        
+
         NSInteger i;
-        
+
         for (i = 0; i < trackCount; i++) {
             TrackInfo *mkvTrack = mkv_GetTrackInfo(matroskaFile, i);
             MP42Track *newTrack = nil;
@@ -108,7 +108,6 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
             // Video
             if (mkvTrack->Type == TT_VIDEO)  {
                 newTrack = [[MP42VideoTrack alloc] init];
-
 
                 [(MP42VideoTrack*)newTrack setWidth:mkvTrack->AV.Video.PixelWidth];
                 [(MP42VideoTrack*)newTrack setHeight:mkvTrack->AV.Video.PixelHeight];
@@ -131,11 +130,24 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
             else if (mkvTrack->Type == TT_AUDIO) {
                 newTrack = [[MP42AudioTrack alloc] init];
                 [(MP42AudioTrack*)newTrack setChannels:mkvTrack->AV.Audio.Channels];
+                [newTrack setAlternate_group:1];
+
+                for (MP42Track* audioTrack in tracksArray) {
+                    if ([audioTrack isMemberOfClass:[MP42AudioTrack class]])
+                        [newTrack setEnabled:NO];
+                }
             }
 
             // Text
-            else if (mkvTrack->Type == TT_SUB)
+            else if (mkvTrack->Type == TT_SUB) {
                 newTrack = [[MP42SubtitleTrack alloc] init];
+                [newTrack setAlternate_group:2];
+
+                for (MP42Track* subtitleTrack in tracksArray) {
+                    if ([subtitleTrack isMemberOfClass:[MP42SubtitleTrack class]])
+                        [newTrack setEnabled:NO];
+                }
+            }
 
             if (newTrack) {
                 newTrack.format = matroskaCodecIDToHumanReadableName(mkvTrack);

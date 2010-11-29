@@ -186,10 +186,9 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     uint32_t supportedBrandsCount = 0;
     uint32_t flags = 0;
 
-    if ([[attributes valueForKey:MP42Create64BitData] boolValue]){
-        NSLog(@"64Bit Data");
+    if ([[attributes valueForKey:MP42Create64BitData] boolValue])
         flags += 0x01;
-    }
+
     if ([[attributes valueForKey:MP42Create64BitTime] boolValue])
         flags += 0x02;
 
