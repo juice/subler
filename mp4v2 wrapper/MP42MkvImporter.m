@@ -319,7 +319,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
         size_t rd = fread(frame,1,FrameSize,ioStream->fp);
         if (rd != FrameSize) 
 		{
-            if (rd == 0) 
+            if (rd == 0)
 			{
                 if (feof(ioStream->fp))
                     fprintf(stderr,"Unexpected EOF while reading frame\n");
@@ -329,8 +329,6 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                 fprintf(stderr,"Short read while reading frame\n");
 			return nil; // we should be able to read at least one frame
         }
-        else
-            return nil;
 
 		// parse AC3 header
 		// collect all the necessary meta information
