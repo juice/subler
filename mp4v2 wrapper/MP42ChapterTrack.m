@@ -60,7 +60,15 @@
         while (i <= chapter_count)
         {
             SBTextSample *chapter = [[SBTextSample alloc] init];
-            chapter.title = [NSString stringWithCString:chapter_list[i-1].title encoding: NSUTF8StringEncoding];
+
+            char * title = chapter_list[i-1].title;
+            if (title[0] == '\xfe' && title[1] == '\xff') {
+                chapter.title = [[[NSString alloc] initWithBytes:title length:chapter_list[i-1].titleLength encoding:NSUTF16StringEncoding] autorelease];
+            }
+            else {
+                chapter.title = [NSString stringWithCString:chapter_list[i-1].title encoding: NSUTF8StringEncoding];
+            }
+
             chapter.timestamp = sum;
             sum = chapter_list[i-1].duration + sum;
             [chapters addObject:chapter];
