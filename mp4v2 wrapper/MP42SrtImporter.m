@@ -103,6 +103,10 @@
     [activeTracks addObject:track];
 }
 
+- (CGFloat)progress {
+    return 100.0;
+}
+
 - (void) dealloc
 {
     [ss release];

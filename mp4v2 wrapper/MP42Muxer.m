@@ -218,6 +218,8 @@
             }
 
             dstTrackId = MP4AddCCTrack(fileHandle, timeScale, videoSize.width, videoSize.height);
+            
+            [[track trackImporterHelper] setActiveTrack:track];
         }
         else {
             continue;

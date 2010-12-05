@@ -611,14 +611,6 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [self updateChangeCount:NSChangeDone];
 }
 
-- (void) addCCTrack: (NSString *) path
-{
-    [mp4File addTrack:[MP42ClosedCaptionTrack ccTrackFromFile:path]];
-    
-    [fileTracksTable reloadData];
-    [self updateChangeCount:NSChangeDone];
-}
-
 - (IBAction) showSubititleWindow: (NSString *) path;
 {
     [langSelection selectItemWithTitle:getFilenameLanguage((CFStringRef)path)];
@@ -709,9 +701,6 @@ returnCode contextInfo: (void *) contextInfo
 
     else if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
          [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
-
-    else if ([fileExtension caseInsensitiveCompare: @"scc"] == NSOrderedSame)
-        [self addCCTrack:[sheet.filenames objectAtIndex: 0]];
 
     else
         [self performSelectorOnMainThread:@selector(showImportSheet:)
@@ -826,7 +815,7 @@ returnCode contextInfo: (void *) contextInfo
             if ([[file pathExtension] caseInsensitiveCompare: @"txt"] == NSOrderedSame)
                 [self addChapterTrack:file];
             else if ([[file pathExtension] caseInsensitiveCompare: @"scc"] == NSOrderedSame)
-                [self addCCTrack:file];
+                [self showImportSheet:file];
             else if ([[file pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame)
                 [self showImportSheet:file];

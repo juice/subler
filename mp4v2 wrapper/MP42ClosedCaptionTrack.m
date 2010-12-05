@@ -58,16 +58,6 @@
 {
     if (isEdited && !muxed)
     {
-        if ([[sourcePath pathExtension] caseInsensitiveCompare: @"scc"] == NSOrderedSame)
-            Id = muxSccCCTrack(fileHandle, sourcePath);
-
-        if (!Id && (outError != NULL)) {
-            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Failed to mux closed captions into mp4 file" forKey:NSLocalizedDescriptionKey];
-            *outError = [NSError errorWithDomain:@"MP42Error"
-                                            code:110
-                                        userInfo:errorDetail];
-        }
         muxed = YES;
     }
 
