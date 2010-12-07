@@ -695,8 +695,7 @@ returnCode contextInfo: (void *) contextInfo
 
     NSString *fileExtension = [[sheet.filenames objectAtIndex: 0] pathExtension];
 
-    if ([fileExtension isEqualToString:@"aac"] ||
-        [fileExtension isEqualToString:@"ac3"])
+    if ([fileExtension isEqualToString:@"aac"])
         [self addAudioTrack:[sheet.filenames objectAtIndex: 0]];
 
     else if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
@@ -829,9 +828,10 @@ returnCode contextInfo: (void *) contextInfo
                      [[file pathExtension] caseInsensitiveCompare: @"264"] == NSOrderedSame)
                 [self showImportSheet:file];
 
-            else if ([[file pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame ||
-                     [[file pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame)
+            else if ([[file pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame)
                 [self addAudioTrack:file];
+            else if ([[file pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame)
+                [self showImportSheet:file];
 
         }
         return YES;
