@@ -1,8 +1,8 @@
 //
-//  MP42MkvFileImporter.m
+//  MP42CCFileImporter.m
 //  Subler
 //
-//  Created by Damiano Galassi on 31/01/10.
+//  Created by Damiano Galassi on 05/12/10.
 //  Copyright 2010 Damiano Galassi All rights reserved.
 //
 
@@ -73,7 +73,7 @@ static unsigned ParseTimeCode(const char *time, unsigned secondScale, BOOL hasSi
 	return timeval * sign;
 }
 
-int ParseByte(const char *string, UInt8 *byte, Boolean hex)
+static int ParseByte(const char *string, UInt8 *byte, Boolean hex)
 {
 	int err = 0;
 	char chars[2];
