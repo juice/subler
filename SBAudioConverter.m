@@ -319,9 +319,8 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             inputFormat.mFramesPerPacket = 1152;
             inputFormat.mChannelsPerFrame = track.channels;
         }
-        
     }
-    
+
     bzero( &outputFormat, sizeof( AudioStreamBasicDescription ) );
 	outputFormat.mSampleRate = sampleRate;
 	outputFormat.mFormatID = kAudioFormatLinearPCM ;
@@ -331,14 +330,14 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 	outputFormat.mBytesPerFrame = 4;
 	outputFormat.mChannelsPerFrame = 2;
 	outputFormat.mBitsPerChannel = 16;
-    
+
     // initialize the decoder
     err = AudioConverterNew( &inputFormat, &outputFormat, &converterDec );
     if( err != noErr) {
         NSLog(@"Boom %ld",err);
         return;
     }
-    
+
     // set the decoder magic cookie
     if (magicCookie) {
         err = AudioConverterSetProperty( converterDec, kAudioConverterDecompressionMagicCookie,
@@ -347,19 +346,19 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             NSLog(@"Boom Magic Cookie %ld",err);
         CFRelease(magicCookie);
     }
-    
+
     UInt32 size = sizeof(inputFormat);
 	err = AudioConverterGetProperty(converterDec, kAudioConverterCurrentInputStreamDescription,
                                     &size, &inputFormat);
     if( err != noErr)
         NSLog(@"Boom kAudioConverterCurrentInputStreamDescription %ld",err);
-    
+
     size = sizeof(outputFormat);
 	err = AudioConverterGetProperty(converterDec, kAudioConverterCurrentOutputStreamDescription,
                                     &size, &outputFormat);
     if( err != noErr)
         NSLog(@"Boom kAudioConverterCurrentOutputStreamDescription %ld",err);
-    
+
     // set up buffers and data proc info struct
 	decoderData.srcBufferSize = 32768;
 	decoderData.srcBuffer = (char *)malloc( decoderData.srcBufferSize );
