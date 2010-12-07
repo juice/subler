@@ -58,4 +58,3 @@ NSString *StripSSALine(NSString *line);
 
 MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration);
 MP42SampleBuffer* copyEmptySubtitleSample(MP4TrackId subtitleTrackId, MP4Duration duration);
-

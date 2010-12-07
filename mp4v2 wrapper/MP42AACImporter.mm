@@ -1,30 +1,16 @@
-/*
- * The contents of this file are subject to the Mozilla Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/MPL/
- * 
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
- * 
- * The Original Code is MPEG4IP.
- * 
- * The Initial Developer of the Original Code is Cisco Systems Inc.
- * Portions created by Cisco Systems Inc. are
- * Copyright (C) Cisco Systems Inc. 2000, 2001.  All Rights Reserved.
- * 
- * Contributor(s): 
- *		Dave Mackie			dmackie@cisco.com
- *		Alix Marchandise-Franquet	alix@cisco.com
- */
+//
+//  MP42AacFileImporter.m
+//  Subler
+//
+//  Created by Damiano Galassi on 07/12/10.
+//  Copyright 2010 Damiano Galassi All rights reserved.
+//
 
+#import "MP42AACImporter.h"
+#import "lang.h"
+#import "MP42File.h"
 
-/* 
- * Notes:
- *  - file formatted with tabstops == 4 spaces 
- */
+@implementation MP42AACImporter
 
 static const char*  ProgName = "Subler";
 static int aacUseOldFile = 0;
@@ -35,7 +21,6 @@ static int aacProfileLevel = 4;
 #define MP4AV_AAC_SSR_PROFILE	2
 #define MP4AV_AAC_LTP_PROFILE	3
 
-#include "mp4v2.h"
 #include <assert.h>
 #include <ctype.h> /* isdigit, isprint, isspace */
 #include <errno.h>
@@ -147,13 +132,6 @@ extern "C" {
                              u_int8_t** ppAdtsData,
                              u_int32_t* pAdtsDataLength);
     
-    bool MP4AV_AdtsMakeFrameFromMp4Sample(
-                                          MP4FileHandle mp4File,
-                                          MP4TrackId trackId,
-                                          MP4SampleId sampleId,
-                                          int force_profile,
-                                          u_int8_t** ppAdtsData,
-                                          u_int32_t* pAdtsDataLength);
     
 #ifdef __cplusplus
 }
@@ -187,14 +165,14 @@ extern "C" {
 #define NUM_ADTS_SAMPLING_RATES	16
 
 u_int32_t AdtsSamplingRates[NUM_ADTS_SAMPLING_RATES] = {
-96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 
-16000, 12000, 11025, 8000, 7350, 0, 0, 0
+    96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 
+    16000, 12000, 11025, 8000, 7350, 0, 0, 0
 };
 
 /*
  * compute ADTS frame size
  */
-extern "C" u_int16_t MP4AV_AdtsGetFrameSize(u_int8_t* pHdr)
+u_int16_t MP4AV_AdtsGetFrameSize(u_int8_t* pHdr)
 {
 	/* extract the necessary fields from the header */
 	uint16_t frameLength;
@@ -208,7 +186,7 @@ extern "C" u_int16_t MP4AV_AdtsGetFrameSize(u_int8_t* pHdr)
 /*
  * Compute length of ADTS header in bits
  */
-extern "C" u_int16_t MP4AV_AdtsGetHeaderBitSize(u_int8_t* pHdr)
+u_int16_t MP4AV_AdtsGetHeaderBitSize(u_int8_t* pHdr)
 {
 	u_int8_t hasCrc = !(pHdr[1] & 0x01);
 	u_int16_t hdrSize;
@@ -221,27 +199,27 @@ extern "C" u_int16_t MP4AV_AdtsGetHeaderBitSize(u_int8_t* pHdr)
 	return hdrSize;
 }
 
-extern "C" u_int16_t MP4AV_AdtsGetHeaderByteSize(u_int8_t* pHdr)
+u_int16_t MP4AV_AdtsGetHeaderByteSize(u_int8_t* pHdr)
 {
 	return (MP4AV_AdtsGetHeaderBitSize(pHdr) + 7) / 8;
 }
 
-extern "C" u_int8_t MP4AV_AdtsGetVersion(u_int8_t* pHdr)
+u_int8_t MP4AV_AdtsGetVersion(u_int8_t* pHdr)
 {
 	return (pHdr[1] & 0x08) >> 3;
 }
 
-extern "C" u_int8_t MP4AV_AdtsGetProfile(u_int8_t* pHdr)
+u_int8_t MP4AV_AdtsGetProfile(u_int8_t* pHdr)
 {
 	return (pHdr[2] & 0xc0) >> 6;
 }
 
-extern "C" u_int8_t MP4AV_AdtsGetSamplingRateIndex(u_int8_t* pHdr)
+u_int8_t MP4AV_AdtsGetSamplingRateIndex(u_int8_t* pHdr)
 {
 	return (pHdr[2] & 0x3c) >> 2;
 }
 
-extern "C" u_int8_t MP4AV_AdtsFindSamplingRateIndex(u_int32_t samplingRate)
+u_int8_t MP4AV_AdtsFindSamplingRateIndex(u_int32_t samplingRate)
 {
 	for (u_int8_t i = 0; i < NUM_ADTS_SAMPLING_RATES; i++) {
 		if (samplingRate == AdtsSamplingRates[i]) {
@@ -251,148 +229,18 @@ extern "C" u_int8_t MP4AV_AdtsFindSamplingRateIndex(u_int32_t samplingRate)
 	return NUM_ADTS_SAMPLING_RATES - 1;
 }
 
-extern "C" u_int32_t MP4AV_AdtsGetSamplingRate(u_int8_t* pHdr)
+u_int32_t MP4AV_AdtsGetSamplingRate(u_int8_t* pHdr)
 {
 	return AdtsSamplingRates[MP4AV_AdtsGetSamplingRateIndex(pHdr)];
 }
 
-extern "C" u_int8_t MP4AV_AdtsGetChannels(u_int8_t* pHdr)
+u_int8_t MP4AV_AdtsGetChannels(u_int8_t* pHdr)
 {
 	return ((pHdr[2] & 0x1) << 2) | ((pHdr[3] & 0xc0) >> 6);
 }
 
-extern "C" bool MP4AV_AdtsMakeFrameFromMp4Sample(
-                                                 MP4FileHandle mp4File,
-                                                 MP4TrackId trackId,
-                                                 MP4SampleId sampleId,
-                                                 int force_profile,
-                                                 u_int8_t** ppAdtsData,
-                                                 u_int32_t* pAdtsDataLength)
-{
-	static MP4FileHandle lastMp4File = MP4_INVALID_FILE_HANDLE;
-	static MP4TrackId lastMp4TrackId = MP4_INVALID_TRACK_ID;
-	static bool isMpeg2;
-	static u_int8_t profile;
-	static u_int32_t samplingFrequency;
-	static u_int8_t channels;
-    
-	if (mp4File != lastMp4File || trackId != lastMp4TrackId) {
-        
-		// changed cached file and track info
-        
-		lastMp4File = mp4File;
-		lastMp4TrackId = trackId;
-        
-		u_int8_t audioType = MP4GetTrackEsdsObjectTypeId(mp4File, 
-                                                         trackId);
-        
-		if (MP4_IS_MPEG2_AAC_AUDIO_TYPE(audioType)) {
-			isMpeg2 = true;
-			profile = audioType - MP4_MPEG2_AAC_MAIN_AUDIO_TYPE;
-			if (force_profile == 4) {
-                isMpeg2 = false;
-                // profile remains the same
-			}
-		} else if (audioType == MP4_MPEG4_AUDIO_TYPE ||
-                   audioType == MP4_INVALID_AUDIO_TYPE) {
-			isMpeg2 = false;
-			profile = MP4GetTrackAudioMpeg4Type(mp4File, trackId) - 1;
-			if (force_profile == 2) {
-                if (profile > MP4_MPEG4_AAC_SSR_AUDIO_TYPE) {
-                    // they can't use these profiles for mpeg2.
-                    lastMp4File = MP4_INVALID_FILE_HANDLE;
-                    lastMp4TrackId =MP4_INVALID_TRACK_ID;
-                    return false;
-                }
-                isMpeg2 = true;
-			}
-		} else {
-			lastMp4File = MP4_INVALID_FILE_HANDLE;
-			lastMp4TrackId = MP4_INVALID_TRACK_ID;
-			return false;
-		}
-        
-		u_int8_t* pConfig = NULL;
-		u_int32_t configLength;
-        
-		if (MP4GetTrackESConfiguration(
-                                       mp4File, 
-                                       trackId,
-                                       &pConfig,
-                                       &configLength) == false) {
-            return false;
-		}
-        
-		if (pConfig == NULL || configLength < 2) {
-            uint64_t sound_version;
-            if (MP4GetTrackIntegerProperty(mp4File, 
-                                           trackId,
-                                           "mdia.minf.stbl.stsd.mp4a.soundVersion",
-                                           &sound_version) == false)
-                return false;
-            
-            if (sound_version == 1) {
-                uint64_t temp;
-                if (MP4GetTrackIntegerProperty(mp4File, 
-                                               trackId, 
-                                               "mdia.minf.stbl.stsd.mp4a.timeScale", 
-                                               &temp) == false)
-                    return false;
-                
-                samplingFrequency = temp;
-                if (MP4GetTrackIntegerProperty(mp4File,
-                                               trackId,
-                                               "mdia.minf.stbl.stsd.mp4a.channels",
-                                               &temp) == false)
-                    return false;
-                channels = temp;
-            } else {
-                //		  if (sound_version == 1) {
-                //samplingFrequency = MP4GetTrackTimeScale(mp4File, trackId);
-                lastMp4File = MP4_INVALID_FILE_HANDLE;
-                lastMp4TrackId = MP4_INVALID_TRACK_ID;
-                return false;
-            }
-		} else {
-            
-            samplingFrequency = MP4AV_AacConfigGetSamplingRate(pConfig);
-            
-            channels = MP4AV_AacConfigGetChannels(pConfig);
-		}
-        
-	}
-    
-	bool rc;
-	u_int8_t* pSample = NULL;
-	u_int32_t sampleSize = 0;
-    
-	rc = MP4ReadSample(
-                       mp4File,
-                       trackId,
-                       sampleId,
-                       &pSample,
-                       &sampleSize);
-    
-	if (!rc) {
-		return false;
-	}
-    
-	rc = MP4AV_AdtsMakeFrame(
-                             pSample,
-                             sampleSize,
-                             isMpeg2,
-                             profile,
-                             samplingFrequency,
-                             channels,
-                             ppAdtsData,
-                             pAdtsDataLength);
-    
-	free(pSample);
-    
-	return rc;
-}
 
-extern "C" bool MP4AV_AdtsMakeFrame(
+bool MP4AV_AdtsMakeFrame(
                                     u_int8_t* pData,
                                     u_int16_t dataLength,
                                     bool isMpeg2,
@@ -857,121 +705,216 @@ static bool GetFirstHeader(FILE* inFile)
 	return true;
 }
 
-extern "C" MP4TrackId AacCreator(MP4FileHandle mp4File, FILE* inFile)
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
 {
-    // collect all the necessary meta information
-    u_int32_t samplesPerSecond;
-    u_int8_t mpegVersion;
-    u_int8_t profile;
-    u_int8_t channelConfig;
-    
-    if (!GetFirstHeader(inFile)) {
-        fprintf(stderr,	
-                "%s: data in file doesn't appear to be valid audio\n",
-                ProgName);
-        return MP4_INVALID_TRACK_ID;
-    }
-    
-    samplesPerSecond = MP4AV_AdtsGetSamplingRate(firstHeader);
-    mpegVersion = MP4AV_AdtsGetVersion(firstHeader);
-    profile = MP4AV_AdtsGetProfile(firstHeader);
-    if (aacProfileLevel == 2) {
-        if (profile > MP4_MPEG4_AAC_SSR_AUDIO_TYPE) {
-            fprintf(stderr, "Can't convert profile to mpeg2\nDo not contact project creators for help\n");
+    if ((self = [super init])) {
+        delegate = del;
+        file = [fileUrl retain];
+
+        tracksArray = [[NSMutableArray alloc] initWithCapacity:1];
+
+        MP42Track *newTrack = [[MP42AudioTrack alloc] init];
+
+        newTrack.format = @"AAC";
+        newTrack.sourceFormat = @"AAC";
+        newTrack.sourcePath = file;
+        newTrack.sourceInputType = MP42SourceTypeRaw;
+
+        if (!inFile)
+            inFile = fopen([file UTF8String], "rb");
+
+        // collect all the necessary meta information
+        u_int8_t mpegVersion;
+        u_int8_t profile;
+        u_int8_t channelConfig;
+        
+        if (!GetFirstHeader(inFile)) {
+            fprintf(stderr,	
+                    "%s: data in file doesn't appear to be valid audio\n",
+                    ProgName);
             return MP4_INVALID_TRACK_ID;
         }
-        mpegVersion = 1;
-    } else if (aacProfileLevel == 4) {
-        mpegVersion = 0;
-    }
-    channelConfig = MP4AV_AdtsGetChannels(firstHeader);
-    
-    u_int8_t audioType = MP4_INVALID_AUDIO_TYPE;
-    switch (mpegVersion) {
-        case 0:
-            audioType = MP4_MPEG4_AUDIO_TYPE;
-            break;
-        case 1:
-            switch (profile) {
-                case 0:
-                    audioType = MP4_MPEG2_AAC_MAIN_AUDIO_TYPE;
-                    break;
-                case 1:
-                    audioType = MP4_MPEG2_AAC_LC_AUDIO_TYPE;
-                    break;
-                case 2:
-                    audioType = MP4_MPEG2_AAC_SSR_AUDIO_TYPE;
-                    break;
-                case 3:
-                    fprintf(stderr,	
-                            "%s: data in file doesn't appear to be valid audio\n",
-                            ProgName);
-                    return MP4_INVALID_TRACK_ID;
-                default:
-                    break;
-                    //ASSERT(false);
+        
+        samplesPerSecond = MP4AV_AdtsGetSamplingRate(firstHeader);
+        mpegVersion = MP4AV_AdtsGetVersion(firstHeader);
+        profile = MP4AV_AdtsGetProfile(firstHeader);
+        if (aacProfileLevel == 2) {
+            if (profile > MP4_MPEG4_AAC_SSR_AUDIO_TYPE) {
+                fprintf(stderr, "Can't convert profile to mpeg2\nDo not contact project creators for help\n");
+                return MP4_INVALID_TRACK_ID;
             }
-            break;
-        default:
-            break;
-            //ASSERT(false);
+            mpegVersion = 1;
+        } else if (aacProfileLevel == 4) {
+            mpegVersion = 0;
+        }
+        channelConfig = MP4AV_AdtsGetChannels(firstHeader);
+        
+        u_int8_t audioType = MP4_INVALID_AUDIO_TYPE;
+        switch (mpegVersion) {
+            case 0:
+                audioType = MP4_MPEG4_AUDIO_TYPE;
+                break;
+            case 1:
+                switch (profile) {
+                    case 0:
+                        audioType = MP4_MPEG2_AAC_MAIN_AUDIO_TYPE;
+                        break;
+                    case 1:
+                        audioType = MP4_MPEG2_AAC_LC_AUDIO_TYPE;
+                        break;
+                    case 2:
+                        audioType = MP4_MPEG2_AAC_SSR_AUDIO_TYPE;
+                        break;
+                    case 3:
+                        fprintf(stderr,	
+                                "%s: data in file doesn't appear to be valid audio\n",
+                                ProgName);
+                        return MP4_INVALID_TRACK_ID;
+                    default:
+                        break;
+                        //ASSERT(false);
+                }
+                break;
+            default:
+                break;
+                //ASSERT(false);
+        }
+
+        u_int8_t* pConfig = NULL;
+        u_int32_t configLength = 0;
+        
+        MP4AV_AacGetConfiguration(
+                                  &pConfig,
+                                  &configLength,
+                                  profile,
+                                  samplesPerSecond,
+                                  channelConfig);
+
+        [(MP42AudioTrack*) newTrack setChannels:channelConfig];
+        aacInfo = [[NSMutableData alloc] init];
+        [aacInfo appendBytes:pConfig length:configLength];
+
+        [tracksArray addObject:newTrack];
+        [newTrack release];
     }
+
+    return self;
+}
+
+- (NSUInteger)timescaleForTrack:(MP42Track *)track
+{
+    return samplesPerSecond;
+}
+
+- (NSSize)sizeForTrack:(MP42Track *)track
+{
+      return NSMakeSize([(MP42SubtitleTrack*)track trackWidth], [(MP42SubtitleTrack*) track trackHeight]);
+}
+
+- (NSData*)magicCookieForTrack:(MP42Track *)track
+{
     
-    // add the new audio track
-    MP4TrackId trackId;
-    
-    trackId = MP4AddAudioTrack(mp4File,
-                               samplesPerSecond, 1024, audioType);
-    
-    if (trackId == MP4_INVALID_TRACK_ID) {
-        fprintf(stderr,	
-                "%s: can't create audio track\n", ProgName);
-        return MP4_INVALID_TRACK_ID;
-    }
-    
-    MP4SetTrackDurationPerChunk(mp4File, trackId, samplesPerSecond / 8);
-    
-    if (MP4GetNumberOfTracks(mp4File, MP4_AUDIO_TRACK_TYPE) == 1) {
-        uint8_t profile = 0x0F;
-        if (channelConfig<=2) profile = (samplesPerSecond<=24000) ? 0x28 : 0x29;  /*LC@L1 or LC@L2*/
-        else profile = (samplesPerSecond<=48000) ? 0x2A : 0x2B; /*LC@L4 or LC@L5*/
-        MP4SetAudioProfileLevel(mp4File, profile);
-    }
-	
-    u_int8_t* pConfig = NULL;
-    u_int32_t configLength = 0;
-    
-    MP4AV_AacGetConfiguration(
-                              &pConfig,
-                              &configLength,
-                              profile,
-                              samplesPerSecond,
-                              channelConfig);
-    
-    if (!MP4SetTrackESConfiguration(mp4File, trackId, 
-                                    pConfig, configLength)) {
-        fprintf(stderr,	
-                "%s: can't write audio configuration\n", ProgName);
-        MP4DeleteTrack(mp4File, trackId);
-        return MP4_INVALID_TRACK_ID;
-    }
-    
+    return aacInfo;
+}
+
+- (void) fillMovieSampleBuffer: (id)sender
+{
+    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    if (!inFile)
+        inFile = fopen([file UTF8String], "rb");
+
+    MP42Track *track = [activeTracks lastObject];
+    MP4TrackId dstTrackId = [track Id];
+
     // parse the ADTS frames, and write the MP4 samples
     u_int8_t sampleBuffer[8 * 1024];
     u_int32_t sampleSize = sizeof(sampleBuffer);
     MP4SampleId sampleId = 1;
-    
+
     while (LoadNextAacFrame(inFile, sampleBuffer, &sampleSize, true)) {
-        if (!MP4WriteSample(mp4File, trackId, sampleBuffer, sampleSize)) {
-            fprintf(stderr,	
-                    "%s: can't write audio frame %u\n", ProgName, sampleId);
-            MP4DeleteTrack(mp4File, trackId);
-            return MP4_INVALID_TRACK_ID;
+        while ([samplesBuffer count] >= 200) {
+            usleep(200);
         }
-        
+
+        MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
+
+        void * sampleDataBuffer = malloc(sampleSize);
+        memcpy(sampleDataBuffer, sampleBuffer, sampleSize);
+
+        sample->sampleData = sampleDataBuffer;
+        sample->sampleSize = sampleSize;
+        sample->sampleDuration = MP4_INVALID_DURATION;
+        sample->sampleOffset = 0;
+        sample->sampleTimestamp = 0;
+        sample->sampleIsSync = 1;
+        sample->sampleTrackId = dstTrackId;
+        if(track.needConversion)
+            sample->sampleSourceTrack = track;
+
+        @synchronized(samplesBuffer) {
+            [samplesBuffer addObject:sample];
+            [sample release];
+        }
+
         sampleId++;
         sampleSize = sizeof(sampleBuffer);
     }
-    
-    return trackId;
+
+    [pool release];
+    readerStatus = 1;
 }
+
+- (MP42SampleBuffer*)copyNextSample {    
+    if (samplesBuffer == nil) {
+        samplesBuffer = [[NSMutableArray alloc] initWithCapacity:200];
+    }
+
+    if (!dataReader && !readerStatus) {
+        dataReader = [[NSThread alloc] initWithTarget:self selector:@selector(fillMovieSampleBuffer:) object:self];
+        [dataReader setName:@"AAC Demuxer"];
+        [dataReader start];
+    }
+
+    while (![samplesBuffer count] && !readerStatus)
+        usleep(2000);
+
+    if (readerStatus)
+        if ([samplesBuffer count] == 0) {
+            readerStatus = 0;
+            dataReader = nil;
+            return nil;
+        }
+
+    MP42SampleBuffer* sample;
+
+    @synchronized(samplesBuffer) {
+        sample = [samplesBuffer objectAtIndex:0];
+        [sample retain];
+        [samplesBuffer removeObjectAtIndex:0];
+    }
+
+    return sample;
+}
+
+- (void)setActiveTrack:(MP42Track *)track {
+    if (!activeTracks)
+        activeTracks = [[NSMutableArray alloc] init];
+    
+    [activeTracks addObject:track];
+}
+
+- (CGFloat)progress {
+    return 100.0;
+}
+
+- (void) dealloc
+{
+    fclose(inFile);
+    [aacInfo release];
+	[file release];
+    [tracksArray release];
+
+    [super dealloc];
+}
+
+@end

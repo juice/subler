@@ -61,7 +61,6 @@
 		A9B8E895123A95BA006A6EB8 /* MP42Muxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B8E892123A95BA006A6EB8 /* MP42Muxer.m */; };
 		A9B8E896123A95BA006A6EB8 /* MP42Sample.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B8E894123A95BA006A6EB8 /* MP42Sample.m */; };
 		A9BB60690F833D2E005CD0BB /* h264.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BB60680F833D2E005CD0BB /* h264.cpp */; };
-		A9BB60790F83452D005CD0BB /* aac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BB60780F83452D005CD0BB /* aac.cpp */; };
 		A9BB60D80F834E0A005CD0BB /* mbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BB60D70F834E0A005CD0BB /* mbs.cpp */; };
 		A9C054B20F6D295A00AF15B5 /* AudioMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054B00F6D295A00AF15B5 /* AudioMuxer.m */; };
 		A9C054D00F6D2D9800AF15B5 /* VideoMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054CF0F6D2D9800AF15B5 /* VideoMuxer.m */; };
@@ -69,6 +68,7 @@
 		A9C095800F7B6C8C00170CAF /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
 		A9C4E54110F5F01C00B60B59 /* tagChimp_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */; };
+		A9C4ECF712AE562A00BDBB7D /* MP42AACImporter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */; };
 		A9C8182D0F74D6E300019BFF /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C8182C0F74D6E300019BFF /* QuickTime.framework */; };
 		A9D825A912ABF72D00C1AA54 /* MP42CCImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D825A812ABF72D00C1AA54 /* MP42CCImporter.m */; };
 		A9EBA68912AE28DF0092D645 /* MP42AC3Importer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EBA68812AE28DF0092D645 /* MP42AC3Importer.m */; };
@@ -225,7 +225,6 @@
 		A9B8E923123AA03D006A6EB8 /* MP42Muxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42Muxer.h; path = "mp4v2 wrapper/MP42Muxer.h"; sourceTree = "<group>"; };
 		A9BB60670F833D2E005CD0BB /* mpeg4ip_bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mpeg4ip_bitstream.h; path = "mp4v2 wrapper/muxer/mpeg4ip_bitstream.h"; sourceTree = "<group>"; };
 		A9BB60680F833D2E005CD0BB /* h264.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = h264.cpp; path = "mp4v2 wrapper/muxer/h264.cpp"; sourceTree = "<group>"; };
-		A9BB60780F83452D005CD0BB /* aac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = aac.cpp; path = "mp4v2 wrapper/muxer/aac.cpp"; sourceTree = "<group>"; };
 		A9BB60D60F834E0A005CD0BB /* mbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mbs.h; path = "mp4v2 wrapper/muxer/mbs.h"; sourceTree = "<group>"; };
 		A9BB60D70F834E0A005CD0BB /* mbs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mbs.cpp; path = "mp4v2 wrapper/muxer/mbs.cpp"; sourceTree = "<group>"; };
 		A9C054A40F6D288D00AF15B5 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
@@ -238,6 +237,8 @@
 		A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tagChimp_medium.png; path = images/tagChimp_medium.png; sourceTree = "<group>"; };
+		A9C4ECF512AE562A00BDBB7D /* MP42AACImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AACImporter.h; path = "mp4v2 wrapper/MP42AACImporter.h"; sourceTree = "<group>"; };
+		A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MP42AACImporter.mm; path = "mp4v2 wrapper/MP42AACImporter.mm"; sourceTree = "<group>"; };
 		A9C8182C0F74D6E300019BFF /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		A9D1C2031125454B0088168C /* h264.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = h264.h; path = "mp4v2 wrapper/muxer/h264.h"; sourceTree = "<group>"; };
 		A9D825A712ABF72D00C1AA54 /* MP42CCImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42CCImporter.h; path = "mp4v2 wrapper/MP42CCImporter.h"; sourceTree = "<group>"; };
@@ -422,7 +423,6 @@
 				A984758B12422A6F004FD093 /* sfifo.h */,
 				A9D1C2031125454B0088168C /* h264.h */,
 				A9BB60680F833D2E005CD0BB /* h264.cpp */,
-				A9BB60780F83452D005CD0BB /* aac.cpp */,
 				A9BB60D60F834E0A005CD0BB /* mbs.h */,
 				A9BB60D70F834E0A005CD0BB /* mbs.cpp */,
 				A9BB60670F833D2E005CD0BB /* mpeg4ip_bitstream.h */,
@@ -464,6 +464,8 @@
 				A9891D5D124502C000427CF9 /* MP42SrtImporter.m */,
 				A9D825A712ABF72D00C1AA54 /* MP42CCImporter.h */,
 				A9D825A812ABF72D00C1AA54 /* MP42CCImporter.m */,
+				A9C4ECF512AE562A00BDBB7D /* MP42AACImporter.h */,
+				A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */,
 				A9EBA68712AE28DF0092D645 /* MP42AC3Importer.h */,
 				A9EBA68812AE28DF0092D645 /* MP42AC3Importer.m */,
 				A98475831242294C004FD093 /* SBAudioConverter.h */,
@@ -731,7 +733,6 @@
 				A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */,
 				A95C87AE0F82798200F51A22 /* ButtonToolbarItem.m in Sources */,
 				A9BB60690F833D2E005CD0BB /* h264.cpp in Sources */,
-				A9BB60790F83452D005CD0BB /* aac.cpp in Sources */,
 				A9BB60D80F834E0A005CD0BB /* mbs.cpp in Sources */,
 				A9FB9D4B0F83A6FF00AB791A /* VideoFramerate.m in Sources */,
 				A91E7DEA0F8A2E6800AF387E /* SoundViewController.m in Sources */,
@@ -759,6 +760,7 @@
 				A9891D5E124502C000427CF9 /* MP42SrtImporter.m in Sources */,
 				A9D825A912ABF72D00C1AA54 /* MP42CCImporter.m in Sources */,
 				A9EBA68912AE28DF0092D645 /* MP42AC3Importer.m in Sources */,
+				A9C4ECF712AE562A00BDBB7D /* MP42AACImporter.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

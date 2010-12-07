@@ -13,6 +13,7 @@
 #import "MP42SrtImporter.h"
 #import "MP42CCImporter.h"
 #import "MP42AC3Importer.h"
+#import "MP42AACImporter.h"
 
 @implementation MP42FileImporter
 
@@ -35,6 +36,9 @@
         self = [[MP42CCImporter alloc] initWithDelegate:del andFile:fileUrl];
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame)
         self = [[MP42AC3Importer alloc] initWithDelegate:del andFile:fileUrl];
+    else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame)
+        self = [[MP42AACImporter alloc] initWithDelegate:del andFile:fileUrl];
+
 
     return self;
 }

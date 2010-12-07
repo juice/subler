@@ -13,24 +13,7 @@
     #import <QuickTime/QuickTime.h>
 #endif
 #import <AudioToolbox/AudioToolbox.h>
-#import "MatroskaParser.h"
-#import "MatroskaFile.h"
 #import "lang.h"
-
-#include <sys/socket.h>
-#import <sys/un.h>
-
-MP4TrackId AacCreator(MP4FileHandle mp4File, FILE* inFile);
-
-int muxAACAdtsStream(MP4FileHandle fileHandle, NSString* filePath) {
-    MP4TrackId dstTrackId = MP4_INVALID_TRACK_ID;
-    FILE* inFile = fopen([filePath UTF8String], "rb");
-
-    dstTrackId = AacCreator(fileHandle, inFile);
-    fclose(inFile);
-
-    return dstTrackId;
-}
 
 #if !__LP64__
 int muxMOVAudioTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcTrackId)

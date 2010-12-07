@@ -654,24 +654,6 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [subtitleFilePath release];
 }
 
-- (void) addAudioTrack: (NSString *)path
-{
-    MP42AudioTrack *newTrack = [[MP42AudioTrack alloc] init];
-    newTrack.sourceId = 0;
-    newTrack.sourcePath = path;
-    newTrack.sourceInputType = MP42SourceTypeRaw;
-    if ([[path pathExtension] isEqualToString:@"ac3"])
-        newTrack.format = @"AC-3";
-    else
-        newTrack.format = @"AAC";
-
-    [mp4File addTrack:newTrack];
-    [fileTracksTable reloadData];
-    [self updateChangeCount:NSChangeDone];
-    
-    [newTrack release];
-}
-
 - (IBAction) selectFile: (id) sender
 {
     NSOpenPanel *panel = [NSOpenPanel openPanel];
@@ -695,12 +677,8 @@ returnCode contextInfo: (void *) contextInfo
 
     NSString *fileExtension = [[sheet.filenames objectAtIndex: 0] pathExtension];
 
-    if ([fileExtension isEqualToString:@"aac"])
-        [self addAudioTrack:[sheet.filenames objectAtIndex: 0]];
-
-    else if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
+    if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
          [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
-
     else
         [self performSelectorOnMainThread:@selector(showImportSheet:)
                                withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
@@ -828,9 +806,8 @@ returnCode contextInfo: (void *) contextInfo
                      [[file pathExtension] caseInsensitiveCompare: @"264"] == NSOrderedSame)
                 [self showImportSheet:file];
 
-            else if ([[file pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame)
-                [self addAudioTrack:file];
-            else if ([[file pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame)
+            else if ([[file pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame)
                 [self showImportSheet:file];
 
         }
