@@ -340,7 +340,8 @@ static bool GetFirstHeader(FILE* inFile)
     if (!inFile)
         inFile = fopen([file UTF8String], "rb");
 
-    MP4TrackId dstTrackId = [[activeTracks lastObject] Id];
+    MP42Track *track = [activeTracks lastObject];
+    MP4TrackId dstTrackId = [track Id];
 
     // parse the Ac3 frames, and write the MP4 samples
     u_int8_t sampleBuffer[8 * 1024];
@@ -348,8 +349,12 @@ static bool GetFirstHeader(FILE* inFile)
     MP4SampleId sampleId = 1;
 
     while (LoadNextAc3Frame(inFile, sampleBuffer, &sampleSize, false)) {
+        while ([samplesBuffer count] >= 200) {
+            usleep(200);
+        }
+
         MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
-        
+
         void * sampleDataBuffer = malloc(sampleSize);
         memcpy(sampleDataBuffer, sampleBuffer, sampleSize);
 
@@ -360,7 +365,9 @@ static bool GetFirstHeader(FILE* inFile)
         sample->sampleTimestamp = 0;
         sample->sampleIsSync = 1;
         sample->sampleTrackId = dstTrackId;
-        
+        if(track.needConversion)
+            sample->sampleSourceTrack = track;
+
         @synchronized(samplesBuffer) {
             [samplesBuffer addObject:sample];
             [sample release];
