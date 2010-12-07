@@ -294,10 +294,26 @@ static bool GetFirstHeader(FILE* inFile)
         samplesPerSecond = MP4AV_Ac3GetSamplingRate(firstHeader);
 
         int channels = 0;
-        if (acmod == 2)
-            channels = 2;
-        if (acmod == 7)
-            channels = 5;
+        switch (acmod) {
+            case 0:
+            case 2:
+                channels = 2;
+                break;
+            case 1:
+                channels = 1;
+                break;
+            case 3:
+            case 4:
+                channels = 3;
+                break;
+            case 5:
+            case 6:
+                channels = 4;
+                break;
+            case 7:
+                channels = 5;
+                break;
+        }
         if (lfeon)
             channels++;
 
