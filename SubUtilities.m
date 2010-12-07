@@ -931,22 +931,25 @@ MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* strin
     uint8_t *sampleData = NULL;
     u_int8_t styleAtom[2048];
     size_t styleSize = 0;
-    
+
     string = removeNewLines(string);
-    
     string = createStyleAtomForString(string, styleAtom, &styleSize);
-    
-    
-    const size_t stringLength = strlen([string UTF8String]);
-    u_int8_t buffer[2048];
+
+    size_t stringLength = strlen([string UTF8String]);
+
+    u_int8_t buffer[8192];
+    if (stringLength > 2048) {
+        stringLength = 2048;
+    }
+
     memcpy(buffer+2, [string UTF8String], stringLength);
     memcpy(buffer+2+stringLength, styleAtom, styleSize);
     buffer[0] = (stringLength >> 8) & 0xff;
     buffer[1] = stringLength & 0xff;
-    
+
     sampleData = malloc(stringLength + styleSize + 2);
     memcpy(sampleData, buffer, stringLength + styleSize + 2);
-    
+
     MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
     sample->sampleData = sampleData;
     sample->sampleSize = stringLength + styleSize + 2;
@@ -955,7 +958,7 @@ MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* strin
     sample->sampleTimestamp = duration;
     sample->sampleIsSync = true;
     sample->sampleTrackId = subtitleTrackId;
-    
+
     return sample;
 }
 
@@ -966,7 +969,7 @@ MP42SampleBuffer* copyEmptySubtitleSample(MP4TrackId subtitleTrackId, MP4Duratio
 
     sampleData = malloc(2);
     memcpy(sampleData, empty, 2);
-    
+
     MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
     sample->sampleData = sampleData;
     sample->sampleSize = 2;
@@ -975,5 +978,6 @@ MP42SampleBuffer* copyEmptySubtitleSample(MP4TrackId subtitleTrackId, MP4Duratio
     sample->sampleTimestamp = duration;
     sample->sampleIsSync = true;
     sample->sampleTrackId = subtitleTrackId;
-    
-    return sample;}
+
+    return sample;
+}
