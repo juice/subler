@@ -309,6 +309,13 @@ NSString* getMatroskaTrackName(TrackInfo *track)
             return nil;				
         } 
 
+        if (trackInfo->CompMethodPrivateSize != 0) {
+            frame = malloc(FrameSize + trackInfo->CompMethodPrivateSize);
+            memcpy(frame, trackInfo->CompMethodPrivate, trackInfo->CompMethodPrivateSize);
+        }
+        else
+            frame = malloc(FrameSize);
+        
         if (fb < FrameSize) {
             fb = FrameSize;
             frame = realloc(frame, fb);
@@ -318,8 +325,8 @@ NSString* getMatroskaTrackName(TrackInfo *track)
             }
         }
 
-        size_t rd = fread(frame,1,FrameSize,ioStream->fp);
-        if (rd != FrameSize) 
+        size_t rd = fread(frame + trackInfo->CompMethodPrivateSize,1,FrameSize,ioStream->fp);
+        if (rd != FrameSize || !frame) 
 		{
             if (rd == 0)
 			{
@@ -354,9 +361,9 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 		lfeon = (*(frame+6) >> lfe_offset) & 0x1;
 
 		// samplesPerSecond = MP4AV_Ac3GetSamplingRate(frame);
-        
+
         mkv_Seek(matroskaFile, 0, 0);
-        
+
         NSMutableData *ac3Info = [[NSMutableData alloc] init];
         [ac3Info appendBytes:&fscod length:sizeof(uint64_t)];
         [ac3Info appendBytes:&bsid length:sizeof(uint64_t)];
@@ -464,7 +471,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 
             MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
             sample->sampleData = frame;
-            sample->sampleSize = FrameSize;
+            sample->sampleSize = FrameSize + trackInfo->CompMethodPrivateSize;
             sample->sampleDuration = MP4_INVALID_DURATION;
             sample->sampleOffset = 0;
             sample->sampleTimestamp = StartTime;
