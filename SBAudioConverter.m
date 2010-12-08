@@ -147,7 +147,8 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
         }
         ReadESDSDescExt(cookie, &cookieBuffer, &size, 1);
         outputMagicCookie = [[NSData dataWithBytes:cookieBuffer length:size] retain];
-        
+
+        free(cookieBuffer);
 		free(cookie);
 	}
 

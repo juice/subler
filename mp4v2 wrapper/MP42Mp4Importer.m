@@ -280,6 +280,7 @@
     if (readerStatus)
         if ([samplesBuffer count] == 0) {
             readerStatus = 0;
+            [dataReader release];
             dataReader = nil;
             return nil;
         }
@@ -302,18 +303,24 @@
     [activeTracks addObject:track];
 }
 
-- (CGFloat)progress {
+- (CGFloat)progress
+{
     return progress;
 }
 
 - (void) dealloc
 {
+    if (dataReader)
+        [dataReader release];
+
     if (fileHandle)
         MP4Close(fileHandle);
+
     if (activeTracks)
         [activeTracks release];
     if (samplesBuffer)
         [samplesBuffer release];
+
 	[file release];
     [tracksArray release];
 

@@ -698,6 +698,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
     if (readerStatus)
         if ([samplesBuffer count] == 0) {
             readerStatus = 0;
+            [dataReader release];
             dataReader = nil;
             return nil;
         }
@@ -720,7 +721,8 @@ NSString* getMatroskaTrackName(TrackInfo *track)
     [activeTracks addObject:track];
 }
 
-- (CGFloat)progress {
+- (CGFloat)progress
+{
     return progress;
 }
 

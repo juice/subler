@@ -424,6 +424,7 @@ static bool GetFirstHeader(FILE* inFile)
     if (readerStatus)
         if ([samplesBuffer count] == 0) {
             readerStatus = 0;
+            [dataReader release];
             dataReader = nil;
             return nil;
         }
@@ -446,13 +447,20 @@ static bool GetFirstHeader(FILE* inFile)
     [activeTracks addObject:track];
 }
 
-- (CGFloat)progress {
+- (CGFloat)progress
+{
     return progress;
 }
 
 - (void) dealloc
 {
+    if (dataReader)
+        [dataReader release];
+    if (samplesBuffer)
+        [samplesBuffer release];
+    
     fclose(inFile);
+
     [ac3Info release];
 	[file release];
     [tracksArray release];
