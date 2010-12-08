@@ -82,6 +82,19 @@
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
 		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>mkv</string>
+				<string>mka</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Matroska video</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>org.perian.matroska</string>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
@@ -99,6 +112,8 @@
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array/>
 	<key>CFBundleVersion</key>
 	<string>0.11</string>
 	<key>NSHumanReadableCopyright</key>
@@ -107,9 +122,36 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSServices</key>
+	<array/>
 	<key>SUFeedURL</key>
 	<string>http://subler.googlecode.com/svn/doc/appcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array/>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Matroska video</string>
+			<key>UTTypeIdentifier</key>
+			<string>org.perian.matroska</string>
+			<key>UTTypeReferenceURL</key>
+			<string>http://www.matroska.org/</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mkv</string>
+					<string>mka</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

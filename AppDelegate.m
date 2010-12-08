@@ -7,11 +7,30 @@
 //
 
 #import "AppDelegate.h"
+#import "MyDocument.h"
 
 @implementation AppDelegate
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
     return NO;
+}
+
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
+    NSDocumentController* docController = [NSDocumentController sharedDocumentController];
+    NSURL* fileURL = [NSURL fileURLWithPath:filename];
+    MyDocument* doc = nil;
+
+    if ([[filename pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame) {
+        doc = [docController openUntitledDocumentAndDisplay:YES error:nil];
+        [doc showImportSheet:filename];
+    }
+    else {
+        doc = [docController openDocumentWithContentsOfURL:fileURL display:YES error:nil];
+    }
+    if (doc)
+        return YES;
+    else
+        return NO;
 }
 
 - (void) showPrefsWindow: (id) sender;

@@ -57,6 +57,8 @@
 - (IBAction) cancelSaveOperation: (id) sender;
 - (IBAction) sendToExternalApp: (id) sender;
 
+
 - (MP42File *) mp4File;
+- (void) showImportSheet: (NSString *) filePath;
 
 @end
