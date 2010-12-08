@@ -411,7 +411,8 @@ NSString* getMatroskaTrackName(TrackInfo *track)
     for (MP42Track* track in activeTracks){
         TrackMask &= ~(1 << [track sourceId]);
         if (track.trackDemuxerHelper == nil) {
-            track.trackDemuxerHelper = [[MatroskaTrackHelper alloc] init];
+            trackHelper = [[[MatroskaTrackHelper alloc] init] autorelease];
+            track.trackDemuxerHelper = trackHelper;
         }    
     }
 
@@ -514,12 +515,14 @@ NSString* getMatroskaTrackName(TrackInfo *track)
             }
 
             NSString *string = [[[NSString alloc] initWithBytes:frame length:FrameSize encoding:NSUTF8StringEncoding] autorelease];
-            string = StripSSALine(string);
+            if (!strcmp(trackInfo->CodecID, "S_TEXT/ASS") || !strcmp(trackInfo->CodecID, "S_TEXT/SSA"))
+                string = StripSSALine(string);
 
             if ([string length]) {
                 SBSubLine *sl = [[SBSubLine alloc] initWithLine:string start:StartTime/1000000 end:EndTime/1000000];
                 [trackHelper->ss addLine:[sl autorelease]];
             }
+            free(frame);
         }        
 
         else if (trackInfo->Type == TT_VIDEO) {
@@ -728,6 +731,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 
 	[file release];
     [tracksArray release];
+    [activeTracks release];
 
 	/* close matroska parser */ 
 	mkv_Close(matroskaFile); 
