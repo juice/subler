@@ -325,10 +325,10 @@
         }
     }
 
-    for (MP42Track * track in workingTracks) {
-        [track.trackImporterHelper release];
+    //for (MP42Track * track in workingTracks) {
+        //[track.trackImporterHelper release];
         //track.trackImporterHelper = nil;
-    }
+    //}
 }
 
 - (void)stopWork:(MP4FileHandle)fileHandle
