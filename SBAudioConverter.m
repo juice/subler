@@ -21,14 +21,14 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
                          void*							inUserData)
 {
 	struct AudioFileIO* afio = (struct AudioFileIO*)inUserData;
-	
+
 	// figure out how much to read
 	if (*ioNumberDataPackets > afio->numPacketsPerRead) *ioNumberDataPackets = afio->numPacketsPerRead;
-    
+
     // read from the fifo    
 	UInt32 outNumBytes;
     unsigned int wanted = MIN(*ioNumberDataPackets * afio->srcSizePerPacket, sfifo_used(afio->fifo));
-    
+
     outNumBytes = sfifo_read(afio->fifo, afio->srcBuffer, wanted);
     OSStatus err = noErr;
 	if (outNumBytes < wanted) {
@@ -36,68 +36,68 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 		printf ("Input Proc Read error: %d (%4.4s)\n", (int)err, (char*)&err);
 		return err;
 	}
-	
+
     if (*ioNumberDataPackets == 0)
 		printf ("End\n");
-    
+
     // put the data pointer into the buffer list
-    
+
 	ioData->mBuffers[0].mData = afio->srcBuffer;
 	ioData->mBuffers[0].mDataByteSize = outNumBytes;
 	ioData->mBuffers[0].mNumberChannels = afio->srcFormat.mChannelsPerFrame;
     
     *ioNumberDataPackets = ioData->mBuffers[0].mDataByteSize / afio->srcSizePerPacket;
-    
+
     afio->pos += *ioNumberDataPackets;
-    
+
 	if (outDataPacketDescription) {
 		if (afio->pktDescs)
 			*outDataPacketDescription = afio->pktDescs;
 		else
 			*outDataPacketDescription = NULL;
 	}
-    
+
 	return err;
 }
 
 - (void) EncoderThreadMainRoutine:(MP42AudioTrack*) track {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    
+
     encoderDone = 0;
     OSStatus err;
-    
+
     // set up aac converter
     AudioConverterRef converterEnc;
     AudioStreamBasicDescription inputFormat, encoderFormat;
-    
+
     inputFormat = inputEncoderFormat;
-    
+
     bzero( &encoderFormat, sizeof( AudioStreamBasicDescription ) );
     encoderFormat.mFormatID = kAudioFormatMPEG4AAC;
     encoderFormat.mSampleRate = ( Float64 ) inputFormat.mSampleRate;
     encoderFormat.mChannelsPerFrame = 2;    
-    
+
     err = AudioConverterNew( &inputFormat, &encoderFormat, &converterEnc );
     if (err)
         NSLog(@"Boom encoder converter init failed");
-    
+
     UInt32 tmp, tmpsiz = sizeof( tmp );
-    
+
     // set encoder quality to maximum
     tmp = kAudioConverterQuality_Max;
     AudioConverterSetProperty( converterEnc, kAudioConverterCodecQuality,
                               sizeof( tmp ), &tmp );
-    
+
     // set encoder bitrate control mode to constrained variable
     tmp = kAudioCodecBitRateControlMode_VariableConstrained;
     AudioConverterSetProperty( converterEnc, kAudioCodecPropertyBitRateControlMode,
                               sizeof( tmp ), &tmp );
-    
+
     // set bitrate
     tmp = 160 * 1000;
     AudioConverterSetProperty( converterEnc, kAudioConverterEncodeBitRate,
                               sizeof( tmp ), &tmp );
-    
+
     // get real input
     tmpsiz = sizeof( inputFormat );
     AudioConverterGetProperty( converterEnc,
@@ -500,7 +500,6 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 
 - (void) dealloc
 {
-    NSLog(@"Dealloc");
     sfifo_close(&fifo);
 
     free(decoderData.srcBuffer);

@@ -11,6 +11,7 @@
 
 @interface MP42AACImporter : MP42FileImporter {
     FILE* inFile;
+    int64_t size;
 
     NSMutableData *aacInfo;
     u_int32_t samplesPerSecond;
@@ -20,6 +21,8 @@
     
     NSMutableArray *samplesBuffer;
     NSMutableArray *activeTracks;
+
+    CGFloat progress;
 }
 
 @end

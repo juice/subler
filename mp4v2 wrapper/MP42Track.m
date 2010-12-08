@@ -103,7 +103,9 @@ NSString * const MP42SourceTypeRaw = @"Raw";
 {
     if (trackDemuxerHelper)
         [trackDemuxerHelper release];
-    [trackImporterHelper release];
+    if (trackConverterHelper)
+        [trackConverterHelper release];
+
     [updatedProperty release];
     [format release];
     [sourcePath release];

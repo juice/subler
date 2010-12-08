@@ -9,6 +9,7 @@
 #import "MP42AC3Importer.h"
 #import "lang.h"
 #import "MP42File.h"
+#include <sys/stat.h>
 
 #define AC3_HEADER_MAX_SIZE 10 /* bytes */
 #define NUM_AC3_SAMPLING_RATES 4
@@ -267,6 +268,10 @@ static bool GetFirstHeader(FILE* inFile)
         if (!inFile)
             inFile = fopen([file UTF8String], "rb");
 
+        struct stat st;
+        stat([file UTF8String], &st);
+        size = st.st_size * 8;
+
         // collect all the necessary meta information
         uint32_t fscod, frmsizecod, bsid, bsmod, acmod, lfeon;
         uint32_t lfe_offset = 4;
@@ -364,6 +369,8 @@ static bool GetFirstHeader(FILE* inFile)
     u_int32_t sampleSize = sizeof(sampleBuffer);
     MP4SampleId sampleId = 1;
 
+    int64_t currentSize = 0;
+
     while (LoadNextAc3Frame(inFile, sampleBuffer, &sampleSize, false)) {
         while ([samplesBuffer count] >= 200) {
             usleep(200);
@@ -391,6 +398,9 @@ static bool GetFirstHeader(FILE* inFile)
 
         sampleId++;
         sampleSize = sizeof(sampleBuffer);
+
+        currentSize += sampleSize;
+        progress = (currentSize / (CGFloat) size) * 100;
     }
 
     [pool release];
@@ -437,7 +447,7 @@ static bool GetFirstHeader(FILE* inFile)
 }
 
 - (CGFloat)progress {
-    return 100.0;
+    return progress;
 }
 
 - (void) dealloc
@@ -446,6 +456,7 @@ static bool GetFirstHeader(FILE* inFile)
     [ac3Info release];
 	[file release];
     [tracksArray release];
+    [activeTracks release];
 
     [super dealloc];
 }

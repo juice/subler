@@ -30,6 +30,8 @@ static int aacProfileLevel = 4;
 #include <inttypes.h>
 #include <sys/types.h>
 #include "mbs.h"
+#include <sys/stat.h>
+#include <unistd.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -723,6 +725,10 @@ static bool GetFirstHeader(FILE* inFile)
         if (!inFile)
             inFile = fopen([file UTF8String], "rb");
 
+        struct stat st;
+        stat([file UTF8String], &st);
+        size = st.st_size * 8;
+
         // collect all the necessary meta information
         u_int8_t mpegVersion;
         u_int8_t profile;
@@ -831,6 +837,8 @@ static bool GetFirstHeader(FILE* inFile)
     u_int32_t sampleSize = sizeof(sampleBuffer);
     MP4SampleId sampleId = 1;
 
+    int64_t currentSize = 0;
+
     while (LoadNextAacFrame(inFile, sampleBuffer, &sampleSize, true)) {
         while ([samplesBuffer count] >= 200) {
             usleep(200);
@@ -858,6 +866,9 @@ static bool GetFirstHeader(FILE* inFile)
 
         sampleId++;
         sampleSize = sizeof(sampleBuffer);
+
+        currentSize += sampleSize;
+        progress = (currentSize / (CGFloat) size) * 100;
     }
 
     [pool release];
@@ -904,7 +915,7 @@ static bool GetFirstHeader(FILE* inFile)
 }
 
 - (CGFloat)progress {
-    return 100.0;
+    return progress;
 }
 
 - (void) dealloc

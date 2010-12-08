@@ -39,7 +39,6 @@
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame)
         self = [[MP42AACImporter alloc] initWithDelegate:del andFile:fileUrl];
 
-
     return self;
 }
 

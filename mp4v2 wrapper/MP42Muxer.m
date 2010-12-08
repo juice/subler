@@ -49,7 +49,9 @@
         
         if([track isMemberOfClass:[MP42AudioTrack class]] && track.needConversion) {
             track.format = @"AAC";
-            track.trackConverterHelper = [[SBAudioConverter alloc] initWithTrack:(MP42AudioTrack*)track];
+            SBAudioConverter *audioConverter = [[SBAudioConverter alloc] initWithTrack:(MP42AudioTrack*)track];
+            track.trackConverterHelper = audioConverter;
+            [audioConverter release];
         }
 
         // H.264 video track
@@ -231,8 +233,6 @@
 
 - (void)work:(MP4FileHandle)fileHandle
 {
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-
     NSMutableArray * trackImportersArray = [[NSMutableArray alloc] init];
 
     for (MP42Track * track in workingTracks) {
@@ -246,7 +246,6 @@
     NSInteger tracksNumber = [trackImportersArray count];
 
     if (tracksNumber == 0) {
-        [pool release];
         [trackImportersArray release];
         return;
     }
@@ -326,12 +325,14 @@
         }
     }
 
-    [pool release];
+    for (MP42Track * track in workingTracks) {
+        [track.trackImporterHelper release];
+        //track.trackImporterHelper = nil;
+    }
 }
 
 - (void)stopWork:(MP4FileHandle)fileHandle
 {
-    
 }
 
 - (void) dealloc

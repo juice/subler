@@ -11,15 +11,18 @@
 
 @interface MP42AC3Importer : MP42FileImporter {
     FILE* inFile;
+    int64_t size;
 
     NSMutableData *ac3Info;
     u_int32_t samplesPerSecond;
 
     NSThread *dataReader;
     NSInteger readerStatus;
-    
+
     NSMutableArray *samplesBuffer;
     NSMutableArray *activeTracks;
+
+    CGFloat progress;
 }
 
 @end
