@@ -396,7 +396,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
     uint32_t        Track, FrameSize, FrameFlags;
     uint8_t         * frame = NULL;
 
-    MP42Track           * track;
+    MP42Track           * track = nil;
     MatroskaTrackHelper * trackHelper = nil;
     MatroskaSample      * frameSample = nil, * currentSample = nil;
     int64_t             offset, minOffset = 0, duration, next_duration;
