@@ -50,16 +50,6 @@
 {
     [super windowControllerDidLoadNib:aController];
 
-    languages = [[NSArray arrayWithObjects:  @"Unknown", @"English", @"French", @"German" , @"Italian", @"Dutch",
-				  @"Swedish" , @"Spanish" , @"Danish" , @"Portuguese", @"Norwegian", @"Hebrew",
-				  @"Japanese", @"Arabic", @"Finnish", @"Greek, Modern", @"Icelandic", @"Maltese", @"Turkish",
-				  @"Croatian", @"Chinese", @"Urdu", @"Hindi", @"Thai", @"Korean", @"Lithuanian", @"Polish", 
-				  @"Hungarian", @"Estonian", @"Latvian", @"Northern Sami", @"Faroese", @"Persian", @"Romanian", @"Russian", 
-				  @"Irish", @"Albanian", @"Bulgarian", @"Czech", @"Slovak", @"Slovenian", nil] retain];
-
-    [langSelection addItemsWithTitles:languages];
-    [langSelection selectItemWithTitle:@"English"];
-
     MovieViewController *controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
     [controller setFile:mp4File];
     if (controller !=nil){
@@ -609,49 +599,6 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
     [self updateChangeCount:NSChangeDone];
-}
-
-- (IBAction) showSubititleWindow: (NSString *) path;
-{
-    [langSelection selectItemWithTitle:getFilenameLanguage((CFStringRef)path)];
-    subtitleFilePath = [path retain];
-
-    [NSApp beginSheet:addSubtitleWindow modalForWindow:documentWindow
-        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
-}
-
-- (IBAction) closeSheet: (id) sender
-{
-    [subtitleFilePath release];
-    [NSApp endSheet: addSubtitleWindow];
-    [addSubtitleWindow orderOut:self];
-}
-
-- (void) addSubtitleTrack:(NSString *)filePath
-                    delay:(int)subDelay
-                   height:(unsigned int)subHeight
-                 language:(NSString *)subLanguage
-
-{
-    [mp4File addTrack:[MP42SubtitleTrack subtitleTrackFromFile:filePath
-                                                         delay:subDelay
-                                                        height:subHeight
-                                                      language:subLanguage]];
-
-    [fileTracksTable reloadData];
-    [self updateChangeCount:NSChangeDone];
-
-    [NSApp endSheet: addSubtitleWindow];
-    [addSubtitleWindow orderOut:self];
-}
-
-- (IBAction) addSubtitleTrack: (id)sender
-{
-    [self addSubtitleTrack:subtitleFilePath
-                     delay:[[delay stringValue] integerValue]
-                    height:[[trackHeight stringValue] integerValue]
-                  language:[[langSelection selectedItem] title]];
-    [subtitleFilePath release];
 }
 
 - (IBAction) selectFile: (id) sender

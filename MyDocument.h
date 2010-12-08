@@ -36,12 +36,6 @@
     IBOutlet NSView         *targetView;
     id                      importWindow;
 
-    IBOutlet NSWindow       *addSubtitleWindow;
-    IBOutlet NSPopUpButton  *langSelection;
-    IBOutlet NSTextField    *delay;
-    IBOutlet NSTextField    *trackHeight;
-    NSString                *subtitleFilePath;
-
     IBOutlet NSWindow       *offsetWindow;
     IBOutlet NSTextField    *offset;
     
@@ -51,8 +45,6 @@
     BOOL _optimize;
 }
 
-- (IBAction) closeSheet: (id) sender;
-- (IBAction) addSubtitleTrack: (id) sender;
 - (IBAction) selectFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
 - (IBAction) searchMetadata: (id) sender;
