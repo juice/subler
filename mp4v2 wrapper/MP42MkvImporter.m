@@ -155,7 +155,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                 newTrack.Id = i;
                 newTrack.sourcePath = file;
                 newTrack.sourceInputType = MP42SourceTypeMatroska;
-                
+
                 if ([newTrack.format isEqualToString:@"H.264"]) {
                     uint8_t* avcCAtom = (uint8_t *)malloc(mkvTrack->CodecPrivateSize); // mkv stores h.264 avcC in CodecPrivate
                     memcpy(avcCAtom, mkvTrack->CodecPrivate, mkvTrack->CodecPrivateSize);
@@ -166,13 +166,13 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                         [(MP42VideoTrack*)newTrack setNewLevel:avcCAtom[3]];
                     }
                 }
-                    
-                double trackTimecodeScale = (mkvTrack->TimecodeScale.v >> 32);
+
+                double trackTimecodeScale = mkv_TruncFloat(mkvTrack->TimecodeScale);
                 SegmentInfo *segInfo = mkv_GetFileInfo(matroskaFile);
-                UInt64 scaledDuration = (UInt64)segInfo->Duration / (UInt32)segInfo->TimecodeScale * trackTimecodeScale;
+                UInt64 scaledDuration = (UInt64)segInfo->Duration / 1000000 * trackTimecodeScale;
 
                 newTrack.duration = scaledDuration;
-                
+
                 if (scaledDuration > fileDuration)
                     fileDuration = scaledDuration;
 
@@ -270,7 +270,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 {
     TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, [track sourceId]);
     if (trackInfo->Type == TT_VIDEO)
-        return 90000;
+        return 100000;
     else if (trackInfo->Type == TT_AUDIO)
         return mkv_TruncFloat(trackInfo->AV.Audio.SamplingFreq);
     
@@ -526,7 +526,6 @@ NSString* getMatroskaTrackName(TrackInfo *track)
         }        
 
         else if (trackInfo->Type == TT_VIDEO) {
-            uint64_t timeScale = mkv_GetFileInfo(matroskaFile)->TimecodeScale / mkv_TruncFloat(trackInfo->TimecodeScale) * 1000;
 
             /* read frames from file */
             if (success == 0) {
@@ -608,8 +607,8 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                 MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
                 sample->sampleData = frame;
                 sample->sampleSize = currentSample->frameSize + trackInfo->CompMethodPrivateSize;
-                sample->sampleDuration = duration / (timeScale / 90000.f);
-                sample->sampleOffset = offset / (timeScale / 90000.f);
+                sample->sampleDuration = duration / 10000.0f;
+                sample->sampleOffset = offset / 10000.0f;
                 sample->sampleTimestamp = StartTime;
                 sample->sampleIsSync = currentSample->frameFlags & FRAME_KF;
                 sample->sampleTrackId = track.Id;
