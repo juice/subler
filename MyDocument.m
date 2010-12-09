@@ -327,7 +327,7 @@
 
     if (action == @selector(selectChapterFile:))
         return YES;
-    
+
     if (action == @selector(selectMetadataFile:))
         return YES;
 
@@ -339,10 +339,10 @@
 
     if (action == @selector(searchMetadata:))
         return YES;
-        
+
     if (action == @selector(sendToExternalApp:))
         return YES;
-    
+
     if (action == @selector(showTrackOffsetSheet:) && [fileTracksTable selectedRow] != -1)
         return YES;
 
@@ -370,7 +370,7 @@
 {
     if( !mp4File )
         return 0;
-    
+
     return [mp4File tracksCount];
 }
 
@@ -395,7 +395,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     if ([tableColumn.identifier isEqualToString:@"trackInfo"])
         return track.format;
-    
+
     if ([tableColumn.identifier isEqualToString:@"trackEnabled"])
         return [NSNumber numberWithInteger:track.enabled];
 
@@ -414,7 +414,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                row: (NSInteger) rowIndex
 {
     MP42Track *track = [mp4File trackAtIndex:rowIndex];
-    
+
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"]) {
         if (![track.language isEqualToString:anObject]) {
             track.language = anObject;

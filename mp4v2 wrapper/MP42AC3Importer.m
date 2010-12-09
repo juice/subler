@@ -458,7 +458,7 @@ static bool GetFirstHeader(FILE* inFile)
         [dataReader release];
     if (samplesBuffer)
         [samplesBuffer release];
-    
+
     fclose(inFile);
 
     [ac3Info release];

@@ -350,8 +350,6 @@
 				A9FB9D4A0F83A6FF00AB791A /* VideoFramerate.m */,
 				A90B023310F328EA000416F3 /* PrefsController.h */,
 				A90B023410F328EA000416F3 /* PrefsController.m */,
-				A95C87AD0F82798200F51A22 /* ButtonToolbarItem.h */,
-				A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */,
 				A9AB990B10F4B53F009986EB /* tagChimpController.h */,
 				A9AB990C10F4B53F009986EB /* tagChimpController.m */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
@@ -365,6 +363,8 @@
 			children = (
 				A91106490F323D450013D1E0 /* AppDelegate.h */,
 				A911064A0F323D450013D1E0 /* AppDelegate.m */,
+				A95C87AD0F82798200F51A22 /* ButtonToolbarItem.h */,
+				A95C87AC0F82798200F51A22 /* ButtonToolbarItem.m */,
 				A9744651108313C800C82989 /* common.h */,
 				A96A542010831D710081AA98 /* mathematics.c */,
 				A96A542110831D710081AA98 /* mathematics.h */,

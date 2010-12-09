@@ -38,7 +38,7 @@
 
     IBOutlet NSWindow       *offsetWindow;
     IBOutlet NSTextField    *offset;
-    
+
     IBOutlet NSButton *cancelSave;
     IBOutlet NSButton *_64bit_data;
     IBOutlet NSButton *_64bit_time;
@@ -56,7 +56,6 @@
 - (IBAction) setSaveFormat: (id) sender;
 - (IBAction) cancelSaveOperation: (id) sender;
 - (IBAction) sendToExternalApp: (id) sender;
-
 
 - (MP42File *) mp4File;
 - (void) showImportSheet: (NSString *) filePath;
