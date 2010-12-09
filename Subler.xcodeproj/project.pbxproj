@@ -29,6 +29,7 @@
 		A91E7DEE0F8A2F3D00AF387E /* SoundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */; };
 		A91F62260FB0A50D00B96B33 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = A91F62240FB0A50D00B96B33 /* RegexKitLite.m */; };
 		A91F622D0FB0A56F00B96B33 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A91F622C0FB0A56F00B96B33 /* libicucore.dylib */; };
+		A92A4FB812B0F2F300751FA5 /* prefs-audio.png in Resources */ = {isa = PBXBuildFile; fileRef = A92A4FB712B0F2F300751FA5 /* prefs-audio.png */; };
 		A92E6E2D0FE8FD6C00CDF1F9 /* SBView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92E6E2C0FE8FD6C00CDF1F9 /* SBView.m */; };
 		A92E6EDC0FE9064000CDF1F9 /* SBTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92E6EDB0FE9064000CDF1F9 /* SBTableView.m */; };
 		A941AE1B1074B7A60055022C /* Subler.icns in Resources */ = {isa = PBXBuildFile; fileRef = A941AE1A1074B7A60055022C /* Subler.icns */; };
@@ -169,6 +170,7 @@
 		A91F62240FB0A50D00B96B33 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		A91F62250FB0A50D00B96B33 /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
 		A91F622C0FB0A56F00B96B33 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = /usr/lib/libicucore.dylib; sourceTree = "<absolute>"; };
+		A92A4FB712B0F2F300751FA5 /* prefs-audio.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "prefs-audio.png"; path = "images/prefs-audio.png"; sourceTree = "<group>"; };
 		A92E6E2B0FE8FD6C00CDF1F9 /* SBView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBView.h; sourceTree = "<group>"; };
 		A92E6E2C0FE8FD6C00CDF1F9 /* SBView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBView.m; sourceTree = "<group>"; };
 		A92E6EDA0FE9064000CDF1F9 /* SBTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBTableView.h; sourceTree = "<group>"; };
@@ -400,6 +402,7 @@
 				A9B74A7B10F4B75400C244E4 /* MetadataImport.xib */,
 				A9FB9DC80F83AAC100AB791A /* VideoFramerate.xib */,
 				A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */,
+				A92A4FB712B0F2F300751FA5 /* prefs-audio.png */,
 				A996C43110F4CA1D0055C85C /* tagChimp_tiny.png */,
 				A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */,
 				CD4A86A71234AFA10054970A /* ParseFilename */,
@@ -685,6 +688,7 @@
 				A9B74A7D10F4B75400C244E4 /* MetadataImport.xib in Resources */,
 				A996C43210F4CA1D0055C85C /* tagChimp_tiny.png in Resources */,
 				A9C4E54110F5F01C00B60B59 /* tagChimp_medium.png in Resources */,
+				A92A4FB812B0F2F300751FA5 /* prefs-audio.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
