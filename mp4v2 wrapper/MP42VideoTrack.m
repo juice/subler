@@ -72,10 +72,7 @@
         [super writeToFile:fileHandle error:outError];
 
         if (trackWidth && trackHeight) {
-            if (hSpacing & vSpacing && !muxed)
-                MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.width", trackWidth * hSpacing / vSpacing);
-            else
-                MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.width", trackWidth);
+            MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.width", trackWidth);
 
             MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.height", trackHeight);
 
