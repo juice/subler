@@ -42,7 +42,7 @@
     if (Id)
         [super writeToFile:fileHandle error:outError];
 
-    if ([updatedProperty valueForKey:@"volume"] || !muxed)
+    if ([updatedProperty valueForKey:@"volume"])
         MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.volume", volume);
 
     return Id;

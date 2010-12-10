@@ -176,7 +176,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                 if (scaledDuration > fileDuration)
                     fileDuration = scaledDuration;
 
-                newTrack.name = getMatroskaTrackName(mkvTrack);
+                if (getMatroskaTrackName(mkvTrack))
+                    newTrack.name = getMatroskaTrackName(mkvTrack);
                 iso639_lang_t *isoLanguage = lang_for_code2(mkvTrack->Language);
                 newTrack.language = [NSString stringWithUTF8String:isoLanguage->eng_name];
                 [tracksArray addObject:newTrack];
@@ -252,18 +253,10 @@ NSString* matroskaCodecIDToHumanReadableName(TrackInfo *track)
 
 NSString* getMatroskaTrackName(TrackInfo *track)
 {    
-    if (!track->Name) {
-        if (track->Type == TT_AUDIO)
-            return NSLocalizedString(@"Sound Track", @"Sound Track");
-        else if (track->Type == TT_VIDEO)
-            return NSLocalizedString(@"Video Track", @"Video Track");
-        else if (track->Type == TT_SUB)
-            return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
-        else
-            return NSLocalizedString(@"Unknown Track", @"Unknown Track");
-    }
-    else
+    if(track->Name && strlen(track->Name))
         return [NSString stringWithUTF8String:track->Name];
+    else
+        return nil;
 }
 
 - (NSUInteger)timescaleForTrack:(MP42Track *)track

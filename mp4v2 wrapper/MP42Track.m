@@ -75,7 +75,7 @@ NSString * const MP42SourceTypeRaw = @"Raw";
         }
     }
 
-    if ([updatedProperty valueForKey:@"name"] || !muxed)
+    if ([updatedProperty valueForKey:@"name"])
         if (![name isEqualToString:@"Video Track"] &&
             ![name isEqualToString:@"Sound Track"] &&
             ![name isEqualToString:@"Subtitle Track"] &&
@@ -83,15 +83,16 @@ NSString * const MP42SourceTypeRaw = @"Raw";
             ![name isEqualToString:@"Chapter Track"] &&
             ![name isEqualToString:@"Unknown Track"] &&
             name != nil) {
+            NSLog(@"Track name: %@", name);
             MP4SetTrackName(fileHandle, Id, [name cStringUsingEncoding: NSMacOSRomanStringEncoding]);
         }
-    if ([updatedProperty valueForKey:@"alternate_group"] || !muxed)
+    if ([updatedProperty valueForKey:@"alternate_group"])
         MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", alternate_group);
     if ([updatedProperty valueForKey:@"start_offset"])
         setTrackStartOffset(fileHandle, Id, startOffset);
-    if ([updatedProperty valueForKey:@"language"] || !muxed)
+    if ([updatedProperty valueForKey:@"language"])
         MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
-    if ([updatedProperty valueForKey:@"enabled"] || !muxed) {
+    if ([updatedProperty valueForKey:@"enabled"]) {
         if (enabled) enableTrack(fileHandle, Id);
         else disableTrack(fileHandle, Id);
     }
