@@ -19,3 +19,8 @@
 - (IBAction) help:(id)sender;
 
 @end
+
+@interface SBDocumentController : NSDocumentController {
+}
+
+@end

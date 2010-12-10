@@ -93,7 +93,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>NSDocumentClass</key>
-			<string>org.perian.matroska</string>
+			<string>MyDocument</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

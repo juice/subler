@@ -10,27 +10,14 @@
 #import "MyDocument.h"
 
 @implementation AppDelegate
+
+- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+    [[SBDocumentController alloc] init];
+}
+
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
     return NO;
-}
-
-- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
-    NSDocumentController* docController = [NSDocumentController sharedDocumentController];
-    NSURL* fileURL = [NSURL fileURLWithPath:filename];
-    MyDocument* doc = nil;
-
-    if ([[filename pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame) {
-        doc = [docController openUntitledDocumentAndDisplay:YES error:nil];
-        [doc showImportSheet:filename];
-    }
-    else {
-        doc = [docController openDocumentWithContentsOfURL:fileURL display:YES error:nil];
-    }
-    if (doc)
-        return YES;
-    else
-        return NO;
 }
 
 - (void) showPrefsWindow: (id) sender;
@@ -51,6 +38,23 @@
 {
     [[NSWorkspace sharedWorkspace] openURL: [NSURL
                                              URLWithString:@"http://code.google.com/p/subler/wiki/Documentation"]];
+}
+
+@end
+
+@implementation SBDocumentController
+
+- (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
+    MyDocument* doc = nil;
+    
+    if ([[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame) {
+        doc = [self openUntitledDocumentAndDisplay:YES error:nil];
+        [doc showImportSheet:[absoluteURL path]];
+        return doc;
+    }
+    else {
+        return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
+    }
 }
 
 @end
