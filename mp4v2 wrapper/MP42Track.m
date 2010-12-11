@@ -84,7 +84,9 @@ NSString * const MP42SourceTypeRaw = @"Raw";
             ![name isEqualToString:@"Unknown Track"] &&
             name != nil) {
             NSLog(@"Track name: %@", name);
-            MP4SetTrackName(fileHandle, Id, [name cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+            const char* cString = [name cStringUsingEncoding: NSMacOSRomanStringEncoding];
+            if (cString)
+                MP4SetTrackName(fileHandle, Id, cString);
         }
     if ([updatedProperty valueForKey:@"alternate_group"])
         MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", alternate_group);
