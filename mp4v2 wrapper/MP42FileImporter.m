@@ -9,11 +9,14 @@
 #import "MP42FileImporter.h"
 #import "MP42MkvImporter.h"
 #import "MP42Mp4Importer.h"
-#import "MP42MovImporter.h"
 #import "MP42SrtImporter.h"
 #import "MP42CCImporter.h"
 #import "MP42AC3Importer.h"
 #import "MP42AACImporter.h"
+
+#if !__LP64__
+#import "MP42MovImporter.h"
+#endif
 
 @implementation MP42FileImporter
 
@@ -28,8 +31,6 @@
              [[fileUrl pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
              [[fileUrl pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame)
         self = [[MP42Mp4Importer alloc] initWithDelegate:del andFile:fileUrl];
-    else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
-        self = [[MP42MovImporter alloc] initWithDelegate:del andFile:fileUrl];
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame)
         self = [[MP42SrtImporter alloc] initWithDelegate:del andFile:fileUrl];
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"scc"] == NSOrderedSame)
@@ -38,6 +39,10 @@
         self = [[MP42AC3Importer alloc] initWithDelegate:del andFile:fileUrl];
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame)
         self = [[MP42AACImporter alloc] initWithDelegate:del andFile:fileUrl];
+#if !__LP64__
+    else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
+        self = [[MP42MovImporter alloc] initWithDelegate:del andFile:fileUrl];
+#endif
 
     return self;
 }

@@ -7,11 +7,15 @@
 //
 
 #import "MP42MovImporter.h"
+#import "MP42File.h"
+#import <AudioToolbox/AudioToolbox.h>
+
 #if !__LP64__
 #import <QuickTime/QuickTime.h>
 #endif
+
 #include "lang.h"
-#import "MP42File.h"
+
 
 extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
@@ -227,12 +231,289 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                 [[track attributeForKey:QTTrackLanguageAttribute] longValue])->eng_name];
 }
 
+- (NSUInteger)timescaleForTrack:(MP42Track *)track
+{
+    Track qtTrack = [[[sourceFile tracks] objectAtIndex:[track sourceId]] quickTimeTrack];
+    Media media = GetTrackMedia(qtTrack);
+
+    return GetMediaTimeScale(media);
+}
+
 - (NSSize)sizeForTrack:(MP42Track *)track
 {
-    MP4TrackId srcTrackId = [track sourceId];
-    MP42VideoTrack* currentTrack = [tracksArray objectAtIndex:srcTrackId];
-    
+    MP42VideoTrack* currentTrack = (MP42VideoTrack*) track;
+
     return NSMakeSize([currentTrack width], [currentTrack height]);
+}
+
+- (NSData*)magicCookieForTrack:(MP42Track *)track
+{      
+    OSStatus err = noErr;
+
+    QTTrack * qtTrack = [[sourceFile tracks] objectAtIndex:[track sourceId]];
+    NSString* mediaType = [qtTrack attributeForKey:QTTrackMediaTypeAttribute];
+    Track qtcTrack = [[[sourceFile tracks] objectAtIndex:[track sourceId]] quickTimeTrack];
+    Media media = GetTrackMedia(qtcTrack);
+    NSMutableData * magicCookie;
+
+    // Get the sample description
+    SampleDescriptionHandle desc = (SampleDescriptionHandle) NewHandle(0);
+    GetMediaSampleDescription(media, 1, desc);
+
+    if ([mediaType isEqualToString:QTMediaTypeVideo]) {
+        ImageDescriptionHandle imgDesc = (ImageDescriptionHandle) desc;
+
+        if ((*imgDesc)->cType == kH264CodecType) {
+            // Get avcC atom
+            Handle imgDescHandle = NewHandle(0);
+            GetImageDescriptionExtension(imgDesc, &imgDescHandle, 'avcC', 1);
+            
+            magicCookie = [NSData dataWithBytes:*imgDescHandle length:GetHandleSize(imgDescHandle)];
+
+            DisposeHandle(imgDescHandle);
+
+            return [magicCookie autorelease];
+        }
+    }
+    else if ([mediaType isEqualToString:QTMediaTypeSound]) {
+        SoundDescriptionHandle sndDesc = (SoundDescriptionHandle) desc;
+        
+        AudioStreamBasicDescription asbd = {0};
+        err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
+                                            kQTSoundDescriptionPropertyID_AudioStreamBasicDescription,
+                                            sizeof(asbd), &asbd, NULL);
+        require_noerr(err, bail);
+        
+        if (asbd.mFormatID == kAudioFormatMPEG4AAC) {
+            // Get the magic cookie
+            UInt32 cookieSize;
+            void* cookie;
+            QTSoundDescriptionGetPropertyInfo(sndDesc,
+                                              kQTPropertyClass_SoundDescription,
+                                              kQTSoundDescriptionPropertyID_MagicCookie,
+                                              NULL, &cookieSize, NULL);
+            cookie = malloc(cookieSize);
+            QTSoundDescriptionGetProperty(sndDesc,
+                                          kQTPropertyClass_SoundDescription,
+                                          kQTSoundDescriptionPropertyID_MagicCookie,
+                                          cookieSize, cookie, &cookieSize);
+            // Extract DecoderSpecific info
+            UInt8* buffer;
+            int size;
+            ReadESDSDescExt(cookie, &buffer, &size, 0);
+            magicCookie = [NSData dataWithBytes:buffer length:size];
+
+            free(cookie);
+            free(buffer);
+
+            return [magicCookie autorelease];
+
+        }
+        else if (asbd.mFormatID == kAudioFormatAC3 || asbd.mFormatID == 0x6D732000)
+        {
+            ByteCount           channelLayoutSize;
+            AudioChannelLayout* channelLayout = NULL;
+            err = QTSoundDescriptionGetPropertyInfo(sndDesc, kQTPropertyClass_SoundDescription,
+                                                    kQTSoundDescriptionPropertyID_AudioChannelLayout,
+                                                    NULL, &channelLayoutSize, NULL);
+            require_noerr(err, bail);
+
+            channelLayout = (AudioChannelLayout*)malloc(channelLayoutSize);
+
+            err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
+                                                kQTSoundDescriptionPropertyID_AudioChannelLayout,
+                                                channelLayoutSize, channelLayout, NULL);
+            require_noerr(err, bail);
+
+            UInt32 bitmapSize = sizeof(AudioChannelLayoutTag);
+            UInt32 channelBitmap;
+            AudioFormatGetProperty(kAudioFormatProperty_BitmapForLayoutTag,
+                                   sizeof(AudioChannelLayoutTag), &channelLayout->mChannelLayoutTag,
+                                   &bitmapSize, &channelBitmap);
+            uint8_t fscod = 0;
+            uint8_t bsid = 8;
+            uint8_t bsmod = 0;
+            uint8_t acmod = 7;
+            uint8_t lfeon = (channelBitmap & kAudioChannelBit_LFEScreen) ? 1 : 0;
+            uint8_t bit_rate_code = 15;
+
+            switch (AudioChannelLayoutTag_GetNumberOfChannels(channelLayout->mChannelLayoutTag) - lfeon) {
+                case 1:
+                    acmod = 1;
+                    break;
+                case 2:
+                    acmod = 2;
+                    break;
+                case 3:
+                    if (channelBitmap & kAudioChannelBit_CenterSurround) acmod = 3;
+                    else acmod = 4;
+                    break;
+                case 4:
+                    if (channelBitmap & kAudioChannelBit_CenterSurround) acmod = 5;
+                    else acmod = 6;
+                    break;
+                case 5:
+                    acmod = 7;
+                    break;
+                default:
+                    break;
+            }
+
+            if (asbd.mSampleRate == 48000) fscod = 0;
+            else if (asbd.mSampleRate == 44100) fscod = 1;
+            else if (asbd.mSampleRate == 32000) fscod = 2;
+            else fscod = 3;
+
+            NSMutableData *ac3Info = [[NSMutableData alloc] init];
+            [ac3Info appendBytes:&fscod length:sizeof(uint64_t)];
+            [ac3Info appendBytes:&bsid length:sizeof(uint64_t)];
+            [ac3Info appendBytes:&bsmod length:sizeof(uint64_t)];
+            [ac3Info appendBytes:&acmod length:sizeof(uint64_t)];
+            [ac3Info appendBytes:&lfeon length:sizeof(uint64_t)];
+            [ac3Info appendBytes:&bit_rate_code length:sizeof(uint64_t)];
+
+            free(channelLayout);
+
+            return [ac3Info autorelease];
+        }
+    }
+
+bail:
+    return nil;
+}
+
+- (void) fillMovieSampleBuffer: (id)sender
+{
+    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    OSStatus err = noErr;
+
+    //NSInteger tracksNumber = [activeTracks count];
+    //NSInteger tracksDone = 0;
+
+    for (MP42Track * track in activeTracks) {
+        Track qtcTrack = [[[sourceFile tracks] objectAtIndex:[track sourceId]] quickTimeTrack];
+        Media media = GetTrackMedia(qtcTrack);
+
+        // Create a QTSampleTable which contains all the informatio of the track samples.
+        TimeValue64 sampleTableStartDecodeTime = 0;
+        QTMutableSampleTableRef sampleTable = NULL;
+        err = CopyMediaMutableSampleTable(media,
+                                          0,
+                                          &sampleTableStartDecodeTime,
+                                          0,
+                                          0,
+                                          &sampleTable);
+        require_noerr(err, bail);
+
+        TimeValue64 minDisplayOffset = 0;
+        err = QTSampleTableGetProperty(sampleTable,
+                                       kQTPropertyClass_SampleTable,
+                                       kQTSampleTablePropertyID_MinDisplayOffset,
+                                       sizeof(TimeValue64),
+                                       &minDisplayOffset,
+                                       NULL);
+        require_noerr(err, bail);
+
+        SInt64 sampleIndex, sampleCount;
+        sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
+
+        for (sampleIndex = 1; sampleIndex <= sampleCount; sampleIndex++) {
+            while ([samplesBuffer count] >= 200) {
+                usleep(200);
+            }
+
+            TimeValue64 sampleDecodeTime = 0;
+            ByteCount sampleDataSize = 0;
+            MediaSampleFlags sampleFlags = 0;
+            UInt8 *sampleData = NULL;
+            TimeValue64 decodeDuration = QTSampleTableGetDecodeDuration(sampleTable, sampleIndex);
+            TimeValue64 displayOffset = QTSampleTableGetDisplayOffset(sampleTable, sampleIndex);
+            uint32_t dflags = 0;
+
+            // Get the frame's data size and sample flags.  
+            SampleNumToMediaDecodeTime( media, sampleIndex, &sampleDecodeTime, NULL);
+            sampleDataSize = QTSampleTableGetDataSizePerSample(sampleTable, sampleIndex);
+            sampleFlags = QTSampleTableGetSampleFlags(sampleTable, sampleIndex);
+            dflags |= (sampleFlags & mediaSampleHasRedundantCoding) ? MP4_SDT_HAS_REDUNDANT_CODING : 0;
+            dflags |= (sampleFlags & mediaSampleHasNoRedundantCoding) ? MP4_SDT_HAS_NO_REDUNDANT_CODING : 0;
+            dflags |= (sampleFlags & mediaSampleIsDependedOnByOthers) ? MP4_SDT_HAS_DEPENDENTS : 0;
+            dflags |= (sampleFlags & mediaSampleIsNotDependedOnByOthers) ? MP4_SDT_HAS_NO_DEPENDENTS : 0;
+            dflags |= (sampleFlags & mediaSampleDependsOnOthers) ? MP4_SDT_IS_DEPENDENT : 0;
+            dflags |= (sampleFlags & mediaSampleDoesNotDependOnOthers) ? MP4_SDT_IS_INDEPENDENT : 0;
+            dflags |= (sampleFlags & mediaSampleEarlierDisplayTimesAllowed) ? MP4_SDT_EARLIER_DISPLAY_TIMES_ALLOWED : 0;
+
+            // Load the frame.
+            sampleData = malloc(sampleDataSize);
+            GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
+                            NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
+
+
+            MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
+            sample->sampleData = sampleData;
+            sample->sampleSize = sampleDataSize;
+            sample->sampleDuration = decodeDuration;
+            sample->sampleOffset = displayOffset -minDisplayOffset;
+            //sample->sampleTimestamp = pStartTime;
+            sample->sampleIsSync = !(sampleFlags & mediaSampleNotSync);
+            sample->sampleTrackId = track.Id;
+
+            @synchronized(samplesBuffer) {
+                [samplesBuffer addObject:sample];
+                [sample release];
+            }
+        }
+
+        bail:
+        QTSampleTableRelease(sampleTable);
+    }
+    
+    readerStatus = 1;
+    [pool release];
+}
+
+- (MP42SampleBuffer*)copyNextSample
+{    
+    if (samplesBuffer == nil) {
+        samplesBuffer = [[NSMutableArray alloc] initWithCapacity:200];
+    }    
+    
+    if (!dataReader && !readerStatus) {
+        dataReader = [[NSThread alloc] initWithTarget:self selector:@selector(fillMovieSampleBuffer:) object:self];
+        [dataReader start];
+    }
+    
+    while (![samplesBuffer count] && !readerStatus)
+        usleep(2000);
+    
+    if (readerStatus)
+        if ([samplesBuffer count] == 0) {
+            readerStatus = 0;
+            [dataReader release];
+            dataReader = nil;
+            return nil;
+        }
+    
+    MP42SampleBuffer* sample;
+    
+    @synchronized(samplesBuffer) {
+        sample = [samplesBuffer objectAtIndex:0];
+        [sample retain];
+        [samplesBuffer removeObjectAtIndex:0];
+    }
+    
+    return sample;
+}
+
+- (void)setActiveTrack:(MP42Track *)track {
+    if (!activeTracks)
+        activeTracks = [[NSMutableArray alloc] init];
+    
+    [activeTracks addObject:track];
+}
+
+- (CGFloat)progress
+{
+    return progress;
 }
 
 - (void) dealloc

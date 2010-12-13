@@ -19,7 +19,7 @@
 		delegate = del;
         filePath = [path retain];
     }
-    
+
 	return self;
 }
 
@@ -40,7 +40,7 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     newTrack.sourcePath = filePath;
     newTrack.format = @"H.264";
     newTrack.sourceInputType = MP42SourceTypeRaw;
-    
+
     uint32_t tw, th;
     uint8_t profile, level;
     if (H264Info([filePath cStringUsingEncoding:NSASCIIStringEncoding], &tw, &th, &profile, &level)) {

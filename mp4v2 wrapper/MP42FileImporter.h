@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MP42Sample.h"
+
 @class MP42Sample;
 @class MP42Track;
 

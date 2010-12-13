@@ -203,7 +203,6 @@
 
             trackHelper = track.trackDemuxerHelper;
             trackHelper->totalSampleNumber = MP4GetTrackNumberOfSamples(fileHandle, [track Id]);
-            //MP4GetTrack
         }
     }
 

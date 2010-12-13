@@ -17,9 +17,7 @@
 		9480588B106E031F0037A911 /* FileImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 9480588A106E031F0037A911 /* FileImport.m */; };
 		94805896106E03440037A911 /* MatroskaFile.c in Sources */ = {isa = PBXBuildFile; fileRef = 94805892106E03440037A911 /* MatroskaFile.c */; };
 		94805897106E03440037A911 /* MatroskaParser.c in Sources */ = {isa = PBXBuildFile; fileRef = 94805894106E03440037A911 /* MatroskaParser.c */; };
-		948058AC106E074A0037A911 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054A50F6D288D00AF15B5 /* SubMuxer.m */; };
 		948058B6106E07990037A911 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 948058B5106E07990037A911 /* libz.dylib */; };
-		A905E5520FB054B500B926FF /* CCMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A905E5510FB054B500B926FF /* CCMuxer.m */; };
 		A905E58A0FB05A8100B926FF /* MP42ClosedCaptionTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A905E5880FB05A8100B926FF /* MP42ClosedCaptionTrack.m */; };
 		A90B023510F328EA000416F3 /* PrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90B023410F328EA000416F3 /* PrefsController.m */; };
 		A90B023B10F3290A000416F3 /* Prefs.xib in Resources */ = {isa = PBXBuildFile; fileRef = A90B023910F3290A000416F3 /* Prefs.xib */; };
@@ -63,7 +61,6 @@
 		A9B8E896123A95BA006A6EB8 /* MP42Sample.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B8E894123A95BA006A6EB8 /* MP42Sample.m */; };
 		A9BB60690F833D2E005CD0BB /* h264.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BB60680F833D2E005CD0BB /* h264.cpp */; };
 		A9BB60D80F834E0A005CD0BB /* mbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BB60D70F834E0A005CD0BB /* mbs.cpp */; };
-		A9C054B20F6D295A00AF15B5 /* AudioMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054B00F6D295A00AF15B5 /* AudioMuxer.m */; };
 		A9C054D00F6D2D9800AF15B5 /* VideoMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C054CF0F6D2D9800AF15B5 /* VideoMuxer.m */; };
 		A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C055360F6D395B00AF15B5 /* FileImport.xib */; };
 		A9C095800F7B6C8C00170CAF /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */; };
@@ -153,8 +150,6 @@
 		94805894106E03440037A911 /* MatroskaParser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MatroskaParser.c; sourceTree = "<group>"; };
 		94805895106E03440037A911 /* MatroskaParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatroskaParser.h; sourceTree = "<group>"; };
 		948058B5106E07990037A911 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
-		A905E5500FB054B500B926FF /* CCMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMuxer.h; sourceTree = "<group>"; };
-		A905E5510FB054B500B926FF /* CCMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMuxer.m; sourceTree = "<group>"; };
 		A905E5880FB05A8100B926FF /* MP42ClosedCaptionTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42ClosedCaptionTrack.m; path = "mp4v2 wrapper/MP42ClosedCaptionTrack.m"; sourceTree = "<group>"; };
 		A905E5890FB05A8100B926FF /* MP42ClosedCaptionTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42ClosedCaptionTrack.h; path = "mp4v2 wrapper/MP42ClosedCaptionTrack.h"; sourceTree = "<group>"; };
 		A90B023310F328EA000416F3 /* PrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefsController.h; sourceTree = "<group>"; };
@@ -229,10 +224,6 @@
 		A9BB60680F833D2E005CD0BB /* h264.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = h264.cpp; path = "mp4v2 wrapper/muxer/h264.cpp"; sourceTree = "<group>"; };
 		A9BB60D60F834E0A005CD0BB /* mbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mbs.h; path = "mp4v2 wrapper/muxer/mbs.h"; sourceTree = "<group>"; };
 		A9BB60D70F834E0A005CD0BB /* mbs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mbs.cpp; path = "mp4v2 wrapper/muxer/mbs.cpp"; sourceTree = "<group>"; };
-		A9C054A40F6D288D00AF15B5 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
-		A9C054A50F6D288D00AF15B5 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMuxer.m; sourceTree = "<group>"; };
-		A9C054B00F6D295A00AF15B5 /* AudioMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioMuxer.m; sourceTree = "<group>"; };
-		A9C054B10F6D295A00AF15B5 /* AudioMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioMuxer.h; sourceTree = "<group>"; };
 		A9C054CE0F6D2D9800AF15B5 /* VideoMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoMuxer.h; sourceTree = "<group>"; };
 		A9C054CF0F6D2D9800AF15B5 /* VideoMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoMuxer.m; sourceTree = "<group>"; };
 		A9C055330F6D394F00AF15B5 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FileImport.xib; sourceTree = "<group>"; };
@@ -482,12 +473,6 @@
 		A9C054A30F6D288D00AF15B5 /* Old muxer */ = {
 			isa = PBXGroup;
 			children = (
-				A905E5500FB054B500B926FF /* CCMuxer.h */,
-				A905E5510FB054B500B926FF /* CCMuxer.m */,
-				A9C054A40F6D288D00AF15B5 /* SubMuxer.h */,
-				A9C054A50F6D288D00AF15B5 /* SubMuxer.m */,
-				A9C054B10F6D295A00AF15B5 /* AudioMuxer.h */,
-				A9C054B00F6D295A00AF15B5 /* AudioMuxer.m */,
 				A9C054CE0F6D2D9800AF15B5 /* VideoMuxer.h */,
 				A9C054CF0F6D2D9800AF15B5 /* VideoMuxer.m */,
 			);
@@ -732,7 +717,6 @@
 				A9629C920F56F7B6001D6A75 /* MP42Utilities.m in Sources */,
 				A9629D0A0F56FB36001D6A75 /* VideoViewController.m in Sources */,
 				A9569CEB0F616926002F79F8 /* MP42VideoTrack.m in Sources */,
-				A9C054B20F6D295A00AF15B5 /* AudioMuxer.m in Sources */,
 				A9C054D00F6D2D9800AF15B5 /* VideoMuxer.m in Sources */,
 				A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */,
 				A95C87AE0F82798200F51A22 /* ButtonToolbarItem.m in Sources */,
@@ -740,7 +724,6 @@
 				A9BB60D80F834E0A005CD0BB /* mbs.cpp in Sources */,
 				A9FB9D4B0F83A6FF00AB791A /* VideoFramerate.m in Sources */,
 				A91E7DEA0F8A2E6800AF387E /* SoundViewController.m in Sources */,
-				A905E5520FB054B500B926FF /* CCMuxer.m in Sources */,
 				A905E58A0FB05A8100B926FF /* MP42ClosedCaptionTrack.m in Sources */,
 				A91F62260FB0A50D00B96B33 /* RegexKitLite.m in Sources */,
 				A92E6E2D0FE8FD6C00CDF1F9 /* SBView.m in Sources */,
@@ -748,7 +731,6 @@
 				9480588B106E031F0037A911 /* FileImport.m in Sources */,
 				94805896106E03440037A911 /* MatroskaFile.c in Sources */,
 				94805897106E03440037A911 /* MatroskaParser.c in Sources */,
-				948058AC106E074A0037A911 /* SubMuxer.m in Sources */,
 				A974463F1083132F00C82989 /* rational.c in Sources */,
 				A96A542210831D710081AA98 /* mathematics.c in Sources */,
 				A90B023510F328EA000416F3 /* PrefsController.m in Sources */,

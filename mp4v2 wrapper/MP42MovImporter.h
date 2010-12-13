@@ -12,6 +12,14 @@
 
 @interface MP42MovImporter : MP42FileImporter {
     QTMovie         *sourceFile;
+    
+    NSThread *dataReader;
+    NSInteger readerStatus;
+    
+    NSMutableArray *activeTracks;
+    NSMutableArray *samplesBuffer;
+    
+    CGFloat progress;
 }
 
 @end

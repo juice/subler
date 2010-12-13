@@ -17,12 +17,3 @@ typedef struct framerate_t {
 } framerate_t;
 
 int muxH264ElementaryStream(MP4FileHandle fileHandle, NSString* filePath, uint32_t frameRateCode);
-
-#if !__LP64__
-    int muxMOVVideoTrack(MP4FileHandle fileHandle, QTMovie* srcFile, MP4TrackId srcTrackId);
-#endif
-    
-int muxMP4VideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
-
-int muxMKVVideoTrack(MP4FileHandle fileHandle, NSString* filePath, MP4TrackId srcTrackId);
-
