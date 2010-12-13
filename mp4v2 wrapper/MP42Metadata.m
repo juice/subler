@@ -326,7 +326,7 @@ static const genreType_t genreType_strings[] = {
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
             @"Studio", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"artistID", @"playlistID", @"genreID", @"composerID",
-            @"XID", @"Sort Name", @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
+            @"XID", @"iTunes Account", @"Sort Name", @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
 }
 
 - (NSArray *) writableMetadata
@@ -335,7 +335,8 @@ static const genreType_t genreType_strings[] = {
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Studio", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
-			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"XID", nil];
+			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"XID", @"iTunes Account", @"Sort Name",
+            @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
 }
 
 - (BOOL) setMediaKindFromString:(NSString *)mediaKindString;
@@ -864,6 +865,8 @@ static const genreType_t genreType_strings[] = {
     MP4TagsSetEncodingTool(tags, [[tagsDict valueForKey:@"Encoding Tool"] UTF8String]);
 
     MP4TagsSetEncodedBy(tags, [[tagsDict valueForKey:@"Encoded By"] UTF8String]);
+    
+    MP4TagsSetITunesAccount(tags, [[tagsDict valueForKey:@"iTunes Account"] UTF8String]);
 
     MP4TagsSetMediaType(tags, &mediaKind);
 
