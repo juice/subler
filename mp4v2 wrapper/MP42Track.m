@@ -83,7 +83,6 @@ NSString * const MP42SourceTypeRaw = @"Raw";
             ![name isEqualToString:@"Chapter Track"] &&
             ![name isEqualToString:@"Unknown Track"] &&
             name != nil) {
-            NSLog(@"Track name: %@", name);
             const char* cString = [name cStringUsingEncoding: NSMacOSRomanStringEncoding];
             if (cString)
                 MP4SetTrackName(fileHandle, Id, cString);
