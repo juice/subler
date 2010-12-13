@@ -41,10 +41,19 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     if ((self = [super init]))
 	{
         delegate = del;
-
 		fileHandle = MP4Read([path UTF8String], 0);
+
+        const char* brand = NULL;
+        MP4GetStringProperty(fileHandle, "ftyp.majorBrand", &brand);
+        if (!strcmp(brand, "qt  ")) {
+            MP4Close(fileHandle);
+            [self release];
+            return nil;
+        }
+
         filePath = [path retain];
         hasFileRepresentation = YES;
+
 		if (!fileHandle) {
             [self release];
 			return nil;
