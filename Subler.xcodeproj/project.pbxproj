@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1DDD582C0DA1D0D100B32029 /* MyDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58280DA1D0D100B32029 /* MyDocument.xib */; };
 		1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD582A0DA1D0D100B32029 /* MainMenu.xib */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
@@ -43,7 +42,6 @@
 		A99EACA31115C18000D89903 /* MP42MkvImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EACA21115C18000D89903 /* MP42MkvImporter.m */; };
 		A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A99F4D260F6D5825003BA2B9 /* MP42AudioTrack.m */; };
 		A9B46A8C12B79B240040517A /* FileImport.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A7F12B79B240040517A /* FileImport.m */; };
-		A9B46A8D12B79B240040517A /* MyDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8112B79B240040517A /* MyDocument.m */; };
 		A9B46A8E12B79B240040517A /* PrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8312B79B240040517A /* PrefsController.m */; };
 		A9B46A8F12B79B240040517A /* SBTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8512B79B240040517A /* SBTableView.m */; };
 		A9B46A9012B79B240040517A /* SBView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8712B79B240040517A /* SBView.m */; };
@@ -60,6 +58,7 @@
 		A9B46AAF12B79BE80040517A /* MatroskaFile.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AAB12B79BE80040517A /* MatroskaFile.c */; };
 		A9B46AB012B79BE80040517A /* MatroskaParser.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AAD12B79BE80040517A /* MatroskaParser.c */; };
 		A9B46AB312B79BF60040517A /* sfifo.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AB112B79BF60040517A /* sfifo.c */; };
+		A9B46ABF12B79D1C0040517A /* SBDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46ABE12B79D1C0040517A /* SBDocument.m */; };
 		A9B74A7D10F4B75400C244E4 /* MetadataImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9B74A7B10F4B75400C244E4 /* MetadataImport.xib */; };
 		A9B8E895123A95BA006A6EB8 /* MP42Muxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B8E892123A95BA006A6EB8 /* MP42Muxer.m */; };
 		A9B8E896123A95BA006A6EB8 /* MP42Sample.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B8E894123A95BA006A6EB8 /* MP42Sample.m */; };
@@ -131,7 +130,6 @@
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FBA07B3F13500E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		1DDD58290DA1D0D100B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MyDocument.xib; sourceTree = "<group>"; };
 		1DDD582B0DA1D0D100B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		2A37F4B0FDCFA73011CA2CEA /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
@@ -188,8 +186,6 @@
 		A99F4D260F6D5825003BA2B9 /* MP42AudioTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42AudioTrack.m; path = "mp4v2 wrapper/MP42AudioTrack.m"; sourceTree = "<group>"; };
 		A9B46A7E12B79B240040517A /* FileImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileImport.h; path = Classes/FileImport.h; sourceTree = "<group>"; };
 		A9B46A7F12B79B240040517A /* FileImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileImport.m; path = Classes/FileImport.m; sourceTree = "<group>"; };
-		A9B46A8012B79B240040517A /* MyDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyDocument.h; path = Classes/MyDocument.h; sourceTree = "<group>"; };
-		A9B46A8112B79B240040517A /* MyDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyDocument.m; path = Classes/MyDocument.m; sourceTree = "<group>"; };
 		A9B46A8212B79B240040517A /* PrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PrefsController.h; path = Classes/PrefsController.h; sourceTree = "<group>"; };
 		A9B46A8312B79B240040517A /* PrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PrefsController.m; path = Classes/PrefsController.m; sourceTree = "<group>"; };
 		A9B46A8412B79B240040517A /* SBTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBTableView.h; path = Classes/SBTableView.h; sourceTree = "<group>"; };
@@ -222,6 +218,9 @@
 		A9B46AAE12B79BE80040517A /* MatroskaParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatroskaParser.h; path = "mp4v2 wrapper/muxer/MatroskaParser.h"; sourceTree = "<group>"; };
 		A9B46AB112B79BF60040517A /* sfifo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sfifo.c; path = "mp4v2 wrapper/sfifo.c"; sourceTree = "<group>"; };
 		A9B46AB212B79BF60040517A /* sfifo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sfifo.h; path = "mp4v2 wrapper/sfifo.h"; sourceTree = "<group>"; };
+		A9B46ABD12B79D1C0040517A /* SBDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBDocument.h; path = Classes/SBDocument.h; sourceTree = "<group>"; };
+		A9B46ABE12B79D1C0040517A /* SBDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBDocument.m; path = Classes/SBDocument.m; sourceTree = "<group>"; };
+		A9B46AC112B79E230040517A /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = English; path = English.lproj/SBDocument.xib; sourceTree = "<group>"; };
 		A9B74A7C10F4B75400C244E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MetadataImport.xib; sourceTree = "<group>"; };
 		A9B8E892123A95BA006A6EB8 /* MP42Muxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42Muxer.m; path = "mp4v2 wrapper/MP42Muxer.m"; sourceTree = "<group>"; };
 		A9B8E893123A95BA006A6EB8 /* MP42Sample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42Sample.h; path = "mp4v2 wrapper/MP42Sample.h"; sourceTree = "<group>"; };
@@ -330,10 +329,10 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A9B46ABD12B79D1C0040517A /* SBDocument.h */,
+				A9B46ABE12B79D1C0040517A /* SBDocument.m */,
 				A9B46A7E12B79B240040517A /* FileImport.h */,
 				A9B46A7F12B79B240040517A /* FileImport.m */,
-				A9B46A8012B79B240040517A /* MyDocument.h */,
-				A9B46A8112B79B240040517A /* MyDocument.m */,
 				A9B46A8212B79B240040517A /* PrefsController.h */,
 				A9B46A8312B79B240040517A /* PrefsController.m */,
 				A9B46A8812B79B240040517A /* tagChimpController.h */,
@@ -378,8 +377,8 @@
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				1DDD58280DA1D0D100B32029 /* MyDocument.xib */,
 				A90B023910F3290A000416F3 /* Prefs.xib */,
+				A9B46AC012B79E230040517A /* SBDocument.xib */,
 				1DDD582A0DA1D0D100B32029 /* MainMenu.xib */,
 				A9629D050F56FB2A001D6A75 /* VideoView.xib */,
 				A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */,
@@ -643,7 +642,6 @@
 			files = (
 				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
-				1DDD582C0DA1D0D100B32029 /* MyDocument.xib in Resources */,
 				1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */,
 				A9FD5DA40F3C6F8100817716 /* EmptyView.xib in Resources */,
 				A9FD5DA60F3C6F8A00817716 /* ChapterView.xib in Resources */,
@@ -716,7 +714,6 @@
 				A9C4ECF712AE562A00BDBB7D /* MP42AACImporter.mm in Sources */,
 				A937137512B76EAD00940FEC /* MP42H264Importer.mm in Sources */,
 				A9B46A8C12B79B240040517A /* FileImport.m in Sources */,
-				A9B46A8D12B79B240040517A /* MyDocument.m in Sources */,
 				A9B46A8E12B79B240040517A /* PrefsController.m in Sources */,
 				A9B46A8F12B79B240040517A /* SBTableView.m in Sources */,
 				A9B46A9012B79B240040517A /* SBView.m in Sources */,
@@ -732,6 +729,7 @@
 				A9B46AAF12B79BE80040517A /* MatroskaFile.c in Sources */,
 				A9B46AB012B79BE80040517A /* MatroskaParser.c in Sources */,
 				A9B46AB312B79BF60040517A /* sfifo.c in Sources */,
+				A9B46ABF12B79D1C0040517A /* SBDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -752,14 +750,6 @@
 				089C1660FE840EACC02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		1DDD58280DA1D0D100B32029 /* MyDocument.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1DDD58290DA1D0D100B32029 /* English */,
-			);
-			name = MyDocument.xib;
 			sourceTree = "<group>";
 		};
 		1DDD582A0DA1D0D100B32029 /* MainMenu.xib */ = {
@@ -800,6 +790,14 @@
 				A9629D060F56FB2A001D6A75 /* English */,
 			);
 			name = VideoView.xib;
+			sourceTree = "<group>";
+		};
+		A9B46AC012B79E230040517A /* SBDocument.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9B46AC112B79E230040517A /* English */,
+			);
+			name = SBDocument.xib;
 			sourceTree = "<group>";
 		};
 		A9B74A7B10F4B75400C244E4 /* MetadataImport.xib */ = {

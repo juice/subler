@@ -1,5 +1,5 @@
 //
-//  MyDocument.h
+//  SBDocument.h
 //  Subler
 //
 //  Created by Damiano Galassi on 29/01/09.
@@ -10,7 +10,7 @@
 
 @class MP42File;
 
-@interface MyDocument : NSDocument
+@interface SBDocument : NSDocument
 {
     MP42File  *mp4File;
     IBOutlet NSWindow       *documentWindow;

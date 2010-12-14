@@ -1,12 +1,12 @@
 //
-//  MyDocument.m
+//  SBDocument.m
 //  Subler
 //
 //  Created by Damiano Galassi on 29/01/09.
 //  Copyright Damiano Galassi 2009 . All rights reserved.
 //
 
-#import "MyDocument.h"
+#import "SBDocument.h"
 #import "MP42File.h"
 #import "EmptyViewController.h"
 #import "MovieViewController.h"
@@ -19,7 +19,7 @@
 
 #define SublerTableViewDataType @"SublerTableViewDataType"
 
-@implementation MyDocument
+@implementation SBDocument
 
 - (id)init
 {
@@ -34,7 +34,7 @@
 
 - (NSString *)windowNibName
 {
-    return @"MyDocument";
+    return @"SBDocument";
 }
 
 - (void)awakeFromNib

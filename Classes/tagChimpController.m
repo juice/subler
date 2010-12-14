@@ -9,7 +9,7 @@
 #import "tagChimpController.h"
 #import "SBTableView.h"
 #import "MP42File.h"
-#import "MyDocument.h"
+#import "SBDocument.h"
 
 @implementation tagChimpController
 
@@ -36,7 +36,7 @@
     [super windowDidLoad];
 
     NSString *filename = nil;
-    MP42File *mp4File = [((MyDocument *) delegate) mp4File];
+    MP42File *mp4File = [((SBDocument *) delegate) mp4File];
     for (NSUInteger i = 0; i < [mp4File tracksCount]; i++) {
         MP42Track *track = [mp4File trackAtIndex:i];
         if ([track sourcePath]) {

@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "MyDocument.h"
+#import "SBDocument.h"
 
 @implementation AppDelegate
 
@@ -45,7 +45,7 @@
 @implementation SBDocumentController
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
-    MyDocument* doc = nil;
+    SBDocument* doc = nil;
     
     if ([[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
         [[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame ||
