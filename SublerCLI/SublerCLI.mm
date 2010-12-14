@@ -31,10 +31,10 @@ int main (int argc, const char * argv[]) {
     char* output_file = NULL;
     char* input_file = NULL;
     char* input_chap = NULL;
-    const char* name = "Subtitle Track";
-    const char* language = "English";
+    const char* name = NULL;
+    const char* language = NULL;
     int delay = 0;
-    unsigned int height = 60;
+    unsigned int height = 0;
     BOOL removeExisting = false;
     BOOL chapterPreview = false;
     BOOL modified = false;
@@ -135,10 +135,13 @@ int main (int argc, const char * argv[]) {
             for (MP42Track * track in [fileImporter tracksArray]) {
                 [track setTrackImporterHelper:fileImporter];
 
-                [track setLanguage:[NSString stringWithCString:language encoding:NSUTF8StringEncoding]];
-                [track setStartOffset:delay];
-                if ([track isMemberOfClass:[MP42SubtitleTrack class]])
+                if (language)
+                    [track setLanguage:[NSString stringWithCString:language encoding:NSUTF8StringEncoding]];
+                if (delay)
+                    [track setStartOffset:delay];
+                if (height && [track isMemberOfClass:[MP42SubtitleTrack class]])
                     [(MP42VideoTrack*)track setTrackHeight:height];
+
                 [mp4File addTrack:track];
             }
 
@@ -220,20 +223,20 @@ int main (int argc, const char * argv[]) {
         if (chapterPreview)
             modified = YES;
 
-        if (modified && [mp4File hasFileRepresentation]) {
-            if (![mp4File updateMP4FileWithAttributes:attributes error:&outError]) {
-                printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
-                return -1;
-            }
-        }
-        else if (modified && ![mp4File hasFileRepresentation])
-            if (![mp4File writeToUrl:[NSURL fileURLWithPath:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]]
-                      withAttributes:attributes
-                               error:&outError]); {
-                printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
-                return -1;
-        }
+        BOOL success;
+        if (modified && [mp4File hasFileRepresentation])
+            success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
 
+        else if (modified && ![mp4File hasFileRepresentation])
+            success = [mp4File writeToUrl:[NSURL fileURLWithPath:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]]
+                           withAttributes:attributes
+                                    error:&outError];
+
+        if (!success) {
+            printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
+            return -1;
+        }
+        
         [mp4File release];
     }
     if (optimize) {
