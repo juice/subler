@@ -40,6 +40,7 @@
 		A996C43210F4CA1D0055C85C /* tagChimp_tiny.png in Resources */ = {isa = PBXBuildFile; fileRef = A996C43110F4CA1D0055C85C /* tagChimp_tiny.png */; };
 		A99EAC7C1115BED200D89903 /* MP42FileImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EAC7B1115BED200D89903 /* MP42FileImporter.m */; };
 		A99EACA31115C18000D89903 /* MP42MkvImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EACA21115C18000D89903 /* MP42MkvImporter.m */; };
+		A99EEA3F12B801AE002367D3 /* SBDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9B46AC012B79E230040517A /* SBDocument.xib */; };
 		A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A99F4D260F6D5825003BA2B9 /* MP42AudioTrack.m */; };
 		A9B46A8C12B79B240040517A /* FileImport.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A7F12B79B240040517A /* FileImport.m */; };
 		A9B46A8E12B79B240040517A /* PrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8312B79B240040517A /* PrefsController.m */; };
@@ -642,6 +643,7 @@
 			files = (
 				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
+				A99EEA3F12B801AE002367D3 /* SBDocument.xib in Resources */,
 				1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */,
 				A9FD5DA40F3C6F8100817716 /* EmptyView.xib in Resources */,
 				A9FD5DA60F3C6F8A00817716 /* ChapterView.xib in Resources */,
