@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "MP42File.h"
+#import "MP42FileImporter.h"
 #import "RegexKitLite.h"
 
 void print_help()
@@ -118,20 +119,25 @@ int main (int argc, const char * argv[]) {
               [subtitleTrackIndexes addIndex:[mp4File.tracks indexOfObject:track]];
                modified = YES;
             }
-                              
+
           [mp4File removeTracksAtIndexes:subtitleTrackIndexes];
           [subtitleTrackIndexes release];
         }
 
         if (input_sub) {
-            MP42SubtitleTrack *track = [MP42SubtitleTrack subtitleTrackFromFile:[NSString stringWithCString:input_sub
-                                                                                                   encoding:NSUTF8StringEncoding]
-                                                                          delay:delay
-                                                                         height:height
-                                                                       language:[NSString stringWithCString:language
-                                                                                                   encoding:NSUTF8StringEncoding]];
-            track.name = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
-            [mp4File addTrack:track];
+            MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
+                                                                                andFile:[NSString stringWithCString:input_sub                                                                                                                                                                                 encoding:NSUTF8StringEncoding]];
+
+            for (MP42Track * track in [fileImporter tracksArray]) {
+                [track setTrackImporterHelper:fileImporter];
+
+                [track setLanguage:[NSString stringWithCString:language encoding:NSUTF8StringEncoding]];
+                [track setStartOffset:delay];
+                if ([track isMemberOfClass:[MP42SubtitleTrack class]])
+                    [(MP42VideoTrack*)track setTrackHeight:height];
+                [mp4File addTrack:track];
+            }
+
             modified = YES;
         }
       

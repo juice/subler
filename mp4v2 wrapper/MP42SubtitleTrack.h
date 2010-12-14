@@ -12,9 +12,4 @@
 @interface MP42SubtitleTrack : MP42VideoTrack {
 }
 
-+ (id) subtitleTrackFromFile:(NSString *)filePath
-                       delay:(int)subDelay
-                      height:(unsigned int)subHeight
-                    language:(NSString *)subLanguage;
-
 @end

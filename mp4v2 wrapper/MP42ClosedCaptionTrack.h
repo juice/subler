@@ -12,6 +12,4 @@
 @interface MP42ClosedCaptionTrack : MP42VideoTrack {
 }
 
-+ (id) ccTrackFromFile:(NSString *)filePath;
-
 @end

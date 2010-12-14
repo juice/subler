@@ -34,40 +34,6 @@
     return self;
 }
 
-- (id) initWithSubtitleFile:(NSString *)filePath
-                      delay:(int)subDelay
-                     height:(unsigned int)subHeight
-                   language:(NSString *)subLanguage
-{
-    if ((self = [super init]))
-    {
-        name = @"Subtitle Track";
-        format = @"3GPP Text";
-        sourcePath = [filePath retain];
-        [self setStartOffset:subDelay];
-        trackHeight = subHeight;
-        if (!subLanguage)
-            [self setLanguage: @"English"];
-        else
-            [self setLanguage: subLanguage];
-        isEdited = YES;
-        muxed = NO;
-    }
-
-    return self;
-}
-
-+ (id) subtitleTrackFromFile:(NSString *)filePath
-                       delay:(int)subDelay
-                      height:(unsigned int)subHeight
-                    language:(NSString *)subLanguage
-{
-    return [[[MP42SubtitleTrack alloc] initWithSubtitleFile:filePath
-                                                      delay:subDelay
-                                                     height:subHeight
-                                                   language:subLanguage] autorelease];
-}
-
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
     if (isEdited && !muxed)

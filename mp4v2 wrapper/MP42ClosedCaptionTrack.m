@@ -31,27 +31,6 @@
     return self;
 }
 
-- (id) initWithSCCFile:(NSString *)filePath
-{
-    if ((self = [super init]))
-    {
-        name = @"Closed Caption Track";
-        format = @"CEA-608";
-        sourcePath = [filePath retain];
-        [self setLanguage:@"English"];
-        isEdited = YES;
-        muxed = NO;
-        enabled = YES;
-    }
-    
-    return self;
-}
-
-+ (id) ccTrackFromFile:(NSString *)filePath
-{
-    return [[[MP42ClosedCaptionTrack alloc] initWithSCCFile:filePath] autorelease];
-}
-
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
     if (isEdited && !muxed)
