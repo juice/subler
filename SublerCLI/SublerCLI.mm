@@ -6,8 +6,8 @@
 void print_help()
 {
     printf("usage:\n");
+    printf("\t\t-o set output file\n");
     printf("\t\t-i set input file\n");
-    printf("\t\t-s set subtitle input file\n");
     printf("\t\t-c set chapter input file\n");
     printf("\t\t-p create chapters preview images\n");
     printf("\t\t-d set delay in ms\n");
@@ -28,8 +28,8 @@ void print_version()
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
+    char* output_file = NULL;
     char* input_file = NULL;
-    char* input_sub = NULL;
     char* input_chap = NULL;
     const char* name = "Subtitle Track";
     const char* language = "English";
@@ -47,7 +47,7 @@ int main (int argc, const char * argv[]) {
     }
 
     char opt_char=0;
-    while ((opt_char = getopt(argc, (char * const*)argv, "i:s:c:d:a:l:n:t:prvhO")) != -1) {
+    while ((opt_char = getopt(argc, (char * const*)argv, "o:i:c:d:a:l:n:t:prvhO")) != -1) {
         switch(opt_char) {
             case 'h':
                 print_help();
@@ -57,11 +57,11 @@ int main (int argc, const char * argv[]) {
                 print_version();
                 exit(-1);
                 break;
+            case 'o':
+                output_file = optarg;
+                break;
             case 'i':
                 input_file = optarg;
-                break;
-            case 's':
-                input_sub = optarg;
                 break;
             case 'c':
                 input_chap = optarg;
@@ -101,12 +101,16 @@ int main (int argc, const char * argv[]) {
     if (chapterPreview)
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
 
-    if (input_file && (input_sub || input_chap || removeExisting || tags || chapterPreview))
+    if (input_file || input_chap || removeExisting || tags || chapterPreview)
     {
         NSError *outError;
         MP42File *mp4File;
-        mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:input_file encoding:NSUTF8StringEncoding]
-                                             andDelegate:nil];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]])
+            mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]
+                                                 andDelegate:nil];
+        else
+            mp4File = [[MP42File alloc] initWithDelegate:nil];
+
         if (!mp4File) {
             printf("Error: %s\n", "the mp4 file couln't be open.");
             return -1;
@@ -124,9 +128,9 @@ int main (int argc, const char * argv[]) {
           [subtitleTrackIndexes release];
         }
 
-        if (input_sub) {
+        if (input_file) {
             MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
-                                                                                andFile:[NSString stringWithCString:input_sub                                                                                                                                                                                 encoding:NSUTF8StringEncoding]];
+                                                                                andFile:[NSString stringWithCString:input_file                                                                                                                                                                                 encoding:NSUTF8StringEncoding]];
 
             for (MP42Track * track in [fileImporter tracksArray]) {
                 [track setTrackImporterHelper:fileImporter];
@@ -216,16 +220,25 @@ int main (int argc, const char * argv[]) {
         if (chapterPreview)
             modified = YES;
 
-        if (modified && ![mp4File updateMP4FileWithAttributes:attributes error:&outError]) {
-            printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
-            return -1;
+        if (modified && [mp4File hasFileRepresentation]) {
+            if (![mp4File updateMP4FileWithAttributes:attributes error:&outError]) {
+                printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
+                return -1;
+            }
+        }
+        else if (modified && ![mp4File hasFileRepresentation])
+            if (![mp4File writeToUrl:[NSURL fileURLWithPath:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]]
+                      withAttributes:attributes
+                               error:&outError]); {
+                printf("Error: %s\n", [[outError localizedDescription] UTF8String]);
+                return -1;
         }
 
         [mp4File release];
     }
     if (optimize) {
         MP42File *mp4File;
-        mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:input_file encoding:NSUTF8StringEncoding]
+        mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]
                                              andDelegate:nil];
         if (!mp4File) {
             printf("Error: %s\n", "the mp4 file couln't be open.");
