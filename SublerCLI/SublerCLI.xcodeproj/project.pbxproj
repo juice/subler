@@ -9,38 +9,44 @@
 /* Begin PBXBuildFile section */
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* SublerCLI.1 */; };
-		A90C272410AF31D700991030 /* MatroskaFile.c in Sources */ = {isa = PBXBuildFile; fileRef = A90C272010AF31D700991030 /* MatroskaFile.c */; };
-		A90C272510AF31D700991030 /* MatroskaParser.c in Sources */ = {isa = PBXBuildFile; fileRef = A90C272210AF31D700991030 /* MatroskaParser.c */; };
-		A90C273110AF31FA00991030 /* rational.c in Sources */ = {isa = PBXBuildFile; fileRef = A90C272F10AF31FA00991030 /* rational.c */; };
-		A90C274710AF327500991030 /* mathematics.c in Sources */ = {isa = PBXBuildFile; fileRef = A90C274510AF327500991030 /* mathematics.c */; };
 		A90C277110AF32AF00991030 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A90C277010AF32AF00991030 /* libz.dylib */; };
-		A91F633B0FB0C6D800B96B33 /* CCMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A91F63390FB0C6D800B96B33 /* CCMuxer.m */; };
-		A91F633F0FB0C6ED00B96B33 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = A91F633E0FB0C6ED00B96B33 /* RegexKitLite.m */; };
 		A91F634A0FB0C70100B96B33 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A91F63490FB0C70100B96B33 /* libicucore.dylib */; };
-		A91F63510FB0C76300B96B33 /* MP42ClosedCaptionTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A91F63500FB0C76300B96B33 /* MP42ClosedCaptionTrack.m */; };
 		A94871D20F7914D2008DBC94 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D10F7914D2008DBC94 /* QTKit.framework */; };
 		A94871D70F7914E7008DBC94 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D60F7914E7008DBC94 /* QuickTime.framework */; };
 		A9726A270F7B89F0008A828C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9726A260F7B89F0008A828C /* AudioToolbox.framework */; };
-		A98ED2FE0F59E00E00885A49 /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED2FC0F59E00E00885A49 /* SubUtilities.m */; };
-		A98ED30C0F59E01400885A49 /* MP42ChapterTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */; };
-		A98ED30D0F59E01400885A49 /* MP42File.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3030F59E01400885A49 /* MP42File.m */; };
-		A98ED30E0F59E01400885A49 /* MP42Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3050F59E01400885A49 /* MP42Metadata.m */; };
-		A98ED30F0F59E01400885A49 /* MP42SubtitleTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */; };
-		A98ED3100F59E01400885A49 /* MP42Track.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3090F59E01400885A49 /* MP42Track.m */; };
-		A98ED3110F59E01400885A49 /* MP42Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A98ED30B0F59E01400885A49 /* MP42Utilities.m */; };
-		A98ED3140F59E02300885A49 /* lang.c in Sources */ = {isa = PBXBuildFile; fileRef = A98ED3130F59E02300885A49 /* lang.c */; };
 		A98ED3330F59E08D00885A49 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3240F59E08D00885A49 /* libmp4v2.a */; };
 		A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3550F59E17A00885A49 /* libuniversaldetector.a */; };
 		A98ED4030F59E28300885A49 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED4020F59E28300885A49 /* Cocoa.framework */; };
-		A99530FA0F65699A00EC456B /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A99530F80F65699A00EC456B /* MP42VideoTrack.m */; };
-		A9AFB6590F8CF1EE0050583E /* ac3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9AFB6530F8CF1EE0050583E /* ac3.cpp */; };
-		A9AFB65A0F8CF1EE0050583E /* h264.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9AFB6550F8CF1EE0050583E /* h264.cpp */; };
-		A9AFB65B0F8CF1EE0050583E /* aac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9AFB6560F8CF1EE0050583E /* aac.cpp */; };
-		A9AFB65C0F8CF1EE0050583E /* mbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9AFB6570F8CF1EE0050583E /* mbs.cpp */; };
-		A9EAE1190F6E7FB1002853C9 /* AudioMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */; };
-		A9EAE11A0F6E7FB1002853C9 /* SubMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */; };
-		A9EAE11B0F6E7FB1002853C9 /* VideoMuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */; };
-		A9EAE11E0F6E7FBB002853C9 /* MP42AudioTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */; };
+		A9B46B0312B79EC60040517A /* MP42AACImporter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9B46ACA12B79EC60040517A /* MP42AACImporter.mm */; };
+		A9B46B0412B79EC60040517A /* MP42AC3Importer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46ACC12B79EC60040517A /* MP42AC3Importer.m */; };
+		A9B46B0512B79EC60040517A /* MP42AudioTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46ACE12B79EC60040517A /* MP42AudioTrack.m */; };
+		A9B46B0612B79EC60040517A /* MP42CCImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AD012B79EC60040517A /* MP42CCImporter.m */; };
+		A9B46B0712B79EC60040517A /* MP42ChapterTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AD212B79EC60040517A /* MP42ChapterTrack.m */; };
+		A9B46B0812B79EC60040517A /* MP42ClosedCaptionTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AD412B79EC60040517A /* MP42ClosedCaptionTrack.m */; };
+		A9B46B0912B79EC60040517A /* MP42File.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AD612B79EC60040517A /* MP42File.m */; };
+		A9B46B0A12B79EC60040517A /* MP42FileImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AD812B79EC60040517A /* MP42FileImporter.m */; };
+		A9B46B0B12B79EC60040517A /* MP42H264Importer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9B46ADA12B79EC60040517A /* MP42H264Importer.mm */; };
+		A9B46B0C12B79EC60040517A /* MP42Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46ADC12B79EC60040517A /* MP42Metadata.m */; };
+		A9B46B0D12B79EC60040517A /* MP42MkvImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46ADE12B79EC60040517A /* MP42MkvImporter.m */; };
+		A9B46B0E12B79EC60040517A /* MP42MovImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AE012B79EC60040517A /* MP42MovImporter.m */; };
+		A9B46B0F12B79EC60040517A /* MP42Mp4Importer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AE212B79EC60040517A /* MP42Mp4Importer.m */; };
+		A9B46B1012B79EC60040517A /* MP42Muxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AE412B79EC60040517A /* MP42Muxer.m */; };
+		A9B46B1112B79EC60040517A /* MP42Sample.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AE612B79EC60040517A /* MP42Sample.m */; };
+		A9B46B1212B79EC60040517A /* MP42SrtImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AE812B79EC60040517A /* MP42SrtImporter.m */; };
+		A9B46B1312B79EC60040517A /* MP42SubtitleTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AEA12B79EC60040517A /* MP42SubtitleTrack.m */; };
+		A9B46B1412B79EC60040517A /* MP42Track.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AEC12B79EC60040517A /* MP42Track.m */; };
+		A9B46B1512B79EC60040517A /* MP42Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AEE12B79EC60040517A /* MP42Utilities.m */; };
+		A9B46B1612B79EC60040517A /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AF012B79EC60040517A /* MP42VideoTrack.m */; };
+		A9B46B1812B79EC60040517A /* MatroskaFile.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AF412B79EC60040517A /* MatroskaFile.c */; };
+		A9B46B1912B79EC60040517A /* MatroskaParser.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AF612B79EC60040517A /* MatroskaParser.c */; };
+		A9B46B1A12B79EC60040517A /* mbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AF812B79EC60040517A /* mbs.cpp */; };
+		A9B46B1C12B79EC60040517A /* SBAudioConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AFE12B79EC60040517A /* SBAudioConverter.m */; };
+		A9B46B1D12B79EC60040517A /* sfifo.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AFF12B79EC60040517A /* sfifo.c */; };
+		A9B46B1E12B79EC60040517A /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46B0212B79EC60040517A /* SubUtilities.m */; };
+		A9B46B2812B79EE60040517A /* lang.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46B2012B79EE60040517A /* lang.c */; };
+		A9B46B2912B79EE60040517A /* mathematics.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46B2212B79EE60040517A /* mathematics.c */; };
+		A9B46B2A12B79EE60040517A /* rational.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46B2412B79EE60040517A /* rational.c */; };
+		A9B46B2B12B79EE60040517A /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46B2712B79EE60040517A /* RegexKitLite.m */; };
 		CB7C2FD51118A236001C2594 /* SublerCLI.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB7C2FD41118A236001C2594 /* SublerCLI.mm */; };
 /* End PBXBuildFile section */
 
@@ -92,63 +98,78 @@
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SublerCLI_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* SublerCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SublerCLI; sourceTree = BUILT_PRODUCTS_DIR; };
-		A90C272010AF31D700991030 /* MatroskaFile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MatroskaFile.c; path = ../MatroskaFile.c; sourceTree = SOURCE_ROOT; };
-		A90C272110AF31D700991030 /* MatroskaFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatroskaFile.h; path = ../MatroskaFile.h; sourceTree = SOURCE_ROOT; };
-		A90C272210AF31D700991030 /* MatroskaParser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MatroskaParser.c; path = ../MatroskaParser.c; sourceTree = SOURCE_ROOT; };
-		A90C272310AF31D700991030 /* MatroskaParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatroskaParser.h; path = ../MatroskaParser.h; sourceTree = SOURCE_ROOT; };
-		A90C272F10AF31FA00991030 /* rational.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rational.c; path = ../rational.c; sourceTree = SOURCE_ROOT; };
-		A90C273010AF31FA00991030 /* rational.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rational.h; path = ../rational.h; sourceTree = SOURCE_ROOT; };
-		A90C273E10AF325900991030 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../common.h; sourceTree = SOURCE_ROOT; };
-		A90C274510AF327500991030 /* mathematics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mathematics.c; path = ../mathematics.c; sourceTree = SOURCE_ROOT; };
-		A90C274610AF327500991030 /* mathematics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mathematics.h; path = ../mathematics.h; sourceTree = SOURCE_ROOT; };
 		A90C277010AF32AF00991030 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
-		A91F63390FB0C6D800B96B33 /* CCMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMuxer.m; sourceTree = "<group>"; };
-		A91F633A0FB0C6D800B96B33 /* CCMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMuxer.h; sourceTree = "<group>"; };
-		A91F633D0FB0C6ED00B96B33 /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = ../RegexKitLite.h; sourceTree = SOURCE_ROOT; };
-		A91F633E0FB0C6ED00B96B33 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegexKitLite.m; path = ../RegexKitLite.m; sourceTree = SOURCE_ROOT; };
 		A91F63490FB0C70100B96B33 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = /usr/lib/libicucore.dylib; sourceTree = "<absolute>"; };
-		A91F634F0FB0C76300B96B33 /* MP42ClosedCaptionTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42ClosedCaptionTrack.h; sourceTree = "<group>"; };
-		A91F63500FB0C76300B96B33 /* MP42ClosedCaptionTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42ClosedCaptionTrack.m; sourceTree = "<group>"; };
 		A94871D10F7914D2008DBC94 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		A94871D60F7914E7008DBC94 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		A9726A260F7B89F0008A828C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
-		A98ED2FA0F59E00E00885A49 /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubUtilities.h; path = ../SubUtilities.h; sourceTree = SOURCE_ROOT; };
-		A98ED2FC0F59E00E00885A49 /* SubUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubUtilities.m; path = ../SubUtilities.m; sourceTree = SOURCE_ROOT; };
-		A98ED3000F59E01400885A49 /* MP42ChapterTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42ChapterTrack.h; sourceTree = "<group>"; };
-		A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42ChapterTrack.m; sourceTree = "<group>"; };
-		A98ED3020F59E01400885A49 /* MP42File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42File.h; sourceTree = "<group>"; };
-		A98ED3030F59E01400885A49 /* MP42File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42File.m; sourceTree = "<group>"; };
-		A98ED3040F59E01400885A49 /* MP42Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Metadata.h; sourceTree = "<group>"; };
-		A98ED3050F59E01400885A49 /* MP42Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Metadata.m; sourceTree = "<group>"; };
-		A98ED3060F59E01400885A49 /* MP42SubtitleTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42SubtitleTrack.h; sourceTree = "<group>"; };
-		A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42SubtitleTrack.m; sourceTree = "<group>"; };
-		A98ED3080F59E01400885A49 /* MP42Track.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Track.h; sourceTree = "<group>"; };
-		A98ED3090F59E01400885A49 /* MP42Track.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Track.m; sourceTree = "<group>"; };
-		A98ED30A0F59E01400885A49 /* MP42Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Utilities.h; sourceTree = "<group>"; };
-		A98ED30B0F59E01400885A49 /* MP42Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Utilities.m; sourceTree = "<group>"; };
-		A98ED3120F59E02300885A49 /* lang.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lang.h; path = ../lang.h; sourceTree = SOURCE_ROOT; };
-		A98ED3130F59E02300885A49 /* lang.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lang.c; path = ../lang.c; sourceTree = SOURCE_ROOT; };
 		A98ED3150F59E03300885A49 /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = ../UniversalDetector/UniversalDetector.h; sourceTree = SOURCE_ROOT; };
 		A98ED3240F59E08D00885A49 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp4v2.a; sourceTree = "<group>"; };
 		A98ED3320F59E08D00885A49 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mp4v2.h; sourceTree = "<group>"; };
 		A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = UniversalDetector.xcodeproj; path = ../UniversalDetector/UniversalDetector.xcodeproj; sourceTree = SOURCE_ROOT; };
 		A98ED4020F59E28300885A49 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		A99530F80F65699A00EC456B /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42VideoTrack.m; sourceTree = "<group>"; };
-		A99530F90F65699A00EC456B /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42VideoTrack.h; sourceTree = "<group>"; };
-		A9AFB6530F8CF1EE0050583E /* ac3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ac3.cpp; sourceTree = "<group>"; };
-		A9AFB6540F8CF1EE0050583E /* mpeg4ip_bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpeg4ip_bitstream.h; sourceTree = "<group>"; };
-		A9AFB6550F8CF1EE0050583E /* h264.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = h264.cpp; sourceTree = "<group>"; };
-		A9AFB6560F8CF1EE0050583E /* aac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = aac.cpp; sourceTree = "<group>"; };
-		A9AFB6570F8CF1EE0050583E /* mbs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mbs.cpp; sourceTree = "<group>"; };
-		A9AFB6580F8CF1EE0050583E /* mbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mbs.h; sourceTree = "<group>"; };
-		A9EAE1130F6E7FB1002853C9 /* AudioMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioMuxer.h; sourceTree = "<group>"; };
-		A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioMuxer.m; sourceTree = "<group>"; };
-		A9EAE1150F6E7FB1002853C9 /* SubMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMuxer.h; sourceTree = "<group>"; };
-		A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMuxer.m; sourceTree = "<group>"; };
-		A9EAE1170F6E7FB1002853C9 /* VideoMuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoMuxer.h; sourceTree = "<group>"; };
-		A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoMuxer.m; sourceTree = "<group>"; };
-		A9EAE11C0F6E7FBB002853C9 /* MP42AudioTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42AudioTrack.h; sourceTree = "<group>"; };
-		A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42AudioTrack.m; sourceTree = "<group>"; };
+		A9B46AC912B79EC60040517A /* MP42AACImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42AACImporter.h; sourceTree = "<group>"; };
+		A9B46ACA12B79EC60040517A /* MP42AACImporter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MP42AACImporter.mm; sourceTree = "<group>"; };
+		A9B46ACB12B79EC60040517A /* MP42AC3Importer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42AC3Importer.h; sourceTree = "<group>"; };
+		A9B46ACC12B79EC60040517A /* MP42AC3Importer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42AC3Importer.m; sourceTree = "<group>"; };
+		A9B46ACD12B79EC60040517A /* MP42AudioTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42AudioTrack.h; sourceTree = "<group>"; };
+		A9B46ACE12B79EC60040517A /* MP42AudioTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42AudioTrack.m; sourceTree = "<group>"; };
+		A9B46ACF12B79EC60040517A /* MP42CCImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42CCImporter.h; sourceTree = "<group>"; };
+		A9B46AD012B79EC60040517A /* MP42CCImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42CCImporter.m; sourceTree = "<group>"; };
+		A9B46AD112B79EC60040517A /* MP42ChapterTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42ChapterTrack.h; sourceTree = "<group>"; };
+		A9B46AD212B79EC60040517A /* MP42ChapterTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42ChapterTrack.m; sourceTree = "<group>"; };
+		A9B46AD312B79EC60040517A /* MP42ClosedCaptionTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42ClosedCaptionTrack.h; sourceTree = "<group>"; };
+		A9B46AD412B79EC60040517A /* MP42ClosedCaptionTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42ClosedCaptionTrack.m; sourceTree = "<group>"; };
+		A9B46AD512B79EC60040517A /* MP42File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42File.h; sourceTree = "<group>"; };
+		A9B46AD612B79EC60040517A /* MP42File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42File.m; sourceTree = "<group>"; };
+		A9B46AD712B79EC60040517A /* MP42FileImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42FileImporter.h; sourceTree = "<group>"; };
+		A9B46AD812B79EC60040517A /* MP42FileImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42FileImporter.m; sourceTree = "<group>"; };
+		A9B46AD912B79EC60040517A /* MP42H264Importer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42H264Importer.h; sourceTree = "<group>"; };
+		A9B46ADA12B79EC60040517A /* MP42H264Importer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MP42H264Importer.mm; sourceTree = "<group>"; };
+		A9B46ADB12B79EC60040517A /* MP42Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Metadata.h; sourceTree = "<group>"; };
+		A9B46ADC12B79EC60040517A /* MP42Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Metadata.m; sourceTree = "<group>"; };
+		A9B46ADD12B79EC60040517A /* MP42MkvImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42MkvImporter.h; sourceTree = "<group>"; };
+		A9B46ADE12B79EC60040517A /* MP42MkvImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42MkvImporter.m; sourceTree = "<group>"; };
+		A9B46ADF12B79EC60040517A /* MP42MovImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42MovImporter.h; sourceTree = "<group>"; };
+		A9B46AE012B79EC60040517A /* MP42MovImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42MovImporter.m; sourceTree = "<group>"; };
+		A9B46AE112B79EC60040517A /* MP42Mp4Importer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Mp4Importer.h; sourceTree = "<group>"; };
+		A9B46AE212B79EC60040517A /* MP42Mp4Importer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Mp4Importer.m; sourceTree = "<group>"; };
+		A9B46AE312B79EC60040517A /* MP42Muxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Muxer.h; sourceTree = "<group>"; };
+		A9B46AE412B79EC60040517A /* MP42Muxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Muxer.m; sourceTree = "<group>"; };
+		A9B46AE512B79EC60040517A /* MP42Sample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Sample.h; sourceTree = "<group>"; };
+		A9B46AE612B79EC60040517A /* MP42Sample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Sample.m; sourceTree = "<group>"; };
+		A9B46AE712B79EC60040517A /* MP42SrtImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42SrtImporter.h; sourceTree = "<group>"; };
+		A9B46AE812B79EC60040517A /* MP42SrtImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42SrtImporter.m; sourceTree = "<group>"; };
+		A9B46AE912B79EC60040517A /* MP42SubtitleTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42SubtitleTrack.h; sourceTree = "<group>"; };
+		A9B46AEA12B79EC60040517A /* MP42SubtitleTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42SubtitleTrack.m; sourceTree = "<group>"; };
+		A9B46AEB12B79EC60040517A /* MP42Track.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Track.h; sourceTree = "<group>"; };
+		A9B46AEC12B79EC60040517A /* MP42Track.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Track.m; sourceTree = "<group>"; };
+		A9B46AED12B79EC60040517A /* MP42Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42Utilities.h; sourceTree = "<group>"; };
+		A9B46AEE12B79EC60040517A /* MP42Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42Utilities.m; sourceTree = "<group>"; };
+		A9B46AEF12B79EC60040517A /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP42VideoTrack.h; sourceTree = "<group>"; };
+		A9B46AF012B79EC60040517A /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP42VideoTrack.m; sourceTree = "<group>"; };
+		A9B46AF412B79EC60040517A /* MatroskaFile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MatroskaFile.c; sourceTree = "<group>"; };
+		A9B46AF512B79EC60040517A /* MatroskaFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatroskaFile.h; sourceTree = "<group>"; };
+		A9B46AF612B79EC60040517A /* MatroskaParser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MatroskaParser.c; sourceTree = "<group>"; };
+		A9B46AF712B79EC60040517A /* MatroskaParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatroskaParser.h; sourceTree = "<group>"; };
+		A9B46AF812B79EC60040517A /* mbs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mbs.cpp; sourceTree = "<group>"; };
+		A9B46AF912B79EC60040517A /* mbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mbs.h; sourceTree = "<group>"; };
+		A9B46AFA12B79EC60040517A /* mpeg4ip_bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpeg4ip_bitstream.h; sourceTree = "<group>"; };
+		A9B46AFD12B79EC60040517A /* SBAudioConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBAudioConverter.h; sourceTree = "<group>"; };
+		A9B46AFE12B79EC60040517A /* SBAudioConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBAudioConverter.m; sourceTree = "<group>"; };
+		A9B46AFF12B79EC60040517A /* sfifo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sfifo.c; sourceTree = "<group>"; };
+		A9B46B0012B79EC60040517A /* sfifo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sfifo.h; sourceTree = "<group>"; };
+		A9B46B0112B79EC60040517A /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubUtilities.h; sourceTree = "<group>"; };
+		A9B46B0212B79EC60040517A /* SubUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubUtilities.m; sourceTree = "<group>"; };
+		A9B46B1F12B79EE60040517A /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = /Users/damians/Svn/subler/trunk/Others/common.h; sourceTree = "<absolute>"; };
+		A9B46B2012B79EE60040517A /* lang.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lang.c; path = /Users/damians/Svn/subler/trunk/Others/lang.c; sourceTree = "<absolute>"; };
+		A9B46B2112B79EE60040517A /* lang.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lang.h; path = /Users/damians/Svn/subler/trunk/Others/lang.h; sourceTree = "<absolute>"; };
+		A9B46B2212B79EE60040517A /* mathematics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mathematics.c; path = /Users/damians/Svn/subler/trunk/Others/mathematics.c; sourceTree = "<absolute>"; };
+		A9B46B2312B79EE60040517A /* mathematics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mathematics.h; path = /Users/damians/Svn/subler/trunk/Others/mathematics.h; sourceTree = "<absolute>"; };
+		A9B46B2412B79EE60040517A /* rational.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rational.c; path = /Users/damians/Svn/subler/trunk/Others/rational.c; sourceTree = "<absolute>"; };
+		A9B46B2512B79EE60040517A /* rational.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rational.h; path = /Users/damians/Svn/subler/trunk/Others/rational.h; sourceTree = "<absolute>"; };
+		A9B46B2612B79EE60040517A /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = /Users/damians/Svn/subler/trunk/Others/RegexKitLite.h; sourceTree = "<absolute>"; };
+		A9B46B2712B79EE60040517A /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegexKitLite.m; path = /Users/damians/Svn/subler/trunk/Others/RegexKitLite.m; sourceTree = "<absolute>"; };
 		C6859EA3029092ED04C91782 /* SublerCLI.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SublerCLI.1; sourceTree = "<group>"; };
 		CB7C2FD41118A236001C2594 /* SublerCLI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SublerCLI.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -188,22 +209,18 @@
 			isa = PBXGroup;
 			children = (
 				A98ED3150F59E03300885A49 /* UniversalDetector.h */,
-				A98ED3120F59E02300885A49 /* lang.h */,
-				A98ED3130F59E02300885A49 /* lang.c */,
-				A91F633D0FB0C6ED00B96B33 /* RegexKitLite.h */,
-				A91F633E0FB0C6ED00B96B33 /* RegexKitLite.m */,
-				A90C272010AF31D700991030 /* MatroskaFile.c */,
-				A90C272110AF31D700991030 /* MatroskaFile.h */,
-				A90C272210AF31D700991030 /* MatroskaParser.c */,
-				A90C272310AF31D700991030 /* MatroskaParser.h */,
-				A90C272F10AF31FA00991030 /* rational.c */,
-				A90C273010AF31FA00991030 /* rational.h */,
-				A90C274510AF327500991030 /* mathematics.c */,
-				A90C274610AF327500991030 /* mathematics.h */,
-				A90C273E10AF325900991030 /* common.h */,
-				A98ED2FF0F59E01400885A49 /* mp4v2 wrapper */,
 				32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */,
 				CB7C2FD41118A236001C2594 /* SublerCLI.mm */,
+				A9B46B1F12B79EE60040517A /* common.h */,
+				A9B46B2012B79EE60040517A /* lang.c */,
+				A9B46B2112B79EE60040517A /* lang.h */,
+				A9B46B2212B79EE60040517A /* mathematics.c */,
+				A9B46B2312B79EE60040517A /* mathematics.h */,
+				A9B46B2412B79EE60040517A /* rational.c */,
+				A9B46B2512B79EE60040517A /* rational.h */,
+				A9B46B2612B79EE60040517A /* RegexKitLite.h */,
+				A9B46B2712B79EE60040517A /* RegexKitLite.m */,
+				A9B46AC812B79EC60040517A /* mp4v2 wrapper */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -232,35 +249,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A98ED2FF0F59E01400885A49 /* mp4v2 wrapper */ = {
-			isa = PBXGroup;
-			children = (
-				A98ED3000F59E01400885A49 /* MP42ChapterTrack.h */,
-				A98ED3010F59E01400885A49 /* MP42ChapterTrack.m */,
-				A98ED3020F59E01400885A49 /* MP42File.h */,
-				A98ED3030F59E01400885A49 /* MP42File.m */,
-				A98ED3040F59E01400885A49 /* MP42Metadata.h */,
-				A98ED3050F59E01400885A49 /* MP42Metadata.m */,
-				A99530F80F65699A00EC456B /* MP42VideoTrack.m */,
-				A99530F90F65699A00EC456B /* MP42VideoTrack.h */,
-				A9EAE11C0F6E7FBB002853C9 /* MP42AudioTrack.h */,
-				A9EAE11D0F6E7FBB002853C9 /* MP42AudioTrack.m */,
-				A98ED3060F59E01400885A49 /* MP42SubtitleTrack.h */,
-				A98ED3070F59E01400885A49 /* MP42SubtitleTrack.m */,
-				A91F634F0FB0C76300B96B33 /* MP42ClosedCaptionTrack.h */,
-				A91F63500FB0C76300B96B33 /* MP42ClosedCaptionTrack.m */,
-				A98ED3080F59E01400885A49 /* MP42Track.h */,
-				A98ED3090F59E01400885A49 /* MP42Track.m */,
-				A98ED30A0F59E01400885A49 /* MP42Utilities.h */,
-				A98ED30B0F59E01400885A49 /* MP42Utilities.m */,
-				A98ED2FA0F59E00E00885A49 /* SubUtilities.h */,
-				A98ED2FC0F59E00E00885A49 /* SubUtilities.m */,
-				A9EAE1120F6E7FB1002853C9 /* muxer */,
-			);
-			name = "mp4v2 wrapper";
-			path = "../mp4v2 wrapper";
-			sourceTree = SOURCE_ROOT;
-		};
 		A98ED3230F59E08D00885A49 /* mp4v2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -281,23 +269,71 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A9EAE1120F6E7FB1002853C9 /* muxer */ = {
+		A9B46AC812B79EC60040517A /* mp4v2 wrapper */ = {
 			isa = PBXGroup;
 			children = (
-				A91F633A0FB0C6D800B96B33 /* CCMuxer.h */,
-				A91F63390FB0C6D800B96B33 /* CCMuxer.m */,
-				A9EAE1130F6E7FB1002853C9 /* AudioMuxer.h */,
-				A9EAE1140F6E7FB1002853C9 /* AudioMuxer.m */,
-				A9EAE1150F6E7FB1002853C9 /* SubMuxer.h */,
-				A9EAE1160F6E7FB1002853C9 /* SubMuxer.m */,
-				A9EAE1170F6E7FB1002853C9 /* VideoMuxer.h */,
-				A9EAE1180F6E7FB1002853C9 /* VideoMuxer.m */,
-				A9AFB6530F8CF1EE0050583E /* ac3.cpp */,
-				A9AFB6540F8CF1EE0050583E /* mpeg4ip_bitstream.h */,
-				A9AFB6550F8CF1EE0050583E /* h264.cpp */,
-				A9AFB6560F8CF1EE0050583E /* aac.cpp */,
-				A9AFB6570F8CF1EE0050583E /* mbs.cpp */,
-				A9AFB6580F8CF1EE0050583E /* mbs.h */,
+				A9B46AC912B79EC60040517A /* MP42AACImporter.h */,
+				A9B46ACA12B79EC60040517A /* MP42AACImporter.mm */,
+				A9B46ACB12B79EC60040517A /* MP42AC3Importer.h */,
+				A9B46ACC12B79EC60040517A /* MP42AC3Importer.m */,
+				A9B46ACD12B79EC60040517A /* MP42AudioTrack.h */,
+				A9B46ACE12B79EC60040517A /* MP42AudioTrack.m */,
+				A9B46ACF12B79EC60040517A /* MP42CCImporter.h */,
+				A9B46AD012B79EC60040517A /* MP42CCImporter.m */,
+				A9B46AD112B79EC60040517A /* MP42ChapterTrack.h */,
+				A9B46AD212B79EC60040517A /* MP42ChapterTrack.m */,
+				A9B46AD312B79EC60040517A /* MP42ClosedCaptionTrack.h */,
+				A9B46AD412B79EC60040517A /* MP42ClosedCaptionTrack.m */,
+				A9B46AD512B79EC60040517A /* MP42File.h */,
+				A9B46AD612B79EC60040517A /* MP42File.m */,
+				A9B46AD712B79EC60040517A /* MP42FileImporter.h */,
+				A9B46AD812B79EC60040517A /* MP42FileImporter.m */,
+				A9B46AD912B79EC60040517A /* MP42H264Importer.h */,
+				A9B46ADA12B79EC60040517A /* MP42H264Importer.mm */,
+				A9B46ADB12B79EC60040517A /* MP42Metadata.h */,
+				A9B46ADC12B79EC60040517A /* MP42Metadata.m */,
+				A9B46ADD12B79EC60040517A /* MP42MkvImporter.h */,
+				A9B46ADE12B79EC60040517A /* MP42MkvImporter.m */,
+				A9B46ADF12B79EC60040517A /* MP42MovImporter.h */,
+				A9B46AE012B79EC60040517A /* MP42MovImporter.m */,
+				A9B46AE112B79EC60040517A /* MP42Mp4Importer.h */,
+				A9B46AE212B79EC60040517A /* MP42Mp4Importer.m */,
+				A9B46AE312B79EC60040517A /* MP42Muxer.h */,
+				A9B46AE412B79EC60040517A /* MP42Muxer.m */,
+				A9B46AE512B79EC60040517A /* MP42Sample.h */,
+				A9B46AE612B79EC60040517A /* MP42Sample.m */,
+				A9B46AE712B79EC60040517A /* MP42SrtImporter.h */,
+				A9B46AE812B79EC60040517A /* MP42SrtImporter.m */,
+				A9B46AE912B79EC60040517A /* MP42SubtitleTrack.h */,
+				A9B46AEA12B79EC60040517A /* MP42SubtitleTrack.m */,
+				A9B46AEB12B79EC60040517A /* MP42Track.h */,
+				A9B46AEC12B79EC60040517A /* MP42Track.m */,
+				A9B46AED12B79EC60040517A /* MP42Utilities.h */,
+				A9B46AEE12B79EC60040517A /* MP42Utilities.m */,
+				A9B46AEF12B79EC60040517A /* MP42VideoTrack.h */,
+				A9B46AF012B79EC60040517A /* MP42VideoTrack.m */,
+				A9B46AF112B79EC60040517A /* muxer */,
+				A9B46AFD12B79EC60040517A /* SBAudioConverter.h */,
+				A9B46AFE12B79EC60040517A /* SBAudioConverter.m */,
+				A9B46AFF12B79EC60040517A /* sfifo.c */,
+				A9B46B0012B79EC60040517A /* sfifo.h */,
+				A9B46B0112B79EC60040517A /* SubUtilities.h */,
+				A9B46B0212B79EC60040517A /* SubUtilities.m */,
+			);
+			name = "mp4v2 wrapper";
+			path = "/Users/damians/Svn/subler/trunk/mp4v2 wrapper";
+			sourceTree = "<absolute>";
+		};
+		A9B46AF112B79EC60040517A /* muxer */ = {
+			isa = PBXGroup;
+			children = (
+				A9B46AF412B79EC60040517A /* MatroskaFile.c */,
+				A9B46AF512B79EC60040517A /* MatroskaFile.h */,
+				A9B46AF612B79EC60040517A /* MatroskaParser.c */,
+				A9B46AF712B79EC60040517A /* MatroskaParser.h */,
+				A9B46AF812B79EC60040517A /* mbs.cpp */,
+				A9B46AF912B79EC60040517A /* mbs.h */,
+				A9B46AFA12B79EC60040517A /* mpeg4ip_bitstream.h */,
 			);
 			path = muxer;
 			sourceTree = "<group>";
@@ -391,31 +427,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A98ED2FE0F59E00E00885A49 /* SubUtilities.m in Sources */,
-				A98ED30C0F59E01400885A49 /* MP42ChapterTrack.m in Sources */,
-				A98ED30D0F59E01400885A49 /* MP42File.m in Sources */,
-				A98ED30E0F59E01400885A49 /* MP42Metadata.m in Sources */,
-				A98ED30F0F59E01400885A49 /* MP42SubtitleTrack.m in Sources */,
-				A98ED3100F59E01400885A49 /* MP42Track.m in Sources */,
-				A98ED3110F59E01400885A49 /* MP42Utilities.m in Sources */,
-				A98ED3140F59E02300885A49 /* lang.c in Sources */,
-				A99530FA0F65699A00EC456B /* MP42VideoTrack.m in Sources */,
-				A9EAE1190F6E7FB1002853C9 /* AudioMuxer.m in Sources */,
-				A9EAE11A0F6E7FB1002853C9 /* SubMuxer.m in Sources */,
-				A9EAE11B0F6E7FB1002853C9 /* VideoMuxer.m in Sources */,
-				A9EAE11E0F6E7FBB002853C9 /* MP42AudioTrack.m in Sources */,
-				A9AFB6590F8CF1EE0050583E /* ac3.cpp in Sources */,
-				A9AFB65A0F8CF1EE0050583E /* h264.cpp in Sources */,
-				A9AFB65B0F8CF1EE0050583E /* aac.cpp in Sources */,
-				A9AFB65C0F8CF1EE0050583E /* mbs.cpp in Sources */,
-				A91F633B0FB0C6D800B96B33 /* CCMuxer.m in Sources */,
-				A91F633F0FB0C6ED00B96B33 /* RegexKitLite.m in Sources */,
-				A91F63510FB0C76300B96B33 /* MP42ClosedCaptionTrack.m in Sources */,
-				A90C272410AF31D700991030 /* MatroskaFile.c in Sources */,
-				A90C272510AF31D700991030 /* MatroskaParser.c in Sources */,
-				A90C273110AF31FA00991030 /* rational.c in Sources */,
-				A90C274710AF327500991030 /* mathematics.c in Sources */,
 				CB7C2FD51118A236001C2594 /* SublerCLI.mm in Sources */,
+				A9B46B0312B79EC60040517A /* MP42AACImporter.mm in Sources */,
+				A9B46B0412B79EC60040517A /* MP42AC3Importer.m in Sources */,
+				A9B46B0512B79EC60040517A /* MP42AudioTrack.m in Sources */,
+				A9B46B0612B79EC60040517A /* MP42CCImporter.m in Sources */,
+				A9B46B0712B79EC60040517A /* MP42ChapterTrack.m in Sources */,
+				A9B46B0812B79EC60040517A /* MP42ClosedCaptionTrack.m in Sources */,
+				A9B46B0912B79EC60040517A /* MP42File.m in Sources */,
+				A9B46B0A12B79EC60040517A /* MP42FileImporter.m in Sources */,
+				A9B46B0B12B79EC60040517A /* MP42H264Importer.mm in Sources */,
+				A9B46B0C12B79EC60040517A /* MP42Metadata.m in Sources */,
+				A9B46B0D12B79EC60040517A /* MP42MkvImporter.m in Sources */,
+				A9B46B0E12B79EC60040517A /* MP42MovImporter.m in Sources */,
+				A9B46B0F12B79EC60040517A /* MP42Mp4Importer.m in Sources */,
+				A9B46B1012B79EC60040517A /* MP42Muxer.m in Sources */,
+				A9B46B1112B79EC60040517A /* MP42Sample.m in Sources */,
+				A9B46B1212B79EC60040517A /* MP42SrtImporter.m in Sources */,
+				A9B46B1312B79EC60040517A /* MP42SubtitleTrack.m in Sources */,
+				A9B46B1412B79EC60040517A /* MP42Track.m in Sources */,
+				A9B46B1512B79EC60040517A /* MP42Utilities.m in Sources */,
+				A9B46B1612B79EC60040517A /* MP42VideoTrack.m in Sources */,
+				A9B46B1812B79EC60040517A /* MatroskaFile.c in Sources */,
+				A9B46B1912B79EC60040517A /* MatroskaParser.c in Sources */,
+				A9B46B1A12B79EC60040517A /* mbs.cpp in Sources */,
+				A9B46B1C12B79EC60040517A /* SBAudioConverter.m in Sources */,
+				A9B46B1D12B79EC60040517A /* sfifo.c in Sources */,
+				A9B46B1E12B79EC60040517A /* SubUtilities.m in Sources */,
+				A9B46B2812B79EE60040517A /* lang.c in Sources */,
+				A9B46B2912B79EE60040517A /* mathematics.c in Sources */,
+				A9B46B2A12B79EE60040517A /* rational.c in Sources */,
+				A9B46B2B12B79EE60040517A /* RegexKitLite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
