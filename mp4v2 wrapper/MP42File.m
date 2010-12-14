@@ -9,6 +9,7 @@
 #import "MP42File.h"
 #import <QTKit/QTKit.h>
 #import "SubUtilities.h"
+#include "lang.h"
 
 NSString * const MP42Create64BitData = @"64BitData";
 NSString * const MP42Create64BitTime = @"64BitTime";
@@ -411,6 +412,14 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
         jpegTrack = MP4AddMJpegVideoTrack(fileHandle, MP4GetTrackTimeScale(fileHandle, [chapterTrack Id]),
                                           MP4_INVALID_DURATION, imageSize.width, imageSize.height);
+
+        MP42VideoTrack* firstVideoTrack;
+        for (MP42Track * track in tracks)
+            if ([track isMemberOfClass:[MP42VideoTrack class]])
+                firstVideoTrack = (MP42VideoTrack*) track;
+
+        MP4SetTrackLanguage(fileHandle, jpegTrack, lang_for_english([firstVideoTrack.language UTF8String])->iso639_2);
+
         MP4SetTrackIntegerProperty(fileHandle, jpegTrack, "tkhd.layer", 1);
         copyTrackEditLists(fileHandle, [chapterTrack Id], jpegTrack);
         disableTrack(fileHandle, jpegTrack);
