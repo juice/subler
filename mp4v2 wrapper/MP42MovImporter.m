@@ -29,6 +29,30 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
     -(NSString*)langForTrack: (QTTrack *)track;
 @end
 
+@interface MovTrackHelper : NSObject {
+@public
+    MP4SampleId     currentSampleId;
+    uint64_t        totalSampleNumber;
+    MP4Timestamp    currentTime;
+}
+@end
+
+@implementation MovTrackHelper
+
+-(id)init
+{
+    if ((self = [super init]))
+    {
+    }
+    return self;
+}
+
+- (void) dealloc {
+    
+    [super dealloc];
+}
+@end
+
 @implementation MP42MovImporter
 
 - (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
@@ -274,6 +298,25 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
             return [magicCookie autorelease];
         }
+        else if ((*imgDesc)->cType == kMPEG4VisualCodecType) {
+            long count;
+            // Add ES decoder specific configuration
+            CountImageDescriptionExtensionType(imgDesc, 'esds',  &count);
+            if (count >= 1) {
+                Handle imgDescExt = NewHandle(0);
+                UInt8* buffer;
+                int size;
+
+                GetImageDescriptionExtension(imgDesc, &imgDescExt, 'esds', 1);
+
+                ReadESDSDescExt(*imgDescExt, &buffer, &size, 1);
+                magicCookie = [NSData dataWithBytes:buffer length:size];
+
+                DisposeHandle(imgDescExt);
+                
+                return [magicCookie autorelease];
+            }
+        }
     }
     else if ([mediaType isEqualToString:QTMediaTypeSound]) {
         SoundDescriptionHandle sndDesc = (SoundDescriptionHandle) desc;
@@ -387,8 +430,22 @@ bail:
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     OSStatus err = noErr;
 
-    //NSInteger tracksNumber = [activeTracks count];
-    //NSInteger tracksDone = 0;
+    NSInteger tracksNumber = [activeTracks count];
+    NSInteger tracksDone = 0;
+
+    MovTrackHelper * trackHelper;
+
+    for (MP42Track * track in activeTracks) {
+        if (track.trackDemuxerHelper == nil) {
+            track.trackDemuxerHelper = [[MovTrackHelper alloc] init];
+            
+            Track qtcTrack = [[[sourceFile tracks] objectAtIndex:[track sourceId]] quickTimeTrack];
+            Media media = GetTrackMedia(qtcTrack);
+            
+            trackHelper = track.trackDemuxerHelper;
+            trackHelper->totalSampleNumber = GetMediaSampleCount(media);
+        }
+    }
 
     for (MP42Track * track in activeTracks) {
         Track qtcTrack = [[[sourceFile tracks] objectAtIndex:[track sourceId]] quickTimeTrack];
@@ -447,6 +504,8 @@ bail:
             GetMediaSample2(media, sampleData, sampleDataSize, NULL, sampleDecodeTime,
                             NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL);
 
+            trackHelper = track.trackDemuxerHelper;
+            trackHelper->currentSampleId = trackHelper->currentSampleId + 1;
 
             MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
             sample->sampleData = sampleData;
@@ -461,12 +520,18 @@ bail:
                 [samplesBuffer addObject:sample];
                 [sample release];
             }
+            
+            progress = ((trackHelper->currentSampleId / (CGFloat) trackHelper->totalSampleNumber ) * 100 / tracksNumber) +
+            (tracksDone / (CGFloat) tracksNumber * 100);
+
         }
+
+        tracksDone++;
 
         bail:
         QTSampleTableRelease(sampleTable);
     }
-    
+
     readerStatus = 1;
     [pool release];
 }
@@ -518,8 +583,18 @@ bail:
 
 - (void) dealloc
 {
+    if (dataReader)
+        [dataReader release];
+
 	[file release];
     [tracksArray release];
+
+    if (activeTracks)
+        [activeTracks release];
+    if (samplesBuffer)
+        [samplesBuffer release];
+
+    [sourceFile release];
 
     [super dealloc];
 }
