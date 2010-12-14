@@ -41,7 +41,6 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     NSMutableArray *tracks = [[NSMutableArray alloc] init];
 
     for (MP42Track * track in [fileImporter tracksArray]) {
-        [track setTrackImporterHelper:fileImporter];
         [track setId:[[framerateSelection selectedItem] tag]];
         [tracks addObject:track];
     }

@@ -331,6 +331,8 @@ static bool GetFirstHeader(FILE* inFile)
         [ac3Info appendBytes:&lfeon length:sizeof(uint64_t)];
         [ac3Info appendBytes:&frmsizecod length:sizeof(uint64_t)];
 
+        [newTrack setTrackImporterHelper:self];
+
         [tracksArray addObject:newTrack];
         [newTrack release];
     }

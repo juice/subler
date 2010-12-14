@@ -29,6 +29,8 @@
         newTrack.format = @"CEA-608";
         newTrack.sourcePath = file;
 
+        [newTrack setTrackImporterHelper:self];
+
         [tracksArray addObject:newTrack];
         [newTrack release];
     }

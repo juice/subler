@@ -179,6 +179,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                     newTrack.name = getMatroskaTrackName(mkvTrack);
                 iso639_lang_t *isoLanguage = lang_for_code2(mkvTrack->Language);
                 newTrack.language = [NSString stringWithUTF8String:isoLanguage->eng_name];
+                
+                [newTrack setTrackImporterHelper:self];
                 [tracksArray addObject:newTrack];
                 [newTrack release];
             }

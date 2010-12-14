@@ -50,6 +50,8 @@
 
         [ss setFinished:YES];
 
+        [newTrack setTrackImporterHelper:self];
+
         [tracksArray addObject:newTrack];
         [newTrack release];
     }

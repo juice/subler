@@ -140,6 +140,10 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         }
     }
 
+    if (trackNeedConversion(track.format)) {
+        track.needConversion = YES;
+    }
+
     [tracks addObject:track];
 }
 

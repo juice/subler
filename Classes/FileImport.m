@@ -96,18 +96,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     for (MP42Track * track in [fileImporter tracksArray])
         if ([[importCheckArray objectAtIndex: i++] boolValue]) {
-            if (trackNeedConversion(track.format)) {
-                if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
-                    track.needConversion = YES;
-                else if (![track.format isEqualToString:@"AC-3"])
-                    track.needConversion = YES;
-            }
-            else
-                track.needConversion = NO;
-            
-            [track setTrackImporterHelper:fileImporter];
+            if (trackNeedConversion(track.format))
+                track.needConversion = YES;
+
+            if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
+                track.needConversion = YES;
+
             [tracks addObject:track];
-            
         }
 
     if ([delegate respondsToSelector:@selector(importDone:)]) 

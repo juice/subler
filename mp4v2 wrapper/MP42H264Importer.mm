@@ -1311,6 +1311,8 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
             newTrack.origLevel = newTrack.newLevel = level;
         }
 
+        [newTrack setTrackImporterHelper:self];
+
         [tracksArray addObject:newTrack];
         [newTrack release];
     }

@@ -133,8 +133,6 @@ int main (int argc, const char * argv[]) {
                                                                                 andFile:[NSString stringWithCString:input_file                                                                                                                                                                                 encoding:NSUTF8StringEncoding]];
 
             for (MP42Track * track in [fileImporter tracksArray]) {
-                [track setTrackImporterHelper:fileImporter];
-
                 if (language)
                     [track setLanguage:[NSString stringWithCString:language encoding:NSUTF8StringEncoding]];
                 if (delay)

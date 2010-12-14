@@ -149,6 +149,9 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             newTrack.sourceFileHandle = sourceFile;
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
             newTrack.language = [self langForTrack:track];
+
+            [newTrack setTrackImporterHelper:self];
+
             [tracksArray addObject:newTrack];
             [newTrack release];
         }
