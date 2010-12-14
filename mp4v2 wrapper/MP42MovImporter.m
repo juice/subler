@@ -506,13 +506,14 @@ bail:
 
             trackHelper = track.trackDemuxerHelper;
             trackHelper->currentSampleId = trackHelper->currentSampleId + 1;
+            trackHelper->currentTime = trackHelper->currentTime + decodeDuration;
 
             MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
             sample->sampleData = sampleData;
             sample->sampleSize = sampleDataSize;
             sample->sampleDuration = decodeDuration;
             sample->sampleOffset = displayOffset -minDisplayOffset;
-            //sample->sampleTimestamp = pStartTime;
+            sample->sampleTimestamp = trackHelper->currentTime;
             sample->sampleIsSync = !(sampleFlags & mediaSampleNotSync);
             sample->sampleTrackId = track.Id;
 
@@ -520,10 +521,9 @@ bail:
                 [samplesBuffer addObject:sample];
                 [sample release];
             }
-            
+
             progress = ((trackHelper->currentSampleId / (CGFloat) trackHelper->totalSampleNumber ) * 100 / tracksNumber) +
             (tracksDone / (CGFloat) tracksNumber * 100);
-
         }
 
         tracksDone++;
