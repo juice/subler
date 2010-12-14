@@ -7,7 +7,6 @@
 //
 
 #import "MP42AudioTrack.h"
-#import "AudioMuxer.h"
 #import "MP42Utilities.h"
 
 @implementation MP42AudioTrack

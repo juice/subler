@@ -13,6 +13,7 @@
 #import "MP42CCImporter.h"
 #import "MP42AC3Importer.h"
 #import "MP42AACImporter.h"
+#import "MP42H264Importer.h"
 
 #if !__LP64__
 #import "MP42MovImporter.h"
@@ -39,6 +40,10 @@
         self = [[MP42AC3Importer alloc] initWithDelegate:del andFile:fileUrl];
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame)
         self = [[MP42AACImporter alloc] initWithDelegate:del andFile:fileUrl];
+    else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"264"] == NSOrderedSame ||
+             [[fileUrl pathExtension] caseInsensitiveCompare: @"h264"] == NSOrderedSame)
+        self = [[MP42H264Importer alloc] initWithDelegate:del andFile:fileUrl];
+
 #if !__LP64__
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
         self = [[MP42MovImporter alloc] initWithDelegate:del andFile:fileUrl];

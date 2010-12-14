@@ -7,7 +7,6 @@
 //
 
 #import "MP42ClosedCaptionTrack.h"
-#import "CCMuxer.h"
 #import "lang.h"
 
 @implementation MP42ClosedCaptionTrack

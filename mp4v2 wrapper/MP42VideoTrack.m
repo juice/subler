@@ -7,7 +7,6 @@
 //
 
 #import "MP42VideoTrack.h"
-#import "VideoMuxer.h"
 
 @implementation MP42VideoTrack
 
