@@ -147,7 +147,6 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             newTrack.Id = i++;
             newTrack.sourcePath = file;
             newTrack.sourceFileHandle = sourceFile;
-            newTrack.sourceInputType = MP42SourceTypeQuickTime;
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
             newTrack.language = [self langForTrack:track];
             [tracksArray addObject:newTrack];

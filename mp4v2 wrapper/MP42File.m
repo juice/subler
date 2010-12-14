@@ -129,7 +129,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     track.Id = 0;
     track.muxed = NO;
     track.isEdited = YES;
-    track.isDataEdited = YES;
 
     track.language = track.language;
     track.name = track.name;

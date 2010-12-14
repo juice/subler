@@ -30,7 +30,6 @@
         newTrack.format = @"3GPP Text";
         newTrack.sourceFormat = @"Srt";
         newTrack.sourcePath = file;
-        newTrack.sourceInputType = MP42SourceTypeRaw;
 
         ss = [[SBSubSerializer alloc] init];
         if ([[fileUrl pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {

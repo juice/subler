@@ -1293,7 +1293,6 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
         newTrack.format = @"H.264";
         newTrack.sourceFormat = @"H.264";
         newTrack.sourcePath = file;
-        newTrack.sourceInputType = MP42SourceTypeRaw;
 
         if (!inFile)
             inFile = fopen([file UTF8String], "rb");

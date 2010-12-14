@@ -6,11 +6,6 @@
 //  Copyright 2009 Damiano Galassi. All rights reserved.
 //
 
-extern NSString * const MP42SourceTypeQuickTime;
-extern NSString * const MP42SourceTypeMP4;
-extern NSString * const MP42SourceTypeMatroska;
-extern NSString * const MP42SourceTypeRaw;
-
 #import <Foundation/Foundation.h>
 #import "mp4v2.h"
 @class MP42FileImporter;
@@ -19,7 +14,6 @@ extern NSString * const MP42SourceTypeRaw;
     MP4TrackId  Id;
     MP4TrackId  sourceId;
     id          sourceFileHandle;
-    NSString*   sourceInputType;
 
     NSString*   sourcePath;
     NSString*   sourceFormat;
@@ -31,7 +25,6 @@ extern NSString * const MP42SourceTypeRaw;
     int64_t     startOffset;
 
     BOOL    isEdited;
-    BOOL    isDataEdited;
     BOOL    muxed;
     BOOL    needConversion;
 
@@ -50,7 +43,6 @@ extern NSString * const MP42SourceTypeRaw;
 @property(readwrite) MP4TrackId Id;
 @property(readwrite) MP4TrackId sourceId;
 @property(readwrite, retain) id sourceFileHandle;
-@property(readwrite, assign) NSString* sourceInputType;
 
 @property(readwrite, retain) NSString *sourcePath;
 @property(readwrite, retain) NSString *sourceFormat;
@@ -67,7 +59,6 @@ extern NSString * const MP42SourceTypeRaw;
 @property(readwrite) MP4Duration duration;
 
 @property(readwrite) BOOL isEdited;
-@property(readwrite) BOOL isDataEdited;
 @property(readwrite) BOOL muxed;
 @property(readwrite) BOOL needConversion;
 

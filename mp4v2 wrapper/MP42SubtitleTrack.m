@@ -51,7 +51,6 @@
         else
             [self setLanguage: subLanguage];
         isEdited = YES;
-        isDataEdited = YES;
         muxed = NO;
     }
 

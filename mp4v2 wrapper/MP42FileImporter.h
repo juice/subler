@@ -10,12 +10,14 @@
 #import "MP42Sample.h"
 
 @class MP42Sample;
+@class MP42Metadata;
 @class MP42Track;
 
 @interface MP42FileImporter : NSObject {
-    NSString   *file;
+    NSString       *file;
 
-    NSInteger       chapterTrackId;
+    NSInteger      chapterTrackId;
+    MP42Metadata   *metadata;
     NSMutableArray *tracksArray;
 
     id delegate;

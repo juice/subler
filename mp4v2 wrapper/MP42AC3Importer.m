@@ -263,7 +263,6 @@ static bool GetFirstHeader(FILE* inFile)
         newTrack.format = @"AC-3";
         newTrack.sourceFormat = @"AC-3";
         newTrack.sourcePath = file;
-        newTrack.sourceInputType = MP42SourceTypeRaw;
 
         if (!inFile)
             inFile = fopen([file UTF8String], "rb");

@@ -28,7 +28,6 @@
         newTrack.name = @"Closed Caption Track";
         newTrack.format = @"CEA-608";
         newTrack.sourcePath = file;
-        newTrack.sourceInputType = MP42SourceTypeRaw;
 
         [tracksArray addObject:newTrack];
         [newTrack release];

@@ -40,7 +40,6 @@
         sourcePath = [filePath retain];
         [self setLanguage:@"English"];
         isEdited = YES;
-        isDataEdited = YES;
         muxed = NO;
         enabled = YES;
     }

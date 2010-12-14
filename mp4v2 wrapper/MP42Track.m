@@ -10,11 +10,6 @@
 #import "MP42Utilities.h"
 #import "lang.h"
 
-NSString * const MP42SourceTypeQuickTime = @"QuickTime";
-NSString * const MP42SourceTypeMP4 = @"MP4";
-NSString * const MP42SourceTypeMatroska = @"Matroska";
-NSString * const MP42SourceTypeRaw = @"Raw";
-
 @implementation MP42Track
 
 -(id)init
@@ -34,7 +29,6 @@ NSString * const MP42SourceTypeRaw = @"Raw";
 		sourcePath = [source retain];
 		Id = trackID;
         isEdited = NO;
-        isDataEdited = NO;
         muxed = YES;
         updatedProperty = [[NSMutableDictionary alloc] init];
 
@@ -126,7 +120,6 @@ NSString * const MP42SourceTypeRaw = @"Raw";
 @synthesize Id;
 @synthesize sourceId;
 @synthesize sourceFileHandle;
-@synthesize sourceInputType;
 
 @synthesize format;
 @synthesize sourceFormat;
@@ -194,7 +187,6 @@ NSString * const MP42SourceTypeRaw = @"Raw";
 @synthesize bitrate;
 @synthesize duration;
 @synthesize isEdited;
-@synthesize isDataEdited;
 @synthesize muxed;
 @synthesize needConversion;
 

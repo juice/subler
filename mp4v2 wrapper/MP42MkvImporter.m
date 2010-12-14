@@ -154,7 +154,6 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                 newTrack.sourceFormat = matroskaCodecIDToHumanReadableName(mkvTrack);
                 newTrack.Id = i;
                 newTrack.sourcePath = file;
-                newTrack.sourceInputType = MP42SourceTypeMatroska;
 
                 if ([newTrack.format isEqualToString:@"H.264"]) {
                     uint8_t* avcCAtom = (uint8_t *)malloc(mkvTrack->CodecPrivateSize); // mkv stores h.264 avcC in CodecPrivate

@@ -720,7 +720,6 @@ static bool GetFirstHeader(FILE* inFile)
         newTrack.format = @"AAC";
         newTrack.sourceFormat = @"AAC";
         newTrack.sourcePath = file;
-        newTrack.sourceInputType = MP42SourceTypeRaw;
 
         if (!inFile)
             inFile = fopen([file UTF8String], "rb");

@@ -20,7 +20,6 @@
         format = @"Text";
         language = @"English";
         isEdited = YES;
-        isDataEdited = YES;
         muxed = NO;
         enabled = NO;
 
@@ -90,7 +89,6 @@
         sourcePath = [filePath retain];
         language = @"English";
         isEdited = YES;
-        isDataEdited = YES;
         muxed = NO;
         enabled = NO;
 
@@ -110,7 +108,7 @@
 {
     BOOL success = YES;
 
-    if (isDataEdited) {
+    if (isEdited) {
         MP4Chapter_t * fileChapters = 0;
         uint32_t i, refTrackDuration, chapterCount = 0;
         uint64_t sum = 0;

@@ -47,9 +47,6 @@
         MP42File *sourceFile = [[MP42File alloc] initWithExistingFile:fileUrl andDelegate:self];
 
         tracksArray = [[sourceFile tracks] retain];
-        
-        for (MP42Track* track in tracksArray)
-            track.sourceInputType = MP42SourceTypeMP4;
 
         [sourceFile release];
     }
