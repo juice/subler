@@ -11,6 +11,28 @@
 #import "MP42File.h"
 #include <sys/stat.h>
 
+static const framerate_t framerates[] =
+{ { 2398, 24000, 1001 },
+    { 24, 600, 25 },
+    { 25, 600, 24 },
+    { 2997, 30000, 1001 },
+    { 30, 600, 20 },
+    { 50, 600, 12 },
+    { 5994, 60000, 1001 },
+    { 60, 600, 10 },
+    { 0, 24000, 1001 } };
+
+static const framerate_t framerates_thousand[] =
+{ { 2398, 24000, 1001 },
+	{ 2400, 600, 25 },
+	{ 2500, 600, 24 },
+	{ 2997, 30000, 1001 },
+	{ 3000, 600, 20 },
+    { 5000, 600, 12 },
+	{ 5994, 60000, 1001 },
+	{ 6000, 600, 10 },
+	{ 0, 24000, 1001 } };
+
 typedef struct h264_decode_t {
     uint8_t profile;
     uint8_t level;
@@ -1232,10 +1254,18 @@ static bool LoadNal (nal_reader_t *nal)
     return true;
 }
 
-uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height, uint8_t *profile, uint8_t *level)
+NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height, uint8_t *profile, uint8_t *level)
 {
-    
+    // track configuration info
+    NSMutableData * avcCData = [[NSMutableData alloc] init];
+    uint8_t AVCProfileIndication = 0;
+    uint8_t profile_compat = 0;
+    uint8_t AVCLevelIndication = 0;
+    uint8_t configurationVersion = 0;
+    uint8_t sampleLenFieldSizeMinusOne = 3;
+
     bool have_seq = false;
+    bool have_pic = false;
     uint8_t nal_type;
     nal_reader_t nal;
     h264_decode_t h264_dec;
@@ -1247,35 +1277,82 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     memset(&nal, 0, sizeof(nal));
     nal.ifile = inFile;
     
-    while (have_seq == false) {
+    while (have_seq == false || have_pic == false) {
         if (LoadNal(&nal) == false) {
             // fprintf(stderr, "%s: Could not find sequence header\n", ProgName);
             fclose(inFile);
             return 0;
         }
+        uint32_t header_size = nal.buffer[2] == 1 ? 3 : 4;
+
         nal_type = h264_nal_unit_type(nal.buffer);
-        if (nal_type == H264_NAL_TYPE_SEQ_PARAM) {
+        if (nal_type == H264_NAL_TYPE_SEQ_PARAM && !have_seq) {
             have_seq = true;
             uint32_t offset;
             if (nal.buffer[2] == 1) offset = 3;
             else offset = 4;
+
+            AVCProfileIndication = nal.buffer[offset + 1];
+            profile_compat = nal.buffer[offset + 2];
+            AVCLevelIndication = nal.buffer[offset + 3];
+
+            [avcCData appendBytes:&configurationVersion length:sizeof(uint8_t)];
+            [avcCData appendBytes:&AVCProfileIndication length:sizeof(uint8_t)];
+            [avcCData appendBytes:&profile_compat length:sizeof(uint8_t)];
+            [avcCData appendBytes:&AVCLevelIndication length:sizeof(uint8_t)];
+            [avcCData appendBytes:&sampleLenFieldSizeMinusOne length:sizeof(uint8_t)];
+
+            uint8_t *buffer = nal.buffer + header_size;
+            uint32_t buffersize = nal.buffer_on - header_size;
+            uint32_t iy = 0;
+
+            NSMutableData *seqData = [[NSMutableData alloc] init];
+            uint16_t temp = buffersize << 8;
+            [seqData appendBytes:&temp length:sizeof(uint16_t)];
+            [seqData appendBytes:buffer length:buffersize];
+            iy++;
+
+            [avcCData appendBytes:&iy length:sizeof(uint8_t)];
+            [avcCData appendData:seqData];
+
+            [seqData release];
+
             // skip the nal type byte
             if (h264_read_seq_info(nal.buffer, nal.buffer_on, &h264_dec) == -1)
             {
                 // fprintf(stderr, "%s: Could not decode Sequence header\n", ProgName);
                 fclose(inFile);
-                return 0;
+                return nil;
             }
-            fclose(inFile);
             *pic_width = h264_dec.pic_width;
             *pic_height = h264_dec.pic_height;
             *profile = h264_dec.profile;
             *level = h264_dec.level;
-            return 1;
+        }
+        else if (nal_type == H264_NAL_TYPE_PIC_PARAM && !have_pic) {
+            have_pic = true;
+            
+            uint8_t *buffer = nal.buffer + header_size;
+            uint32_t buffersize = nal.buffer_on - header_size;
+
+            uint32_t iy = 0;
+
+            NSMutableData *pictData = [[NSMutableData alloc] init];
+                uint16_t temp = buffersize << 8;
+                [pictData appendBytes:&temp length:sizeof(uint16_t)];
+                [pictData appendBytes:buffer length:buffersize];
+                iy++;
+            
+            [avcCData appendBytes:&iy length:sizeof(uint8_t)];
+            [avcCData appendData:pictData];
+            
+            [pictData release];
+
         }
     }
+
     fclose(inFile);
-    return 0;
+    return [avcCData copy];
 }
 
 @implementation MP42H264Importer
@@ -1303,7 +1380,7 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
         uint32_t tw, th;
         uint8_t profile, level;
-        if (H264Info([file cStringUsingEncoding:NSASCIIStringEncoding], &tw, &th, &profile, &level)) {
+        if ((avcC = H264Info([file cStringUsingEncoding:NSASCIIStringEncoding], &tw, &th, &profile, &level))) {
             newTrack.width = newTrack.trackWidth = tw;
             newTrack.height = newTrack.trackHeight = th;
             newTrack.hSpacing = newTrack.vSpacing = 1;
@@ -1322,18 +1399,27 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
 - (NSUInteger)timescaleForTrack:(MP42Track *)track
 {
-    return samplesPerSecond;
+    framerate_t * framerate;
+    
+    for (framerate = (framerate_t*) framerates; framerate->code; framerate++)
+        if([track sourceId] == framerate->code)
+            break;
+    
+    timescale = framerate->timescale;
+    mp4FrameDuration = framerate->duration;
+
+    return timescale;
 }
 
 - (NSSize)sizeForTrack:(MP42Track *)track
 {
-      return NSMakeSize([(MP42SubtitleTrack*)track trackWidth], [(MP42SubtitleTrack*) track trackHeight]);
+      return NSMakeSize([(MP42VideoTrack*)track trackWidth], [(MP42VideoTrack*) track trackHeight]);
 }
 
 - (NSData*)magicCookieForTrack:(MP42Track *)track
 {
     
-    return ac3Info;
+    return avcC;
 }
 
 - (void) fillMovieSampleBuffer: (id)sender
@@ -1344,6 +1430,16 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
     MP42Track *track = [activeTracks lastObject];
     MP4TrackId dstTrackId = [track Id];
+
+    framerate_t * framerate;
+
+    for (framerate = (framerate_t*) framerates; framerate->code; framerate++)
+        if([track sourceId] == framerate->code)
+            break;
+
+    timescale = framerate->timescale;
+    mp4FrameDuration = framerate->duration;
+
 
     // the current syntactical object
     // typically 1:1 with a sample
@@ -1362,7 +1458,8 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     if (timescale == 0) {
         fprintf(stderr, "%s: Must specify a timescale when reading H.264 files", 
                 ProgName);
-        return;
+        timescale = 30000;
+        mp4FrameDuration = 1001;
     }
 
     rewind(nal.ifile);
@@ -1399,9 +1496,12 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
             // write the previous sample
             if (nal_buffer_size != 0) {
                 samplesWritten++;
-
+                
+                void* sampleData = malloc(nal_buffer_size);
+                memcpy(sampleData, nal_buffer, nal_buffer_size);
+                
                 MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
-                sample->sampleData = nal_buffer;
+                sample->sampleData = sampleData;
                 sample->sampleSize = nal_buffer_size;
                 sample->sampleDuration = mp4FrameDuration;
                 sample->sampleOffset = 0;
@@ -1485,9 +1585,12 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
     if (nal_buffer_size != 0) {
         samplesWritten++;
-
+    
+        void* sampleData = malloc(nal_buffer_size);
+        memcpy(sampleData, nal_buffer, nal_buffer_size);
+        
         MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
-        sample->sampleData = nal_buffer;
+        sample->sampleData = sampleData;
         sample->sampleSize = nal_buffer_size;
         sample->sampleDuration = mp4FrameDuration;
         sample->sampleOffset = 0;
@@ -1584,7 +1687,7 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
     fclose(inFile);
 
-    [ac3Info release];
+    [avcC release];
 	[file release];
     [tracksArray release];
     [activeTracks release];
