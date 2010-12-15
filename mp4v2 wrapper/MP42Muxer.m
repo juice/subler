@@ -295,6 +295,7 @@
                 currentNumber++;
             }
         }
+        [importerHelper cleanUp:fileHandle];
     }
 
     [trackImportersArray release];

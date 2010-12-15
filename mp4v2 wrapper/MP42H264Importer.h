@@ -14,6 +14,22 @@ typedef struct framerate_t {
     uint32_t timescale;
     uint32_t duration;
 } framerate_t;
+typedef struct
+
+{
+    struct
+    {
+        int size_min;
+        int next;
+        int cnt;
+        int idx[17];
+        int poc[17];
+    } dpb;
+    
+    int cnt;
+    int cnt_max;
+    int *frame;
+} h264_dpb_t;
 
 @interface MP42H264Importer : MP42FileImporter {
     FILE* inFile;
@@ -22,6 +38,8 @@ typedef struct framerate_t {
     NSData *avcC;
     uint32_t timescale;
     uint32_t mp4FrameDuration;
+    MP4SampleId samplesWritten;
+    h264_dpb_t h264_dpb;
 
     NSThread *dataReader;
     NSInteger readerStatus;

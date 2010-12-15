@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MP42Sample.h"
+#import "mp4v2.h"
 
 @class MP42Sample;
 @class MP42Metadata;
@@ -34,6 +35,8 @@
 
 - (MP42SampleBuffer*)copyNextSample;
 - (CGFloat)progress;
+
+- (BOOL)cleanUp:(MP4FileHandle) fileHandle;
 
 @end
 

@@ -64,7 +64,6 @@
 
 - (void)setActiveTrack:(MP42Track *)track
 {
-
 }
 
 - (MP42SampleBuffer*)copyNextSample
@@ -77,10 +76,15 @@
     return nil;
 }
 
-- (CGFloat)progress {
+- (CGFloat)progress
+{
     return 0;
 }
 
+- (BOOL)cleanUp:(MP4FileHandle) fileHandle
+{
+    return NO;
+}
 
 @synthesize tracksArray;
 

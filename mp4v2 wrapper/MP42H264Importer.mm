@@ -153,22 +153,6 @@ typedef struct nal_reader_t {
 #define HAVE_ALL_SLICES 0x1f
 #define HAVE_ALL_BUT_B_SLICES 0x1b
 
-typedef struct
-{
-    struct
-    {
-        int size_min;
-        int next;
-        int cnt;
-        int idx[17];
-        int poc[17];
-    } dpb;
-    
-    int cnt;
-    int cnt_max;
-    int *frame;
-} h264_dpb_t;
-
 static uint8_t exp_golomb_bits[256] = {
     8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 
@@ -1400,11 +1384,11 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 - (NSUInteger)timescaleForTrack:(MP42Track *)track
 {
     framerate_t * framerate;
-    
+
     for (framerate = (framerate_t*) framerates; framerate->code; framerate++)
         if([track sourceId] == framerate->code)
             break;
-    
+
     timescale = framerate->timescale;
     mp4FrameDuration = framerate->duration;
 
@@ -1450,7 +1434,6 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     // track configuration info
     nal_reader_t nal;
     h264_decode_t h264_dec;
-    MP4SampleId samplesWritten = 0;
 
     memset(&nal, 0, sizeof(nal));
     nal.ifile = inFile;
@@ -1479,7 +1462,6 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     bool slice_is_idr = false;
     int32_t poc = 0;
     uint32_t dflags = 0;
-    h264_dpb_t h264_dpb;
     
     // now process the rest of the video stream
     memset(&h264_dec, 0, sizeof(h264_dec));
@@ -1609,28 +1591,36 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     }
 
     DpbFlush(&h264_dpb);
-    
-    /*if (h264_dpb.dpb.size_min > 0) {
-        unsigned int ix;
-        
-        for (ix = 0; ix < samplesWritten; ix++) {;
-            const int offset = DpbFrameOffset(&h264_dpb, ix);
-            MP4SetSampleRenderingOffset(mp4File, trackId, 1 + ix, 
-                                        offset * mp4FrameDuration);
-        }
-        MP4Duration editDuration = MP4ConvertFromTrackDuration(mp4File,
-                                                               trackId,
-                                                               MP4GetTrackDuration(mp4File, trackId),
-                                                               MP4GetTimeScale(mp4File));
-        
-        MP4AddTrackEdit(mp4File, trackId, MP4_INVALID_EDIT_ID, DpbFrameOffset(&h264_dpb, 0) * mp4FrameDuration,
-                        editDuration, 0);
-    }*/
-    
-    DpbClean(&h264_dpb);
 
     [pool release];
     readerStatus = 1;
+}
+
+- (BOOL)cleanUp:(MP4FileHandle) fileHandle
+{
+    MP42Track *track = [activeTracks lastObject];
+    MP4TrackId trackId = [track Id];
+
+    if (h264_dpb.dpb.size_min > 0) {
+        unsigned int ix;
+
+        for (ix = 0; ix < samplesWritten; ix++) {
+            const int offset = DpbFrameOffset(&h264_dpb, ix);
+            MP4SetSampleRenderingOffset(fileHandle, trackId, 1 + ix, 
+                                        offset * mp4FrameDuration);
+        }
+        MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                               trackId,
+                                                               MP4GetTrackDuration(fileHandle, trackId),
+                                                               MP4GetTimeScale(fileHandle));
+
+        MP4AddTrackEdit(fileHandle, trackId, MP4_INVALID_EDIT_ID, DpbFrameOffset(&h264_dpb, 0) * mp4FrameDuration,
+                        editDuration, 0);
+    }
+
+    DpbClean(&h264_dpb);
+
+    return YES;
 }
 
 - (MP42SampleBuffer*)copyNextSample {    
