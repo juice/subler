@@ -103,11 +103,11 @@
 		A94871D10F7914D2008DBC94 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		A94871D60F7914E7008DBC94 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		A9726A260F7B89F0008A828C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
-		A98ED3150F59E03300885A49 /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = ../UniversalDetector/UniversalDetector.h; sourceTree = SOURCE_ROOT; };
 		A98ED3240F59E08D00885A49 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp4v2.a; sourceTree = "<group>"; };
 		A98ED3320F59E08D00885A49 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mp4v2.h; sourceTree = "<group>"; };
 		A98ED34A0F59E17A00885A49 /* UniversalDetector.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = UniversalDetector.xcodeproj; path = ../UniversalDetector/UniversalDetector.xcodeproj; sourceTree = SOURCE_ROOT; };
 		A98ED4020F59E28300885A49 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		A9975E6D12B8CD9E00A3EFB6 /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = /Users/damians/Svn/subler/trunk/UniversalDetector/UniversalDetector.h; sourceTree = "<absolute>"; };
 		A9B46AC912B79EC60040517A /* MP42AACImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AACImporter.h; path = ../MP42AACImporter.h; sourceTree = "<group>"; };
 		A9B46ACA12B79EC60040517A /* MP42AACImporter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MP42AACImporter.mm; path = ../MP42AACImporter.mm; sourceTree = "<group>"; };
 		A9B46ACB12B79EC60040517A /* MP42AC3Importer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AC3Importer.h; path = ../MP42AC3Importer.h; sourceTree = "<group>"; };
@@ -208,19 +208,10 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				A98ED3150F59E03300885A49 /* UniversalDetector.h */,
-				32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */,
 				CB7C2FD41118A236001C2594 /* SublerCLI.mm */,
-				A9B46B1F12B79EE60040517A /* common.h */,
-				A9B46B2012B79EE60040517A /* lang.c */,
-				A9B46B2112B79EE60040517A /* lang.h */,
-				A9B46B2212B79EE60040517A /* mathematics.c */,
-				A9B46B2312B79EE60040517A /* mathematics.h */,
-				A9B46B2412B79EE60040517A /* rational.c */,
-				A9B46B2512B79EE60040517A /* rational.h */,
-				A9B46B2612B79EE60040517A /* RegexKitLite.h */,
-				A9B46B2712B79EE60040517A /* RegexKitLite.m */,
+				32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */,
 				A9B46AC812B79EC60040517A /* mp4v2 wrapper */,
+				A9975E6C12B8CD6B00A3EFB6 /* Others */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -267,6 +258,23 @@
 				A98ED3550F59E17A00885A49 /* libuniversaldetector.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A9975E6C12B8CD6B00A3EFB6 /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				A9975E6D12B8CD9E00A3EFB6 /* UniversalDetector.h */,
+				A9B46B1F12B79EE60040517A /* common.h */,
+				A9B46B2012B79EE60040517A /* lang.c */,
+				A9B46B2112B79EE60040517A /* lang.h */,
+				A9B46B2212B79EE60040517A /* mathematics.c */,
+				A9B46B2312B79EE60040517A /* mathematics.h */,
+				A9B46B2412B79EE60040517A /* rational.c */,
+				A9B46B2512B79EE60040517A /* rational.h */,
+				A9B46B2612B79EE60040517A /* RegexKitLite.h */,
+				A9B46B2712B79EE60040517A /* RegexKitLite.m */,
+			);
+			name = Others;
 			sourceTree = "<group>";
 		};
 		A9B46AC812B79EC60040517A /* mp4v2 wrapper */ = {
