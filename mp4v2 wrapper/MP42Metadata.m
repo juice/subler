@@ -868,7 +868,10 @@ static const genreType_t genreType_strings[] = {
     
     MP4TagsSetITunesAccount(tags, [[tagsDict valueForKey:@"iTunes Account"] UTF8String]);
 
-    MP4TagsSetMediaType(tags, &mediaKind);
+    if (mediaKind != 0)
+        MP4TagsSetMediaType(tags, &mediaKind);
+    else
+        MP4TagsSetMediaType(tags, NULL);
 
     MP4TagsSetHDVideo(tags, &hdVideo);
 
