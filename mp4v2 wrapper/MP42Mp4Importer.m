@@ -205,7 +205,6 @@
         }
     }
 
-
     for (MP42Track * track in activeTracks) {
         while (1) {
             while ([samplesBuffer count] >= 200) {
@@ -246,7 +245,7 @@
                 [samplesBuffer addObject:sample];
                 [sample release];
             }
-            
+
             progress = ((trackHelper->currentSampleId / (CGFloat) trackHelper->totalSampleNumber ) * 100 / tracksNumber) +
                         (tracksDone / (CGFloat) tracksNumber * 100);
         }
@@ -304,6 +303,41 @@
 - (CGFloat)progress
 {
     return progress;
+}
+
+- (BOOL)cleanUp:(MP4FileHandle) dstFileHandle
+{
+    for (MP42Track * track in activeTracks) {
+        MP4TrackId srcTrackId = [track sourceId];
+        MP4TrackId dstTrackId = [track Id];
+
+        MP4Duration trackDuration = 0;
+        uint32_t i = 1, trackEditCount = MP4GetTrackNumberOfEdits(fileHandle, srcTrackId);
+        while (i <= trackEditCount) {
+            MP4Timestamp editMediaStart = MP4GetTrackEditMediaStart(fileHandle, srcTrackId, i);
+            MP4Duration editDuration = MP4ConvertFromMovieDuration(fileHandle,
+                                                                   MP4GetTrackEditDuration(fileHandle, srcTrackId, i),
+                                                                   MP4GetTimeScale(dstFileHandle));
+            trackDuration += editDuration;
+            int8_t editDwell = MP4GetTrackEditDwell(fileHandle, srcTrackId, i);
+            
+            MP4AddTrackEdit(dstFileHandle, dstTrackId, i, editMediaStart, editDuration, editDwell);
+            i++;
+        }
+        if (trackEditCount)
+            MP4SetTrackIntegerProperty(dstFileHandle, dstTrackId, "tkhd.duration", trackDuration);
+        else if (MP4GetSampleRenderingOffset(dstFileHandle, dstTrackId, 1)) {
+            uint32_t firstFrameOffset = MP4GetSampleRenderingOffset(dstFileHandle, dstTrackId, 1);
+            MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                                   srcTrackId,
+                                                                   MP4GetTrackDuration(fileHandle, srcTrackId),
+                                                                   MP4GetTimeScale(dstFileHandle));
+            MP4AddTrackEdit(dstFileHandle, dstTrackId, MP4_INVALID_EDIT_ID, firstFrameOffset,
+                            editDuration, 0);
+        }
+    }
+
+    return YES;
 }
 
 - (void) dealloc

@@ -33,6 +33,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 @public
     MP4SampleId     currentSampleId;
     uint64_t        totalSampleNumber;
+    int64_t         minDisplayOffset;
     MP4Timestamp    currentTime;
 }
 @end
@@ -473,6 +474,8 @@ bail:
                                        NULL);
         require_noerr(err, bail);
 
+        trackHelper->minDisplayOffset = minDisplayOffset;
+
         SInt64 sampleIndex, sampleCount;
         sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
 
@@ -581,6 +584,55 @@ bail:
 - (CGFloat)progress
 {
     return progress;
+}
+
+- (BOOL)cleanUp:(MP4FileHandle) fileHandle
+{
+    for (MP42Track * track in activeTracks) {
+        Track qtcTrack = [[[sourceFile tracks] objectAtIndex:[track sourceId]] quickTimeTrack];
+
+        TimeValue editTrackStart, editTrackDuration;
+        TimeValue64 editDisplayStart, trackDuration = 0;
+        Fixed editDwell;
+
+        MovTrackHelper * trackHelper;
+        trackHelper = track.trackDemuxerHelper;
+
+        // Find the first edit
+        // Each edit has a starting track timestamp, a duration in track time, a starting display timestamp and a rate.
+        GetTrackNextInterestingTime(qtcTrack, 
+                                    nextTimeTrackEdit | nextTimeEdgeOK,
+                                    0,
+                                    fixed1,
+                                    &editTrackStart,
+                                    &editTrackDuration);
+
+        while (editTrackDuration > 0) {
+            editDisplayStart = TrackTimeToMediaDisplayTime(editTrackStart, qtcTrack);
+            editTrackDuration = (editTrackDuration / (float)GetMovieTimeScale([sourceFile quickTimeMovie])) * MP4GetTimeScale(fileHandle);
+            editDwell = GetTrackEditRate64(qtcTrack, editTrackStart);
+            
+            if (trackHelper->minDisplayOffset < 0 && editDisplayStart != -1)
+                MP4AddTrackEdit(fileHandle, [track Id], MP4_INVALID_EDIT_ID, editDisplayStart -trackHelper->minDisplayOffset,
+                                editTrackDuration, !Fix2X(editDwell));
+            else
+                MP4AddTrackEdit(fileHandle, [track Id], MP4_INVALID_EDIT_ID, editDisplayStart,
+                                editTrackDuration, !Fix2X(editDwell));
+            
+            trackDuration += editTrackDuration;
+            // Find the next edit
+            GetTrackNextInterestingTime(qtcTrack,
+                                        nextTimeTrackEdit,
+                                        editTrackStart,
+                                        fixed1,
+                                        &editTrackStart,
+                                        &editTrackDuration);
+        }
+        
+        MP4SetTrackIntegerProperty(fileHandle, [track Id], "tkhd.duration", trackDuration);
+    }
+    
+    return YES;
 }
 
 - (void) dealloc
