@@ -327,8 +327,8 @@
     }
 
     //for (MP42Track * track in workingTracks) {
-        //[track.trackImporterHelper release];
-        //track.trackImporterHelper = nil;
+    //    [track.trackImporterHelper release];
+    //    track.trackImporterHelper = nil;
     //}
 }
 

@@ -40,6 +40,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 
     NSMutableArray *samplesBuffer;
     uint64_t        current_time;
+    int64_t         minDisplayOffset;
     unsigned int buffer, samplesWritten, bufferFlush;
 
     NSInteger fileFormat;
@@ -594,6 +595,9 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 
                 trackHelper->samplesWritten++;
 
+                if (sample->sampleOffset < trackHelper->minDisplayOffset)
+                    trackHelper->minDisplayOffset = sample->sampleOffset;
+
                 if (trackHelper->buffer >= bufferSize)
                     [trackHelper->queue removeObjectAtIndex:0];
                 if (trackHelper->buffer < bufferSize)
@@ -687,6 +691,9 @@ NSString* getMatroskaTrackName(TrackInfo *track)
                 sample->sampleTrackId = track.Id;
 
                 trackHelper->samplesWritten++;
+
+                if (sample->sampleOffset < trackHelper->minDisplayOffset)
+                    trackHelper->minDisplayOffset = sample->sampleOffset;
 
                 if (trackHelper->buffer >= bufferSize)
                     [trackHelper->queue removeObjectAtIndex:0];
@@ -787,6 +794,32 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 - (CGFloat)progress
 {
     return progress;
+}
+
+- (BOOL)cleanUp:(MP4FileHandle) fileHandle
+{
+    for (MP42Track * track in activeTracks) {
+        MatroskaTrackHelper * trackHelper = track.trackDemuxerHelper;
+        MP4TrackId trackId = [track Id];
+
+        if (trackHelper->minDisplayOffset != 0) {
+            int i;
+            for (i = 0; i < trackHelper->samplesWritten; i++)
+            MP4SetSampleRenderingOffset(fileHandle,
+                                        trackId,
+                                        1 + i,
+                                        MP4GetSampleRenderingOffset(fileHandle, trackId, 1+i) - trackHelper->minDisplayOffset);
+
+            MP4Duration editDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                                   trackId,
+                                                                   MP4GetTrackDuration(fileHandle, trackId),
+                                                                   MP4GetTimeScale(fileHandle));
+            MP4AddTrackEdit(fileHandle, trackId, MP4_INVALID_EDIT_ID, -trackHelper->minDisplayOffset,
+                            editDuration, 0);
+        }
+    }
+
+    return YES;
 }
 
 - (void) dealloc
