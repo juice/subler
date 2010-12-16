@@ -227,6 +227,7 @@
             continue;
         }
 
+        MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, timeScale / 8);
         track.Id = dstTrackId;
     }
 }
