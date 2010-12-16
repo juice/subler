@@ -205,17 +205,20 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         supportedBrands[0] = majorBrand;
         supportedBrands[1] = "M4A ";
         supportedBrands[2] = "mp42";
-        supportedBrandsCount = 3;
+        supportedBrands[3] = "isom";
+        supportedBrandsCount = 4;
     }
     else if ([fileExtension isEqualToString:@"m4a"]) {
         majorBrand = "M4A ";
         supportedBrands[0] = majorBrand;
         supportedBrands[1] = "mp42";
-        supportedBrandsCount = 2;
+        supportedBrands[2] = "isom";
+        supportedBrandsCount = 3;
     }
     else {
         supportedBrands[0] = majorBrand;
-        supportedBrandsCount = 1;
+        supportedBrands[3] = "isom";
+        supportedBrandsCount = 2;
     }
 
     fileHandle = MP4CreateEx([filePath UTF8String], MP4_DETAILS_ERROR,
