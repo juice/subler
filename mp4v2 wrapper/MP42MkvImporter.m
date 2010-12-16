@@ -193,6 +193,10 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 
         if (count) {
             MP42ChapterTrack *newTrack = [[MP42ChapterTrack alloc] init];
+            
+            SegmentInfo *segInfo = mkv_GetFileInfo(matroskaFile);
+            UInt64 scaledDuration = (UInt64)segInfo->Duration / 1000000;
+            [newTrack setDuration:scaledDuration];
 
             if (count) {
                 unsigned int xi = 0;

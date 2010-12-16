@@ -102,6 +102,9 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         NSString* mediaType = [track attributeForKey:QTTrackMediaTypeAttribute];
         MP42Track *newTrack = nil;
 
+        Track qtcTrack = [track quickTimeTrack];
+        Media media = GetTrackMedia(qtcTrack);
+
         // Video
         if ([mediaType isEqualToString:QTMediaTypeVideo]) {
             if ([[self formatForTrack:track] isEqualToString:@"Text"]) {
@@ -116,11 +119,29 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                 [(MP42VideoTrack*)newTrack setTrackHeight: dimension.height];
                 [(MP42VideoTrack*)newTrack setWidth: dimension.width];
                 [(MP42VideoTrack*)newTrack setHeight: dimension.height];
+
+                long count;
+                // Get the sample description
+                SampleDescriptionHandle desc = (SampleDescriptionHandle) NewHandle(0);
+                GetMediaSampleDescription(media, 1, desc);
+                ImageDescriptionHandle imgDesc = (ImageDescriptionHandle) desc;
+
+                // Read pixel aspect ratio
+                CountImageDescriptionExtensionType(imgDesc, kPixelAspectRatioImageDescriptionExtension, &count);
+                if (count > 0) {
+                    Handle pasp = NewHandle(0);
+                    GetImageDescriptionExtension(imgDesc, &pasp, kPixelAspectRatioImageDescriptionExtension, 1);
+                    [(MP42VideoTrack*)newTrack setHSpacing:CFSwapInt32BigToHost(((PixelAspectRatioImageDescriptionExtension*)(*pasp))->hSpacing)];
+                    [(MP42VideoTrack*)newTrack setVSpacing: CFSwapInt32BigToHost(((PixelAspectRatioImageDescriptionExtension*)(*pasp))->vSpacing)];
+                    DisposeHandle(pasp);
+                }
             }
         }
+
         // Audio
         else if ([mediaType isEqualToString:QTMediaTypeSound])
             newTrack = [[MP42AudioTrack alloc] init];
+
         // Text
         else if ([mediaType isEqualToString:QTMediaTypeText]) {
             if ([[track attributeForKey:QTTrackIDAttribute] integerValue] == chapterTrackId) {
@@ -134,12 +155,21 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                 }
             }
         }
+
         // Subtitle
-        else if([mediaType isEqualToString:@"sbtl"])
+        else if([mediaType isEqualToString:@"sbtl"]) {
             newTrack = [[MP42SubtitleTrack alloc] init];
+            NSSize dimension = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
+            [(MP42SubtitleTrack*)newTrack setTrackWidth: dimension.width];
+            [(MP42SubtitleTrack*)newTrack setTrackHeight: dimension.height];
+            [(MP42SubtitleTrack*)newTrack setWidth: dimension.width];
+            [(MP42SubtitleTrack*)newTrack setHeight: dimension.height];
+        }
+
         // Closed Caption
         else if([mediaType isEqualToString:@"clcp"])
             newTrack = [[MP42ClosedCaptionTrack alloc] init];
+
         else
             newTrack = [[MP42Track alloc] init];
 
@@ -151,6 +181,9 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
             newTrack.language = [self langForTrack:track];
 
+            TimeValue64 duration = GetMediaDisplayDuration(media) / GetMediaTimeScale(media) * 1000;
+            newTrack.duration = duration;
+            
             [newTrack setTrackImporterHelper:self];
 
             [tracksArray addObject:newTrack];
