@@ -28,6 +28,7 @@ int updateTracksCount(MP4FileHandle fileHandle);
 void updateMoovDuration(MP4FileHandle fileHandle);
 
 MP4TrackId findChapterTrackId(MP4FileHandle fileHandle);
+void removeAllChapterTrackReferences(MP4FileHandle fileHandle);
 MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle);
 
 uint16_t getFixedVideoWidth(MP4FileHandle fileHandle, MP4TrackId videoTrack);

@@ -115,6 +115,19 @@ MP4TrackId findChapterTrackId(MP4FileHandle fileHandle)
     return 0;
 }
 
+void removeAllChapterTrackReferences(MP4FileHandle fileHandle)
+{
+    MP4TrackId trackId = 0;
+    unsigned int i;
+    for (i = 0; i< MP4GetNumberOfTracks( fileHandle, 0, 0); i++ ) {
+        trackId = MP4FindTrackId(fileHandle, i, 0, 0);
+        if (MP4HaveTrackAtom(fileHandle, trackId, "tref.chap")) {
+            MP4RemoveAllTrackReferences(fileHandle, "tref.chap", trackId);
+        }
+    }
+    return;
+}
+
 MP4TrackId findFirstVideoTrack(MP4FileHandle fileHandle)
 {
     MP4TrackId videoTrack = 0;

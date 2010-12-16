@@ -127,6 +127,7 @@
             for (i = 0; i<chapterCount; i++)
                 strcpy(fileChapters[i].title, [[[chapters objectAtIndex:i] title] UTF8String]);
 
+            removeAllChapterTrackReferences(fileHandle);
             MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeAny);
         }
         else {
@@ -156,6 +157,7 @@
                 }
             }
 
+            removeAllChapterTrackReferences(fileHandle);
             MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeAny);
         }
 
