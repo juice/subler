@@ -108,7 +108,8 @@ MP4TrackId findChapterTrackId(MP4FileHandle fileHandle)
         trackId = MP4FindTrackId(fileHandle, i, 0, 0);
         if (MP4HaveTrackAtom(fileHandle, trackId, "tref.chap")) {
             MP4GetTrackIntegerProperty(fileHandle, trackId, "tref.chap.entries.trackId", &trackRef);
-            return (MP4TrackId) trackRef;
+            if (trackRef > 0)
+                return (MP4TrackId) trackRef;
         }
     }
     return 0;
