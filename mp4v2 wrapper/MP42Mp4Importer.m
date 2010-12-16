@@ -49,7 +49,9 @@
         tracksArray = [[sourceFile tracks] retain];
         for (MP42Track * track in tracksArray)
             [track setTrackImporterHelper:self];
-    
+
+        metadata = [[sourceFile metadata] retain];
+
         [sourceFile release];
     }
 

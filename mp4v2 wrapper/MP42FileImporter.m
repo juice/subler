@@ -85,7 +85,7 @@
 {
     return NO;
 }
-
+@synthesize metadata;
 @synthesize tracksArray;
 
 @end

@@ -24,8 +24,6 @@
     id delegate;
 }
 
-@property(readonly) NSMutableArray  *tracksArray;
-
 - (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl;
 
 - (NSUInteger)timescaleForTrack:(MP42Track *)track;
@@ -37,6 +35,9 @@
 - (CGFloat)progress;
 
 - (BOOL)cleanUp:(MP4FileHandle) fileHandle;
+
+@property(readwrite, retain) MP42Metadata *metadata;
+@property(readonly) NSMutableArray  *tracksArray;
 
 @end
 

@@ -649,7 +649,7 @@ returnCode contextInfo: (void *) contextInfo
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
 }
 
-- (void) importDone: (NSArray*) tracksToBeImported
+- (void) importDoneWithTracks: (NSArray*) tracksToBeImported andMetadata: (MP42Metadata*) metadata
 {
     if (tracksToBeImported) {
         for (id track in tracksToBeImported)
@@ -658,6 +658,10 @@ returnCode contextInfo: (void *) contextInfo
         [self updateChangeCount:NSChangeDone];
         [fileTracksTable reloadData];
     }
+
+    [mp4File.metadata mergeMetadata:metadata];
+    [self tableViewSelectionDidChange:nil];
+    [self updateChangeCount:NSChangeDone];
 
     [NSApp endSheet:[importWindow window]];
     [[importWindow window] orderOut:self];

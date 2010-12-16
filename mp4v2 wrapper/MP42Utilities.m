@@ -459,7 +459,7 @@ CFDataRef DescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate)
 BOOL isTrackMuxable(NSString * formatName)
 {
     NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"AAC", @"AC-3", @"3GPP Text", @"Text", @"Plain Text", @"ASS", @"SSA",
-                                 @"CEA-608", @"Photo - JPEG", @"Vorbis", nil];
+                                 @"CEA-608", /*@"Photo - JPEG",*/ @"Vorbis", nil];
 
     for (NSString* type in supportedFormats)
         if ([formatName isEqualToString:type])

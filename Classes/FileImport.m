@@ -36,6 +36,11 @@
         else
             [importCheckArray addObject: [NSNumber numberWithBool:NO]];
 
+    if ([fileImporter metadata])
+        [importMetadata setEnabled:YES];
+    else
+        [importMetadata setEnabled:NO];
+    
     [addTracksButton setEnabled:YES];
 }
 
@@ -85,8 +90,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (IBAction) closeWindow: (id) sender
 {
-    if ([delegate respondsToSelector:@selector(importDone:)]) 
-        [delegate importDone:nil];
+    if ([delegate respondsToSelector:@selector(importDoneWithTracks:andMetadata:)]) 
+        [delegate importDoneWithTracks:nil andMetadata:nil];
 }
 
 - (IBAction) addTracks: (id) sender
@@ -105,8 +110,10 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             [tracks addObject:track];
         }
 
-    if ([delegate respondsToSelector:@selector(importDone:)]) 
-        [delegate importDone:tracks];
+    MP42Metadata *metadata = [[[fileImporter metadata] retain] autorelease];
+
+    if ([delegate respondsToSelector:@selector(importDoneWithTracks:andMetadata:)]) 
+        [delegate importDoneWithTracks:tracks andMetadata: metadata];
     [tracks release];
 }
 

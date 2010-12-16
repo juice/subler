@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class MP42FileImporter;
+@class MP42Metadata;
 
 @interface FileImport : NSWindowController {
 
@@ -19,6 +20,7 @@
 	id delegate;
 	IBOutlet NSTableView * tableView;
 	IBOutlet NSButton    * addTracksButton;
+    IBOutlet NSButton    * importMetadata;
     IBOutlet NSProgressIndicator *loadProgressBar;
     NSTimer *loadTimer;
 }
@@ -30,6 +32,6 @@
 @end
 
 @interface NSObject (FileImportDelegateMethod)
-- (void) importDone: (NSArray*) tracksToBeImported;
+- (void) importDoneWithTracks: (NSArray*) tracksToBeImported andMetadata: (MP42Metadata*)metadata;
 
 @end
