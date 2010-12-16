@@ -1019,7 +1019,6 @@ static const genreType_t genreType_strings[] = {
 {
     NSString * tagValue;
     for (NSString * key in [self writableMetadata])
-        if(![tagsDict valueForKey:key])
             if((tagValue = [newMetadata.tagsDict valueForKey:key]))
                 [tagsDict setObject:tagValue forKey:key];
 
