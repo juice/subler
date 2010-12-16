@@ -238,7 +238,9 @@
     [fileFormat removeAllItems];
     for (id format in formats)
         [fileFormat addItemWithTitle:format];
-    
+
+    [fileFormat selectItemAtIndex:[[[NSUserDefaults standardUserDefaults] valueForKey:@"defaultSaveFormat"] integerValue]];
+
     // note this is only available in Mac OS X 10.6+
     if ([savePanel respondsToSelector:@selector(setNameFieldStringValue:)]) {
         NSString *filename = nil;
