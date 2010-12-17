@@ -123,43 +123,34 @@
         if (!refTrack)
             refTrack = 1;
 
-        if (chapterCount && muxed) {
-            for (i = 0; i<chapterCount; i++)
-                strcpy(fileChapters[i].title, [[[chapters objectAtIndex:i] title] UTF8String]);
+        chapterCount = [chapters count];
+        fileChapters = malloc(sizeof(MP4Chapter_t)*chapterCount);
+        refTrackDuration = MP4ConvertFromTrackDuration(fileHandle,
+                                                       refTrack,
+                                                       MP4GetTrackDuration(fileHandle, refTrack),
+                                                       MP4_MSECS_TIME_SCALE);
 
-            removeAllChapterTrackReferences(fileHandle);
-            MP4SetChapters(fileHandle, fileChapters, chapterCount, MP4ChapterTypeAny);
-        }
-        else {
-            chapterCount = [chapters count];
-            fileChapters = malloc(sizeof(MP4Chapter_t)*chapterCount);
-            refTrackDuration = MP4ConvertFromTrackDuration(fileHandle,
-                                                           refTrack,
-                                                           MP4GetTrackDuration(fileHandle, refTrack),
-                                                           MP4_MSECS_TIME_SCALE);
-
-            for (i = 0; i < chapterCount; i++) {
-                SBTextSample * chapter = [chapters objectAtIndex:i];
-                strcpy(fileChapters[i].title, [[chapter title] UTF8String]);
-                
-                if (i+1 < chapterCount && sum < refTrackDuration) {
-                    SBTextSample * nextChapter = [chapters objectAtIndex:i+1];
-                    fileChapters[i].duration = nextChapter.timestamp - chapter.timestamp;
-                    sum = nextChapter.timestamp;
-                }
-                else
-                    fileChapters[i].duration = refTrackDuration - chapter.timestamp;
-
-                if (sum > refTrackDuration) {
-                    fileChapters[i].duration = refTrackDuration - chapter.timestamp;
-                    i++;
-                    break;
-                }
+        for (i = 0; i < chapterCount; i++) {
+            SBTextSample * chapter = [chapters objectAtIndex:i];
+            strcpy(fileChapters[i].title, [[chapter title] UTF8String]);
+            
+            if (i+1 < chapterCount && sum < refTrackDuration) {
+                SBTextSample * nextChapter = [chapters objectAtIndex:i+1];
+                fileChapters[i].duration = nextChapter.timestamp - chapter.timestamp;
+                sum = nextChapter.timestamp;
             }
+            else
+                fileChapters[i].duration = refTrackDuration - chapter.timestamp;
 
-            removeAllChapterTrackReferences(fileHandle);
-            MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeAny);
+            if (sum > refTrackDuration) {
+                fileChapters[i].duration = refTrackDuration - chapter.timestamp;
+                i++;
+                break;
+            }
         }
+
+        removeAllChapterTrackReferences(fileHandle);
+        MP4SetChapters(fileHandle, fileChapters, i, MP4ChapterTypeAny);
 
         free(fileChapters);
         success = Id = findChapterTrackId(fileHandle);

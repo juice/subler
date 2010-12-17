@@ -16,10 +16,9 @@
 #include "MatroskaParser.h"
 #include "MatroskaFile.h"
 
-#pragma mark -
 #pragma mark Parser callbacks
 
-#define CACHESIZE     65536 
+#define CACHESIZE 65536 
 
 /* StdIoStream methods */ 
 

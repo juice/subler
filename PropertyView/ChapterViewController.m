@@ -68,6 +68,41 @@
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
     }
+    else if ([tableColumn.identifier isEqualToString:@"time"]) {
+        MP4Duration timestamp = TimeFromSMPTEString(anObject, 1000);
+        if (!(chapter.timestamp == timestamp)) {
+            chapter.timestamp = timestamp;
+            track.isEdited = YES;
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+        }
+    }
+}
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
+{
+    if ([chapterTableView selectedRow] != -1)
+        [removeChapter setEnabled:YES];
+    else
+        [removeChapter setEnabled:NO];
+}
+
+- (IBAction) removeChapter: (id) sender {
+    NSUInteger current_index = [chapterTableView selectedRow];
+    if (current_index < [track.chapters count]) {
+        [track.chapters removeObjectAtIndex:current_index];
+        track.isEdited = YES;
+        [chapterTableView reloadData];
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
+}
+
+- (IBAction) addChapter: (id) sender {
+    NSUInteger current_index = [chapterTableView selectedRow];
+
+    [track addChapter:@"Chapter" duration:0];
+    track.isEdited = YES;
+    [chapterTableView reloadData];
+    [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
 }
 
 - (void) dealloc

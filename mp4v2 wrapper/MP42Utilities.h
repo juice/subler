@@ -18,6 +18,7 @@ typedef enum {  TRACK_DISABLED = 0x0,
 } track_header_flags;
 
 NSString* SMPTEStringFromTime(long long time, long timeScale);
+MP4Duration TimeFromSMPTEString( NSString* SMPTE_string, MP4Duration timeScale );
 
 int enableTrack(MP4FileHandle fileHandle, MP4TrackId trackId);
 int disableTrack(MP4FileHandle fileHandle, MP4TrackId trackId);

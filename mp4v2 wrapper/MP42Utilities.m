@@ -11,7 +11,7 @@
 #import <string.h>
 #include "lang.h"
 
-NSString *SMPTEStringFromTime( long long time, long timeScale )
+NSString* SMPTEStringFromTime( long long time, long timeScale )
 {
     NSString *SMPTE_string;
     int hour, minute, second, frame;
@@ -32,6 +32,20 @@ NSString *SMPTEStringFromTime( long long time, long timeScale )
 
     return SMPTE_string;
 }
+
+MP4Duration TimeFromSMPTEString( NSString* SMPTE_string, MP4Duration timeScale )
+{
+    int hour, minute, second, frame;
+    MP4Duration timeval;
+
+    sscanf([SMPTE_string UTF8String], "%d:%02d:%02d:%02d",&hour, &minute, &second, &frame);
+
+    timeval = hour * 60 * 60 + minute * 60 + second;
+	timeval = timeScale * timeval + ( frame * 10 );
+
+    return timeval;
+}
+
 
 int enableTrack(MP4FileHandle fileHandle, MP4TrackId trackId)
 {
