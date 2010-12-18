@@ -915,15 +915,18 @@ NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *s
 
 NSString* removeNewLines(NSString* string) {
     NSMutableString *mutableString     = [NSMutableString stringWithString:string];
-    NSString        *regexString       = @"\\n";
-    NSString        *replaceWithString = @" ";
-    NSUInteger       replacedCount     = 0UL;
-    
-    replacedCount = [mutableString replaceOccurrencesOfRegex:regexString withString:replaceWithString];
+
+	[mutableString replaceOccurrencesOfString:@"\r\n" withString:@"\n" options:0 range:NSMakeRange(0,[mutableString length])];
+	[mutableString replaceOccurrencesOfString:@"\r" withString:@"\n" options:0 range:NSMakeRange(0,[mutableString length])];
+
+    NSMutableString *mutableString2 = [NSMutableString stringWithString:mutableString];
+    NSUInteger       replacedCount  = 0;
+
+    replacedCount = [mutableString2 replaceOccurrencesOfString:@"\n" withString:@" " options:0 range:NSMakeRange(0,[mutableString2 length])];
     if (replacedCount > 2)
-        return mutableString;
+        return mutableString2;
     else
-        return string;
+        return mutableString;
 }
 
 MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration)
