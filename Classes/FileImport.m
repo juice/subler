@@ -110,7 +110,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             [tracks addObject:track];
         }
 
-    MP42Metadata *metadata = [[[fileImporter metadata] retain] autorelease];
+    MP42Metadata *metadata = nil;
+    if ([importMetadata state])
+        metadata = [[[fileImporter metadata] retain] autorelease];
 
     if ([delegate respondsToSelector:@selector(importDoneWithTracks:andMetadata:)]) 
         [delegate importDoneWithTracks:tracks andMetadata: metadata];
