@@ -47,8 +47,10 @@
         MP42File *sourceFile = [[MP42File alloc] initWithExistingFile:fileUrl andDelegate:self];
 
         tracksArray = [[sourceFile tracks] retain];
-        for (MP42Track * track in tracksArray)
+        for (MP42Track * track in tracksArray) {
             [track setTrackImporterHelper:self];
+            [track setSourceFormat:[track format]];
+        }
 
         metadata = [[sourceFile metadata] retain];
 
@@ -242,6 +244,8 @@
             sample->sampleTimestamp = pStartTime;
             sample->sampleIsSync = isSyncSample;
             sample->sampleTrackId = track.Id;
+            if(track.needConversion)
+                sample->sampleSourceTrack = track;
 
             @synchronized(samplesBuffer) {
                 [samplesBuffer addObject:sample];

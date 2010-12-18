@@ -336,6 +336,8 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     err = AudioConverterNew( &inputFormat, &outputFormat, &converterDec );
     if( err != noErr) {
         NSLog(@"Boom %ld",err);
+        readerDone = 1;
+        encoderDone = 1;
         return;
     }
 
