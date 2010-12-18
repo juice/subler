@@ -97,8 +97,6 @@
 }
 
 - (IBAction) addChapter: (id) sender {
-    NSUInteger current_index = [chapterTableView selectedRow];
-
     [track addChapter:@"Chapter" duration:0];
     track.isEdited = YES;
     [chapterTableView reloadData];
