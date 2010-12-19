@@ -651,7 +651,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
 
 - (IBAction) closeWindow: (id) sender
 {
-    if ([delegate respondsToSelector:@selector(importDone:)]) 
+    if ([delegate respondsToSelector:@selector(metadataImportDone:)]) 
         [delegate metadataImportDone:nil];
 }
 
