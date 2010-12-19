@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class MP42FileImporter;
+@class MP42Metadata;
 
 @interface VideoFramerate : NSWindowController {
     NSString    *filePath;
@@ -25,6 +26,6 @@
 @end
 
 @interface NSObject (VideoFramerateDelegateMethod)
-- (void) importDone: (NSArray*) tracksToBeImported;
+- (void) importDoneWithTracks: (NSArray*) tracksToBeImported andMetadata: (MP42Metadata*)metadata;
 
 @end

@@ -30,8 +30,8 @@
 
 - (IBAction) closeWindow: (id) sender
 {
-    if ([delegate respondsToSelector:@selector(importDone:)]) 
-        [delegate importDone:nil];
+    if ([delegate respondsToSelector:@selector(importDoneWithTracks:andMetadata:)]) 
+        [delegate importDoneWithTracks:nil andMetadata:nil];
 }
 
 uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height, uint8_t *profile, uint8_t *level);
@@ -45,8 +45,8 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
         [tracks addObject:track];
     }
 
-    if ([delegate respondsToSelector:@selector(importDone:)]) 
-        [delegate importDone:tracks];
+    if ([delegate respondsToSelector:@selector(importDoneWithTracks:andMetadata:)]) 
+        [delegate importDoneWithTracks:tracks andMetadata:nil];
     [tracks release];
 }
 
