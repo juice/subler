@@ -97,6 +97,8 @@
 
 - (void) dealloc
 {
+    if (trackImporterHelper)
+        [trackImporterHelper release];
     if (trackDemuxerHelper)
         [trackDemuxerHelper release];
     if (trackConverterHelper)

@@ -42,6 +42,7 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
     for (MP42Track * track in [fileImporter tracksArray]) {
         [track setId:[[framerateSelection selectedItem] tag]];
+        [track setTrackImporterHelper:fileImporter];
         [tracks addObject:track];
     }
 

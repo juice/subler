@@ -183,8 +183,6 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
             TimeValue64 duration = GetMediaDisplayDuration(media) / GetMediaTimeScale(media) * 1000;
             newTrack.duration = duration;
-            
-            [newTrack setTrackImporterHelper:self];
 
             [tracksArray addObject:newTrack];
             [newTrack release];
@@ -332,7 +330,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
             DisposeHandle(imgDescHandle);
 
-            return [magicCookie autorelease];
+            return magicCookie;
         }
         else if ((*imgDesc)->cType == kMPEG4VisualCodecType) {
             long count;
@@ -350,7 +348,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
                 DisposeHandle(imgDescExt);
                 
-                return [magicCookie autorelease];
+                return magicCookie;
             }
         }
     }
@@ -385,7 +383,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             free(cookie);
             free(buffer);
 
-            return [magicCookie autorelease];
+            return magicCookie;
 
         }
         else if (asbd.mFormatID == kAudioFormatAC3 || asbd.mFormatID == 0x6D732000)

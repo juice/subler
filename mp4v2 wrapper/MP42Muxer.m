@@ -234,6 +234,8 @@
 
 - (void)start:(MP4FileHandle)fileHandle
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
     NSMutableArray * trackImportersArray = [[NSMutableArray alloc] init];
 
     for (MP42Track * track in workingTracks) {
@@ -254,8 +256,7 @@
     for (id importerHelper in trackImportersArray) {
         MP42SampleBuffer * sampleBuffer;
 
-        while ((sampleBuffer = [importerHelper copyNextSample]) != nil && !isCancelled) {
-
+        while ((sampleBuffer = [importerHelper copyNextSample]) != nil && !isCancelled) {                
             // The sample need additional conversion
             if (sampleBuffer->sampleSourceTrack) {
                 MP42SampleBuffer *convertedSample;
@@ -296,16 +297,15 @@
                 currentNumber++;
             }
         }
-        [importerHelper cleanUp:fileHandle];
     }
 
-    if (isCancelled) {
-        for (id importerHelper in trackImportersArray) {
+    for (id importerHelper in trackImportersArray) {
+        if (isCancelled)
             [importerHelper cancel];
-        }
+        else
+            [importerHelper cleanUp:fileHandle];
     }
-        
-    [trackImportersArray release];
+
 
     // Write the last samples from the encoder
     for (MP42Track * track in workingTracks) {
@@ -333,10 +333,16 @@
         }
     }
 
-    //for (MP42Track * track in workingTracks) {
-    //    [track.trackImporterHelper release];
-    //    track.trackImporterHelper = nil;
-    //}
+    for (MP42Track * track in workingTracks) {
+        if (track.trackImporterHelper) 
+            track.trackImporterHelper = nil;
+
+        if (track.trackConverterHelper) 
+            track.trackConverterHelper = nil;
+    }
+
+    [trackImportersArray release];
+    [pool release];
 }
 
 - (void)cancel
@@ -346,6 +352,7 @@
 
 - (void) dealloc
 {
+    NSLog(@"Dealloc NSMuxer");
     [workingTracks release], workingTracks = nil;
     [super dealloc];
 }

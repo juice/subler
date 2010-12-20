@@ -800,8 +800,6 @@ static bool GetFirstHeader(FILE* inFile)
         [aacInfo appendBytes:pConfig length:configLength];
         free(pConfig);
 
-        [newTrack setTrackImporterHelper:self];
-
         [tracksArray addObject:newTrack];
         [newTrack release];
     }

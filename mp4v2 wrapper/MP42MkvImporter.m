@@ -57,12 +57,14 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
         queue = [[NSMutableArray alloc] init];
         offsetsArray = [[NSMutableArray alloc] init];
         
-        samplesBuffer = [NSMutableArray arrayWithCapacity:100];
+        samplesBuffer = [[NSMutableArray alloc] initWithCapacity:100];
     }
     return self;
 }
 
 - (void) dealloc {
+    NSLog(@"MkvTrackHelper dealloc");
+
     [queue release], queue = nil;
     [offsetsArray release], offsetsArray = nil;
     [samplesBuffer release], samplesBuffer = nil;
@@ -180,8 +182,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                     newTrack.name = getMatroskaTrackName(mkvTrack);
                 iso639_lang_t *isoLanguage = lang_for_code2(mkvTrack->Language);
                 newTrack.language = [NSString stringWithUTF8String:isoLanguage->eng_name];
-                
-                [newTrack setTrackImporterHelper:self];
+
                 [tracksArray addObject:newTrack];
                 [newTrack release];
             }
@@ -408,8 +409,9 @@ NSString* getMatroskaTrackName(TrackInfo *track)
     for (MP42Track* track in activeTracks){
         TrackMask &= ~(1 << [track sourceId]);
         if (track.trackDemuxerHelper == nil) {
-            trackHelper = [[[MatroskaTrackHelper alloc] init] autorelease];
+            trackHelper = [[MatroskaTrackHelper alloc] init];
             track.trackDemuxerHelper = trackHelper;
+            [trackHelper release];
         }    
     }
 
@@ -831,9 +833,10 @@ NSString* getMatroskaTrackName(TrackInfo *track)
     if (dataReader)
         [dataReader release], dataReader = nil;
 
-	[file release];
-    [tracksArray release];
-    [activeTracks release];
+    [activeTracks release], activeTracks = nil;
+    [tracksArray release], tracksArray = nil;
+    [samplesBuffer release], samplesBuffer = nil;
+	[file release], file = nil;
 
 	/* close matroska parser */ 
 	mkv_Close(matroskaFile); 

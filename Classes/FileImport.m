@@ -104,8 +104,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             if (trackNeedConversion(track.format))
                 track.needConversion = YES;
 
-            if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
+            if ([track.format isEqualToString:@"AC-3"] &&
+                [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
                 track.needConversion = YES;
+
+                [track setTrackImporterHelper:fileImporter];
 
             [tracks addObject:track];
         }

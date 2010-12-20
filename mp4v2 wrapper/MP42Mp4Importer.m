@@ -48,7 +48,6 @@
 
         tracksArray = [[sourceFile tracks] retain];
         for (MP42Track * track in tracksArray) {
-            [track setTrackImporterHelper:self];
             [track setSourceFormat:[track format]];
         }
 

@@ -177,6 +177,10 @@
   return [chapters count];
 }
 
+- (void) setTrackImporterHelper: (MP42FileImporter*) importerHelper
+{
+}
+
 - (void) dealloc
 {
     [chapters release];
