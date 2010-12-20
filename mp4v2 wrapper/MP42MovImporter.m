@@ -467,7 +467,7 @@ bail:
     NSInteger tracksNumber = [activeTracks count];
     NSInteger tracksDone = 0;
 
-    MovTrackHelper * trackHelper;
+    MovTrackHelper * trackHelper=nil; 
 
     for (MP42Track * track in activeTracks) {
         if (track.trackDemuxerHelper == nil) {
@@ -508,7 +508,9 @@ bail:
                                        NULL);
         require_noerr(err, bail);
 
-        trackHelper->minDisplayOffset = minDisplayOffset;
+        if (trackHelper) {
+			trackHelper->minDisplayOffset = minDisplayOffset;
+			}
 
         SInt64 sampleIndex, sampleCount;
         sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
