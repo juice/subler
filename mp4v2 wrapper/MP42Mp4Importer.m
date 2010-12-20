@@ -205,6 +205,8 @@
 
             trackHelper = track.trackDemuxerHelper;
             trackHelper->totalSampleNumber = MP4GetTrackNumberOfSamples(fileHandle, [track Id]);
+
+            [trackHelper release];
         }
     }
 
@@ -358,6 +360,7 @@
     if (samplesBuffer)
         [samplesBuffer release];
 
+    [metadata release];
 	[file release];
     [tracksArray release];
 

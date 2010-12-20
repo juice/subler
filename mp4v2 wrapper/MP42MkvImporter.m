@@ -167,6 +167,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                         [(MP42VideoTrack*)newTrack setOrigLevel:avcCAtom[3]];
                         [(MP42VideoTrack*)newTrack setNewLevel:avcCAtom[3]];
                     }
+                    free(avcCAtom);
                 }
 
                 double trackTimecodeScale = mkv_TruncFloat(mkvTrack->TimecodeScale);
@@ -843,6 +844,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 
 	/* close file */ 
 	fclose(ioStream->fp); 
+    free(ioStream);
 
     [super dealloc];
 }

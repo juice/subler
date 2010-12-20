@@ -467,12 +467,14 @@ bail:
     for (MP42Track * track in activeTracks) {
         if (track.trackDemuxerHelper == nil) {
             track.trackDemuxerHelper = [[MovTrackHelper alloc] init];
-            
+
             Track qtcTrack = [[[sourceFile tracks] objectAtIndex:[track sourceId]] quickTimeTrack];
             Media media = GetTrackMedia(qtcTrack);
-            
+
             trackHelper = track.trackDemuxerHelper;
             trackHelper->totalSampleNumber = GetMediaSampleCount(media);
+
+            [trackHelper release];
         }
     }
 
