@@ -6,14 +6,11 @@
 //  Copyright 2010 Damiano Galassi All rights reserved.
 //
 
+#if !__LP64__
 #import "MP42MovImporter.h"
 #import "MP42File.h"
 #import <AudioToolbox/AudioToolbox.h>
-
-#if !__LP64__
 #import <QuickTime/QuickTime.h>
-#endif
-
 #include "lang.h"
 
 
@@ -229,7 +226,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 - (NSString*)formatForTrack: (QTTrack *)track;
 {
     NSString* result = @"";
-#if !__LP64__
+
     ImageDescriptionHandle idh = (ImageDescriptionHandle) NewHandleClear(sizeof(ImageDescription));
     GetMediaSampleDescription([[track media] quickTimeMedia], 1,
                               (SampleDescriptionHandle)idh);
@@ -277,9 +274,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             break;
     }
     DisposeHandle((Handle)idh);
-#else
-    result = [track attributeForKey:QTTrackFormatSummaryAttribute];
-#endif
+
     return result;
 }
 
@@ -690,3 +685,5 @@ bail:
 }
 
 @end
+
+#endif

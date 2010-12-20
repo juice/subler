@@ -6,6 +6,7 @@
 //  Copyright 2010 Damiano Galassi All rights reserved.
 //
 
+#if !__LP64__
 #import <Foundation/Foundation.h>
 #import "MP42FileImporter.h"
 #import <QTKit/QTKit.h>
@@ -23,3 +24,5 @@
 }
 
 @end
+
+#endif
