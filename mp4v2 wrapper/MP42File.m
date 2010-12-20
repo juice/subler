@@ -255,19 +255,20 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     for (track in tracksToBeDeleted)
         [self removeMuxedTrack:track];
 
-    MP42Muxer *muxer = [[MP42Muxer alloc] initWithDelegate:self];
+    muxer = [[MP42Muxer alloc] initWithDelegate:self];
     for (track in tracks)
-        if (!(track.muxed) && !stopOperation) {
+        if (!(track.muxed) && !isCancelled) {
             [muxer addTrack:track];
     }
 
     [muxer prepareWork:fileHandle];
-    [muxer work:fileHandle];
-    
+    [muxer start:fileHandle];
+
     [muxer release];
+    muxer = nil;
 
     for (track in tracks)
-        if (track.isEdited && !stopOperation) {
+        if (track.isEdited && !isCancelled) {
             success = [track writeToFile:fileHandle error:outError];
             if (!success)
                 break;
@@ -284,9 +285,10 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     return success;
 }
 
-- (void) stopOperation;
+- (void) cancel;
 {
-    stopOperation = TRUE;
+    isCancelled = YES;
+    [muxer cancel];
 }
 
 - (void)progressStatus: (CGFloat)progress {

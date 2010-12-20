@@ -210,7 +210,7 @@
     }
 
     for (MP42Track * track in activeTracks) {
-        while (1) {
+        while (!isCancelled) {
             while ([samplesBuffer count] >= 200) {
                 usleep(200);
             }

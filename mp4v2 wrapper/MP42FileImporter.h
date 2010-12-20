@@ -22,6 +22,7 @@
     NSMutableArray *tracksArray;
 
     id delegate;
+    BOOL           isCancelled;
 }
 
 - (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl;
@@ -33,6 +34,7 @@
 
 - (MP42SampleBuffer*)copyNextSample;
 - (CGFloat)progress;
+- (void)cancel;
 
 - (BOOL)cleanUp:(MP4FileHandle) fileHandle;
 

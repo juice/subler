@@ -13,14 +13,17 @@
 @interface MP42Muxer : NSObject {
     NSMutableArray *workingTracks;
     id delegate;
+
+    BOOL    isCancelled;
 }
+
 - (id)initWithDelegate:(id)del;
 
 - (void)addTrack:(MP42Track*)track;
 
 - (void)prepareWork:(MP4FileHandle)fileHandle;
-- (void)work:(MP4FileHandle)fileHandle;
-- (void)stopWork:(MP4FileHandle)fileHandle;
+- (void)start:(MP4FileHandle)fileHandle;
+- (void)cancel;
 
 @end
 

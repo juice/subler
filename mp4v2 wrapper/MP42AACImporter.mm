@@ -841,7 +841,7 @@ static bool GetFirstHeader(FILE* inFile)
 
     int64_t currentSize = 0;
 
-    while (LoadNextAacFrame(inFile, sampleBuffer, &sampleSize, true)) {
+    while (LoadNextAacFrame(inFile, sampleBuffer, &sampleSize, true) && !isCancelled) {
         while ([samplesBuffer count] >= 200) {
             usleep(200);
         }

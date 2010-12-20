@@ -30,11 +30,12 @@ extern NSString * const MP42CreateChaptersPreviewTrack;
 
     NSMutableArray  *tracksToBeDeleted;
     BOOL             hasFileRepresentation;
-    BOOL             stopOperation;
+    BOOL             isCancelled;
 
 @protected
     NSMutableArray  *tracks;
     MP42Metadata    *metadata;
+    MP42Muxer       *muxer;
 }
 
 @property(readonly) NSMutableArray  *tracks;
@@ -56,7 +57,8 @@ extern NSString * const MP42CreateChaptersPreviewTrack;
 - (BOOL) writeToUrl:(NSURL *)url withAttributes:(NSDictionary *)attributes error:(NSError **)outError;
 - (BOOL) updateMP4FileWithAttributes:(NSDictionary *)attributes error:(NSError **)outError;
 - (void) optimize;
-- (void) stopOperation;
+
+- (void) cancel;
 
 @end
 

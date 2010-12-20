@@ -484,6 +484,9 @@ bail:
     }
 
     for (MP42Track * track in activeTracks) {
+        if (isCancelled)
+            break;
+
         Track qtcTrack = [[[sourceFile tracks] objectAtIndex:[track sourceId]] quickTimeTrack];
         Media media = GetTrackMedia(qtcTrack);
 
@@ -512,7 +515,7 @@ bail:
         SInt64 sampleIndex, sampleCount;
         sampleCount = QTSampleTableGetNumberOfSamples(sampleTable);
 
-        for (sampleIndex = 1; sampleIndex <= sampleCount; sampleIndex++) {
+        for (sampleIndex = 1; sampleIndex <= sampleCount && !isCancelled; sampleIndex++) {
             while ([samplesBuffer count] >= 200) {
                 usleep(200);
             }

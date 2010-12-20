@@ -372,7 +372,7 @@ static bool GetFirstHeader(FILE* inFile)
 
     int64_t currentSize = 0;
 
-    while (LoadNextAc3Frame(inFile, sampleBuffer, &sampleSize, false)) {
+    while (LoadNextAc3Frame(inFile, sampleBuffer, &sampleSize, false) && !isCancelled) {
         while ([samplesBuffer count] >= 200) {
             usleep(200);
         }

@@ -415,7 +415,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
 
     mkv_SetTrackMask(matroskaFile, TrackMask);
 
-    while (!mkv_ReadFrame(matroskaFile, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags)) {
+    while (!mkv_ReadFrame(matroskaFile, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) && !isCancelled) {
         while ([samplesBuffer count] >= 200) {
             usleep(200);
         }

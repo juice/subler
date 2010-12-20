@@ -85,6 +85,13 @@
 {
     return NO;
 }
+
+- (void)cancel
+{
+    isCancelled = YES;
+}
+
+
 @synthesize metadata;
 @synthesize tracksArray;
 

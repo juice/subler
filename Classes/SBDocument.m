@@ -279,7 +279,7 @@
 
 - (IBAction) cancelSaveOperation: (id) sender {
     [cancelSave setEnabled:NO];
-    [mp4File stopOperation];
+    [mp4File cancel];
 }
 
 - (void) saveAndOptimize: (id)sender

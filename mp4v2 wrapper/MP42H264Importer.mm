@@ -1467,7 +1467,7 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     memset(&h264_dec, 0, sizeof(h264_dec));
     DpbInit(&h264_dpb);
     
-    while ( LoadNal(&nal) != false ) {
+    while ( (LoadNal(&nal) != false) && !isCancelled) {
         uint32_t header_size;
         header_size = nal.buffer[2] == 1 ? 3 : 4;
         bool boundary = h264_detect_boundary(nal.buffer, 

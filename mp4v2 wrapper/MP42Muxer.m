@@ -232,7 +232,7 @@
     }
 }
 
-- (void)work:(MP4FileHandle)fileHandle
+- (void)start:(MP4FileHandle)fileHandle
 {
     NSMutableArray * trackImportersArray = [[NSMutableArray alloc] init];
 
@@ -244,9 +244,9 @@
 
     CGFloat status = 0;
     NSUInteger currentNumber = 0;
-    NSInteger tracksNumber = [trackImportersArray count];
+    NSInteger tracksImportersCount = [trackImportersArray count];
 
-    if (tracksNumber == 0) {
+    if (!tracksImportersCount) {
         [trackImportersArray release];
         return;
     }
@@ -254,7 +254,7 @@
     for (id importerHelper in trackImportersArray) {
         MP42SampleBuffer * sampleBuffer;
 
-        while ((sampleBuffer = [importerHelper copyNextSample]) != nil) {
+        while ((sampleBuffer = [importerHelper copyNextSample]) != nil && !isCancelled) {
 
             // The sample need additional conversion
             if (sampleBuffer->sampleSourceTrack) {
@@ -284,9 +284,9 @@
                                sampleBuffer->sampleIsSync);
                 [sampleBuffer release];
             }
-            
+
             if (currentNumber == 300) {
-                status = [importerHelper progress] / tracksNumber;
+                status = [importerHelper progress] / tracksImportersCount;
 
                 if ([delegate respondsToSelector:@selector(progressStatus:)]) 
                     [delegate progressStatus:status];
@@ -299,6 +299,12 @@
         [importerHelper cleanUp:fileHandle];
     }
 
+    if (isCancelled) {
+        for (id importerHelper in trackImportersArray) {
+            [importerHelper cancel];
+        }
+    }
+        
     [trackImportersArray release];
 
     // Write the last samples from the encoder
@@ -333,8 +339,9 @@
     //}
 }
 
-- (void)stopWork:(MP4FileHandle)fileHandle
+- (void)cancel
 {
+    isCancelled = YES;
 }
 
 - (void) dealloc
