@@ -9,9 +9,15 @@
 #import <Cocoa/Cocoa.h>
 #import "PrefsController.h"
 
+@interface SBDocumentController : NSDocumentController {
+}
+
+@end
+
 @interface AppDelegate : NSObject {
 
     PrefsController *fPrefs;
+	SBDocumentController *documentController;
 }
 
 - (IBAction) showPrefsWindow: (id) sender;
@@ -20,7 +26,3 @@
 
 @end
 
-@interface SBDocumentController : NSDocumentController {
-}
-
-@end

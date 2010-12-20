@@ -12,7 +12,7 @@
 @implementation AppDelegate
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
-    [[SBDocumentController alloc] init];
+    documentController=[[SBDocumentController alloc] init];
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
@@ -40,9 +40,15 @@
                                              URLWithString:@"http://code.google.com/p/subler/wiki/Documentation"]];
 }
 
+
 @end
 
 @implementation SBDocumentController
+
+- (id) init
+{
+	return [super init];
+}
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
     SBDocument* doc = nil;
