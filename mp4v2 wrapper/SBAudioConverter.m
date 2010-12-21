@@ -94,7 +94,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
                               sizeof( tmp ), &tmp );
 
     // set bitrate
-    tmp = 160 * 1000;
+    tmp = 192 * 1000;
     AudioConverterSetProperty( converterEnc, kAudioConverterEncodeBitRate,
                               sizeof( tmp ), &tmp );
 
