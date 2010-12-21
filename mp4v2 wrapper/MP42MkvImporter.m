@@ -84,8 +84,9 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 @end
 
 @interface MP42MkvImporter (Private)
-    NSString* matroskaCodecIDToHumanReadableName(TrackInfo *track);
-    NSString* getMatroskaTrackName(TrackInfo *track);
+    - (MP42Metadata*) readMatroskaMetadata;
+    - (NSString*) matroskaCodecIDToHumanReadableName:(TrackInfo *)track;
+    - (NSString*) matroskaTrackName:(TrackInfo *)track;
 @end
 
 @implementation MP42MkvImporter
@@ -153,8 +154,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
             }
 
             if (newTrack) {
-                newTrack.format = matroskaCodecIDToHumanReadableName(mkvTrack);
-                newTrack.sourceFormat = matroskaCodecIDToHumanReadableName(mkvTrack);
+                newTrack.format = [self matroskaCodecIDToHumanReadableName:mkvTrack];
+                newTrack.sourceFormat = [self matroskaCodecIDToHumanReadableName:mkvTrack];
                 newTrack.Id = i;
                 newTrack.sourcePath = file;
 
@@ -179,8 +180,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                 if (scaledDuration > fileDuration)
                     fileDuration = scaledDuration;
 
-                if (getMatroskaTrackName(mkvTrack))
-                    newTrack.name = getMatroskaTrackName(mkvTrack);
+                if ([self matroskaTrackName:mkvTrack])
+                    newTrack.name = [self matroskaTrackName:mkvTrack];
                 iso639_lang_t *isoLanguage = lang_for_code2(mkvTrack->Language);
                 newTrack.language = [NSString stringWithUTF8String:isoLanguage->eng_name];
 
@@ -219,12 +220,58 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
             [tracksArray addObject:newTrack];
             [newTrack release];
         }
+
+        metadata = [[self readMatroskaMetadata] retain];
     }
 
     return self;
 }
 
-NSString* matroskaCodecIDToHumanReadableName(TrackInfo *track)
+- (MP42Metadata*) readMatroskaMetadata
+{
+    MP42Metadata *mkvMetadata = [[MP42Metadata alloc] init];
+
+    SegmentInfo *segInfo = mkv_GetFileInfo(matroskaFile);
+    if (segInfo->Title)
+        [mkvMetadata setTag:[NSString stringWithUTF8String:segInfo->Title] forKey:@"Name"];
+    
+    Tag* tags;
+    unsigned count;
+
+    mkv_GetTags(matroskaFile, &tags, &count);
+    if (count) {
+        unsigned int xi = 0;
+        for (xi = 0; xi < tags->nSimpleTags; xi++) {
+
+            if (!strcmp(tags->SimpleTags[xi].Name, "TITLE"))
+                [mkvMetadata setTag:[NSString stringWithUTF8String:tags->SimpleTags[xi].Value] forKey:@"Name"];
+            
+            if (!strcmp(tags->SimpleTags[xi].Name, "DATE_RELEASED"))
+                [mkvMetadata setTag:[NSString stringWithUTF8String:tags->SimpleTags[xi].Value] forKey:@"Release Date"];
+
+            if (!strcmp(tags->SimpleTags[xi].Name, "COMMENT"))
+                [mkvMetadata setTag:[NSString stringWithUTF8String:tags->SimpleTags[xi].Value] forKey:@"Comments"];
+
+            if (!strcmp(tags->SimpleTags[xi].Name, "DIRECTOR"))
+                [mkvMetadata setTag:[NSString stringWithUTF8String:tags->SimpleTags[xi].Value] forKey:@"Director"];
+
+            if (!strcmp(tags->SimpleTags[xi].Name, "COPYRIGHT"))
+                [mkvMetadata setTag:[NSString stringWithUTF8String:tags->SimpleTags[xi].Value] forKey:@"Copyright"];
+
+            if (!strcmp(tags->SimpleTags[xi].Name, "ARTIST"))
+                [mkvMetadata setTag:[NSString stringWithUTF8String:tags->SimpleTags[xi].Value] forKey:@"Artist"];
+        }
+    }
+
+    if ([mkvMetadata.tagsDict count])
+        return [mkvMetadata autorelease];
+    else {
+        [mkvMetadata release];
+        return nil;
+    }
+}
+
+- (NSString*) matroskaCodecIDToHumanReadableName:(TrackInfo *)track
 {
     if (track->CodecID) {
         if (!strcmp(track->CodecID, "V_MPEG4/ISO/AVC"))
@@ -259,7 +306,7 @@ NSString* matroskaCodecIDToHumanReadableName(TrackInfo *track)
     }
 }
 
-NSString* getMatroskaTrackName(TrackInfo *track)
+- (NSString*) matroskaTrackName:(TrackInfo *)track
 {    
     if(track->Name && strlen(track->Name))
         return [NSString stringWithUTF8String:track->Name];
@@ -834,6 +881,7 @@ NSString* getMatroskaTrackName(TrackInfo *track)
     if (dataReader)
         [dataReader release], dataReader = nil;
 
+    [metadata release], metadata = nil;
     [activeTracks release], activeTracks = nil;
     [tracksArray release], tracksArray = nil;
     [samplesBuffer release], samplesBuffer = nil;
