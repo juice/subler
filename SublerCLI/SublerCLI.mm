@@ -140,6 +140,7 @@ int main (int argc, const char * argv[]) {
                 if (height && [track isMemberOfClass:[MP42SubtitleTrack class]])
                     [(MP42VideoTrack*)track setTrackHeight:height];
 
+                [track setTrackImporterHelper:fileImporter];
                 [mp4File addTrack:track];
             }
 

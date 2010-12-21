@@ -297,6 +297,8 @@
                 currentNumber++;
             }
         }
+        if (isCancelled)
+            [sampleBuffer release];
     }
 
     for (id importerHelper in trackImportersArray) {

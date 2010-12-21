@@ -268,7 +268,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     muxer = nil;
 
     for (track in tracks)
-        if (track.isEdited && !isCancelled) {
+        if (track.isEdited) {
             success = [track writeToFile:fileHandle error:outError];
             if (!success)
                 break;
