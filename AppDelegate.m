@@ -9,10 +9,61 @@
 #import "AppDelegate.h"
 #import "SBDocument.h"
 
+#define DONATE_NAG_TIME (60 * 60 * 24 * 7)
+
 @implementation AppDelegate
 
-- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationWillFinishLaunching:(NSNotification *)aNotification
+{
     documentController=[[SBDocumentController alloc] init];
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+    BOOL firstLaunch = YES;
+
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstLaunch"])
+        firstLaunch = NO;
+
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"warningDonate"]) {        
+        NSDate * lastDonateDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"DonateAskDate"];
+        const BOOL timePassed = !lastDonateDate || (-1 * [lastDonateDate timeIntervalSinceNow]) >= DONATE_NAG_TIME;
+
+        if (!firstLaunch && timePassed) {
+            [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"DonateAskDate"];
+
+            NSAlert * alert = [[NSAlert alloc] init];
+            [alert setMessageText: NSLocalizedString(@"Support Subler", "Donation -> title")];
+
+            NSString * donateMessage = [NSString stringWithFormat: @"%@",
+                                        NSLocalizedString(@" A lot of time and effort have gone into development, coding, and refinement."
+                                                          " If you enjoy using it, please consider showing your appreciation with a donation.", "Donation -> message")];
+
+            [alert setInformativeText:donateMessage];
+            [alert setAlertStyle: NSInformationalAlertStyle];
+
+            [alert addButtonWithTitle: NSLocalizedString(@"Donate", "Donation -> button")];
+            NSButton * noDonateButton = [alert addButtonWithTitle: NSLocalizedString(@"Nope", "Donation -> button")];
+            [noDonateButton setKeyEquivalent:@"\e"]; //escape key
+
+            const BOOL allowNeverAgain = lastDonateDate != nil; //hide the "don't show again" check the first time - give them time to try the app
+            [alert setShowsSuppressionButton:allowNeverAgain];
+            if (allowNeverAgain)
+                [[alert suppressionButton] setTitle:NSLocalizedString(@"Don't ask me about this ever again.", "Donation -> button")];
+
+            const NSInteger donateResult = [alert runModal];
+            if (donateResult == NSAlertFirstButtonReturn)
+                [self linkDonate:self];
+
+            if (allowNeverAgain)
+                [[NSUserDefaults standardUserDefaults] setBool:([[alert suppressionButton] state] != NSOnState) forKey:@"WarningDonate"];
+
+            [alert release];
+        }
+    }
+
+    if (firstLaunch)
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FirstLaunch"];
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
@@ -30,8 +81,7 @@
 
 - (IBAction) donate:(id)sender
 {
-    [[NSWorkspace sharedWorkspace] openURL: [NSURL
-                                             URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YKZHVC6HG6AFQ&lc=IT&item_name=Subler&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"]];
+    [self linkDonate:sender];
 }
 
 - (IBAction) help:(id)sender
@@ -40,6 +90,11 @@
                                              URLWithString:@"http://code.google.com/p/subler/wiki/Documentation"]];
 }
 
+- (void) linkDonate:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL: [NSURL
+                                             URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YKZHVC6HG6AFQ&lc=IT&item_name=Subler&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"]];
+}
 
 @end
 

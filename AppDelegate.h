@@ -24,5 +24,7 @@
 - (IBAction) donate:(id)sender;
 - (IBAction) help:(id)sender;
 
+- (void) linkDonate: (id) sender;
+
 @end
 
