@@ -139,12 +139,18 @@
   didSaveSelector:(SEL)didSaveSelector
 	  contextInfo:(void *)contextInfo
 {
+	NSString * fileName=nil;
+	
     [optBar setIndeterminate:YES];
     [optBar startAnimation:nil];
     [saveOperationName setStringValue:@"Saving…"];
     [NSApp beginSheet:savingWindow modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
 
+	fileName = [[absoluteURL path]lastPathComponent];
+	[documentWindow setTitle:fileName];
+		
+	
     [NSApplication detachDrawingThread:@selector(saveDocumentToDisk:) toTarget:self
 							withObject:[NSDictionary dictionaryWithObjectsAndKeys:absoluteURL, @"absoluteURL",
 										typeName, @"typeName",
