@@ -46,10 +46,12 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
         const char* brand = NULL;
         MP4GetStringProperty(fileHandle, "ftyp.majorBrand", &brand);
-        if (!strcmp(brand, "qt  ")) {
-            MP4Close(fileHandle);
-            [self release];
-            return nil;
+        if (brand != NULL) {
+            if (!strcmp(brand, "qt  ")) {
+                MP4Close(fileHandle);
+                [self release];
+                return nil;
+            }
         }
 
         filePath = [path retain];
@@ -333,6 +335,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     else {
         //[qtMovie detachFromCurrentThread];
         [dict setObject:qtMovie forKey:@"QTMovieObject"];
+        [qtMovie release]; //dict is a Collection
     }
 }
 
@@ -363,7 +366,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         [self performSelectorOnMainThread:@selector(openQTMovieOnTheMainThread:)
                                withObject:dict 
                             waitUntilDone:YES];
-        qtMovie = [dict valueForKey:@"QTMovieObject"];
+        qtMovie = [[dict valueForKey:@"QTMovieObject"] retain];
         [dict release];
         //[QTMovie enterQTKitOnThread];
         //[qtMovie attachToCurrentThread];
