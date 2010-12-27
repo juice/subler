@@ -54,11 +54,13 @@
             SBAudioConverter *audioConverter = [[SBAudioConverter alloc] initWithTrack:(MP42AudioTrack*)track];
 
             if (audioConverter == nil) {
-                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-                [errorDetail setValue:@"Perian is installed correctly." forKey:NSLocalizedDescriptionKey];
-                *outError = [NSError errorWithDomain:@"MP42Error"
-                                                code:130
-                                            userInfo:errorDetail];
+                if (outError != NULL) {
+                    NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+                    [errorDetail setValue:@"Perian is installed correctly." forKey:NSLocalizedDescriptionKey];
+                    *outError = [NSError errorWithDomain:@"MP42Error"
+                                                    code:130
+                                                userInfo:errorDetail];
+                }
                 noErr = NO;
             }
 
