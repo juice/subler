@@ -44,8 +44,8 @@ struct AudioFileIO
     sfifo_t fifo;
 
     AudioStreamBasicDescription inputEncoderFormat;
-    int readerDone;
-    int encoderDone;
+    BOOL readerDone;
+    BOOL encoderDone;
     int fileReaderDone;
     NSMutableArray * inputSamplesBuffer;
     NSMutableArray * outputSamplesBuffer;

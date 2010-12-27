@@ -12,6 +12,8 @@
 #import "MP42FileImporter.h"
 #import "MP42Utilities.h"
 
+#include "downmix.h"
+
 #define FIFO_DURATION (0.5f)
 
 @interface NSString (VersionStringCompare)
@@ -184,14 +186,22 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 - (void) EncoderThreadMainRoutine:(MP42AudioTrack*) track {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-    encoderDone = 0;
+    encoderDone = NO;
     OSStatus err;
 
     // set up aac converter
     AudioConverterRef converterEnc;
     AudioStreamBasicDescription inputFormat, encoderFormat;
 
-    inputFormat = inputEncoderFormat;
+    bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
+	inputFormat.mSampleRate = inputEncoderFormat.mSampleRate;
+	inputFormat.mFormatID = kAudioFormatLinearPCM ;
+	inputFormat.mFormatFlags =  kLinearPCMFormatFlagIsFloat | kAudioFormatFlagsNativeEndian;
+    inputFormat.mBytesPerPacket = 4 * 2;
+    inputFormat.mFramesPerPacket = 1;
+	inputFormat.mBytesPerFrame = inputFormat.mBytesPerPacket * inputFormat.mFramesPerPacket;
+	inputFormat.mChannelsPerFrame = 2;
+	inputFormat.mBitsPerChannel = 32; 
 
     bzero( &encoderFormat, sizeof( AudioStreamBasicDescription ) );
     encoderFormat.mFormatID = kAudioFormatMPEG4AAC;
@@ -215,7 +225,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
                               sizeof( tmp ), &tmp );
 
     // set bitrate
-    tmp = track.channels * 80 * 1000;
+    tmp = inputFormat.mChannelsPerFrame * 80 * 1000;
     AudioConverterSetProperty( converterEnc, kAudioConverterEncodeBitRate,
                               sizeof( tmp ), &tmp );
 
@@ -326,7 +336,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 
     [pool release];
 
-    encoderDone = 1;
+    encoderDone = YES;
 
     return;
 }
@@ -397,19 +407,14 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     NSData * srcMagicCookie = [[track trackImporterHelper] magicCookieForTrack:track];
     NSInteger sampleRate = [[track trackImporterHelper] timescaleForTrack:track];
     AudioStreamBasicDescription inputFormat, outputFormat;
-    
+
     if (track.sourceFormat) {
         if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
             bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
             inputFormat.mSampleRate = ( Float64 ) sampleRate;
             inputFormat.mFormatID = 'XiVs';
-            inputFormat.mFormatFlags = 0;
-            inputFormat.mBytesPerPacket = 0;
-            inputFormat.mFramesPerPacket = 0;
-            inputFormat.mBytesPerFrame = 0;
             inputFormat.mChannelsPerFrame = track.channels;
-            inputFormat.mBitsPerChannel = 0;
-            
+
             magicCookie = DescExt_XiphVorbis([srcMagicCookie length], [srcMagicCookie bytes]);
         }
         if ([track.sourceFormat isEqualToString:@"Flac"]) {
@@ -417,7 +422,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             inputFormat.mSampleRate = ( Float64 ) sampleRate;
             inputFormat.mFormatID = 'XiFL';
             inputFormat.mChannelsPerFrame = track.channels;
-            
+
             magicCookie = DescExt_XiphFLAC([srcMagicCookie length], [srcMagicCookie bytes]);
         }
         else if ([track.sourceFormat isEqualToString:@"AC-3"]) {
@@ -445,19 +450,19 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     bzero( &outputFormat, sizeof( AudioStreamBasicDescription ) );
 	outputFormat.mSampleRate = sampleRate;
 	outputFormat.mFormatID = kAudioFormatLinearPCM ;
-	outputFormat.mFormatFlags =  kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    outputFormat.mBytesPerPacket = 2 * track.channels;
+	outputFormat.mFormatFlags =  kLinearPCMFormatFlagIsFloat | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
+    outputFormat.mBytesPerPacket = 4 * track.channels;
     outputFormat.mFramesPerPacket = 1;
 	outputFormat.mBytesPerFrame = outputFormat.mBytesPerPacket * outputFormat.mFramesPerPacket;
 	outputFormat.mChannelsPerFrame = track.channels;
-	outputFormat.mBitsPerChannel = 16;
+	outputFormat.mBitsPerChannel = 32;
 
     // initialize the decoder
     err = AudioConverterNew( &inputFormat, &outputFormat, &converterDec );
     if ( err != noErr) {
         NSLog(@"Boom %ld",(long)err);
-        readerDone = 1;
-        encoderDone = 1;
+        readerDone = YES;
+        encoderDone = YES;
         return;
     }
 
@@ -496,31 +501,36 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     decoderData.numPacketsPerRead = 1;
     decoderData.pktDescs = (AudioStreamPacketDescription*)malloc(decoderData.numPacketsPerRead);
     decoderData.inputSamplesBuffer = inputSamplesBuffer;
-    
+
     // set up our output buffers
 	AudioStreamPacketDescription* outputPktDescs = NULL;
 	int outputSizePerPacket = outputFormat.mBytesPerPacket; // this will be non-zero if the format is CBR
 	UInt32 theOutputBufSize = 32768;
 	char* outputBuffer = (char*)malloc(theOutputBufSize);
-    
+
 	UInt32 numOutputPackets = theOutputBufSize / outputSizePerPacket;
-    
+
     inputEncoderFormat = outputFormat;
-    readerDone = 0;
     encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine:) object:track];
     [encoderThread setName:@"AAC Encoder"];
     [encoderThread start];
-    
+
     int ringbuffer_len = sampleRate * FIFO_DURATION * 4 * 23;
     sfifo_init(&fifo, ringbuffer_len );
     bufferSize = ringbuffer_len >> 1;
     buffer = (unsigned char *)malloc(bufferSize);
-    
+
     decoderData.fifo = &fifo;
-    
+
+    hb_downmix_t    *downmix = NULL;
+    hb_sample_t     *downmix_buffer = NULL;
+
+    if (track.channels > 2) {
+        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F2R | HB_INPUT_CH_LAYOUT_HAS_LFE, 
+                                  HB_AMIXDOWN_DOLBYPLII);
+    }
+
     // loop to convert data
-	SInt64 outputPos = 0;
-    
 	while (1) {
 		// set up output buffer list
 		AudioBufferList fillBufList;
@@ -528,7 +538,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 		fillBufList.mBuffers[0].mNumberChannels = inputFormat.mChannelsPerFrame;
 		fillBufList.mBuffers[0].mDataByteSize = theOutputBufSize;
 		fillBufList.mBuffers[0].mData = outputBuffer;
-        
+
         // convert data
 		UInt32 ioOutputDataPackets = numOutputPackets;
 		err = AudioConverterFillComplexBuffer(converterDec, DecoderDataProc, &decoderData, &ioOutputDataPackets,
@@ -539,22 +549,38 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 			// this is the EOF conditon
 			break;
 		}
-        
+
         // write to output file
 		UInt32 inNumBytes = fillBufList.mBuffers[0].mDataByteSize;
-        
-        while (sfifo_space(&fifo) < inNumBytes)
-            usleep(5000);
-        
-        sfifo_write(&fifo, outputBuffer, inNumBytes);
-        
-        // advance output file packet position
-		outputPos += ioOutputDataPackets;
-    }
 
-    readerDone = 1;
+        // Dowmnix the audio if needed
+        if (downmix) {
+            int channels = 2;
+            size_t samplesBufferSize = ioOutputDataPackets * channels * sizeof(float);
+            downmix_buffer = (float *)outputBuffer;
+
+            hb_sample_t *samples = (hb_sample_t *)malloc(samplesBufferSize);
+            hb_downmix(downmix, samples, downmix_buffer, ioOutputDataPackets);
+
+            while (sfifo_space(&fifo) < (samplesBufferSize))
+                usleep(5000);
+
+            sfifo_write(&fifo, samples, samplesBufferSize);
+            free(samples);
+        }
+        else {
+            while (sfifo_space(&fifo) < inNumBytes)
+                usleep(5000);
+
+            sfifo_write(&fifo, outputBuffer, inNumBytes);
+        }
+    }
+    readerDone = YES;
 
     free(outputBuffer);
+
+    if (downmix)
+        hb_downmix_close(&downmix);
 
     AudioConverterDispose(converterDec);
 

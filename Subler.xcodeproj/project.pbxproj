@@ -74,6 +74,7 @@
 		A9EBA68912AE28DF0092D645 /* MP42AC3Importer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EBA68812AE28DF0092D645 /* MP42AC3Importer.m */; };
 		A9ED7C4E1115CFBD00423241 /* MP42Mp4Importer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ED7C4D1115CFBD00423241 /* MP42Mp4Importer.m */; };
 		A9ED7C8B1115D32E00423241 /* MP42MovImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ED7C8A1115D32E00423241 /* MP42MovImporter.m */; };
+		A9F183DD12C201760035BDE1 /* downmix.c in Sources */ = {isa = PBXBuildFile; fileRef = A9F183DB12C201760035BDE1 /* downmix.c */; };
 		A9FB9DC90F83AAC100AB791A /* VideoFramerate.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FB9DC80F83AAC100AB791A /* VideoFramerate.xib */; };
 		A9FD5D340F3C69BE00817716 /* ChapterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5D330F3C69BE00817716 /* ChapterViewController.m */; };
 		A9FD5D420F3C6A6300817716 /* EmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5D410F3C6A6300817716 /* EmptyViewController.m */; };
@@ -245,6 +246,8 @@
 		A9ED7C4D1115CFBD00423241 /* MP42Mp4Importer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42Mp4Importer.m; path = "mp4v2 wrapper/MP42Mp4Importer.m"; sourceTree = "<group>"; };
 		A9ED7C891115D32E00423241 /* MP42MovImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42MovImporter.h; path = "mp4v2 wrapper/MP42MovImporter.h"; sourceTree = "<group>"; };
 		A9ED7C8A1115D32E00423241 /* MP42MovImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42MovImporter.m; path = "mp4v2 wrapper/MP42MovImporter.m"; sourceTree = "<group>"; };
+		A9F183DB12C201760035BDE1 /* downmix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = downmix.c; path = "mp4v2 wrapper/muxer/downmix.c"; sourceTree = "<group>"; };
+		A9F183DC12C201760035BDE1 /* downmix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = downmix.h; path = "mp4v2 wrapper/muxer/downmix.h"; sourceTree = "<group>"; };
 		A9FB9D3C0F83A5CF00AB791A /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/VideoFramerate.xib; sourceTree = "<group>"; };
 		A9FD5CE30F3C64D000817716 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/EmptyView.xib; sourceTree = "<group>"; };
 		A9FD5D320F3C69BE00817716 /* ChapterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChapterViewController.h; path = PropertyView/ChapterViewController.h; sourceTree = "<group>"; };
@@ -410,6 +413,8 @@
 		9480588F106E032D0037A911 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				A9F183DB12C201760035BDE1 /* downmix.c */,
+				A9F183DC12C201760035BDE1 /* downmix.h */,
 				A9B46AB112B79BF60040517A /* sfifo.c */,
 				A9B46AB212B79BF60040517A /* sfifo.h */,
 				A9BB60D60F834E0A005CD0BB /* mbs.h */,
@@ -732,6 +737,7 @@
 				A9B46AB012B79BE80040517A /* MatroskaParser.c in Sources */,
 				A9B46AB312B79BF60040517A /* sfifo.c in Sources */,
 				A9B46ABF12B79D1C0040517A /* SBDocument.m in Sources */,
+				A9F183DD12C201760035BDE1 /* downmix.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
