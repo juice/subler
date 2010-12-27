@@ -63,8 +63,6 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 }
 
 - (void) dealloc {
-    NSLog(@"MkvTrackHelper dealloc");
-
     [queue release], queue = nil;
     [offsetsArray release], offsetsArray = nil;
     [samplesBuffer release], samplesBuffer = nil;

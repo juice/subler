@@ -354,7 +354,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"Dealloc NSMuxer");
     [workingTracks release], workingTracks = nil;
     [super dealloc];
 }
