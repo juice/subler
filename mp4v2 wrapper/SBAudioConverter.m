@@ -12,6 +12,8 @@
 #import "MP42FileImporter.h"
 #import "MP42Utilities.h"
 
+#define FIFO_DURATION (0.5f)
+
 @implementation SBAudioConverter
 
 OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter, 
@@ -75,7 +77,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
     bzero( &encoderFormat, sizeof( AudioStreamBasicDescription ) );
     encoderFormat.mFormatID = kAudioFormatMPEG4AAC;
     encoderFormat.mSampleRate = ( Float64 ) inputFormat.mSampleRate;
-    encoderFormat.mChannelsPerFrame = 2;    
+    encoderFormat.mChannelsPerFrame = inputFormat.mChannelsPerFrame;    
 
     err = AudioConverterNew( &inputFormat, &encoderFormat, &converterEnc );
     if (err)
@@ -173,7 +175,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 		err = AudioConverterFillComplexBuffer(converterEnc, EncoderDataProc, &encoderData, &ioOutputDataPackets,
                                               &fillBufList, &odesc);
         if (err)
-            NSLog(@"Error converterEnc %ld", err);
+            NSLog(@"Error converterEnc %ld", (long)err);
         if (ioOutputDataPackets == 0) {
 			// this is the EOF conditon
 			break;
@@ -326,19 +328,25 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 	outputFormat.mSampleRate = sampleRate;
 	outputFormat.mFormatID = kAudioFormatLinearPCM ;
 	outputFormat.mFormatFlags =  kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    outputFormat.mBytesPerPacket = 4;
+    outputFormat.mBytesPerPacket = 2 * track.channels;
     outputFormat.mFramesPerPacket = 1;
-	outputFormat.mBytesPerFrame = 4;
-	outputFormat.mChannelsPerFrame = 2;
+	outputFormat.mBytesPerFrame = outputFormat.mBytesPerPacket * outputFormat.mFramesPerPacket;
+	outputFormat.mChannelsPerFrame = track.channels;
 	outputFormat.mBitsPerChannel = 16;
 
     // initialize the decoder
     err = AudioConverterNew( &inputFormat, &outputFormat, &converterDec );
-    if( err != noErr) {
-        NSLog(@"Boom %ld",err);
+    if ( err != noErr) {
+        NSLog(@"Boom %ld",(long)err);
         readerDone = 1;
         encoderDone = 1;
         return;
+    }
+
+    if ((track.channels == 6) && ([track.sourceFormat isEqualToString:@"AC-3"])) {
+        SInt32 channelMap[6] = { 2, 0, 1, 4, 5, 3 };
+        AudioConverterSetProperty( converterDec, kAudioConverterChannelMap,
+                                  sizeof( channelMap ), channelMap );
     }
 
     // set the decoder magic cookie
@@ -346,7 +354,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         err = AudioConverterSetProperty( converterDec, kAudioConverterDecompressionMagicCookie,
                                         CFDataGetLength(magicCookie) , CFDataGetBytePtr(magicCookie) );
         if( err != noErr)
-            NSLog(@"Boom Magic Cookie %ld",err);
+            NSLog(@"Boom Magic Cookie %ld",(long)err);
         CFRelease(magicCookie);
     }
 
@@ -354,13 +362,13 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 	err = AudioConverterGetProperty(converterDec, kAudioConverterCurrentInputStreamDescription,
                                     &size, &inputFormat);
     if( err != noErr)
-        NSLog(@"Boom kAudioConverterCurrentInputStreamDescription %ld",err);
+        NSLog(@"Boom kAudioConverterCurrentInputStreamDescription %ld",(long)err);
 
     size = sizeof(outputFormat);
 	err = AudioConverterGetProperty(converterDec, kAudioConverterCurrentOutputStreamDescription,
                                     &size, &outputFormat);
     if( err != noErr)
-        NSLog(@"Boom kAudioConverterCurrentOutputStreamDescription %ld",err);
+        NSLog(@"Boom kAudioConverterCurrentOutputStreamDescription %ld",(long)err);
 
     // set up buffers and data proc info struct
 	decoderData.srcBufferSize = 32768;
@@ -384,9 +392,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine:) object:track];
     [encoderThread setName:@"AAC Encoder"];
     [encoderThread start];
-    //LaunchEncoderThread(track);
     
-#define FIFO_DURATION (0.5f)
     int ringbuffer_len = sampleRate * FIFO_DURATION * 4 * 23;
     sfifo_init(&fifo, ringbuffer_len );
     bufferSize = ringbuffer_len >> 1;
@@ -410,7 +416,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 		err = AudioConverterFillComplexBuffer(converterDec, DecoderDataProc, &decoderData, &ioOutputDataPackets,
                                               &fillBufList, outputPktDescs);
         if (err)
-            NSLog(@"Error converterDec %ld", err);
+            NSLog(@"Error converterDec %ld", (long)err);
         if (ioOutputDataPackets == 0) {
 			// this is the EOF conditon
 			break;
