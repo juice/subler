@@ -258,7 +258,10 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
             if ([lines count] >= 2) {
                 results = [[NSMutableDictionary alloc] initWithCapacity:4];
                 [results setValue:@"movie" forKey:@"type"];
-                [results setValue:[lines objectAtIndex:1] forKey:@"title"];
+				NSString *newTitle=[[lines objectAtIndex:1] 
+										stringByReplacingOccurrencesOfString:@"." 
+										withString:@" "];
+                [results setValue:newTitle forKey:@"title"];
             }
         }
     }
