@@ -263,8 +263,12 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             [muxer addTrack:track];
     }
 
-    [muxer prepareWork:fileHandle];
-    [muxer start:fileHandle];
+    success = [muxer prepareWork:fileHandle error:outError];
+    if ( !success && outError != NULL) {
+        return NO;
+    }
+    else
+        [muxer start:fileHandle];
 
     [muxer release];
     muxer = nil;

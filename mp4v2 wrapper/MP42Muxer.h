@@ -21,7 +21,7 @@
 
 - (void)addTrack:(MP42Track*)track;
 
-- (void)prepareWork:(MP4FileHandle)fileHandle;
+- (BOOL)prepareWork:(MP4FileHandle)fileHandle error:(NSError **)outError;
 - (void)start:(MP4FileHandle)fileHandle;
 - (void)cancel;
 

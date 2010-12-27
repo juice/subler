@@ -14,7 +14,126 @@
 
 #define FIFO_DURATION (0.5f)
 
+@interface NSString (VersionStringCompare)
+- (BOOL)isVersionStringOlderThan:(NSString *)older;
+@end
+
+@implementation NSString (VersionStringCompare)
+- (BOOL)isVersionStringOlderThan:(NSString *)older
+{
+	if([self compare:older] == NSOrderedAscending)
+		return TRUE;
+	if([self hasPrefix:older] && [self length] > [older length] && [self characterAtIndex:[older length]] == 'b')
+		//1.0b1 < 1.0, so check for it.
+		return TRUE;
+	return FALSE;
+}
+@end
+
+#define ComponentNameKey @"Name"
+#define ComponentArchiveNameKey @"ArchiveName"
+#define ComponentTypeKey @"Type"
+
+#define BundleVersionKey @"CFBundleVersion"
+#define BundleIdentifierKey @"CFBundleIdentifier"
+
+typedef enum
+{
+	InstallStatusInstalledInWrongLocation = 0,
+	InstallStatusNotInstalled = 1,
+	InstallStatusOutdatedWithAnotherInWrongLocation = 2,
+	InstallStatusOutdated = 3,
+	InstallStatusInstalledInBothLocations = 4,
+	InstallStatusInstalled = 5
+} InstallStatus;
+
+typedef enum
+{
+	ComponentTypeQuickTime,
+	ComponentTypeCoreAudio,
+	ComponentTypeFramework
+} ComponentType;
+
+InstallStatus currentInstallStatus(InstallStatus status)
+{
+	return (status | 1);
+}
+
+InstallStatus setWrongLocationInstalled(InstallStatus status)
+{
+	return (status & ~1);
+}
+
 @implementation SBAudioConverter
+
+- (NSString *)installationBasePath:(BOOL)userInstallation
+{
+	if(userInstallation)
+		return NSHomeDirectory();
+	return @"/";
+}
+
+- (NSString *)quickTimeComponentDir:(BOOL)userInstallation
+{
+	return [[self installationBasePath:userInstallation] stringByAppendingPathComponent:@"Library/QuickTime"];
+}
+
+- (NSString *)coreAudioComponentDir:(BOOL)userInstallation
+{
+	return [[self installationBasePath:userInstallation] stringByAppendingPathComponent:@"Library/Audio/Plug-Ins/Components"];
+}
+
+- (NSString *)frameworkComponentDir:(BOOL)userInstallation
+{
+	return [[self installationBasePath:userInstallation] stringByAppendingPathComponent:@"Library/Frameworks"];
+}
+
+- (NSString *)basePathForType:(ComponentType)type user:(BOOL)userInstallation
+{
+	NSString *path = nil;
+	
+	switch(type)
+	{
+		case ComponentTypeCoreAudio:
+			path = [self coreAudioComponentDir:userInstallation];
+			break;
+		case ComponentTypeQuickTime:
+			path = [self quickTimeComponentDir:userInstallation];
+			break;
+		case ComponentTypeFramework:
+			path = [self frameworkComponentDir:userInstallation];
+			break;
+	}
+	return path;
+}
+
+- (InstallStatus)installStatusForComponent:(NSString *)component type:(ComponentType)type
+{
+	NSString *path = nil;
+	InstallStatus ret = InstallStatusNotInstalled;
+
+	path = [[self basePathForType:type user:YES] stringByAppendingPathComponent:component];
+
+	NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:[path stringByAppendingPathComponent:@"Contents/Info.plist"]];
+	if(infoDict != nil)
+	{
+		NSString *currentVersion = [infoDict objectForKey:BundleVersionKey];;
+		if([currentVersion isVersionStringOlderThan:@"1.2"])
+			ret = InstallStatusOutdated;
+		else
+			ret = InstallStatusInstalled;
+	}
+
+	/* Check other installation type */
+	path = [[self basePathForType:type user:NO] stringByAppendingPathComponent:component];
+
+	infoDict = [NSDictionary dictionaryWithContentsOfFile:[path stringByAppendingPathComponent:@"Contents/Info.plist"]];
+	if(infoDict == nil)
+    /* Above result is all there is */
+		return ret;
+
+	return (ret);
+}
 
 OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter, 
                          UInt32*                        ioNumberDataPackets,
@@ -96,7 +215,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
                               sizeof( tmp ), &tmp );
 
     // set bitrate
-    tmp = 192 * 1000;
+    tmp = track.channels * 80 * 1000;
     AudioConverterSetProperty( converterEnc, kAudioConverterEncodeBitRate,
                               sizeof( tmp ), &tmp );
 
@@ -207,7 +326,6 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 
     [pool release];
 
-    NSLog(@"Encoder Done");
     encoderDone = 1;
 
     return;
@@ -435,7 +553,6 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     }
 
     readerDone = 1;
-    NSLog(@"Reader Done");
 
     free(outputBuffer);
 
@@ -449,6 +566,13 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 {
     if ((self = [super init]))
     {
+        InstallStatus installStatus = [self installStatusForComponent:@"Perian.component" type:ComponentTypeQuickTime];
+
+        if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
+            [self release];
+            return nil;
+        }
+
         outputSamplesBuffer = [[NSMutableArray alloc] init];
         inputSamplesBuffer = [[NSMutableArray alloc] init];
 

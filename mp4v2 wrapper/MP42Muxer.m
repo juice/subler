@@ -39,8 +39,10 @@
         [workingTracks addObject:track];
 }
 
-- (void)prepareWork:(MP4FileHandle)fileHandle
+- (BOOL)prepareWork:(MP4FileHandle)fileHandle error:(NSError **)outError
 {
+    BOOL noErr = YES;
+
     for (MP42Track * track in workingTracks)
     {
         MP4TrackId dstTrackId = 0;
@@ -50,6 +52,16 @@
         if([track isMemberOfClass:[MP42AudioTrack class]] && track.needConversion) {
             track.format = @"AAC";
             SBAudioConverter *audioConverter = [[SBAudioConverter alloc] initWithTrack:(MP42AudioTrack*)track];
+
+            if (audioConverter == nil) {
+                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+                [errorDetail setValue:@"Perian is installed correctly." forKey:NSLocalizedDescriptionKey];
+                *outError = [NSError errorWithDomain:@"MP42Error"
+                                                code:130
+                                            userInfo:errorDetail];
+                noErr = NO;
+            }
+
             track.trackConverterHelper = audioConverter;
             [audioConverter release];
         }
@@ -230,6 +242,8 @@
         MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, timeScale / 8);
         track.Id = dstTrackId;
     }
+    
+    return noErr;
 }
 
 - (void)start:(MP4FileHandle)fileHandle
