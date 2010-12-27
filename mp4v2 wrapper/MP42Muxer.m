@@ -57,6 +57,7 @@
                 if (outError != NULL) {
                     NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
                     [errorDetail setValue:@"Perian is installed correctly." forKey:NSLocalizedDescriptionKey];
+                    [errorDetail setValue:@"Perian is necessary for audio conversion in Subler. You can download it from http://perian.org/" forKey:NSLocalizedRecoverySuggestionErrorKey];
                     *outError = [NSError errorWithDomain:@"MP42Error"
                                                     code:130
                                                 userInfo:errorDetail];

@@ -246,7 +246,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
         if ( outError != NULL) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Failed to open mp4 file" forKey:NSLocalizedDescriptionKey];
+            [errorDetail setValue:@"Unable to open the file" forKey:NSLocalizedDescriptionKey];
             *outError = [NSError errorWithDomain:@"MP42Error"
                                             code:100
                                         userInfo:errorDetail];
@@ -265,6 +265,9 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
     success = [muxer prepareWork:fileHandle error:outError];
     if ( !success && outError != NULL) {
+        [muxer release];
+        muxer = nil;
+
         return NO;
     }
     else
@@ -280,7 +283,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                 break;
         }
 
-    if (metadata.isEdited && success)
+    if (metadata.isEdited)
         [metadata writeMetadataWithFileHandle:fileHandle];
 
     MP4Close(fileHandle);
