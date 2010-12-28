@@ -101,6 +101,17 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 	return self;
 }
 
+- (NSUInteger) movieDuration
+{
+    NSUInteger duration = 0;
+    NSUInteger trackDuration = 0;
+    for (MP42Track *track in tracks)
+        if ((trackDuration = [track duration]) > duration)
+            duration = trackDuration;
+    
+    return duration;
+}
+
 - (void)removeTracksAtIndexes:(NSIndexSet *)indexes
 {
     NSUInteger index = [indexes firstIndex];
@@ -114,7 +125,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     [tracks removeObjectsAtIndexes:indexes]; 
 }
 
-- (NSInteger)tracksCount
+- (NSUInteger)tracksCount
 {
     return [tracks count];
 }
