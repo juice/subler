@@ -46,6 +46,7 @@ extern NSString * const MP42CreateChaptersPreviewTrack;
 - (id)   initWithExistingFile:(NSString *)path andDelegate:(id)del;
 
 - (NSUInteger) movieDuration;
+- (MP42ChapterTrack*) chapters;
 
 - (NSUInteger) tracksCount;
 - (id)   trackAtIndex:(NSUInteger)index;

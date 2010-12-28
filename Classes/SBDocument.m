@@ -353,6 +353,9 @@
 
     if (action == @selector(showTrackOffsetSheet:) && [fileTracksTable selectedRow] != -1)
         return YES;
+    
+    if (action == @selector(addChaptersEvery:))
+        return YES;
 
     return NO;
 }
@@ -734,6 +737,29 @@ returnCode contextInfo: (void *) contextInfo
     [self addMetadata:[sheet.filenames objectAtIndex: 0]];
 
 }
+
+- (IBAction) addChaptersEvery: (id) sender
+{
+    MP42ChapterTrack * chapterTrack = [mp4File chapters];
+    NSInteger minutes = [sender tag] * 60 * 1000;
+    NSInteger i, y;
+
+    if (!chapterTrack) {
+        chapterTrack = [[MP42ChapterTrack alloc] init];
+        [mp4File addTrack:chapterTrack];
+        [chapterTrack release];
+    }
+
+    for (i = 0, y = 1; i < [mp4File movieDuration]; i += minutes, y++) {
+        [chapterTrack addChapter:[NSString stringWithFormat:@"Chapter %d", y]
+                        duration:i];
+    }
+
+    [fileTracksTable reloadData];
+    [self tableViewSelectionDidChange:nil];
+    [self updateChangeCount:NSChangeDone];
+}
+
 // Drag & Drop
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {

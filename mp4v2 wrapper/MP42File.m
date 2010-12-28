@@ -112,6 +112,17 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     return duration;
 }
 
+- (MP42ChapterTrack*) chapters
+{
+    MP42ChapterTrack * chapterTrack = nil;
+
+    for (MP42Track * track in tracks)
+        if ([track isMemberOfClass:[MP42ChapterTrack class]])
+            chapterTrack = (MP42ChapterTrack*) track;
+
+    return [[chapterTrack retain] autorelease];
+}
+
 - (void)removeTracksAtIndexes:(NSIndexSet *)indexes
 {
     NSUInteger index = [indexes firstIndex];
