@@ -180,6 +180,8 @@
                 videoSize.width = 640;
                 videoSize.height = 480;
             }
+            if (!subSize.height)
+                subSize.height = 80;
 
             const uint8_t textColor[4] = { 255,255,255,255 };
             dstTrackId = MP4AddSubtitleTrack(fileHandle, timeScale, videoSize.width, subSize.height);
