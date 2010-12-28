@@ -166,24 +166,23 @@
 
         // 3GPP text track
         else if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
-            NSSize videoSize = [[track trackImporterHelper] sizeForTrack:track];
+            NSSize subSize = [[track trackImporterHelper] sizeForTrack:track];
+            NSSize videoSize;
+
+            for (id track in workingTracks)
+                if ([track isMemberOfClass:[MP42VideoTrack class]]) {
+                    videoSize.width  = [track trackWidth];
+                    videoSize.height = [track trackHeight];
+                    break;
+                }
 
             if (!videoSize.width) {
-                MP4TrackId videoTrack;
-                
-                videoTrack = findFirstVideoTrack(fileHandle);
-                if (videoTrack) {
-                    videoSize.width = getFixedVideoWidth(fileHandle, videoTrack);
-                    videoSize.height = MP4GetTrackVideoHeight(fileHandle, videoTrack);
-                }
-                else {
-                    videoSize.width = 640;
-                    videoSize.height = 480;
-                }
+                videoSize.width = 640;
+                videoSize.height = 480;
             }
 
             const uint8_t textColor[4] = { 255,255,255,255 };
-            dstTrackId = MP4AddSubtitleTrack(fileHandle, timeScale, videoSize.width, 80);
+            dstTrackId = MP4AddSubtitleTrack(fileHandle, timeScale, videoSize.width, subSize.height);
 
             MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, timeScale / 8);
             MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "tkhd.alternate_group", 2);
@@ -194,7 +193,7 @@
 
             MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "mdia.minf.stbl.stsd.tx3g.bgColorAlpha", 255);
 
-            MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", 80);
+            MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", subSize.height);
             MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", videoSize.width);
 
             MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "mdia.minf.stbl.stsd.tx3g.fontSize", 24);
@@ -212,7 +211,7 @@
 
             MP4GetTrackBytesProperty(fileHandle, dstTrackId, "tkhd.matrix", &val, &size);
             memcpy(nval, val, size);
-            ptr32[7] = CFSwapInt32HostToBig( (videoSize.height - 80) * 0x10000);
+            ptr32[7] = CFSwapInt32HostToBig( (videoSize.height - subSize.height) * 0x10000);
 
             MP4SetTrackBytesProperty(fileHandle, dstTrackId, "tkhd.matrix", nval, size);
             free(val);

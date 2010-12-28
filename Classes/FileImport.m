@@ -107,7 +107,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             if ([track.format isEqualToString:@"AC-3"] &&
                 [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
                 track.needConversion = YES;
-            
+
             if (track.needConversion) {
                 NSUInteger mixdown = [[[NSUserDefaults standardUserDefaults]
                                        valueForKey:@"SBAudioMixdown"] integerValue];

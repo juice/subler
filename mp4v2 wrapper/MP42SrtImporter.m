@@ -25,11 +25,14 @@
 
         NSInteger success = 0;
 
-        MP42Track *newTrack = [[MP42SubtitleTrack alloc] init];
+        MP42SubtitleTrack *newTrack = [[MP42SubtitleTrack alloc] init];
 
         newTrack.format = @"3GPP Text";
         newTrack.sourceFormat = @"Srt";
         newTrack.sourcePath = file;
+        newTrack.alternate_group = 2;
+        newTrack.trackHeight = 80;
+        newTrack.language = getFilenameLanguage((CFStringRef)fileUrl);
 
         ss = [[SBSubSerializer alloc] init];
         if ([[fileUrl pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
