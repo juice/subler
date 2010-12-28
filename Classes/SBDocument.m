@@ -239,13 +239,14 @@
     _currentSavePanel = savePanel;
     [savePanel setExtensionHidden:NO];
     [savePanel setAccessoryView:saveView];
-    
+
     NSArray *formats = [self writableTypesForSaveOperation:NSSaveAsOperation];
     [fileFormat removeAllItems];
     for (id format in formats)
         [fileFormat addItemWithTitle:format];
 
     [fileFormat selectItemAtIndex:[[[NSUserDefaults standardUserDefaults] valueForKey:@"defaultSaveFormat"] integerValue]];
+    [_currentSavePanel setRequiredFileType:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"]];
 
     // note this is only available in Mac OS X 10.6+
     if ([savePanel respondsToSelector:@selector(setNameFieldStringValue:)]) {
@@ -261,26 +262,31 @@
             [savePanel performSelector:@selector(setNameFieldStringValue:) withObject:filename];
         }
     }
-    
+
     return YES;
 }
 
 - (IBAction) setSaveFormat: (id) sender
 {
+    NSString *requiredFileType = nil;
     NSInteger index = [sender indexOfSelectedItem];
     switch (index) {
         case 0:
-            [_currentSavePanel setRequiredFileType:@"m4v"];
+            requiredFileType = @"m4v";
             break;
         case 1:
-            [_currentSavePanel setRequiredFileType:@"mp4"];
+            requiredFileType = @"mp4";
             break;
         case 2:
-            [_currentSavePanel setRequiredFileType:@"m4a"];
+            requiredFileType = @"m4a";
             break;
         default:
+            requiredFileType = @"m4v";
             break;
     }
+
+    [_currentSavePanel setRequiredFileType:requiredFileType];
+    [[NSUserDefaults standardUserDefaults] setObject:requiredFileType forKey:@"SBSaveFormat"];
 }
 
 - (IBAction) cancelSaveOperation: (id) sender {
