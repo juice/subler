@@ -130,9 +130,14 @@ InstallStatus setWrongLocationInstalled(InstallStatus status)
 	path = [[self basePathForType:type user:NO] stringByAppendingPathComponent:component];
 
 	infoDict = [NSDictionary dictionaryWithContentsOfFile:[path stringByAppendingPathComponent:@"Contents/Info.plist"]];
-	if(infoDict == nil)
-    /* Above result is all there is */
-		return ret;
+	if(infoDict != nil)
+	{
+		NSString *currentVersion = [infoDict objectForKey:BundleVersionKey];;
+		if([currentVersion isVersionStringOlderThan:@"1.2"])
+			ret = InstallStatusOutdated;
+		else
+			ret = InstallStatusInstalled;
+	}
 
 	return (ret);
 }
@@ -408,42 +413,31 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     NSInteger sampleRate = [[track trackImporterHelper] timescaleForTrack:track];
     AudioStreamBasicDescription inputFormat, outputFormat;
 
+    bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
+    inputFormat.mSampleRate = ( Float64 ) sampleRate;
+    inputFormat.mChannelsPerFrame = track.channels;
+
     if (track.sourceFormat) {
         if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
-            bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
-            inputFormat.mSampleRate = ( Float64 ) sampleRate;
             inputFormat.mFormatID = 'XiVs';
-            inputFormat.mChannelsPerFrame = track.channels;
 
             magicCookie = DescExt_XiphVorbis([srcMagicCookie length], [srcMagicCookie bytes]);
         }
         if ([track.sourceFormat isEqualToString:@"Flac"]) {
-            bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
-            inputFormat.mSampleRate = ( Float64 ) sampleRate;
             inputFormat.mFormatID = 'XiFL';
-            inputFormat.mChannelsPerFrame = track.channels;
 
             magicCookie = DescExt_XiphFLAC([srcMagicCookie length], [srcMagicCookie bytes]);
         }
         else if ([track.sourceFormat isEqualToString:@"AC-3"]) {
-            bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
-            inputFormat.mSampleRate = ( Float64 ) sampleRate;
             inputFormat.mFormatID = kAudioFormatAC3;
             inputFormat.mFramesPerPacket = 1536;
-            inputFormat.mChannelsPerFrame = track.channels;
         }
         else if ([track.sourceFormat isEqualToString:@"DTS"]) {
-            bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
-            inputFormat.mSampleRate = ( Float64 ) sampleRate;
             inputFormat.mFormatID = 'DTS ';
-            inputFormat.mChannelsPerFrame = track.channels;
         }
         else if ([track.sourceFormat isEqualToString:@"Mp3"]) {
-            bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
-            inputFormat.mSampleRate = ( Float64 ) sampleRate;
             inputFormat.mFormatID = kAudioFormatMPEGLayer3;
             inputFormat.mFramesPerPacket = 1152;
-            inputFormat.mChannelsPerFrame = track.channels;
         }
     }
 
@@ -510,11 +504,13 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 
 	UInt32 numOutputPackets = theOutputBufSize / outputSizePerPacket;
 
+    // Launch the encoder thread
     inputEncoderFormat = outputFormat;
     encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine:) object:track];
     [encoderThread setName:@"AAC Encoder"];
     [encoderThread start];
 
+    // Set up our fifo
     int ringbuffer_len = sampleRate * FIFO_DURATION * 4 * 23;
     sfifo_init(&fifo, ringbuffer_len );
     bufferSize = ringbuffer_len >> 1;
@@ -522,11 +518,17 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 
     decoderData.fifo = &fifo;
 
+    // Check if we need to do any downmix
     hb_downmix_t    *downmix = NULL;
     hb_sample_t     *downmix_buffer = NULL;
+    int channels = 2;
 
-    if (track.channels > 2) {
+    if (track.channels == 6) {
         downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F2R | HB_INPUT_CH_LAYOUT_HAS_LFE, 
+                                  HB_AMIXDOWN_DOLBYPLII);
+    }
+    else if (track.channels == 5) {
+        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F2R, 
                                   HB_AMIXDOWN_DOLBYPLII);
     }
 
@@ -550,12 +552,8 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 			break;
 		}
 
-        // write to output file
-		UInt32 inNumBytes = fillBufList.mBuffers[0].mDataByteSize;
-
         // Dowmnix the audio if needed
         if (downmix) {
-            int channels = 2;
             size_t samplesBufferSize = ioOutputDataPackets * channels * sizeof(float);
             downmix_buffer = (float *)outputBuffer;
 
@@ -569,6 +567,8 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             free(samples);
         }
         else {
+            UInt32 inNumBytes = fillBufList.mBuffers[0].mDataByteSize;
+
             while (sfifo_space(&fifo) < inNumBytes)
                 usleep(5000);
 
@@ -606,7 +606,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         [decoderThread setName:@"Audio Decoder"];
         [decoderThread start];        
     }
-    
+
     return self;
 }
 
