@@ -12,7 +12,7 @@
 
 extern NSString * const SBMonoMixdown;
 extern NSString * const SBStereoMixdown;
-extern NSString * const SBMDolbyMixdown;
+extern NSString * const SBDolbyMixdown;
 extern NSString * const SBDolbyPlIIMixdown;
 
 typedef enum {  TRACK_DISABLED = 0x0,

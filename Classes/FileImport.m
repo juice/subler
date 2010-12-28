@@ -107,9 +107,33 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             if ([track.format isEqualToString:@"AC-3"] &&
                 [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
                 track.needConversion = YES;
+            
+            if (track.needConversion) {
+                NSUInteger mixdown = [[[NSUserDefaults standardUserDefaults]
+                                       valueForKey:@"SBAudioMixdown"] integerValue];
+                switch(mixdown) {
+                    case 4:
+                        [(MP42AudioTrack*) track setMixdownType:nil];
+                        break;
+                    case 3:
+                        [(MP42AudioTrack*) track setMixdownType:SBMonoMixdown];
+                        break;
+                    case 2:
+                        [(MP42AudioTrack*) track setMixdownType:SBStereoMixdown];
+                        break;
+                    case 1:
+                        [(MP42AudioTrack*) track setMixdownType:SBDolbyMixdown];
+                        break;
+                    case 0:
+                        [(MP42AudioTrack*) track setMixdownType:SBDolbyPlIIMixdown];
+                        break;
+                    default:
+                        [(MP42AudioTrack*) track setMixdownType:SBDolbyPlIIMixdown];
+                        break;
+                }
+            }
 
-                [track setTrackImporterHelper:fileImporter];
-
+            [track setTrackImporterHelper:fileImporter];
             [tracks addObject:track];
         }
 

@@ -17,7 +17,7 @@
 
 extern NSString * const SBMonoMixdown;
 extern NSString * const SBStereoMixdown;
-extern NSString * const SBMDolbyMixdown;
+extern NSString * const SBDolbyMixdown;
 extern NSString * const SBDolbyPlIIMixdown;
 
 // a struct to hold info for the data proc

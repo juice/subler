@@ -18,7 +18,7 @@
 
 NSString * const SBMonoMixdown = @"SBMonoMixdown";
 NSString * const SBStereoMixdown = @"SBStereoMixdown";
-NSString * const SBMDolbyMixdown = @"SBMDolbyMixdown";
+NSString * const SBDolbyMixdown = @"SBDolbyMixdown";
 NSString * const SBDolbyPlIIMixdown = @"SBDolbyPlIIMixdown";
 
 @interface NSString (VersionStringCompare)
@@ -614,7 +614,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             downmixType = HB_AMIXDOWN_STEREO;
             outputChannelCount = 2;
         }
-        else if ([mixdownType isEqualToString:SBMDolbyMixdown]) {
+        else if ([mixdownType isEqualToString:SBDolbyMixdown]) {
             downmixType = HB_AMIXDOWN_DOLBY;
             outputChannelCount = 2;
         }
