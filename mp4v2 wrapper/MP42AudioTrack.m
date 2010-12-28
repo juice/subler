@@ -28,6 +28,7 @@
         name = @"Sound Track";
         language = @"Unknown";
         volume = 1;
+        mixdownType = SBDolbyPlIIMixdown;
     }
 
     return self;
@@ -65,5 +66,6 @@
 }
 
 @synthesize channels;
+@synthesize mixdownType;
 
 @end

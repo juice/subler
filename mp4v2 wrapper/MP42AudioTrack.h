@@ -12,9 +12,13 @@
 @interface MP42AudioTrack : MP42Track {
     float volume;
     unsigned int channels;
+
+    NSString * mixdownType;
 }
 
 @property float volume;
 @property unsigned int channels;
+
+@property(readwrite, retain) NSString *mixdownType;
 
 @end

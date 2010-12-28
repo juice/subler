@@ -15,6 +15,11 @@
 @class MP42SampleBuffer;
 @class MP42AudioTrack;
 
+extern NSString * const SBMonoMixdown;
+extern NSString * const SBStereoMixdown;
+extern NSString * const SBMDolbyMixdown;
+extern NSString * const SBDolbyPlIIMixdown;
+
 // a struct to hold info for the data proc
 struct AudioFileIO
 {    
@@ -46,7 +51,12 @@ struct AudioFileIO
     AudioStreamBasicDescription inputEncoderFormat;
     BOOL readerDone;
     BOOL encoderDone;
-    int fileReaderDone;
+
+    Float64     sampleRate;
+    NSUInteger  inputChannelsCount;
+    NSUInteger  outputChannelCount;
+    NSUInteger  downmixType;
+
     NSMutableArray * inputSamplesBuffer;
     NSMutableArray * outputSamplesBuffer;
     NSData * outputMagicCookie;
@@ -55,7 +65,7 @@ struct AudioFileIO
     struct AudioFileIO encoderData;
 }
 
-- (id) initWithTrack: (MP42AudioTrack*) track;
+- (id) initWithTrack: (MP42AudioTrack*) track andMixdownType: (NSString*) mixdownType;
 
 - (void) addSample:(MP42SampleBuffer*)sample;
 - (MP42SampleBuffer*) copyEncodedSample;

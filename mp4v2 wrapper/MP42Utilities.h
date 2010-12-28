@@ -10,6 +10,11 @@
 #import <Foundation/Foundation.h>
 #include "mp4v2.h"
 
+extern NSString * const SBMonoMixdown;
+extern NSString * const SBStereoMixdown;
+extern NSString * const SBMDolbyMixdown;
+extern NSString * const SBDolbyPlIIMixdown;
+
 typedef enum {  TRACK_DISABLED = 0x0,
     TRACK_ENABLED = 0x1,
     TRACK_IN_MOVIE = 0x2,

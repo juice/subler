@@ -16,6 +16,11 @@
 
 #define FIFO_DURATION (0.5f)
 
+NSString * const SBMonoMixdown = @"SBMonoMixdown";
+NSString * const SBStereoMixdown = @"SBStereoMixdown";
+NSString * const SBMDolbyMixdown = @"SBMDolbyMixdown";
+NSString * const SBDolbyPlIIMixdown = @"SBDolbyPlIIMixdown";
+
 @interface NSString (VersionStringCompare)
 - (BOOL)isVersionStringOlderThan:(NSString *)older;
 @end
@@ -202,10 +207,10 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 	inputFormat.mSampleRate = inputEncoderFormat.mSampleRate;
 	inputFormat.mFormatID = kAudioFormatLinearPCM ;
 	inputFormat.mFormatFlags =  kLinearPCMFormatFlagIsFloat | kAudioFormatFlagsNativeEndian;
-    inputFormat.mBytesPerPacket = 4 * 2;
+    inputFormat.mBytesPerPacket = 4 * outputChannelCount;
     inputFormat.mFramesPerPacket = 1;
 	inputFormat.mBytesPerFrame = inputFormat.mBytesPerPacket * inputFormat.mFramesPerPacket;
-	inputFormat.mChannelsPerFrame = 2;
+	inputFormat.mChannelsPerFrame = outputChannelCount;
 	inputFormat.mBitsPerChannel = 32; 
 
     bzero( &encoderFormat, sizeof( AudioStreamBasicDescription ) );
@@ -410,11 +415,10 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 
     CFDataRef   magicCookie = NULL;
     NSData * srcMagicCookie = [[track trackImporterHelper] magicCookieForTrack:track];
-    NSInteger sampleRate = [[track trackImporterHelper] timescaleForTrack:track];
     AudioStreamBasicDescription inputFormat, outputFormat;
 
     bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
-    inputFormat.mSampleRate = ( Float64 ) sampleRate;
+    inputFormat.mSampleRate = sampleRate;
     inputFormat.mChannelsPerFrame = track.channels;
 
     if (track.sourceFormat) {
@@ -521,15 +525,14 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     // Check if we need to do any downmix
     hb_downmix_t    *downmix = NULL;
     hb_sample_t     *downmix_buffer = NULL;
-    int channels = 2;
 
-    if (track.channels == 6) {
+    if (downmixType && inputChannelsCount == 6) {
         downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F2R | HB_INPUT_CH_LAYOUT_HAS_LFE, 
-                                  HB_AMIXDOWN_DOLBYPLII);
+                                  downmixType);
     }
-    else if (track.channels == 5) {
+    else if (downmixType && inputChannelsCount == 5) {
         downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F2R, 
-                                  HB_AMIXDOWN_DOLBYPLII);
+                                  downmixType);
     }
 
     // loop to convert data
@@ -554,7 +557,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 
         // Dowmnix the audio if needed
         if (downmix) {
-            size_t samplesBufferSize = ioOutputDataPackets * channels * sizeof(float);
+            size_t samplesBufferSize = ioOutputDataPackets * outputChannelCount * sizeof(float);
             downmix_buffer = (float *)outputBuffer;
 
             hb_sample_t *samples = (hb_sample_t *)malloc(samplesBufferSize);
@@ -588,7 +591,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     return;
 }
 
-- (id) initWithTrack: (MP42AudioTrack*) track
+- (id) initWithTrack: (MP42AudioTrack*) track andMixdownType: (NSString*) mixdownType
 {
     if ((self = [super init]))
     {
@@ -599,12 +602,33 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             return nil;
         }
 
+        sampleRate = [[track trackImporterHelper] timescaleForTrack:track];
+        inputChannelsCount = [track channels];
+        outputChannelCount = [track channels];
+
+        if ([mixdownType isEqualToString:SBMonoMixdown]) {
+            downmixType = HB_AMIXDOWN_MONO;
+            outputChannelCount = 1;
+        }
+        else if ([mixdownType isEqualToString:SBStereoMixdown]) {
+            downmixType = HB_AMIXDOWN_STEREO;
+            outputChannelCount = 2;
+        }
+        else if ([mixdownType isEqualToString:SBMDolbyMixdown]) {
+            downmixType = HB_AMIXDOWN_DOLBY;
+            outputChannelCount = 2;
+        }
+        else if ([mixdownType isEqualToString:SBDolbyPlIIMixdown]) {
+            downmixType = HB_AMIXDOWN_DOLBYPLII;
+            outputChannelCount = 2;
+        }
+
         outputSamplesBuffer = [[NSMutableArray alloc] init];
         inputSamplesBuffer = [[NSMutableArray alloc] init];
 
         decoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(DecoderThreadMainRoutine:) object:track];
         [decoderThread setName:@"Audio Decoder"];
-        [decoderThread start];        
+        [decoderThread start];
     }
 
     return self;
@@ -642,7 +666,6 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 
 - (void) setDone:(BOOL)status
 {
-    fileReaderDone = status;
     decoderData.fileReaderDone = status;
     encoderData.fileReaderDone = status;
 }
