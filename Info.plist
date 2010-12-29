@@ -127,7 +127,7 @@
 	<key>CFBundleURLTypes</key>
 	<array/>
 	<key>CFBundleVersion</key>
-	<string>0.11</string>
+	<string>0.12</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2010, Damiano Galassi</string>
 	<key>NSMainNibFile</key>

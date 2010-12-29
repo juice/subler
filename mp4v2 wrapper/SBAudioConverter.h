@@ -70,8 +70,8 @@ struct AudioFileIO
 }
 
 - (id) initWithTrack: (MP42AudioTrack*) track andMixdownType: (NSString*) mixdownType error:(NSError **)outError;
-
-- (void) addSample:(MP42SampleBuffer*)sample;
+- (void) setOutputTrack: (NSUInteger) outputTrackId;
+- (void) addSample: (MP42SampleBuffer*)sample;
 - (MP42SampleBuffer*) copyEncodedSample;
 
 - (NSData*) magicCookie;

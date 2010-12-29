@@ -239,6 +239,9 @@
 
         MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, timeScale / 8);
         track.Id = dstTrackId;
+        
+        if (track.trackConverterHelper)
+            [track.trackConverterHelper setOutputTrack:track.Id];
     }
     
     return noErr;

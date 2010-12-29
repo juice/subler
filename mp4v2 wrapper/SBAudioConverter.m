@@ -429,7 +429,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 	UInt32 numOutputPackets = theOutputBufSize / outputSizePerPacket;
 
     // Launch the encoder thread
-    encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine:) object:nil];
+    encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine) object:nil];
     [encoderThread setName:@"AAC Encoder"];
     [encoderThread start];
 
@@ -554,7 +554,6 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         }
 
         // Set the right mixdown to use
-        trackId = [track Id];
         sampleRate = [[track trackImporterHelper] timescaleForTrack:track];
         inputChannelsCount = [track channels];
         outputChannelCount = [track channels];
@@ -684,12 +683,16 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         decoderData.outputFormat = outputFormat;
 
         // Launch the decoder thread.
-        decoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(DecoderThreadMainRoutine:) object:track];
+        decoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(DecoderThreadMainRoutine) object:nil];
         [decoderThread setName:@"Audio Decoder"];
         [decoderThread start];
     }
 
     return self;
+}
+
+- (void) setOutputTrack: (NSUInteger) outputTrackId {
+    trackId = outputTrackId;
 }
 
 - (void) addSample:(MP42SampleBuffer*)sample
