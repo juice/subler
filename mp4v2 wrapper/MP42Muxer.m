@@ -52,19 +52,10 @@
         if([track isMemberOfClass:[MP42AudioTrack class]] && track.needConversion) {
             track.format = @"AAC";
             SBAudioConverter *audioConverter = [[SBAudioConverter alloc] initWithTrack:(MP42AudioTrack*)track
-                                                                        andMixdownType:[(MP42AudioTrack*)track mixdownType]];
+                                                                        andMixdownType:[(MP42AudioTrack*)track mixdownType]
+                                                                                 error:outError];
 
             if (audioConverter == nil) {
-                if (outError != NULL) {
-                    NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-                    [errorDetail setValue:@"Perian is not installed." forKey:NSLocalizedDescriptionKey];
-                    [errorDetail setValue:@"Perian is necessary for audio conversion in Subler. You can download it from http://perian.org/"
-                                   forKey:NSLocalizedRecoverySuggestionErrorKey];
-
-                    *outError = [NSError errorWithDomain:@"MP42Error"
-                                                    code:130
-                                                userInfo:errorDetail];
-                }
                 noErr = NO;
             }
 
@@ -167,7 +158,7 @@
         // 3GPP text track
         else if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
             NSSize subSize = [[track trackImporterHelper] sizeForTrack:track];
-            NSSize videoSize;
+            NSSize videoSize = NSMakeSize(0, 0);
 
             for (id track in workingTracks)
                 if ([track isMemberOfClass:[MP42VideoTrack class]]) {

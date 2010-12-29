@@ -114,7 +114,7 @@ InstallStatus setWrongLocationInstalled(InstallStatus status)
 	return path;
 }
 
-- (InstallStatus)installStatusForComponent:(NSString *)component type:(ComponentType)type
+- (InstallStatus)installStatusForComponent:(NSString *)component type:(ComponentType)type version:(NSString*) version;
 {
 	NSString *path = nil;
 	InstallStatus ret = InstallStatusNotInstalled;
@@ -125,7 +125,7 @@ InstallStatus setWrongLocationInstalled(InstallStatus status)
 	if(infoDict != nil)
 	{
 		NSString *currentVersion = [infoDict objectForKey:BundleVersionKey];;
-		if([currentVersion isVersionStringOlderThan:@"1.2"])
+		if([currentVersion isVersionStringOlderThan:version])
 			ret = InstallStatusOutdated;
 		else
 			ret = InstallStatusInstalled;
@@ -138,7 +138,7 @@ InstallStatus setWrongLocationInstalled(InstallStatus status)
 	if(infoDict != nil)
 	{
 		NSString *currentVersion = [infoDict objectForKey:BundleVersionKey];;
-		if([currentVersion isVersionStringOlderThan:@"1.2"])
+		if([currentVersion isVersionStringOlderThan:version])
 			ret = InstallStatusOutdated;
 		else
 			ret = InstallStatusInstalled;
@@ -193,7 +193,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 	return err;
 }
 
-- (void) EncoderThreadMainRoutine:(MP42AudioTrack*) track {
+- (void) EncoderThreadMainRoutine {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
     encoderDone = NO;
@@ -204,7 +204,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
     AudioStreamBasicDescription inputFormat, encoderFormat;
 
     bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
-	inputFormat.mSampleRate = inputEncoderFormat.mSampleRate;
+	inputFormat.mSampleRate = sampleRate;
 	inputFormat.mFormatID = kAudioFormatLinearPCM ;
 	inputFormat.mFormatFlags =  kLinearPCMFormatFlagIsFloat | kAudioFormatFlagsNativeEndian;
     inputFormat.mBytesPerPacket = 4 * outputChannelCount;
@@ -329,7 +329,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
         sample->sampleOffset = 0;
         sample->sampleTimestamp = outputPos;
         sample->sampleIsSync = YES;
-        sample->sampleTrackId = track.Id;
+        sample->sampleTrackId = trackId;
         
         @synchronized(outputSamplesBuffer) {
             [outputSamplesBuffer addObject:sample];
@@ -406,111 +406,30 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 	return err;
 }
 
-- (void) DecoderThreadMainRoutine:(MP42AudioTrack*)track;
+- (void) DecoderThreadMainRoutine
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-
-    AudioConverterRef converterDec;
     OSStatus    err;
-
-    CFDataRef   magicCookie = NULL;
-    NSData * srcMagicCookie = [[track trackImporterHelper] magicCookieForTrack:track];
-    AudioStreamBasicDescription inputFormat, outputFormat;
-
-    bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
-    inputFormat.mSampleRate = sampleRate;
-    inputFormat.mChannelsPerFrame = track.channels;
-
-    if (track.sourceFormat) {
-        if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
-            inputFormat.mFormatID = 'XiVs';
-
-            magicCookie = DescExt_XiphVorbis([srcMagicCookie length], [srcMagicCookie bytes]);
-        }
-        if ([track.sourceFormat isEqualToString:@"Flac"]) {
-            inputFormat.mFormatID = 'XiFL';
-
-            magicCookie = DescExt_XiphFLAC([srcMagicCookie length], [srcMagicCookie bytes]);
-        }
-        else if ([track.sourceFormat isEqualToString:@"AC-3"]) {
-            inputFormat.mFormatID = kAudioFormatAC3;
-            inputFormat.mFramesPerPacket = 1536;
-        }
-        else if ([track.sourceFormat isEqualToString:@"DTS"]) {
-            inputFormat.mFormatID = 'DTS ';
-        }
-        else if ([track.sourceFormat isEqualToString:@"Mp3"]) {
-            inputFormat.mFormatID = kAudioFormatMPEGLayer3;
-            inputFormat.mFramesPerPacket = 1152;
-        }
-    }
-
-    bzero( &outputFormat, sizeof( AudioStreamBasicDescription ) );
-	outputFormat.mSampleRate = sampleRate;
-	outputFormat.mFormatID = kAudioFormatLinearPCM ;
-	outputFormat.mFormatFlags =  kLinearPCMFormatFlagIsFloat | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
-    outputFormat.mBytesPerPacket = 4 * track.channels;
-    outputFormat.mFramesPerPacket = 1;
-	outputFormat.mBytesPerFrame = outputFormat.mBytesPerPacket * outputFormat.mFramesPerPacket;
-	outputFormat.mChannelsPerFrame = track.channels;
-	outputFormat.mBitsPerChannel = 32;
-
-    // initialize the decoder
-    err = AudioConverterNew( &inputFormat, &outputFormat, &converterDec );
-    if ( err != noErr) {
-        NSLog(@"Boom %ld",(long)err);
-        readerDone = YES;
-        encoderDone = YES;
-        return;
-    }
-
-    if ((track.channels == 6) && ([track.sourceFormat isEqualToString:@"AC-3"])) {
-        SInt32 channelMap[6] = { 2, 0, 1, 4, 5, 3 };
-        AudioConverterSetProperty( converterDec, kAudioConverterChannelMap,
-                                  sizeof( channelMap ), channelMap );
-    }
-
-    // set the decoder magic cookie
-    if (magicCookie) {
-        err = AudioConverterSetProperty( converterDec, kAudioConverterDecompressionMagicCookie,
-                                        CFDataGetLength(magicCookie) , CFDataGetBytePtr(magicCookie) );
-        if( err != noErr)
-            NSLog(@"Boom Magic Cookie %ld",(long)err);
-        CFRelease(magicCookie);
-    }
-
-    UInt32 size = sizeof(inputFormat);
-	err = AudioConverterGetProperty(converterDec, kAudioConverterCurrentInputStreamDescription,
-                                    &size, &inputFormat);
-    if( err != noErr)
-        NSLog(@"Boom kAudioConverterCurrentInputStreamDescription %ld",(long)err);
-
-    size = sizeof(outputFormat);
-	err = AudioConverterGetProperty(converterDec, kAudioConverterCurrentOutputStreamDescription,
-                                    &size, &outputFormat);
-    if( err != noErr)
-        NSLog(@"Boom kAudioConverterCurrentOutputStreamDescription %ld",(long)err);
 
     // set up buffers and data proc info struct
 	decoderData.srcBufferSize = 32768;
 	decoderData.srcBuffer = (char *)malloc( decoderData.srcBufferSize );
 	decoderData.pos = 0;
-	decoderData.srcFormat = inputFormat;    
+	decoderData.srcFormat = decoderData.inputFormat;    
     decoderData.numPacketsPerRead = 1;
     decoderData.pktDescs = (AudioStreamPacketDescription*)malloc(decoderData.numPacketsPerRead);
     decoderData.inputSamplesBuffer = inputSamplesBuffer;
 
     // set up our output buffers
 	AudioStreamPacketDescription* outputPktDescs = NULL;
-	int outputSizePerPacket = outputFormat.mBytesPerPacket; // this will be non-zero if the format is CBR
+	int outputSizePerPacket = decoderData.outputFormat.mBytesPerPacket; // this will be non-zero if the format is CBR
 	UInt32 theOutputBufSize = 32768;
 	char* outputBuffer = (char*)malloc(theOutputBufSize);
 
 	UInt32 numOutputPackets = theOutputBufSize / outputSizePerPacket;
 
     // Launch the encoder thread
-    inputEncoderFormat = outputFormat;
-    encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine:) object:track];
+    encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine:) object:nil];
     [encoderThread setName:@"AAC Encoder"];
     [encoderThread start];
 
@@ -540,13 +459,13 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 		// set up output buffer list
 		AudioBufferList fillBufList;
 		fillBufList.mNumberBuffers = 1;
-		fillBufList.mBuffers[0].mNumberChannels = inputFormat.mChannelsPerFrame;
+		fillBufList.mBuffers[0].mNumberChannels = decoderData.inputFormat.mChannelsPerFrame;
 		fillBufList.mBuffers[0].mDataByteSize = theOutputBufSize;
 		fillBufList.mBuffers[0].mData = outputBuffer;
 
         // convert data
 		UInt32 ioOutputDataPackets = numOutputPackets;
-		err = AudioConverterFillComplexBuffer(converterDec, DecoderDataProc, &decoderData, &ioOutputDataPackets,
+		err = AudioConverterFillComplexBuffer(decoderData.converter, DecoderDataProc, &decoderData, &ioOutputDataPackets,
                                               &fillBufList, outputPktDescs);
         if (err)
             NSLog(@"Error converterDec %ld", (long)err);
@@ -585,40 +504,74 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     if (downmix)
         hb_downmix_close(&downmix);
 
-    AudioConverterDispose(converterDec);
+    AudioConverterDispose(decoderData.converter);
 
     [pool drain];
     return;
 }
 
-- (id) initWithTrack: (MP42AudioTrack*) track andMixdownType: (NSString*) mixdownType
+- (id) initWithTrack: (MP42AudioTrack*) track andMixdownType: (NSString*) mixdownType error:(NSError **)outError
 {
+
     if ((self = [super init]))
     {
-        InstallStatus installStatus = [self installStatusForComponent:@"Perian.component" type:ComponentTypeQuickTime];
+        OSStatus err;
+
+        // Check if perian is installed
+        InstallStatus installStatus = [self installStatusForComponent:@"Perian.component" type:ComponentTypeQuickTime version:@"1.2"];
 
         if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
+            if (outError) {
+                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+                [errorDetail setValue:@"Perian is not installed." forKey:NSLocalizedDescriptionKey];
+                [errorDetail setValue:@"Perian is necessary for audio conversion in Subler. You can download it from http://perian.org/"
+                               forKey:NSLocalizedRecoverySuggestionErrorKey];
+
+                *outError = [NSError errorWithDomain:@"MP42Error" code:130 userInfo:errorDetail];
+            }
+
             [self release];
             return nil;
         }
 
+        // Check if xiphqt is installed
+        if ([track.sourceFormat isEqualToString:@"Flac"]) {
+            InstallStatus installStatus = [self installStatusForComponent:@"XiphQT.component" type:ComponentTypeQuickTime version:@"0.1.9"];
+            
+            if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
+                if (outError) {
+                    NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+                    [errorDetail setValue:@"XiphQT is not installed." forKey:NSLocalizedDescriptionKey];
+                    [errorDetail setValue:@"XiphQT is necessary for Flac audio conversion in Subler. You can download it from http://xiph.org/quicktime/"
+                                   forKey:NSLocalizedRecoverySuggestionErrorKey];
+
+                    *outError = [NSError errorWithDomain:@"MP42Error" code:130 userInfo:errorDetail];
+                }
+
+                [self release];
+                return nil;
+            }
+        }
+
+        // Set the right mixdown to use
+        trackId = [track Id];
         sampleRate = [[track trackImporterHelper] timescaleForTrack:track];
         inputChannelsCount = [track channels];
         outputChannelCount = [track channels];
 
-        if ([mixdownType isEqualToString:SBMonoMixdown]) {
+        if ([mixdownType isEqualToString:SBMonoMixdown] && inputChannelsCount > 1) {
             downmixType = HB_AMIXDOWN_MONO;
             outputChannelCount = 1;
         }
-        else if ([mixdownType isEqualToString:SBStereoMixdown]) {
+        else if ([mixdownType isEqualToString:SBStereoMixdown] && inputChannelsCount > 2) {
             downmixType = HB_AMIXDOWN_STEREO;
             outputChannelCount = 2;
         }
-        else if ([mixdownType isEqualToString:SBDolbyMixdown]) {
+        else if ([mixdownType isEqualToString:SBDolbyMixdown] && inputChannelsCount > 2) {
             downmixType = HB_AMIXDOWN_DOLBY;
             outputChannelCount = 2;
         }
-        else if ([mixdownType isEqualToString:SBDolbyPlIIMixdown]) {
+        else if ([mixdownType isEqualToString:SBDolbyPlIIMixdown] && inputChannelsCount > 2) {
             downmixType = HB_AMIXDOWN_DOLBYPLII;
             outputChannelCount = 2;
         }
@@ -626,6 +579,111 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         outputSamplesBuffer = [[NSMutableArray alloc] init];
         inputSamplesBuffer = [[NSMutableArray alloc] init];
 
+        // Decoder initialization
+        CFDataRef   magicCookie = NULL;
+        NSData * srcMagicCookie = [[track trackImporterHelper] magicCookieForTrack:track];
+        AudioStreamBasicDescription inputFormat, outputFormat;
+
+        bzero( &inputFormat, sizeof( AudioStreamBasicDescription ) );
+        inputFormat.mSampleRate = sampleRate;
+        inputFormat.mChannelsPerFrame = track.channels;
+
+        if (track.sourceFormat) {
+            if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
+                inputFormat.mFormatID = 'XiVs';
+                
+                magicCookie = DescExt_XiphVorbis([srcMagicCookie length], [srcMagicCookie bytes]);
+            }
+            if ([track.sourceFormat isEqualToString:@"Flac"]) {
+                inputFormat.mFormatID = 'XiFL';
+                
+                magicCookie = DescExt_XiphFLAC([srcMagicCookie length], [srcMagicCookie bytes]);
+            }
+            else if ([track.sourceFormat isEqualToString:@"AC-3"]) {
+                inputFormat.mFormatID = kAudioFormatAC3;
+                inputFormat.mFramesPerPacket = 1536;
+            }
+            else if ([track.sourceFormat isEqualToString:@"DTS"]) {
+                inputFormat.mFormatID = 'DTS ';
+            }
+            else if ([track.sourceFormat isEqualToString:@"Mp3"]) {
+                inputFormat.mFormatID = kAudioFormatMPEGLayer3;
+                inputFormat.mFramesPerPacket = 1152;
+            }
+        }
+
+        bzero( &outputFormat, sizeof( AudioStreamBasicDescription ) );
+        outputFormat.mSampleRate = sampleRate;
+        outputFormat.mFormatID = kAudioFormatLinearPCM ;
+        outputFormat.mFormatFlags =  kLinearPCMFormatFlagIsFloat | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
+        outputFormat.mBytesPerPacket = 4 * track.channels;
+        outputFormat.mFramesPerPacket = 1;
+        outputFormat.mBytesPerFrame = outputFormat.mBytesPerPacket * outputFormat.mFramesPerPacket;
+        outputFormat.mChannelsPerFrame = track.channels;
+        outputFormat.mBitsPerChannel = 32;
+
+        // initialize the decoder
+        err = AudioConverterNew( &inputFormat, &outputFormat, &decoderData.converter );
+        if ( err != noErr) {
+            if (outError) {
+                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+                [errorDetail setValue:@"Audio Converter Error." forKey:NSLocalizedDescriptionKey];
+                [errorDetail setValue:@"The Audio Converter can not be initialized"
+                               forKey:NSLocalizedRecoverySuggestionErrorKey];
+
+                *outError = [NSError errorWithDomain:@"MP42Error" code:130 userInfo:errorDetail];
+            }
+
+            [self release];
+            return nil;
+        }
+
+        // Correct the 5.1 channels order for ac-3.
+        if ((track.channels == 6) && ([track.sourceFormat isEqualToString:@"AC-3"])) {
+            SInt32 channelMap[6] = { 2, 0, 1, 4, 5, 3 };
+            AudioConverterSetProperty(decoderData.converter, kAudioConverterChannelMap,
+                                      sizeof( channelMap ), channelMap );
+        }
+
+        // Try to get the input channel layout, doesn't seem to be working though 
+        UInt32 propertySize;
+        err = AudioConverterGetProperty(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, NULL);
+
+        if (err == noErr && propertySize > 0) {
+            AudioChannelLayout * layout = malloc(sizeof(propertySize));
+            err = AudioConverterGetProperty(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, &layout);
+            if (err) {
+                free(layout);
+            }
+        }
+
+        // set the decoder magic cookie
+        if (magicCookie) {
+            err = AudioConverterSetProperty(decoderData.converter, kAudioConverterDecompressionMagicCookie,
+                                            CFDataGetLength(magicCookie) , CFDataGetBytePtr(magicCookie) );
+            if( err != noErr)
+                NSLog(@"Boom Magic Cookie %ld",(long)err);
+            CFRelease(magicCookie);
+        }
+
+        // Read the complete inputStreamDescription from the audio converter.
+        UInt32 size = sizeof(inputFormat);
+        err = AudioConverterGetProperty( decoderData.converter, kAudioConverterCurrentInputStreamDescription,
+                                        &size, &inputFormat);
+        if( err != noErr)
+            NSLog(@"Boom kAudioConverterCurrentInputStreamDescription %ld",(long)err);
+
+        // Read the complete outputStreamDescription from the audio converter.
+        size = sizeof(outputFormat);
+        err = AudioConverterGetProperty(decoderData.converter, kAudioConverterCurrentOutputStreamDescription,
+                                        &size, &outputFormat);
+        if( err != noErr)
+            NSLog(@"Boom kAudioConverterCurrentOutputStreamDescription %ld",(long)err);
+
+        decoderData.inputFormat = inputFormat;
+        decoderData.outputFormat = outputFormat;
+
+        // Launch the decoder thread.
         decoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(DecoderThreadMainRoutine:) object:track];
         [decoderThread setName:@"Audio Decoder"];
         [decoderThread start];

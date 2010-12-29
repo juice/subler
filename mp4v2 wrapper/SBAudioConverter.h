@@ -23,6 +23,10 @@ extern NSString * const SBDolbyPlIIMixdown;
 // a struct to hold info for the data proc
 struct AudioFileIO
 {    
+    AudioConverterRef converter;
+    AudioStreamBasicDescription inputFormat;
+    AudioStreamBasicDescription outputFormat;
+
     sfifo_t          *fifo;
     
 	SInt64          pos;
@@ -48,10 +52,10 @@ struct AudioFileIO
     int bufferSize;
     sfifo_t fifo;
 
-    AudioStreamBasicDescription inputEncoderFormat;
     BOOL readerDone;
     BOOL encoderDone;
 
+    NSUInteger  trackId;
     Float64     sampleRate;
     NSUInteger  inputChannelsCount;
     NSUInteger  outputChannelCount;
@@ -65,7 +69,7 @@ struct AudioFileIO
     struct AudioFileIO encoderData;
 }
 
-- (id) initWithTrack: (MP42AudioTrack*) track andMixdownType: (NSString*) mixdownType;
+- (id) initWithTrack: (MP42AudioTrack*) track andMixdownType: (NSString*) mixdownType error:(NSError **)outError;
 
 - (void) addSample:(MP42SampleBuffer*)sample;
 - (MP42SampleBuffer*) copyEncodedSample;
