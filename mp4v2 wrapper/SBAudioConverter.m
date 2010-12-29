@@ -193,7 +193,8 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 	return err;
 }
 
-- (void) EncoderThreadMainRoutine {
+- (void) EncoderThreadMainRoutine: (id) sender
+{
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
     encoderDone = NO;
@@ -406,7 +407,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 	return err;
 }
 
-- (void) DecoderThreadMainRoutine
+- (void) DecoderThreadMainRoutine: (id) sender
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     OSStatus    err;
@@ -429,7 +430,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 	UInt32 numOutputPackets = theOutputBufSize / outputSizePerPacket;
 
     // Launch the encoder thread
-    encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine) object:nil];
+    encoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(EncoderThreadMainRoutine:) object:self];
     [encoderThread setName:@"AAC Encoder"];
     [encoderThread start];
 
@@ -451,6 +452,18 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     }
     else if (downmixType && inputChannelsCount == 5) {
         downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F2R, 
+                                  downmixType);
+    }
+    else if (downmixType && inputChannelsCount == 4) {
+        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F1R, 
+                                  downmixType);
+    }
+    else if (downmixType && inputChannelsCount == 3) {
+        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F, 
+                                  downmixType);
+    }
+    else if (downmixType && inputChannelsCount == 2) {
+        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_MONO, 
                                   downmixType);
     }
 
@@ -590,12 +603,12 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         if (track.sourceFormat) {
             if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
                 inputFormat.mFormatID = 'XiVs';
-                
+
                 magicCookie = DescExt_XiphVorbis([srcMagicCookie length], [srcMagicCookie bytes]);
             }
             if ([track.sourceFormat isEqualToString:@"Flac"]) {
                 inputFormat.mFormatID = 'XiFL';
-                
+
                 magicCookie = DescExt_XiphFLAC([srcMagicCookie length], [srcMagicCookie bytes]);
             }
             else if ([track.sourceFormat isEqualToString:@"AC-3"]) {
@@ -637,22 +650,22 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             return nil;
         }
 
-        // Correct the 5.1 channels order for ac-3.
-        if ((track.channels == 6) && ([track.sourceFormat isEqualToString:@"AC-3"])) {
-            SInt32 channelMap[6] = { 2, 0, 1, 4, 5, 3 };
-            AudioConverterSetProperty(decoderData.converter, kAudioConverterChannelMap,
-                                      sizeof( channelMap ), channelMap );
-        }
-
-        // Try to get the input channel layout, doesn't seem to be working though 
-        UInt32 propertySize;
-        err = AudioConverterGetProperty(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, NULL);
+        // Try to get the input channel layout, doesn't seem to be useful though 
+        UInt32 propertySize = 0;
+        err = AudioConverterGetPropertyInfo(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, NULL);
 
         if (err == noErr && propertySize > 0) {
             AudioChannelLayout * layout = malloc(sizeof(propertySize));
-            err = AudioConverterGetProperty(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, &layout);
+            err = AudioConverterGetProperty(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, layout);
             if (err) {
                 free(layout);
+            }
+            if (layout->mChannelLayoutTag != kAudioChannelLayoutTag_MPEG_5_1_D) {
+                AudioChannelLayout * newLayout = malloc(sizeof(AudioChannelLayout));
+                bzero( newLayout, sizeof( AudioChannelLayout ) );
+                newLayout->mChannelLayoutTag = kAudioChannelLayoutTag_MPEG_5_1_D;
+                err = AudioConverterSetProperty(decoderData.converter, kAudioConverterInputChannelLayout, sizeof(AudioChannelLayout), newLayout);
+                free(newLayout);
             }
         }
 
@@ -683,7 +696,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         decoderData.outputFormat = outputFormat;
 
         // Launch the decoder thread.
-        decoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(DecoderThreadMainRoutine) object:nil];
+        decoderThread = [[NSThread alloc] initWithTarget:self selector:@selector(DecoderThreadMainRoutine:) object:self];
         [decoderThread setName:@"Audio Decoder"];
         [decoderThread start];
     }
