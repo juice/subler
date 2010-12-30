@@ -459,7 +459,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                                   downmixType);
     }
     else if (downmixType && inputChannelsCount == 3) {
-        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_3F, 
+        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_STEREO | HB_INPUT_CH_LAYOUT_HAS_LFE, 
                                   downmixType);
     }
     else if (downmixType && inputChannelsCount == 2) {
@@ -660,11 +660,13 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             if (err) {
                 free(layout);
             }
-            if (layout->mChannelLayoutTag != kAudioChannelLayoutTag_MPEG_5_1_D) {
+            if (layout->mChannelLayoutTag != kAudioChannelLayoutTag_MPEG_5_1_D && inputChannelsCount == 6) {
                 AudioChannelLayout * newLayout = malloc(sizeof(AudioChannelLayout));
                 bzero( newLayout, sizeof( AudioChannelLayout ) );
                 newLayout->mChannelLayoutTag = kAudioChannelLayoutTag_MPEG_5_1_D;
                 err = AudioConverterSetProperty(decoderData.converter, kAudioConverterInputChannelLayout, sizeof(AudioChannelLayout), newLayout);
+                if(err)
+                    NSLog(@"Unable to set the new channel layout %ld",(long)err);
                 free(newLayout);
             }
         }

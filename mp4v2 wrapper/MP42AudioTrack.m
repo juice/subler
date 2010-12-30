@@ -67,5 +67,6 @@
 
 @synthesize channels;
 @synthesize mixdownType;
+@synthesize channelLayoutTag;
 
 @end

@@ -358,7 +358,7 @@
 									</object>
 									<object class="NSMenuItem" id="619126130">
 										<reference key="NSMenu" ref="190628009"/>
-										<string key="NSTitle">None</string>
+										<string key="NSTitle">Multi-Channel</string>
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
