@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* SublerCLI.1 */; };
+		A905AF1A12CC9842004F9C3E /* downmix.c in Sources */ = {isa = PBXBuildFile; fileRef = A905AF1812CC9842004F9C3E /* downmix.c */; };
 		A90C277110AF32AF00991030 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A90C277010AF32AF00991030 /* libz.dylib */; };
 		A91F634A0FB0C70100B96B33 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A91F63490FB0C70100B96B33 /* libicucore.dylib */; };
 		A94871D20F7914D2008DBC94 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D10F7914D2008DBC94 /* QTKit.framework */; };
@@ -98,6 +99,8 @@
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* SublerCLI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SublerCLI_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* SublerCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SublerCLI; sourceTree = BUILT_PRODUCTS_DIR; };
+		A905AF1812CC9842004F9C3E /* downmix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = downmix.c; sourceTree = "<group>"; };
+		A905AF1912CC9842004F9C3E /* downmix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = downmix.h; sourceTree = "<group>"; };
 		A90C277010AF32AF00991030 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		A91F63490FB0C70100B96B33 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = /usr/lib/libicucore.dylib; sourceTree = "<absolute>"; };
 		A94871D10F7914D2008DBC94 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
@@ -342,6 +345,8 @@
 				A9B46AF812B79EC60040517A /* mbs.cpp */,
 				A9B46AF912B79EC60040517A /* mbs.h */,
 				A9B46AFA12B79EC60040517A /* mpeg4ip_bitstream.h */,
+				A905AF1812CC9842004F9C3E /* downmix.c */,
+				A905AF1912CC9842004F9C3E /* downmix.h */,
 			);
 			path = muxer;
 			sourceTree = "<group>";
@@ -466,6 +471,7 @@
 				A9B46B2912B79EE60040517A /* mathematics.c in Sources */,
 				A9B46B2A12B79EE60040517A /* rational.c in Sources */,
 				A9B46B2B12B79EE60040517A /* RegexKitLite.m in Sources */,
+				A905AF1A12CC9842004F9C3E /* downmix.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

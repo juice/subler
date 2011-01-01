@@ -463,7 +463,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                                   downmixType);
     }
     else if (downmixType && inputChannelsCount == 2) {
-        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_MONO, 
+        downmix = hb_downmix_init(HB_INPUT_CH_LAYOUT_STEREO, 
                                   downmixType);
     }
 
