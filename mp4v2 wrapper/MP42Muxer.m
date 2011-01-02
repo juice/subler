@@ -168,8 +168,15 @@
                 }
 
             if (!videoSize.width) {
+                MP4TrackId videoTrack = findFirstVideoTrack(fileHandle);
+                if (videoTrack) {
+                    videoSize.width = getFixedVideoWidth(fileHandle, videoTrack);
+                    videoSize.height = MP4GetTrackVideoHeight(fileHandle, videoTrack);
+                }
+                else {
                 videoSize.width = 640;
                 videoSize.height = 480;
+                }
             }
             if (!subSize.height)
                 subSize.height = 80;
@@ -215,10 +222,15 @@
         else if ([track isMemberOfClass:[MP42ClosedCaptionTrack class]]) {
             NSSize videoSize = [[track trackImporterHelper] sizeForTrack:track];
 
+            for (id track in workingTracks)
+                if ([track isMemberOfClass:[MP42VideoTrack class]]) {
+                    videoSize.width  = [track trackWidth];
+                    videoSize.height = [track trackHeight];
+                    break;
+                }
+            
             if (!videoSize.width) {
-                MP4TrackId videoTrack;
-
-                videoTrack = findFirstVideoTrack(fileHandle);
+                MP4TrackId videoTrack = findFirstVideoTrack(fileHandle);
                 if (videoTrack) {
                     videoSize.width = getFixedVideoWidth(fileHandle, videoTrack);
                     videoSize.height = MP4GetTrackVideoHeight(fileHandle, videoTrack);
