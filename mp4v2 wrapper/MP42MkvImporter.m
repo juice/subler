@@ -288,6 +288,10 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
             return @"Flac";
         else if (!strcmp(track->CodecID, "A_MPEG/L3"))
             return @"Mp3";
+        else if (!strcmp(track->CodecID, "A_TRUEHD"))
+            return @"True HD";
+        else if (!strcmp(track->CodecID, "A_MLP"))
+            return @"MLP";
         else if (!strcmp(track->CodecID, "S_TEXT/UTF8"))
             return @"Plain Text";
         else if (!strcmp(track->CodecID, "S_TEXT/ASS"))

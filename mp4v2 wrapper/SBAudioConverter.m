@@ -622,6 +622,10 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                 inputFormat.mFormatID = kAudioFormatMPEGLayer3;
                 inputFormat.mFramesPerPacket = 1152;
             }
+            else if ([track.sourceFormat isEqualToString:@"True HD"]) {
+                inputFormat.mFormatID = 'trhd';
+            }
+            
         }
 
         bzero( &outputFormat, sizeof( AudioStreamBasicDescription ) );
@@ -652,10 +656,11 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 
         // Try to get the input channel layout, doesn't seem to be useful though 
         UInt32 propertySize = 0;
+        AudioChannelLayout * layout = NULL;
         err = AudioConverterGetPropertyInfo(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, NULL);
 
         if (err == noErr && propertySize > 0) {
-            AudioChannelLayout * layout = malloc(sizeof(propertySize));
+            layout = malloc(sizeof(propertySize));
             err = AudioConverterGetProperty(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, layout);
             if (err) {
                 free(layout);
@@ -670,6 +675,13 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                 free(newLayout);
             }
         }
+        
+        if ([track.sourceFormat isEqualToString:@"True HD"]) {
+                SInt32 channelMap[6] = { 2, 0, 1, 4, 5, 3 };
+                AudioConverterSetProperty( decoderData.converter, kAudioConverterChannelMap,
+                                          sizeof( channelMap ), channelMap );
+        }
+
 
         // set the decoder magic cookie
         if (magicCookie) {
