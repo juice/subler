@@ -29,7 +29,7 @@ static SBPresetManager *sharedPresetManager = nil;
 - (id)init {
     if ((self = [super init])) {
         presets = [[NSMutableArray alloc] init];
-        
+
         NSString *appSupportDir;
         NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
                                                                 NSUserDomainMask,
@@ -38,7 +38,7 @@ static SBPresetManager *sharedPresetManager = nil;
             appSupportDir = [allPaths objectAtIndex:0];
         
     }
-    
+
     return self;
 }
 
@@ -67,6 +67,11 @@ static SBPresetManager *sharedPresetManager = nil;
     return self;
 }
 
+- (void) newSetFromExistingMetadata:(MP42Metadata*)set;
+{
+    [presets addObject:[set copy]];
+}
+
 - (BOOL) loadPresets
 {
     NSString *file;
@@ -79,10 +84,10 @@ static SBPresetManager *sharedPresetManager = nil;
                                                             YES);
     if ([allPaths count])
         appSupportPath = [allPaths objectAtIndex:0];
-    
+
     if (!appSupportPath)
         return NO;
-    
+
     NSDirectoryEnumerator *dirEnum = [fileManager enumeratorAtPath:appSupportPath];
     while ((file = [dirEnum nextObject]))
     {
@@ -92,7 +97,7 @@ static SBPresetManager *sharedPresetManager = nil;
             [presets addObject:newPreset];
         }
     }
-    
+
     if ( ![presets count] )
         return NO;
     else
@@ -110,15 +115,15 @@ static SBPresetManager *sharedPresetManager = nil;
                                                             YES);
     if ([allPaths count])
         appSupportPath = [allPaths objectAtIndex:0];
-    
+
     if (!appSupportPath)
         return NO;
 
     if( ![fileManager fileExistsAtPath:appSupportPath] )
         [fileManager createDirectoryAtPath:appSupportPath attributes:nil];
-    
+
     MP42Metadata *object;
-    
+
     for( object in presets )
     {
         NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, [object name]];

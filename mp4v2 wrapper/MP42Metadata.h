@@ -67,7 +67,7 @@ enum rating_type {
     R_UNKNOWN   = 64,
 };
 
-@interface MP42Metadata : NSObject <NSCoding> {
+@interface MP42Metadata : NSObject <NSCoding, NSCopying> {
     NSString                *sourcePath;
     NSMutableDictionary     *tagsDict;
     NSImage                 *artwork;

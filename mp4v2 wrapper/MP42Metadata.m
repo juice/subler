@@ -1026,8 +1026,11 @@ static const genreType_t genreType_strings[] = {
         artwork = [newMetadata.artwork retain];
         isArtworkEdited = YES;
     }
-    
+
     mediaKind = newMetadata.mediaKind;
+    //contentRating = newMetadata.contentRating;
+    //gapless = newMetadata.gapless;
+    //hdVideo = newMetadata.hdVideo;
 
     isEdited = YES;
     return YES;
@@ -1068,6 +1071,14 @@ static const genreType_t genreType_strings[] = {
     gapless = [decoder decodeIntForKey:@"MP42Gapless"];
 
     return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    MP42Metadata *newObject = [[MP42Metadata allocWithZone:zone] init];
+    [newObject mergeMetadata:self];
+
+    return newObject;
 }
 
 -(void) dealloc

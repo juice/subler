@@ -66,7 +66,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     [genreCell setIntercellSpacing:NSMakeSize(1.0, 1.0)];
     [genreCell setEditable:YES];
     [genreCell addItemsWithObjectValues:[metadata availableGenres]];
-	
+
     NSMutableParagraphStyle * ps = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
     [ps setHeadIndent: -10.0];
     [ps setAlignment:NSRightTextAlignment];
