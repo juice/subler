@@ -1042,6 +1042,34 @@ static const genreType_t genreType_strings[] = {
 @synthesize hdVideo;
 @synthesize gapless;
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInt:1 forKey:@"MP42TagEncodeVersion"];
+
+    [coder encodeObject:tagsDict forKey:@"MP42TagsDict"];
+    [coder encodeObject:artwork forKey:@"MP42Artwork"];
+
+    [coder encodeInt:mediaKind forKey:@"MP42MediaKind"];
+    [coder encodeInt:contentRating forKey:@"MP42ContentRating"];
+    [coder encodeInt:hdVideo forKey:@"MP42HDVideo"];
+    [coder encodeInt:gapless forKey:@"MP42Gapless"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super init];
+
+    tagsDict = [[decoder decodeObjectForKey:@"MP42TagsDict"] retain];
+    artwork = [[decoder decodeObjectForKey:@"MP42Artwork"] retain];
+
+    mediaKind = [decoder decodeIntForKey:@"MP42MediaKind"];
+    contentRating = [decoder decodeIntForKey:@"MP42ContentRating"];
+    hdVideo = [decoder decodeIntForKey:@"MP42HDVideo"];
+    gapless = [decoder decodeIntForKey:@"MP42Gapless"];
+
+    return self;
+}
+
 -(void) dealloc
 {
     [artwork release];

@@ -752,6 +752,7 @@ returnCode contextInfo: (void *) contextInfo
 
     if (!chapterTrack) {
         chapterTrack = [[MP42ChapterTrack alloc] init];
+        [chapterTrack setDuration:[mp4File movieDuration]];
         [mp4File addTrack:chapterTrack];
         [chapterTrack release];
     }
