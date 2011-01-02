@@ -9,15 +9,24 @@
 #import <Foundation/Foundation.h>
 #import "MP42Track.h"
 
+@class SBTextSample;
+
 @interface MP42ChapterTrack : MP42Track {
     NSMutableArray *chapters;
 }
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;
 + (id) chapterTrackFromFile:(NSString *)filePath;
 
-- (NSInteger) chapterCount;
 - (void) addChapter:(NSString *)title duration:(uint64_t)timestamp;
+- (void) removeChapterAtIndex:(NSUInteger)index;
 
-@property (readwrite, retain) NSMutableArray * chapters;
+- (void) setTimestamp:(MP4Duration)timestamp forChapter:(SBTextSample*)chapterSample;
+- (void) setTitle:(NSString*)title forChapter:(SBTextSample*)chapterSample;
+
+- (SBTextSample*) chapterAtIndex:(NSUInteger)index;
+
+- (NSInteger) chapterCount;
+
+@property (readonly, retain) NSArray * chapters;
 
 @end

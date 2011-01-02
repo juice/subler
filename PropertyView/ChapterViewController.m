@@ -37,14 +37,14 @@
 
 - (NSInteger) numberOfRowsInTableView: (NSTableView *) t
 {
-    return [track.chapters count];
+    return [track chapterCount];
 }
 
 - (id)              tableView: (NSTableView *) tableView 
     objectValueForTableColumn: (NSTableColumn *) tableColumn 
                           row: (NSInteger) rowIndex
 {
-    SBTextSample * chapter = [track.chapters objectAtIndex:rowIndex];
+    SBTextSample * chapter = [track chapterAtIndex:rowIndex];
     if ([tableColumn.identifier isEqualToString:@"time"])
         return [self boldString:SMPTEStringFromTime(chapter.timestamp, 1000)];  
 
@@ -59,20 +59,20 @@
     forTableColumn: (NSTableColumn *) tableColumn 
                row: (NSInteger) rowIndex
 {
-    SBTextSample * chapter = [track.chapters objectAtIndex:rowIndex];
+    SBTextSample * chapter = [track chapterAtIndex:rowIndex];
 
     if ([tableColumn.identifier isEqualToString:@"title"]) {
         if (![chapter.title isEqualToString:anObject]) {
-            chapter.title = anObject;
-            track.isEdited = YES;
+            [track setTitle:anObject forChapter:chapter];
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
     }
     else if ([tableColumn.identifier isEqualToString:@"time"]) {
         MP4Duration timestamp = TimeFromSMPTEString(anObject, 1000);
         if (!(chapter.timestamp == timestamp)) {
-            chapter.timestamp = timestamp;
-            track.isEdited = YES;
+            [track setTimestamp:timestamp forChapter:chapter];
+
             [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
         }
     }
@@ -88,9 +88,9 @@
 
 - (IBAction) removeChapter: (id) sender {
     NSUInteger current_index = [chapterTableView selectedRow];
-    if (current_index < [track.chapters count]) {
-        [track.chapters removeObjectAtIndex:current_index];
-        track.isEdited = YES;
+    if (current_index < [track chapterCount]) {
+        [track removeChapterAtIndex:current_index];
+
         [chapterTableView reloadData];
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
@@ -98,7 +98,7 @@
 
 - (IBAction) addChapter: (id) sender {
     [track addChapter:@"Chapter" duration:0];
-    track.isEdited = YES;
+
     [chapterTableView reloadData];
     [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
 }

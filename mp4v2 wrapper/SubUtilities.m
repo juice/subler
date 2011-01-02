@@ -12,6 +12,18 @@
 
 @implementation SBTextSample
 
+-(NSComparisonResult)compare:(SBTextSample *)otherObject
+{
+    MP4Duration otherTimestamp = [otherObject timestamp];
+
+    if (timestamp < otherTimestamp)
+        return NSOrderedAscending;
+    else if (timestamp > otherTimestamp)
+        return NSOrderedDescending;
+
+    return NSOrderedSame;
+}
+
 -(void) dealloc
 {
     [title release];
