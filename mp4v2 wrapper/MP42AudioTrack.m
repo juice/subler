@@ -48,6 +48,35 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
                 }
             }
         }
+        else if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.ac-3.dac3")) {
+            uint64_t acmod, lfeon;
+
+            MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.ac-3.dac3.acmod", &acmod);
+            MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.ac-3.dac3.lfeon", &lfeon);
+
+            switch(acmod) {
+                case 0:
+                case 2:
+                    channels = 2;
+                    break;
+                case 1:
+                    channels = 1;
+                    break;
+                case 3:
+                case 4:
+                    channels = 3;
+                    break;
+                case 5:
+                case 6:
+                    channels = 4;
+                    break;
+                case 7:
+                    channels = 5;
+                    break;
+            }
+
+            channels += lfeon;
+        }
     }
 
     return self;
