@@ -83,7 +83,8 @@
         enabled = NO;
         
         chapters = [[NSMutableArray alloc] init];
-        LoadChaptersFromPath(filePath, chapters);        
+        LoadChaptersFromPath(filePath, chapters);   
+        [chapters sortUsingSelector:@selector(compare:)];
     }
     
     return self;
