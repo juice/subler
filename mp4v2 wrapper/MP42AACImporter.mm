@@ -774,15 +774,13 @@ static bool GetFirstHeader(FILE* inFile)
                         fprintf(stderr,	
                                 "%s: data in file doesn't appear to be valid audio\n",
                                 ProgName);
-                        return MP4_INVALID_TRACK_ID;
+                        return nil;
                     default:
                         break;
-                        //ASSERT(false);
                 }
                 break;
             default:
                 break;
-                //ASSERT(false);
         }
 
         u_int8_t* pConfig = NULL;
@@ -796,6 +794,7 @@ static bool GetFirstHeader(FILE* inFile)
                                   channelConfig);
 
         [(MP42AudioTrack*) newTrack setChannels:channelConfig];
+
         aacInfo = [[NSMutableData alloc] init];
         [aacInfo appendBytes:pConfig length:configLength];
         free(pConfig);

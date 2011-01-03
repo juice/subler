@@ -9,13 +9,45 @@
 #import "MP42AudioTrack.h"
 #import "MP42Utilities.h"
 
+extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
+
 @implementation MP42AudioTrack
 
 - (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
-    {
+    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])) {
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.volume", &volume);
+
+        u_int8_t audioType = 
+		MP4GetTrackEsdsObjectTypeId(fileHandle, Id);
+
+        if (audioType != MP4_INVALID_AUDIO_TYPE) {
+            if (MP4_IS_AAC_AUDIO_TYPE(audioType)) {
+                u_int8_t* pAacConfig = NULL;
+                u_int32_t aacConfigLength;
+
+                if (MP4GetTrackESConfiguration(fileHandle, 
+                                               Id,
+                                               &pAacConfig,
+                                               &aacConfigLength) == true)
+                    if (pAacConfig != NULL || aacConfigLength >= 2) {
+                        channels = MP4AV_AacConfigGetChannels(pAacConfig);
+                        free(pAacConfig);
+                    }
+            } else if ((audioType == MP4_PCM16_LITTLE_ENDIAN_AUDIO_TYPE) ||
+                       (audioType == MP4_PCM16_BIG_ENDIAN_AUDIO_TYPE)) {
+                u_int32_t samplesPerFrame =
+                MP4GetSampleSize(fileHandle, Id, 1) / 2;
+
+                MP4Duration frameDuration =
+                MP4GetSampleDuration(fileHandle, Id, 1);
+
+                if (frameDuration != 0) {
+                    // assumes track time scale == sampling rate
+                    channels = samplesPerFrame / frameDuration;
+                }
+            }
+        }
     }
 
     return self;
