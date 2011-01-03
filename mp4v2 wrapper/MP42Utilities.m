@@ -9,6 +9,8 @@
 
 #import "MP42Utilities.h"
 #import <string.h>
+#import <CoreAudio/CoreAudio.h>
+
 #include "lang.h"
 
 NSString* SMPTEStringFromTime( long long time, long timeScale )
@@ -484,6 +486,38 @@ CFDataRef DescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate)
 		return sndDescExt;	
 	}
 	return nil;
+}
+
+static const int ac3_layout_no_lfe[8] = {
+	kAudioChannelLayoutTag_Stereo,
+	kAudioChannelLayoutTag_Mono,
+	kAudioChannelLayoutTag_Stereo,
+	kAudioChannelLayoutTag_ITU_3_0,
+	kAudioChannelLayoutTag_ITU_2_1,
+	kAudioChannelLayoutTag_ITU_3_1,
+	kAudioChannelLayoutTag_ITU_2_2,
+	kAudioChannelLayoutTag_ITU_3_2};
+
+static const int ac3_layout_lfe[8] = {
+	kAudioChannelLayoutTag_DVD_4,
+	kAudioChannelLayoutTag_AC3_1_0_1,
+	kAudioChannelLayoutTag_DVD_4,
+	kAudioChannelLayoutTag_DVD_10,
+	kAudioChannelLayoutTag_DVD_5,
+	kAudioChannelLayoutTag_DVD_11,
+	kAudioChannelLayoutTag_DVD_6,
+	kAudioChannelLayoutTag_ITU_3_2_1};
+
+int readAC3Config(uint64_t acmod, uint64_t lfeon, UInt32 *channelsCount, UInt32 *channelLayoutTag)
+{
+	if(lfeon)
+		*channelLayoutTag = ac3_layout_lfe[acmod];
+	else
+		*channelLayoutTag = ac3_layout_no_lfe[acmod];
+
+    *channelsCount = AudioChannelLayoutTag_GetNumberOfChannels(*channelLayoutTag);
+
+    return 1;
 }
 
 BOOL isTrackMuxable(NSString * formatName)

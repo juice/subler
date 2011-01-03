@@ -258,7 +258,7 @@ static bool GetFirstHeader(FILE* inFile)
 
         tracksArray = [[NSMutableArray alloc] initWithCapacity:1];
 
-        MP42Track *newTrack = [[MP42AudioTrack alloc] init];
+        MP42AudioTrack *newTrack = [[MP42AudioTrack alloc] init];
 
         newTrack.format = @"AC-3";
         newTrack.sourceFormat = @"AC-3";
@@ -272,6 +272,7 @@ static bool GetFirstHeader(FILE* inFile)
         size = st.st_size * 8;
 
         // collect all the necessary meta information
+        UInt32 channels = 0, channelLayoutTag = 0;
         uint32_t fscod, frmsizecod, bsid, bsmod, acmod, lfeon;
         uint32_t lfe_offset = 4;
 
@@ -297,31 +298,10 @@ static bool GetFirstHeader(FILE* inFile)
 
         samplesPerSecond = MP4AV_Ac3GetSamplingRate(firstHeader);
 
-        int channels = 0;
-        switch (acmod) {
-            case 0:
-            case 2:
-                channels = 2;
-                break;
-            case 1:
-                channels = 1;
-                break;
-            case 3:
-            case 4:
-                channels = 3;
-                break;
-            case 5:
-            case 6:
-                channels = 4;
-                break;
-            case 7:
-                channels = 5;
-                break;
-        }
-        if (lfeon)
-            channels++;
+        readAC3Config(acmod, lfeon, &channels, &channelLayoutTag);
 
-        [(MP42AudioTrack*) newTrack setChannels:channels];
+        [newTrack setChannels:channels];
+        [newTrack setChannelLayoutTag:channelLayoutTag];
 
         ac3Info = [[NSMutableData alloc] init];
         [ac3Info appendBytes:&fscod length:sizeof(uint64_t)];

@@ -48,6 +48,8 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int ve
 CFDataRef DescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate);
 CFDataRef DescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate);
 
+int readAC3Config(uint64_t acmod, uint64_t lfeon, UInt32 *channelsCount, UInt32 *channelLayoutTag);
+
 BOOL isTrackMuxable(NSString * formatName);
 BOOL trackNeedConversion(NSString * formatName);
 
