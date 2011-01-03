@@ -185,6 +185,11 @@
     
 }
 
+- (NSString *) formatSummary
+{
+    return [[format retain] autorelease];
+}
+
 @synthesize timescale;
 @synthesize bitrate;
 @synthesize duration;

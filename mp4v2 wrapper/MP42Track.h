@@ -72,5 +72,6 @@
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError;
 
 - (NSString *) timeString;
+- (NSString *) formatSummary;
 
 @end

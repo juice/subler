@@ -97,6 +97,15 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
     return volume;
 }
 
+- (NSString *)formatSummary
+{
+    return [NSString stringWithFormat:@"%@, %d ch", format, channels];
+}
+
+- (NSString *)description {
+    return [[super description] stringByAppendingFormat:@" %@, %d ch", format, channels];
+}
+
 @synthesize channels;
 @synthesize mixdownType;
 @synthesize channelLayoutTag;

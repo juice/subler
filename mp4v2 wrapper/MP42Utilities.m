@@ -212,6 +212,8 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
             return @"H.264";
         else if (!strcmp(dataName, "mp4a"))
             return @"AAC";
+        else if (!strcmp(dataName, "alac"))
+            return @"ALAC";
         else if (!strcmp(dataName, "ac-3"))
             return @"AC-3";
         else if (!strcmp(dataName, "mp4v"))

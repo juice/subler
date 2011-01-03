@@ -401,26 +401,26 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         return nil;
 
     if ([tableColumn.identifier isEqualToString:@"trackId"]) {
-        if (track.Id == 0)
+        if ([track Id] == 0)
             return @"na";
         else
-            return [NSString stringWithFormat:@"%d", track.Id];
+            return [NSString stringWithFormat:@"%d", [track Id]];
     }
 
     if ([tableColumn.identifier isEqualToString:@"trackName"])
-        return track.name;
+        return [track name];
 
     if ([tableColumn.identifier isEqualToString:@"trackInfo"])
-        return track.format;
+        return [track formatSummary];
 
     if ([tableColumn.identifier isEqualToString:@"trackEnabled"])
-        return [NSNumber numberWithInteger:track.enabled];
+        return [NSNumber numberWithInteger:[track enabled]];
 
     if ([tableColumn.identifier isEqualToString:@"trackDuration"])
         return [track timeString];
 
     if ([tableColumn.identifier isEqualToString:@"trackLanguage"])
-        return track.language;
+        return [track language];
 
     return nil;
 }
