@@ -47,7 +47,7 @@
 
 NSMutableString *STStandardizeStringNewlines(NSString *str);
 extern NSString *STLoadFileWithUnknownEncoding(NSString *path);
-int LoadSRTFromPath(NSString *path, SBSubSerializer *ss);
+int LoadSRTFromPath(NSString *path, SBSubSerializer *ss, MP4Duration *duration);
 int LoadSMIFromPath(NSString *path, SBSubSerializer *ss, int subCount);
 
 int LoadChaptersFromPath(NSString *path, NSMutableArray *ss);

@@ -318,7 +318,7 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 	return res;
 }
 
-int LoadSRTFromPath(NSString *path, SBSubSerializer *ss)
+int LoadSRTFromPath(NSString *path, SBSubSerializer *ss, MP4Duration *duration)
 {
 	NSMutableString *srt = STStandardizeStringNewlines(STLoadFileWithUnknownEncoding(path));
 	if (!srt) return 0;
@@ -366,7 +366,9 @@ int LoadSRTFromPath(NSString *path, SBSubSerializer *ss)
 				break;
 		};
 	} while (![sc isAtEnd]);
-    
+
+    *duration = endTime;
+
     return 1;
 }
 

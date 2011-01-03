@@ -24,6 +24,7 @@
         tracksArray = [[NSMutableArray alloc] initWithCapacity:trackCount];
 
         NSInteger success = 0;
+        MP4Duration duration = 0;
 
         MP42SubtitleTrack *newTrack = [[MP42SubtitleTrack alloc] init];
 
@@ -36,11 +37,13 @@
 
         ss = [[SBSubSerializer alloc] init];
         if ([[fileUrl pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
-            success = LoadSRTFromPath(fileUrl, ss);
+            success = LoadSRTFromPath(fileUrl, ss, &duration);
         }
         else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame) {
             success = LoadSMIFromPath(fileUrl, ss, 1);
         }
+
+        [newTrack setDuration:duration];
 
         if (!success) {
             [ss release];
