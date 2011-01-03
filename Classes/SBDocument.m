@@ -675,10 +675,12 @@ returnCode contextInfo: (void *) contextInfo
         [self updateChangeCount:NSChangeDone];
         [fileTracksTable reloadData];
     }
-
-    [mp4File.metadata mergeMetadata:metadata];
-    [self tableViewSelectionDidChange:nil];
-    [self updateChangeCount:NSChangeDone];
+    
+    if (metadata) {
+        [mp4File.metadata mergeMetadata:metadata];
+        [self tableViewSelectionDidChange:nil];
+        [self updateChangeCount:NSChangeDone];
+    }
 
     [NSApp endSheet:[importWindow window]];
     [[importWindow window] orderOut:self];
