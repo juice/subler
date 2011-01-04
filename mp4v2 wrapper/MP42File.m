@@ -461,7 +461,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         MP4SetTrackLanguage(fileHandle, jpegTrack, lang_for_english([firstVideoTrack.language UTF8String])->iso639_2);
 
         MP4SetTrackIntegerProperty(fileHandle, jpegTrack, "tkhd.layer", 1);
-        copyTrackEditLists(fileHandle, [chapterTrack Id], jpegTrack);
         disableTrack(fileHandle, jpegTrack);
 
         NSInteger i = 0;
@@ -506,6 +505,8 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         MP4RemoveAllTrackReferences(fileHandle, "tref.chap", refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", [chapterTrack Id], refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", jpegTrack, refTrack);
+        copyTrackEditLists(fileHandle, [chapterTrack Id], jpegTrack);
+
         MP4Close(fileHandle);
 
         [pool release];

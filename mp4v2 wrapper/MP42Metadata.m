@@ -273,6 +273,7 @@ static const genreType_t genreType_strings[] = {
 {
 	if ((self = [super init]))
 	{
+        setName = @"Unnamed Set";
 		sourcePath = nil;
         tagsDict = [[NSMutableDictionary alloc] init];
         isEdited = NO;
@@ -1036,6 +1037,8 @@ static const genreType_t genreType_strings[] = {
     return YES;
 }
 
+@synthesize setName;
+
 @synthesize isEdited;
 @synthesize isArtworkEdited;
 @synthesize artwork;
@@ -1049,6 +1052,7 @@ static const genreType_t genreType_strings[] = {
 {
     [coder encodeInt:1 forKey:@"MP42TagEncodeVersion"];
 
+    [coder encodeObject:setName forKey:@"MP42SetName"];
     [coder encodeObject:tagsDict forKey:@"MP42TagsDict"];
     [coder encodeObject:artwork forKey:@"MP42Artwork"];
 
@@ -1061,6 +1065,8 @@ static const genreType_t genreType_strings[] = {
 - (id)initWithCoder:(NSCoder *)decoder
 {
     self = [super init];
+
+    setName = [[decoder decodeObjectForKey:@"MP42SetName"] retain];
 
     tagsDict = [[decoder decodeObjectForKey:@"MP42TagsDict"] retain];
     artwork = [[decoder decodeObjectForKey:@"MP42Artwork"] retain];
@@ -1076,6 +1082,10 @@ static const genreType_t genreType_strings[] = {
 - (id)copyWithZone:(NSZone *)zone
 {
     MP42Metadata *newObject = [[MP42Metadata allocWithZone:zone] init];
+
+    if (setName)
+        newObject.setName = setName;
+
     [newObject mergeMetadata:self];
 
     return newObject;
@@ -1083,6 +1093,8 @@ static const genreType_t genreType_strings[] = {
 
 -(void) dealloc
 {
+    [setName release];
+
     [artwork release];
     [artworkURL release];
     [tagsDict release];

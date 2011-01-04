@@ -12,6 +12,11 @@ NSString *MetadataPBoardType = @"MetadataPBoardType";
 #import "SBTableView.h"
 #import "SBPresetManager.h"
 
+@interface MovieViewController (Private)
+- (void) updateSetsMenu: (id)sender;
+
+@end
+
 @implementation MovieViewController
 
 static NSInteger sortFunction (id ldict, id rdict, void *context)
@@ -31,6 +36,12 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
 
 - (void)awakeFromNib
 {
+    [self updateSetsMenu:self];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateSetsMenu:)
+                                                 name:@"SBPresetManagerUpdatedNotification" object:nil];
+
     tagsMenu = [[metadata writableMetadata] retain];
     for (id tag in tagsMenu)
         [tagList addItemWithTitle:tag];
@@ -227,12 +238,103 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
     [self add:tagDict];
 }
 
-- (IBAction) saveSet: (id)sender
+- (void) applySet: (id)sender
+{
+    NSInteger tag = [sender tag];
+    SBPresetManager *presetManager = [SBPresetManager sharedManager];
+
+    MP42Metadata *newTags = [[presetManager presets] objectAtIndex:tag];
+
+    NSArray *metadataKeys = [[newTags tagsDict] allKeys];
+
+    NSMutableDictionary *tagDict = [[[NSMutableDictionary alloc] init] autorelease];
+    for (NSString *key in metadataKeys) {
+            [tagDict setValue:[[newTags tagsDict] valueForKey:key] forKey:key];
+    }
+
+    metadata.artwork = newTags.artwork;
+    [imageView setImage:newTags.artwork];
+
+    metadata.mediaKind = newTags.mediaKind;
+    [mediaKind selectItemWithTag:metadata.mediaKind];
+
+    metadata.hdVideo = newTags.hdVideo;
+    [hdVideo setState:metadata.hdVideo];
+
+    metadata.gapless = newTags.gapless;
+    [gapless setState:metadata.gapless];
+
+    metadata.contentRating = newTags.contentRating;
+    [contentRating selectItemWithTag:metadata.contentRating];
+
+    [self add:tagDict];
+}
+
+- (void) updateSetsMenu: (id)sender
 {
     SBPresetManager *presetManager = [SBPresetManager sharedManager];
-    [presetManager newSetFromExistingMetadata: metadata];
+    NSMenu * setListMenu = [setList menu];
 
-    NSLog(@"lalala");
+    while ([setListMenu numberOfItems] > 1)
+        [setListMenu removeItemAtIndex: 1];
+    
+    NSMenuItem *newItem = [[[NSMenuItem alloc] initWithTitle:@"Save Set" action:@selector(showSaveSet:) keyEquivalent:@""] autorelease];
+    [newItem setTarget:self];
+    [setListMenu addItem:newItem];
+
+    [setListMenu addItem:[NSMenuItem separatorItem]];
+
+    newItem = [[[NSMenuItem alloc] initWithTitle:@"All" action:@selector(addMetadataSet:) keyEquivalent:@""] autorelease];
+    [newItem setTarget:self];
+    [newItem setTag: 0];
+    [setListMenu addItem:newItem];
+
+    newItem = [[[NSMenuItem alloc] initWithTitle:@"Movie" action:@selector(addMetadataSet:) keyEquivalent:@""] autorelease];
+    [newItem setTarget:self];
+    [newItem setTag: 1];
+    [setListMenu addItem:newItem];
+
+    newItem = [[[NSMenuItem alloc] initWithTitle:@"TV Show" action:@selector(addMetadataSet:) keyEquivalent:@""] autorelease];
+    [newItem setTarget:self];
+    [newItem setTag: 2];
+    [setListMenu addItem:newItem];
+
+    if ([[presetManager presets] count])
+        [setListMenu addItem:[NSMenuItem separatorItem]];
+
+    NSUInteger i = 0;
+
+    for (MP42Metadata *set in [presetManager presets]) {
+        newItem = [[NSMenuItem alloc] initWithTitle:[set setName] action:@selector(applySet:) keyEquivalent:@""];
+        [newItem setTarget:self];
+        [newItem setTag:i++];
+
+        [setListMenu addItem:newItem];
+        [newItem release];
+    }
+}
+
+- (IBAction) showSaveSet: (id)sender
+{
+    [NSApp beginSheet:saveWindow modalForWindow:[[self view]window]
+        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+}
+
+- (IBAction) saveSet: (id) sender
+{
+    SBPresetManager *presetManager = [SBPresetManager sharedManager];
+
+    [metadata setSetName:[setName stringValue]];
+    [presetManager newSetFromExistingMetadata: metadata];
+    
+    [NSApp endSheet: saveWindow];
+    [saveWindow orderOut:self];
+}
+
+- (IBAction) closeSaveSheet: (id) sender
+{
+    [NSApp endSheet: saveWindow];
+    [saveWindow orderOut:self];
 }
 
 /* NSTableView additions for copy & paste and more */
@@ -482,6 +584,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void) dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+
     [tagsArray release];
     [tagsMenu release];
     [tabCol release];

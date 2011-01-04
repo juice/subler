@@ -9,7 +9,16 @@
 #import "SBPresetManager.h"
 #import "MP42File.h"
 
+/// Notification sent to update presets lists.
+NSString *SBPresetManagerUpdatedNotification = @"SBPresetManagerUpdatedNotification";
+
 static SBPresetManager *sharedPresetManager = nil;
+
+@interface SBPresetManager (Private)
+- (BOOL) loadPresets;
+- (BOOL) savePresets;
+
+@end
 
 @implementation SBPresetManager
 
@@ -30,13 +39,7 @@ static SBPresetManager *sharedPresetManager = nil;
     if ((self = [super init])) {
         presets = [[NSMutableArray alloc] init];
 
-        NSString *appSupportDir;
-        NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
-                                                                NSUserDomainMask,
-                                                                YES);
-        if ([allPaths count])
-            appSupportDir = [allPaths objectAtIndex:0];
-        
+        [self loadPresets];
     }
 
     return self;
@@ -67,10 +70,16 @@ static SBPresetManager *sharedPresetManager = nil;
     return self;
 }
 
+- (void)updateNotification
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SBPresetManagerUpdatedNotification object:self];    
+}
+
 - (void) newSetFromExistingMetadata:(MP42Metadata*)set
 {
     [presets addObject:[set copy]];
     [self savePresets];
+    [self updateNotification];
 }
 
 - (BOOL) loadPresets
@@ -132,7 +141,7 @@ static SBPresetManager *sharedPresetManager = nil;
 
     for( object in presets )
     {
-        NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, @"test"];
+        NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, [object setName]];
         if (![fileManager fileExistsAtPath:saveLocation]) 
         {
             noErr = [NSKeyedArchiver archiveRootObject:object
@@ -142,5 +151,6 @@ static SBPresetManager *sharedPresetManager = nil;
     return noErr;
 }
 
+@synthesize presets;
 
 @end

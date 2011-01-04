@@ -68,6 +68,7 @@ enum rating_type {
 };
 
 @interface MP42Metadata : NSObject <NSCoding, NSCopying> {
+    NSString                *setName;
     NSString                *sourcePath;
     NSMutableDictionary     *tagsDict;
     NSImage                 *artwork;
@@ -102,8 +103,10 @@ enum rating_type {
 - (BOOL) mergeMetadata: (MP42Metadata *) newMetadata;
 
 @property(readonly) NSMutableDictionary *tagsDict;
+
+@property(readwrite, retain) NSString   *setName;
 @property(readwrite, retain) NSImage    *artwork;
-@property(readwrite, retain) NSURL    *artworkURL;
+@property(readwrite, retain) NSURL      *artworkURL;
 @property(readwrite) uint8_t    mediaKind;
 @property(readwrite) uint8_t    contentRating;
 @property(readwrite) uint8_t    hdVideo;

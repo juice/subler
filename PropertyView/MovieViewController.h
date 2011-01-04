@@ -14,7 +14,9 @@
     MP42Metadata            *metadata;
 
     IBOutlet NSPopUpButton  *tagList;
-    IBOutlet SBTableView  *tagsTableView;
+    IBOutlet NSPopUpButton  *setList;
+
+    IBOutlet SBTableView    *tagsTableView;
 
     IBOutlet NSImageView    *imageView;
     IBOutlet NSPopUpButton  *mediaKind;
@@ -23,6 +25,9 @@
     IBOutlet NSButton       *gapless;
     
     IBOutlet NSButton       *removeTag;
+    
+    IBOutlet NSWindow       *saveWindow;
+    IBOutlet NSTextField    *setName;
     
     NSPopUpButtonCell       *ratingCell;
     NSComboBoxCell          *genreCell;
@@ -42,6 +47,9 @@
 - (IBAction) removeTag: (id) sender;
 
 - (IBAction) addMetadataSet: (id)sender;
+
+- (IBAction) showSaveSet: (id)sender;
+- (IBAction) closeSaveSheet: (id) sender;
 - (IBAction) saveSet: (id)sender;
 
 - (IBAction) updateArtwork: (id) sender;
@@ -50,5 +58,7 @@
 - (IBAction) changecContentRating: (id) sender;
 - (IBAction) changeGapless: (id) sender;
 - (IBAction) changehdVideo: (id) sender;
+
+
 
 @end

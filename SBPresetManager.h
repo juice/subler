@@ -10,6 +10,8 @@
 
 @class MP42Metadata;
 
+extern NSString *SBPresetManagerUpdatedNotification;
+
 @interface SBPresetManager : NSObject {
 @private
     NSMutableArray *presets;
@@ -19,5 +21,7 @@
 
 - (void) newSetFromExistingMetadata:(MP42Metadata*)set;
 - (BOOL) savePresets;
+
+@property (readonly) NSArray *presets;
 
 @end
