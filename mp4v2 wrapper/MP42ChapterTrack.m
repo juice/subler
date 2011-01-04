@@ -38,18 +38,18 @@
         if (!format)
             format = @"Text";
         chapters = [[NSMutableArray alloc] init];
-        
+
         MP4Chapter_t *chapter_list = NULL;
         uint32_t      chapter_count;
-        
+
         MP4GetChapters(fileHandle, &chapter_list, &chapter_count, MP4ChapterTypeQt);
-        
+
         unsigned int i = 1;
         MP4Duration sum = 0;
         while (i <= chapter_count)
         {
             SBTextSample *chapter = [[SBTextSample alloc] init];
-            
+
             char * title = chapter_list[i-1].title;
             if ((title[0] == '\xfe' && title[1] == '\xff') || (title[0] == '\xff' && title[1] == '\xfe')) {
                 chapter.title = [[[NSString alloc] initWithBytes:title length:chapter_list[i-1].titleLength encoding:NSUTF16StringEncoding] autorelease];
@@ -57,7 +57,7 @@
             else {
                 chapter.title = [NSString stringWithCString:chapter_list[i-1].title encoding: NSUTF8StringEncoding];
             }
-            
+
             chapter.timestamp = sum;
             sum = chapter_list[i-1].duration + sum;
             [chapters addObject:chapter];
@@ -66,7 +66,7 @@
         }
         MP4Free(chapter_list);
     }
-    
+
     return self;
 }
 
@@ -81,7 +81,7 @@
         isEdited = YES;
         muxed = NO;
         enabled = NO;
-        
+
         chapters = [[NSMutableArray alloc] init];
         LoadChaptersFromPath(filePath, chapters);   
         [chapters sortUsingSelector:@selector(compare:)];
@@ -161,7 +161,7 @@
         for (i = 0; i < chapterCount; i++) {
             SBTextSample * chapter = [chapters objectAtIndex:i];
             strcpy(fileChapters[i].title, [[chapter title] UTF8String]);
-            
+
             if (i+1 < chapterCount && sum < refTrackDuration) {
                 SBTextSample * nextChapter = [chapters objectAtIndex:i+1];
                 fileChapters[i].duration = nextChapter.timestamp - chapter.timestamp;
