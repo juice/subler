@@ -40,7 +40,9 @@
 - (void) setFile: (MP42File *)file;
 - (IBAction) addTag: (id) sender;
 - (IBAction) removeTag: (id) sender;
+
 - (IBAction) addMetadataSet: (id)sender;
+- (IBAction) saveSet: (id)sender;
 
 - (IBAction) updateArtwork: (id) sender;
 

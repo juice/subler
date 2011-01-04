@@ -10,10 +10,12 @@ NSString *MetadataPBoardType = @"MetadataPBoardType";
 
 #import "MovieViewController.h"
 #import "SBTableView.h"
+#import "SBPresetManager.h"
 
 @implementation MovieViewController
 
-static NSInteger sortFunction (id ldict, id rdict, void *context) {
+static NSInteger sortFunction (id ldict, id rdict, void *context)
+{
     NSComparisonResult rc;
 
     NSInteger right = [(NSArray*) context indexOfObject:rdict];
@@ -223,6 +225,14 @@ static NSInteger sortFunction (id ldict, id rdict, void *context) {
     }
 
     [self add:tagDict];
+}
+
+- (IBAction) saveSet: (id)sender
+{
+    SBPresetManager *presetManager = [SBPresetManager sharedManager];
+    [presetManager newSetFromExistingMetadata: metadata];
+
+    NSLog(@"lalala");
 }
 
 /* NSTableView additions for copy & paste and more */

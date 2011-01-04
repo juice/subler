@@ -67,9 +67,10 @@ static SBPresetManager *sharedPresetManager = nil;
     return self;
 }
 
-- (void) newSetFromExistingMetadata:(MP42Metadata*)set;
+- (void) newSetFromExistingMetadata:(MP42Metadata*)set
 {
     [presets addObject:[set copy]];
+    [self savePresets];
 }
 
 - (BOOL) loadPresets
@@ -84,6 +85,9 @@ static SBPresetManager *sharedPresetManager = nil;
                                                             YES);
     if ([allPaths count])
         appSupportPath = [allPaths objectAtIndex:0];
+
+
+    appSupportPath = [appSupportPath stringByAppendingPathComponent:@"Subler"];
 
     if (!appSupportPath)
         return NO;
@@ -119,6 +123,8 @@ static SBPresetManager *sharedPresetManager = nil;
     if (!appSupportPath)
         return NO;
 
+    appSupportPath = [appSupportPath stringByAppendingPathComponent:@"Subler"];
+
     if( ![fileManager fileExistsAtPath:appSupportPath] )
         [fileManager createDirectoryAtPath:appSupportPath attributes:nil];
 
@@ -126,7 +132,7 @@ static SBPresetManager *sharedPresetManager = nil;
 
     for( object in presets )
     {
-        NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, [object name]];
+        NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, @"test"];
         if (![fileManager fileExistsAtPath:saveLocation]) 
         {
             noErr = [NSKeyedArchiver archiveRootObject:object

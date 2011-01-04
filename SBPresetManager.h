@@ -8,9 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+@class MP42Metadata;
+
 @interface SBPresetManager : NSObject {
 @private
     NSMutableArray *presets;
 }
+
++ (SBPresetManager*)sharedManager;
+
+- (void) newSetFromExistingMetadata:(MP42Metadata*)set;
+- (BOOL) savePresets;
 
 @end
