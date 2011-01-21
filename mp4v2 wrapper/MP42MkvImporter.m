@@ -517,6 +517,9 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                         fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
                 } else
                     fprintf(stderr,"Short read while reading frame\n");
+				
+				free(frame);
+				continue;
             }
 
             MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
@@ -561,6 +564,9 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                         fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
                 } else
                     fprintf(stderr,"Short read while reading frame\n");
+
+				free(frame);
+				continue;
             }
 
             NSString *string = [[[NSString alloc] initWithBytes:frame length:FrameSize encoding:NSUTF8StringEncoding] autorelease];
@@ -638,6 +644,9 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                     } else
                         fprintf(stderr,"Short read while reading frame\n");
                     break;
+
+					free(frame);
+					continue;
                 }
 
                 MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
@@ -734,7 +743,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                             fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
                     } else
                         fprintf(stderr,"Short read while reading frame\n");
-                    break;
+					free(frame);
+					continue;
                 }
 
                 MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
