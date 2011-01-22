@@ -774,7 +774,7 @@ NSString* StripSSALine(NSString *line){
         NSRange endRange = [line rangeOfString: @"{"];
         if (endRange.location != NSNotFound && endRange.length != 0) {
             NSString * replacement = @"";
-            if (endRange.location + 3 <= [line length]) {
+            if (endRange.location + 3 < [line length]) {
                 unichar tag = [line characterAtIndex:endRange.location + 2];
                 unichar tagState = [line characterAtIndex:endRange.location + 3];
                 if (tagState == '1') {
