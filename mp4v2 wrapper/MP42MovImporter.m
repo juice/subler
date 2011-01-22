@@ -12,7 +12,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <QuickTime/QuickTime.h>
 #include "lang.h"
-
+#include "rational.h"
 
 extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
@@ -106,7 +106,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         if ([mediaType isEqualToString:QTMediaTypeVideo]) {
             if ([[self formatForTrack:track] isEqualToString:@"Text"]) {
                 newTrack = [[MP42SubtitleTrack alloc] init];
-                [(MP42SubtitleTrack*)newTrack setTrackWidth:60];
+                [(MP42SubtitleTrack*)newTrack setTrackWidth:80];
             }
             else {
                 newTrack = [[MP42VideoTrack alloc] init];
@@ -114,14 +114,16 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                 NSSize dimension = [track apertureModeDimensionsForMode:QTMovieApertureModeClean];
                 [(MP42VideoTrack*)newTrack setTrackWidth: dimension.width];
                 [(MP42VideoTrack*)newTrack setTrackHeight: dimension.height];
-                [(MP42VideoTrack*)newTrack setWidth: dimension.width];
-                [(MP42VideoTrack*)newTrack setHeight: dimension.height];
 
                 long count;
                 // Get the sample description
                 SampleDescriptionHandle desc = (SampleDescriptionHandle) NewHandle(0);
                 GetMediaSampleDescription(media, 1, desc);
                 ImageDescriptionHandle imgDesc = (ImageDescriptionHandle) desc;
+
+				// Get dimensions of track media and define video dimensions accordingly.
+				[(MP42VideoTrack*)newTrack setWidth: (**imgDesc).width];
+				[(MP42VideoTrack*)newTrack setHeight: (**imgDesc).height];
 
                 // Read pixel aspect ratio
                 CountImageDescriptionExtensionType(imgDesc, kPixelAspectRatioImageDescriptionExtension, &count);
@@ -132,6 +134,18 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                     [(MP42VideoTrack*)newTrack setVSpacing: CFSwapInt32BigToHost(((PixelAspectRatioImageDescriptionExtension*)(*pasp))->vSpacing)];
                     DisposeHandle(pasp);
                 }
+				// Hack to setup PASP if none exists
+				else if (dimension.width != (**imgDesc).width) { 
+					AVRational dar, invPixelSize, sar;
+					dar			   = (AVRational){dimension.width, dimension.height};
+					invPixelSize   = (AVRational){(**imgDesc).width, (**imgDesc).height};
+					sar = av_mul_q(dar, invPixelSize);
+
+					av_reduce(&sar.num, &sar.den, sar.num, sar.den, fixed1);
+
+					[(MP42VideoTrack*)newTrack setHSpacing:sar.num];
+					[(MP42VideoTrack*)newTrack setVSpacing:sar.den];
+				}
             }
         }
 
