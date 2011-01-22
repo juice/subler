@@ -246,7 +246,8 @@
         [fileFormat addItemWithTitle:format];
 
     [fileFormat selectItemAtIndex:[[[NSUserDefaults standardUserDefaults] valueForKey:@"defaultSaveFormat"] integerValue]];
-    [_currentSavePanel setRequiredFileType:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"]];
+	if ([[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"])
+		[_currentSavePanel setRequiredFileType:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"]];
 
     // note this is only available in Mac OS X 10.6+
     if ([savePanel respondsToSelector:@selector(setNameFieldStringValue:)]) {
