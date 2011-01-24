@@ -204,6 +204,19 @@
   return [chapters count];
 }
 
+- (BOOL)exportToURL:(NSURL *)url error:(NSError **)error
+{
+	NSMutableString* file = [[[NSMutableString alloc] init] autorelease];
+	NSUInteger x = 0;
+
+	for (SBTextSample * chapter in chapters) {
+		[file appendFormat:@"CHAPTER%02d:=%@\nCHAPTER%02dNAME=%@\n", x, SMPTEStringFromTime([chapter timestamp], 1000), x, [chapter title]];
+		x++;
+	}
+
+	return [file writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:error];
+}
+
 - (void) setTrackImporterHelper: (MP42FileImporter*) importerHelper
 {
 }

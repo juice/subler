@@ -57,7 +57,12 @@
 - (IBAction) cancelSaveOperation: (id) sender;
 - (IBAction) sendToExternalApp: (id) sender;
 
+- (IBAction) saveAndOptimize: (id)sender;
+
+- (IBAction) selectMetadataFile: (id) sender;
 - (IBAction) addChaptersEvery: (id) sender;
+
+- (IBAction) export: (id) sender;
 
 - (void) showImportSheet: (NSString *) filePath;
 

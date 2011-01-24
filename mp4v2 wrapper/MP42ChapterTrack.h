@@ -27,6 +27,8 @@
 
 - (NSInteger) chapterCount;
 
+- (BOOL)exportToURL:(NSURL *)url error:(NSError **)error;
+
 @property (readonly, retain) NSArray * chapters;
 
 @end

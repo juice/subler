@@ -295,7 +295,7 @@
     [mp4File cancel];
 }
 
-- (void) saveAndOptimize: (id)sender
+- (IBAction) saveAndOptimize: (id)sender
 {
     _optimize = YES;
     [self saveDocument:sender];
@@ -363,6 +363,10 @@
     
     if (action == @selector(addChaptersEvery:))
         return YES;
+	
+	if (action == @selector(export:) && [fileTracksTable selectedRow] != -1)
+		if ([[mp4File trackAtIndex:[fileTracksTable selectedRow]] respondsToSelector:@selector(exportToURL:error:)])
+			return YES;
 
     return NO;
 }
@@ -746,6 +750,40 @@ returnCode contextInfo: (void *) contextInfo
     [self addMetadata:[sheet.filenames objectAtIndex: 0]];
 
 }
+
+- (IBAction) export: (id) sender
+{
+	NSSavePanel * panel = [NSSavePanel savePanel];
+    [panel setRequiredFileType: @"txt"];
+    [panel setCanSelectHiddenExtension: YES];
+
+    [panel beginSheetForDirectory: nil file: @"untitled"
+				   modalForWindow: documentWindow modalDelegate: self
+				   didEndSelector: @selector(saveToFileSheetClosed:returnCode:contextInfo:) contextInfo: nil];
+}
+
+- (void) writeToFileSheetClosed: (NSSavePanel *) panel returnCode: (NSInteger) code contextInfo: (id) info
+{
+    if (code == NSOKButton)
+    {
+		MP42Track * track = [mp4File trackAtIndex:[fileTracksTable selectedRow]];
+
+        if (![track exportToURL: [panel filename] error: nil])
+        {
+            NSAlert * alert = [[NSAlert alloc] init];
+            [alert addButtonWithTitle: NSLocalizedString(@"OK", "Export alert panel -> button")];
+            [alert setMessageText: NSLocalizedString(@"File Could Not Be Saved", "Export alert panel -> title")];
+            [alert setInformativeText: [NSString stringWithFormat:
+										NSLocalizedString(@"There was a problem creating the file \"%@\".",
+														  "Export alert panel -> message"), [[panel filename] lastPathComponent]]];
+            [alert setAlertStyle: NSWarningAlertStyle];
+
+            [alert runModal];
+            [alert release];
+        }
+    }
+}
+
 
 - (IBAction) addChaptersEvery: (id) sender
 {
