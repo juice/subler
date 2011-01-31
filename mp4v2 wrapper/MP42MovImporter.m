@@ -150,8 +150,47 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         }
 
         // Audio
-        else if ([mediaType isEqualToString:QTMediaTypeSound])
+        else if ([mediaType isEqualToString:QTMediaTypeSound]) {
             newTrack = [[MP42AudioTrack alloc] init];
+
+			OSStatus err = noErr;
+
+			// Get the sample description
+			SampleDescriptionHandle desc = (SampleDescriptionHandle) NewHandle(0);
+			GetMediaSampleDescription(media, 1, desc);			
+
+			ByteCount           channelLayoutSize;
+            AudioChannelLayout* channelLayout = NULL;
+
+			SoundDescriptionHandle sndDesc = (SoundDescriptionHandle) desc;
+
+            err = QTSoundDescriptionGetPropertyInfo(sndDesc, kQTPropertyClass_SoundDescription,
+                                                    kQTSoundDescriptionPropertyID_AudioChannelLayout,
+                                                    NULL, &channelLayoutSize, NULL);
+            require_noerr(err, bail);
+
+            channelLayout = (AudioChannelLayout*)malloc(channelLayoutSize);
+
+            err = QTSoundDescriptionGetProperty(sndDesc, kQTPropertyClass_SoundDescription,
+                                                kQTSoundDescriptionPropertyID_AudioChannelLayout,
+                                                channelLayoutSize, channelLayout, NULL);
+            require_noerr(err, bail);
+
+            UInt32 bitmapSize = sizeof(AudioChannelLayoutTag);
+            UInt32 channelBitmap;
+            AudioFormatGetProperty(kAudioFormatProperty_BitmapForLayoutTag,
+                                   sizeof(AudioChannelLayoutTag), &channelLayout->mChannelLayoutTag,
+                                   &bitmapSize, &channelBitmap);
+
+			[(MP42AudioTrack*)newTrack setChannels: AudioChannelLayoutTag_GetNumberOfChannels(channelLayout->mChannelLayoutTag)];
+			[(MP42AudioTrack*)newTrack setChannelLayoutTag: channelLayout->mChannelLayoutTag];
+
+			bail:
+			if (err)
+				printf("Error: unable to read the sound description");
+			if (channelLayout)
+				free(channelLayout);
+		}
 
         // Text
         else if ([mediaType isEqualToString:QTMediaTypeText]) {
