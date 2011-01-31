@@ -147,10 +147,9 @@
     [NSApp beginSheet:savingWindow modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
 
-	fileName = [[absoluteURL path]lastPathComponent];
-	[documentWindow setTitle:fileName];
-		
-	
+    fileName = [[absoluteURL path]lastPathComponent];
+    [documentWindow setTitle:fileName];
+
     [NSApplication detachDrawingThread:@selector(saveDocumentToDisk:) toTarget:self
 							withObject:[NSDictionary dictionaryWithObjectsAndKeys:absoluteURL, @"absoluteURL",
 										typeName, @"typeName",
@@ -753,29 +752,32 @@ returnCode contextInfo: (void *) contextInfo
 
 - (IBAction) export: (id) sender
 {
-	NSInteger row = [fileTracksTable selectedRow];
-	NSSavePanel * panel = [NSSavePanel savePanel];
+    NSInteger row = [fileTracksTable selectedRow];
+    NSSavePanel * panel = [NSSavePanel savePanel];
+    NSString *filename = [[[[self fileURL] path] stringByDeletingPathExtension] lastPathComponent];
 
-    if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42SubtitleTrack class]])
-		[panel setRequiredFileType: @"srt"];
-	else if (row != -1 )
+    if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42SubtitleTrack class]]) {
+        [panel setRequiredFileType: @"srt"];
+        filename = [filename stringByAppendingString:@" - Subtitles"];
+    }
+	else if (row != -1 ) {
+        filename = [filename stringByAppendingString:@" - Chapters"];
 		[panel setRequiredFileType: @"txt"];
+    }
 
     [panel setCanSelectHiddenExtension: YES];
 
-    [panel beginSheetForDirectory: nil file: @"untitled"
-				   modalForWindow: documentWindow modalDelegate: self
-				   didEndSelector: @selector(writeToFileSheetClosed:returnCode:contextInfo:) contextInfo: nil];
+    [panel beginSheetForDirectory: nil file:filename
+                   modalForWindow: documentWindow modalDelegate: self
+                   didEndSelector: @selector(writeToFileSheetClosed:returnCode:contextInfo:) contextInfo: nil];
 }
 
 - (void) writeToFileSheetClosed: (NSSavePanel *) panel returnCode: (NSInteger) code contextInfo: (id) info
 {
-    if (code == NSOKButton)
-    {
-		MP42Track * track = [mp4File trackAtIndex:[fileTracksTable selectedRow]];
+    if (code == NSOKButton) {
+        id track = [mp4File trackAtIndex:[fileTracksTable selectedRow]];
 
-        if (![track exportToURL: [panel filename] error: nil])
-        {
+        if (![track exportToURL: [panel URL] error: nil]) {
             NSAlert * alert = [[NSAlert alloc] init];
             [alert addButtonWithTitle: NSLocalizedString(@"OK", "Export alert panel -> button")];
             [alert setMessageText: NSLocalizedString(@"File Could Not Be Saved", "Export alert panel -> title")];
