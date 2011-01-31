@@ -76,6 +76,15 @@
     return YES;
 }
 
+struct style_record {
+	uint16_t startChar;
+	uint16_t endChar;
+	uint16_t fontID;
+	uint8_t  fontStyleFlags;
+	uint8_t  fontSize;
+	uint8_t	 textColorRGBA[4];
+};
+
 - (BOOL)exportToURL:(NSURL *)url error:(NSError **)error
 {
 	MP4FileHandle fileHandle = MP4Read([sourcePath UTF8String], 0);
@@ -83,7 +92,7 @@
 
 	MP4SampleId sampleId = 1;
 	NSUInteger srtSampleNumber = 1;
-	
+
 	MP4Timestamp time = 0;
 
 	NSMutableString *srtFile = [[[NSMutableString alloc] init] autorelease];
@@ -105,30 +114,81 @@
 			break;
 		}
 
-		NSUInteger textSampleLength = (pBytes[0] << 8) & 0xff00;
-		textSampleLength += pBytes[1];
+		NSMutableString * sampleText = nil;
+		NSUInteger textSampleLength = ((pBytes[0] << 8) & 0xff00) + pBytes[1];
 
 		if (textSampleLength) {
-			[srtFile appendFormat:@"%d\n%@ --> %@\n", srtSampleNumber++,
-														SRTStringFromTime(time, 1000, ','), SRTStringFromTime(time + sampleDuration, 1000, ',')];
-
-			NSString * sampleText = [[[NSString alloc] initWithBytes:(pBytes+2)
+			sampleText = [[[NSMutableString alloc] initWithBytes:(pBytes+2)
 															  length:textSampleLength
 															encoding:NSUTF8StringEncoding] autorelease];
 
 			if ([sampleText characterAtIndex:[sampleText length] - 1] == '\n')
-				sampleText = [[[NSString alloc] initWithBytes:(pBytes+2)
-													   length:textSampleLength-1
-													 encoding:NSUTF8StringEncoding] autorelease];
+				[sampleText deleteCharactersInRange:NSMakeRange([sampleText length] - 1, 1)];
+			
+		}			
 
-			NSLog(@"%d %@", textSampleLength, sampleText);
+		if ((textSampleLength + 7) < numBytes) {
+			uint8_t *styleAtoms = pBytes + textSampleLength + 2;
+			size_t atomLength = ((styleAtoms[0] << 24) & 0xff000000) + ((styleAtoms[1] << 16) & 0xff0000) + ((styleAtoms[2] << 8) & 0xff00) + styleAtoms[3];
+			if (atomLength < numBytes + textSampleLength + 7) {
+				uint8_t styleCount = ((styleAtoms[8] << 8) & 0xff00) + styleAtoms[9];
+				uint8_t *style_sample = styleAtoms + 10;
+				uint8_t numberOfInsertedChars = 0;
+
+				while (styleCount)
+					if (pBytes[textSampleLength + 6] == 's') {
+						struct style_record record;
+						record.startChar = (style_sample[0] << 8) & 0xff00;
+						record.startChar += style_sample[1];
+						record.endChar = (style_sample[2] << 8) & 0xff00;
+						record.endChar += style_sample[3];
+						record.fontID = (style_sample[4] << 8) & 0xff00;
+						record.fontID += style_sample[5];
+						record.fontStyleFlags	= style_sample[6];
+						record.fontSize			= style_sample[7];
+						record.textColorRGBA[0] = style_sample[8];
+						record.textColorRGBA[1] = style_sample[9];
+						record.textColorRGBA[2] = style_sample[10];
+						record.textColorRGBA[3] = style_sample[11];
+
+						uint8_t insertedChars = 0;
+						uint8_t insertedStartChars = 0;
+
+						if (record.fontStyleFlags & 0x1) {
+								[sampleText insertString:@"<b>" atIndex:record.startChar + numberOfInsertedChars];
+								[sampleText insertString:@"</b>" atIndex:record.endChar + numberOfInsertedChars + 3];
+								insertedChars += 7;
+								insertedStartChars += 3;
+						}
+						if (record.fontStyleFlags & 0x2) {
+								[sampleText insertString:@"<i>" atIndex:record.startChar + numberOfInsertedChars + insertedStartChars];
+								[sampleText insertString:@"</i>" atIndex:record.endChar + numberOfInsertedChars + insertedStartChars + 3];
+								insertedChars += 7;
+								insertedStartChars += 3;
+						}
+						if (record.fontStyleFlags & 0x4) {
+								[sampleText insertString:@"<u>" atIndex:record.startChar + numberOfInsertedChars + insertedStartChars];
+								[sampleText insertString:@"</u>" atIndex:record.endChar + numberOfInsertedChars + insertedStartChars + 3];
+								insertedChars += 7;
+						}
+
+						numberOfInsertedChars += insertedChars;
+
+						styleCount--;
+						style_sample += 12;
+					}
+			}
+		}
+
+		if (textSampleLength) {
+			[srtFile appendFormat:@"%d\n%@ --> %@\n", srtSampleNumber++,
+														SRTStringFromTime(time, 1000, ','), SRTStringFromTime(time + sampleDuration, 1000, ',')];
 			[srtFile appendString:sampleText];
 			[srtFile appendString:@"\n\n"];
 
 		}
 
 		time += sampleDuration;
-
 		sampleId++;
 	}
 
