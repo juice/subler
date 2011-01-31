@@ -61,6 +61,8 @@
         if ([parsed valueForKey:@"seriesName"]) [((NSTextField *) tvSeriesName) setStringValue:[parsed valueForKey:@"seriesName"]];
         if ([parsed valueForKey:@"seasonNum"]) [tvSeasonNum setStringValue:[parsed valueForKey:@"seasonNum"]];
         if ([parsed valueForKey:@"episodeNum"]) [tvEpisodeNum setStringValue:[parsed valueForKey:@"episodeNum"]];
+        // just in case this is actually a movie, set the text in the movie field for the user's convenience
+        [movieName setStringValue:[filename stringByDeletingPathExtension]];
     }
     [self updateSearchButtonVisibility];
     if ([searchButton isEnabled]) {
