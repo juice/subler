@@ -121,11 +121,7 @@ struct style_record {
 			sampleText = [[[NSMutableString alloc] initWithBytes:(pBytes+2)
 															  length:textSampleLength
 															encoding:NSUTF8StringEncoding] autorelease];
-
-			if ([sampleText characterAtIndex:[sampleText length] - 1] == '\n')
-				[sampleText deleteCharactersInRange:NSMakeRange([sampleText length] - 1, 1)];
-			
-		}			
+		}
 
 		if ((textSampleLength + 7) < numBytes) {
 			uint8_t *styleAtoms = pBytes + textSampleLength + 2;
@@ -181,6 +177,9 @@ struct style_record {
 		}
 
 		if (textSampleLength) {
+            if ([sampleText characterAtIndex:[sampleText length] - 1] == '\n')
+				[sampleText deleteCharactersInRange:NSMakeRange([sampleText length] - 1, 1)];
+
 			[srtFile appendFormat:@"%d\n%@ --> %@\n", srtSampleNumber++,
 														SRTStringFromTime(time, 1000, ','), SRTStringFromTime(time + sampleDuration, 1000, ',')];
 			[srtFile appendString:sampleText];
