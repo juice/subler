@@ -76,6 +76,65 @@
     return YES;
 }
 
+- (BOOL)exportToURL:(NSURL *)url error:(NSError **)error
+{
+	MP4FileHandle fileHandle = MP4Read([sourcePath UTF8String], 0);
+	MP4TrackId srcTrackId = Id;
+
+	MP4SampleId sampleId = 1;
+	NSUInteger srtSampleNumber = 1;
+	
+	MP4Timestamp time = 0;
+
+	NSMutableString *srtFile = [[[NSMutableString alloc] init] autorelease];
+
+	while (1) {
+		uint8_t *pBytes = NULL;
+		uint32_t numBytes = 0;
+		MP4Duration sampleDuration;
+		MP4Duration renderingOffset;
+		MP4Timestamp pStartTime;
+		bool isSyncSample;
+
+		if (!MP4ReadSample(fileHandle,
+						   srcTrackId,
+						   sampleId,
+						   &pBytes, &numBytes,
+						   &pStartTime, &sampleDuration, &renderingOffset,
+						   &isSyncSample)) {
+			break;
+		}
+
+		NSUInteger textSampleLength = (pBytes[0] << 8) & 0xff00;
+		textSampleLength += pBytes[1];
+
+		if (textSampleLength) {
+			[srtFile appendFormat:@"%d\n%@ --> %@\n", srtSampleNumber++,
+														SRTStringFromTime(time, 1000, ','), SRTStringFromTime(time + sampleDuration, 1000, ',')];
+
+			NSString * sampleText = [[[NSString alloc] initWithBytes:(pBytes+2)
+															  length:textSampleLength
+															encoding:NSUTF8StringEncoding] autorelease];
+
+			if ([sampleText characterAtIndex:[sampleText length] - 1] == '\n')
+				sampleText = [[[NSString alloc] initWithBytes:(pBytes+2)
+													   length:textSampleLength-1
+													 encoding:NSUTF8StringEncoding] autorelease];
+
+			NSLog(@"%d %@", textSampleLength, sampleText);
+			[srtFile appendString:sampleText];
+			[srtFile appendString:@"\n\n"];
+
+		}
+
+		time += sampleDuration;
+
+		sampleId++;
+	}
+
+	return [srtFile writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:error];
+}
+
 - (void) dealloc
 {
     [super dealloc];

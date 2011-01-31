@@ -753,13 +753,19 @@ returnCode contextInfo: (void *) contextInfo
 
 - (IBAction) export: (id) sender
 {
+	NSInteger row = [fileTracksTable selectedRow];
 	NSSavePanel * panel = [NSSavePanel savePanel];
-    [panel setRequiredFileType: @"txt"];
+
+    if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42SubtitleTrack class]])
+		[panel setRequiredFileType: @"srt"];
+	else if (row != -1 )
+		[panel setRequiredFileType: @"txt"];
+
     [panel setCanSelectHiddenExtension: YES];
 
     [panel beginSheetForDirectory: nil file: @"untitled"
 				   modalForWindow: documentWindow modalDelegate: self
-				   didEndSelector: @selector(saveToFileSheetClosed:returnCode:contextInfo:) contextInfo: nil];
+				   didEndSelector: @selector(writeToFileSheetClosed:returnCode:contextInfo:) contextInfo: nil];
 }
 
 - (void) writeToFileSheetClosed: (NSSavePanel *) panel returnCode: (NSInteger) code contextInfo: (id) info

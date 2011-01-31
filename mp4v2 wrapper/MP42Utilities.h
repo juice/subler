@@ -22,6 +22,7 @@ typedef enum {  TRACK_DISABLED = 0x0,
     TRACK_IN_POSTER = 0x8
 } track_header_flags;
 
+NSString* SRTStringFromTime( long long time, long timeScale , const char separator);
 NSString* SMPTEStringFromTime(long long time, long timeScale);
 MP4Duration TimeFromSMPTEString( NSString* SMPTE_string, MP4Duration timeScale );
 

@@ -12,4 +12,6 @@
 @interface MP42SubtitleTrack : MP42VideoTrack {
 }
 
+- (BOOL)exportToURL:(NSURL *)url error:(NSError **)error;
+
 @end

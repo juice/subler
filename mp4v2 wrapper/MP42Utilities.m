@@ -13,6 +13,29 @@
 
 #include "lang.h"
 
+NSString* SRTStringFromTime( long long time, long timeScale , const char separator)
+{
+    NSString *SMPTE_string;
+    int hour, minute, second, msecond;
+    long long result;
+	
+    result = time / timeScale; // second
+    msecond = (time % timeScale);
+	
+    second = result % 60;
+	
+    result = result / 60; // minute
+    minute = result % 60;
+	
+    result = result / 60; // hour
+    hour = result % 24;
+	
+    SMPTE_string = [NSString stringWithFormat:@"%02d:%02d:%02d%c%03d", hour, minute, second, separator, msecond]; // h:mm:ss:fff
+	
+    return SMPTE_string;
+}
+
+
 NSString* SMPTEStringFromTime( long long time, long timeScale )
 {
     NSString *SMPTE_string;
