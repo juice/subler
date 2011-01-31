@@ -15,7 +15,7 @@
 #import "ChapterViewController.h"
 #import "FileImport.h"
 #import "VideoFramerate.h"
-#import "tagChimpController.h"
+#import "MetadataSearchController.h"
 
 #define SublerTableViewDataType @"SublerTableViewDataType"
 
@@ -576,7 +576,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (IBAction) searchMetadata: (id) sender
 {
-    importWindow = [[tagChimpController alloc] initWithDelegate:self];
+    importWindow = [[MetadataSearchController alloc] initWithDelegate:self];
     
     [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];

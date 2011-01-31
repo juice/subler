@@ -38,7 +38,6 @@
 		A984DB530F52D679001A20B2 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A984DB4A0F52D644001A20B2 /* Sparkle.framework */; };
 		A984DB740F52DD4B001A20B2 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = A984DB730F52DD4B001A20B2 /* dsa_pub.pem */; };
 		A9891D5E124502C000427CF9 /* MP42SrtImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9891D5D124502C000427CF9 /* MP42SrtImporter.m */; };
-		A996C43210F4CA1D0055C85C /* tagChimp_tiny.png in Resources */ = {isa = PBXBuildFile; fileRef = A996C43110F4CA1D0055C85C /* tagChimp_tiny.png */; };
 		A99EAC7C1115BED200D89903 /* MP42FileImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EAC7B1115BED200D89903 /* MP42FileImporter.m */; };
 		A99EACA31115C18000D89903 /* MP42MkvImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EACA21115C18000D89903 /* MP42MkvImporter.m */; };
 		A99EEA3F12B801AE002367D3 /* SBDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9B46AC012B79E230040517A /* SBDocument.xib */; };
@@ -47,7 +46,6 @@
 		A9B46A8E12B79B240040517A /* PrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8312B79B240040517A /* PrefsController.m */; };
 		A9B46A8F12B79B240040517A /* SBTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8512B79B240040517A /* SBTableView.m */; };
 		A9B46A9012B79B240040517A /* SBView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8712B79B240040517A /* SBView.m */; };
-		A9B46A9112B79B240040517A /* tagChimpController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8912B79B240040517A /* tagChimpController.m */; };
 		A9B46A9212B79B240040517A /* VideoFramerate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8B12B79B240040517A /* VideoFramerate.m */; };
 		A9B46A9E12B79B990040517A /* ButtonToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A9412B79B990040517A /* ButtonToolbarItem.m */; };
 		A9B46A9F12B79B990040517A /* lang.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A9612B79B990040517A /* lang.c */; };
@@ -61,14 +59,12 @@
 		A9B46AB012B79BE80040517A /* MatroskaParser.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AAD12B79BE80040517A /* MatroskaParser.c */; };
 		A9B46AB312B79BF60040517A /* sfifo.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AB112B79BF60040517A /* sfifo.c */; };
 		A9B46ABF12B79D1C0040517A /* SBDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46ABE12B79D1C0040517A /* SBDocument.m */; };
-		A9B74A7D10F4B75400C244E4 /* MetadataImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9B74A7B10F4B75400C244E4 /* MetadataImport.xib */; };
 		A9B8E895123A95BA006A6EB8 /* MP42Muxer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B8E892123A95BA006A6EB8 /* MP42Muxer.m */; };
 		A9B8E896123A95BA006A6EB8 /* MP42Sample.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B8E894123A95BA006A6EB8 /* MP42Sample.m */; };
 		A9BB60D80F834E0A005CD0BB /* mbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BB60D70F834E0A005CD0BB /* mbs.cpp */; };
 		A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C055360F6D395B00AF15B5 /* FileImport.xib */; };
 		A9C095800F7B6C8C00170CAF /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
-		A9C4E54110F5F01C00B60B59 /* tagChimp_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */; };
 		A9C4ECF712AE562A00BDBB7D /* MP42AACImporter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */; };
 		A9C8182D0F74D6E300019BFF /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C8182C0F74D6E300019BFF /* QuickTime.framework */; };
 		A9D825A912ABF72D00C1AA54 /* MP42CCImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D825A812ABF72D00C1AA54 /* MP42CCImporter.m */; };
@@ -83,6 +79,18 @@
 		A9FD5DA60F3C6F8A00817716 /* ChapterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FD5DA50F3C6F8A00817716 /* ChapterView.xib */; };
 		A9FD5EC70F3C8A4800817716 /* MovieView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9FD5EC50F3C8A4800817716 /* MovieView.xib */; };
 		A9FD5ECF0F3C8AF100817716 /* MovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */; };
+		CD08BA9612F62829006BA549 /* tmdb-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD08BA9512F62829006BA549 /* tmdb-logo.png */; };
+		CD16BC4712F6BC7F00AF5453 /* tvdb-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD16BC4612F6BC7F00AF5453 /* tvdb-logo.png */; };
+		CD1894F312F3757D00582CBC /* TheMovieDB.m in Sources */ = {isa = PBXBuildFile; fileRef = CD1894F212F3757D00582CBC /* TheMovieDB.m */; };
+		CD71FEA312F1B5AF00F0A98D /* MetadataSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD71FEA212F1B5AF00F0A98D /* MetadataSearchController.m */; };
+		CD71FEA612F1B62600F0A98D /* MetadataSearch.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */; };
+		CD71FF1D12F1C4A900F0A98D /* TheTVDB.m in Sources */ = {isa = PBXBuildFile; fileRef = CD71FF1C12F1C4A900F0A98D /* TheTVDB.m */; };
+		CD89360C12F34F9D0085C2B5 /* cache.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360012F34F500085C2B5 /* cache.py */; };
+		CD89360E12F34F9D0085C2B5 /* setup.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360212F34F500085C2B5 /* setup.py */; };
+		CD89360F12F34F9D0085C2B5 /* tvdb_api.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360312F34F500085C2B5 /* tvdb_api.py */; };
+		CD89361112F34F9D0085C2B5 /* tvdb_exceptions.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360512F34F500085C2B5 /* tvdb_exceptions.py */; };
+		CD89361312F34F9D0085C2B5 /* tvdb_main.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360712F34F500085C2B5 /* tvdb_main.py */; };
+		CD89361412F34F9D0085C2B5 /* tvdb_ui.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360812F34F500085C2B5 /* tvdb_ui.py */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +132,21 @@
 			dstSubfolderSpec = 10;
 			files = (
 				A984DB530F52D679001A20B2 /* Sparkle.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD89361D12F34FA50085C2B5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = tvdb_py;
+			dstSubfolderSpec = 7;
+			files = (
+				CD89360C12F34F9D0085C2B5 /* cache.py in CopyFiles */,
+				CD89360E12F34F9D0085C2B5 /* setup.py in CopyFiles */,
+				CD89360F12F34F9D0085C2B5 /* tvdb_api.py in CopyFiles */,
+				CD89361112F34F9D0085C2B5 /* tvdb_exceptions.py in CopyFiles */,
+				CD89361312F34F9D0085C2B5 /* tvdb_main.py in CopyFiles */,
+				CD89361412F34F9D0085C2B5 /* tvdb_ui.py in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,7 +205,6 @@
 		A984DB730F52DD4B001A20B2 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		A9891D5C124502C000427CF9 /* MP42SrtImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42SrtImporter.h; path = "mp4v2 wrapper/MP42SrtImporter.h"; sourceTree = "<group>"; };
 		A9891D5D124502C000427CF9 /* MP42SrtImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42SrtImporter.m; path = "mp4v2 wrapper/MP42SrtImporter.m"; sourceTree = "<group>"; };
-		A996C43110F4CA1D0055C85C /* tagChimp_tiny.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tagChimp_tiny.png; path = images/tagChimp_tiny.png; sourceTree = "<group>"; };
 		A99EAC7A1115BED200D89903 /* MP42FileImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42FileImporter.h; path = "mp4v2 wrapper/MP42FileImporter.h"; sourceTree = "<group>"; };
 		A99EAC7B1115BED200D89903 /* MP42FileImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42FileImporter.m; path = "mp4v2 wrapper/MP42FileImporter.m"; sourceTree = "<group>"; };
 		A99EACA11115C18000D89903 /* MP42MkvImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42MkvImporter.h; path = "mp4v2 wrapper/MP42MkvImporter.h"; sourceTree = "<group>"; };
@@ -197,8 +219,6 @@
 		A9B46A8512B79B240040517A /* SBTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBTableView.m; path = Classes/SBTableView.m; sourceTree = "<group>"; };
 		A9B46A8612B79B240040517A /* SBView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBView.h; path = Classes/SBView.h; sourceTree = "<group>"; };
 		A9B46A8712B79B240040517A /* SBView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBView.m; path = Classes/SBView.m; sourceTree = "<group>"; };
-		A9B46A8812B79B240040517A /* tagChimpController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tagChimpController.h; path = Classes/tagChimpController.h; sourceTree = "<group>"; };
-		A9B46A8912B79B240040517A /* tagChimpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = tagChimpController.m; path = Classes/tagChimpController.m; sourceTree = "<group>"; };
 		A9B46A8A12B79B240040517A /* VideoFramerate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoFramerate.h; path = Classes/VideoFramerate.h; sourceTree = "<group>"; };
 		A9B46A8B12B79B240040517A /* VideoFramerate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoFramerate.m; path = Classes/VideoFramerate.m; sourceTree = "<group>"; };
 		A9B46A9312B79B990040517A /* ButtonToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ButtonToolbarItem.h; path = Others/ButtonToolbarItem.h; sourceTree = "<group>"; };
@@ -226,7 +246,6 @@
 		A9B46ABD12B79D1C0040517A /* SBDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBDocument.h; path = Classes/SBDocument.h; sourceTree = "<group>"; };
 		A9B46ABE12B79D1C0040517A /* SBDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBDocument.m; path = Classes/SBDocument.m; sourceTree = "<group>"; };
 		A9B46AC112B79E230040517A /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = English; path = English.lproj/SBDocument.xib; sourceTree = "<group>"; };
-		A9B74A7C10F4B75400C244E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MetadataImport.xib; sourceTree = "<group>"; };
 		A9B8E892123A95BA006A6EB8 /* MP42Muxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42Muxer.m; path = "mp4v2 wrapper/MP42Muxer.m"; sourceTree = "<group>"; };
 		A9B8E893123A95BA006A6EB8 /* MP42Sample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42Sample.h; path = "mp4v2 wrapper/MP42Sample.h"; sourceTree = "<group>"; };
 		A9B8E894123A95BA006A6EB8 /* MP42Sample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42Sample.m; path = "mp4v2 wrapper/MP42Sample.m"; sourceTree = "<group>"; };
@@ -237,7 +256,6 @@
 		A9C055330F6D394F00AF15B5 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FileImport.xib; sourceTree = "<group>"; };
 		A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
-		A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tagChimp_medium.png; path = images/tagChimp_medium.png; sourceTree = "<group>"; };
 		A9C4ECF512AE562A00BDBB7D /* MP42AACImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AACImporter.h; path = "mp4v2 wrapper/MP42AACImporter.h"; sourceTree = "<group>"; };
 		A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MP42AACImporter.mm; path = "mp4v2 wrapper/MP42AACImporter.mm"; sourceTree = "<group>"; };
 		A9C8182C0F74D6E300019BFF /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
@@ -261,10 +279,25 @@
 		A9FD5EC60F3C8A4800817716 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/MovieView.xib; sourceTree = "<group>"; };
 		A9FD5ECD0F3C8AF100817716 /* MovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MovieViewController.h; path = PropertyView/MovieViewController.h; sourceTree = "<group>"; };
 		A9FD5ECE0F3C8AF100817716 /* MovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MovieViewController.m; path = PropertyView/MovieViewController.m; sourceTree = "<group>"; };
+		CD08BA9512F62829006BA549 /* tmdb-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tmdb-logo.png"; path = "images/tmdb-logo.png"; sourceTree = "<group>"; };
+		CD16BC4612F6BC7F00AF5453 /* tvdb-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tvdb-logo.png"; path = "images/tvdb-logo.png"; sourceTree = "<group>"; };
+		CD1894F112F3757D00582CBC /* TheMovieDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheMovieDB.h; path = Classes/MetadataImporters/TheMovieDB.h; sourceTree = "<group>"; };
+		CD1894F212F3757D00582CBC /* TheMovieDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TheMovieDB.m; path = Classes/MetadataImporters/TheMovieDB.m; sourceTree = "<group>"; };
 		CD4A86AA1234AFA10054970A /* Simple.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = Simple.pm; sourceTree = "<group>"; };
 		CD4A86AC1234AFA10054970A /* Roman.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = Roman.pm; sourceTree = "<group>"; };
 		CD4A86AF1234AFA10054970A /* Filename.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = Filename.pm; sourceTree = "<group>"; };
 		CD4A86B01234AFA10054970A /* ParseFilename.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = ParseFilename.pl; sourceTree = "<group>"; };
+		CD71FEA112F1B5AF00F0A98D /* MetadataSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetadataSearchController.h; path = Classes/MetadataSearchController.h; sourceTree = "<group>"; };
+		CD71FEA212F1B5AF00F0A98D /* MetadataSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetadataSearchController.m; path = Classes/MetadataSearchController.m; sourceTree = "<group>"; };
+		CD71FEA512F1B62600F0A98D /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MetadataSearch.xib; sourceTree = "<group>"; };
+		CD71FF1B12F1C4A900F0A98D /* TheTVDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheTVDB.h; path = Classes/MetadataImporters/TheTVDB.h; sourceTree = "<group>"; };
+		CD71FF1C12F1C4A900F0A98D /* TheTVDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TheTVDB.m; path = Classes/MetadataImporters/TheTVDB.m; sourceTree = "<group>"; };
+		CD89360012F34F500085C2B5 /* cache.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cache.py; sourceTree = "<group>"; };
+		CD89360212F34F500085C2B5 /* setup.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
+		CD89360312F34F500085C2B5 /* tvdb_api.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tvdb_api.py; sourceTree = "<group>"; };
+		CD89360512F34F500085C2B5 /* tvdb_exceptions.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tvdb_exceptions.py; sourceTree = "<group>"; };
+		CD89360712F34F500085C2B5 /* tvdb_main.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tvdb_main.py; sourceTree = "<group>"; };
+		CD89360812F34F500085C2B5 /* tvdb_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tvdb_ui.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -342,12 +375,13 @@
 				A95B4CFA12D0B26D006E55BD /* SBPresetManager.m */,
 				A9B46A7E12B79B240040517A /* FileImport.h */,
 				A9B46A7F12B79B240040517A /* FileImport.m */,
+				CD71FEA112F1B5AF00F0A98D /* MetadataSearchController.h */,
+				CD71FEA212F1B5AF00F0A98D /* MetadataSearchController.m */,
 				A9B46A8212B79B240040517A /* PrefsController.h */,
 				A9B46A8312B79B240040517A /* PrefsController.m */,
-				A9B46A8812B79B240040517A /* tagChimpController.h */,
-				A9B46A8912B79B240040517A /* tagChimpController.m */,
 				A9B46A8A12B79B240040517A /* VideoFramerate.h */,
 				A9B46A8B12B79B240040517A /* VideoFramerate.m */,
+				CD71FF1A12F1C46900F0A98D /* MetadataImporters */,
 				A9FD5D150F3C692400817716 /* PropertyView */,
 				A9FD5E020F3C7B0400817716 /* mp4v2 wrapper */,
 			);
@@ -394,14 +428,15 @@
 				A9FD5DA50F3C6F8A00817716 /* ChapterView.xib */,
 				A9FD5EC50F3C8A4800817716 /* MovieView.xib */,
 				A9C055360F6D395B00AF15B5 /* FileImport.xib */,
-				A9B74A7B10F4B75400C244E4 /* MetadataImport.xib */,
+				CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */,
+				CD08BA9512F62829006BA549 /* tmdb-logo.png */,
+				CD16BC4612F6BC7F00AF5453 /* tvdb-logo.png */,
 				A9FB9DC80F83AAC100AB791A /* VideoFramerate.xib */,
 				A9B46AA312B79BB10040517A /* Subler.icns */,
 				A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */,
 				A92A4FB712B0F2F300751FA5 /* prefs-audio.png */,
-				A996C43110F4CA1D0055C85C /* tagChimp_tiny.png */,
-				A9C4E54010F5F01C00B60B59 /* tagChimp_medium.png */,
 				CD4A86A71234AFA10054970A /* ParseFilename */,
+				CD8935FF12F34F500085C2B5 /* tvdb_py */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -568,6 +603,31 @@
 			path = Video;
 			sourceTree = "<group>";
 		};
+		CD71FF1A12F1C46900F0A98D /* MetadataImporters */ = {
+			isa = PBXGroup;
+			children = (
+				CD71FF1B12F1C4A900F0A98D /* TheTVDB.h */,
+				CD71FF1C12F1C4A900F0A98D /* TheTVDB.m */,
+				CD1894F112F3757D00582CBC /* TheMovieDB.h */,
+				CD1894F212F3757D00582CBC /* TheMovieDB.m */,
+			);
+			name = MetadataImporters;
+			sourceTree = "<group>";
+		};
+		CD8935FF12F34F500085C2B5 /* tvdb_py */ = {
+			isa = PBXGroup;
+			children = (
+				CD89360012F34F500085C2B5 /* cache.py */,
+				CD89360212F34F500085C2B5 /* setup.py */,
+				CD89360312F34F500085C2B5 /* tvdb_api.py */,
+				CD89360512F34F500085C2B5 /* tvdb_exceptions.py */,
+				CD89360712F34F500085C2B5 /* tvdb_main.py */,
+				CD89360812F34F500085C2B5 /* tvdb_ui.py */,
+			);
+			name = tvdb_py;
+			path = Utilities/tvdb_py;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -580,6 +640,7 @@
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
 				A984DB5E0F52D68E001A20B2 /* CopyFiles */,
+				CD89361D12F34FA50085C2B5 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -665,11 +726,11 @@
 				A9FB9DC90F83AAC100AB791A /* VideoFramerate.xib in Resources */,
 				A91E7DEE0F8A2F3D00AF387E /* SoundView.xib in Resources */,
 				A90B023B10F3290A000416F3 /* Prefs.xib in Resources */,
-				A9B74A7D10F4B75400C244E4 /* MetadataImport.xib in Resources */,
-				A996C43210F4CA1D0055C85C /* tagChimp_tiny.png in Resources */,
-				A9C4E54110F5F01C00B60B59 /* tagChimp_medium.png in Resources */,
 				A92A4FB812B0F2F300751FA5 /* prefs-audio.png in Resources */,
 				A9B46AA412B79BB10040517A /* Subler.icns in Resources */,
+				CD71FEA612F1B62600F0A98D /* MetadataSearch.xib in Resources */,
+				CD08BA9612F62829006BA549 /* tmdb-logo.png in Resources */,
+				CD16BC4712F6BC7F00AF5453 /* tvdb-logo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -729,7 +790,6 @@
 				A9B46A8E12B79B240040517A /* PrefsController.m in Sources */,
 				A9B46A8F12B79B240040517A /* SBTableView.m in Sources */,
 				A9B46A9012B79B240040517A /* SBView.m in Sources */,
-				A9B46A9112B79B240040517A /* tagChimpController.m in Sources */,
 				A9B46A9212B79B240040517A /* VideoFramerate.m in Sources */,
 				A9B46A9E12B79B990040517A /* ButtonToolbarItem.m in Sources */,
 				A9B46A9F12B79B990040517A /* lang.c in Sources */,
@@ -744,6 +804,9 @@
 				A9B46ABF12B79D1C0040517A /* SBDocument.m in Sources */,
 				A9F183DD12C201760035BDE1 /* downmix.c in Sources */,
 				A95B4CFB12D0B26D006E55BD /* SBPresetManager.m in Sources */,
+				CD71FEA312F1B5AF00F0A98D /* MetadataSearchController.m in Sources */,
+				CD71FF1D12F1C4A900F0A98D /* TheTVDB.m in Sources */,
+				CD1894F312F3757D00582CBC /* TheMovieDB.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -814,14 +877,6 @@
 			name = SBDocument.xib;
 			sourceTree = "<group>";
 		};
-		A9B74A7B10F4B75400C244E4 /* MetadataImport.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A9B74A7C10F4B75400C244E4 /* English */,
-			);
-			name = MetadataImport.xib;
-			sourceTree = "<group>";
-		};
 		A9C055360F6D395B00AF15B5 /* FileImport.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -862,6 +917,14 @@
 			name = MovieView.xib;
 			sourceTree = "<group>";
 		};
+		CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD71FEA512F1B62600F0A98D /* English */,
+			);
+			name = MetadataSearch.xib;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -882,6 +945,7 @@
 				GCC_PREFIX_HEADER = Subler_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/mp4v2\"",
@@ -906,6 +970,7 @@
 				GCC_PREFIX_HEADER = Subler_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/mp4v2\"",

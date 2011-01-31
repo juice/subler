@@ -6,6 +6,7 @@
 //
 
 #import "PrefsController.h"
+#import "MetadataSearchController.h"
 
 #define TOOLBAR_GENERAL     @"TOOLBAR_GENERAL"
 #define TOOLBAR_AUDIO       @"TOOLBAR_AUDIO"
@@ -71,6 +72,14 @@
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
 {
     return [NSArray arrayWithObjects: TOOLBAR_GENERAL, TOOLBAR_AUDIO, nil];
+}
+
+- (IBAction) clearRecentSearches:(id) sender {
+    [MetadataSearchController clearRecentSearches];
+}
+
+- (IBAction) deleteCachedMetadata:(id) sender {
+    [MetadataSearchController deleteCachedMetadata];
 }
 
 @end

@@ -13,5 +13,7 @@
 }
 
 - (id)init;
+- (IBAction) clearRecentSearches:(id) sender;
+- (IBAction) deleteCachedMetadata:(id) sender;
 
 @end
