@@ -52,7 +52,9 @@
 
             char * title = chapter_list[i-1].title;
             if ((title[0] == '\xfe' && title[1] == '\xff') || (title[0] == '\xff' && title[1] == '\xfe')) {
-                chapter.title = [[[NSString alloc] initWithBytes:title length:chapter_list[i-1].titleLength encoding:NSUTF16StringEncoding] autorelease];
+                chapter.title = [[[NSString alloc] initWithBytes:title
+														  length:chapter_list[i-1].titleLength
+														encoding:NSUTF16StringEncoding] autorelease];
             }
             else {
                 chapter.title = [NSString stringWithCString:chapter_list[i-1].title encoding: NSUTF8StringEncoding];

@@ -53,7 +53,7 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
 
             MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.ac-3.dac3.acmod", &acmod);
             MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.ac-3.dac3.lfeon", &lfeon);
-            
+
             readAC3Config(acmod, lfeon, &channels, &channelLayoutTag);
         }
     }
