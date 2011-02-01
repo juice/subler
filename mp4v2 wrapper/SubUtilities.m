@@ -385,7 +385,7 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
 	[sc setCharactersToBeSkipped:nil];
 
 	unsigned time=0;
-
+    int count = 1;
 	enum {
 		TIMESTAMP,
 		LINES
@@ -406,13 +406,17 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
                 case LINES:
                     [sc scanUpToString:@"=" intoString:nil];
                     [sc scanString:@"=" intoString:nil];
-                    [sc scanUpToString:@"\n" intoString:&res];
+                    if (!([sc scanUpToString:@"\n" intoString:&res]))
+                        res = [NSString stringWithFormat:@"Chapter %d", count];
                     [sc scanString:@"\n" intoString:nil];
 
                     SBTextSample *chapter = [[SBTextSample alloc] init];
                     chapter.timestamp = time;
                     chapter.title = res;
+
                     [ss addObject:chapter];
+                    count++;
+
                     [chapter release];
                     state = TIMESTAMP;
                     break;
@@ -431,13 +435,18 @@ int LoadChaptersFromPath(NSString *path, NSMutableArray *ss)
                     state = LINES;
                     break;
                 case LINES:
-                    [sc scanUpToString:@"\n" intoString:&res];
+                    if (!([sc scanUpToString:@"\n" intoString:&res]))
+                        res = [NSString stringWithFormat:@"Chapter %d", count];
+
                     [sc scanString:@"\n" intoString:nil];
 
                     SBTextSample *chapter = [[SBTextSample alloc] init];
                     chapter.timestamp = time;
                     chapter.title = res;
+                    
                     [ss addObject:chapter];
+                    count++;
+
                     [chapter release];
                     state = TIMESTAMP;
                     break;
