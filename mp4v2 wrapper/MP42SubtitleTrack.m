@@ -77,121 +77,129 @@
 }
 
 struct style_record {
-	uint16_t startChar;
-	uint16_t endChar;
-	uint16_t fontID;
-	uint8_t  fontStyleFlags;
-	uint8_t  fontSize;
-	uint8_t	 textColorRGBA[4];
+    uint16_t startChar;
+    uint16_t endChar;
+    uint16_t fontID;
+    uint8_t  fontStyleFlags;
+    uint8_t  fontSize;
+    uint8_t	 textColorRGBA[4];
 };
 
 - (BOOL)exportToURL:(NSURL *)url error:(NSError **)error
 {
-	MP4FileHandle fileHandle = MP4Read([sourcePath UTF8String], 0);
-	MP4TrackId srcTrackId = Id;
+    MP4FileHandle fileHandle = MP4Read([sourcePath UTF8String], 0);
+    MP4TrackId srcTrackId = Id;
 
-	MP4SampleId sampleId = 1;
-	NSUInteger srtSampleNumber = 1;
+    MP4SampleId sampleId = 1;
+    NSUInteger srtSampleNumber = 1;
 
-	MP4Timestamp time = 0;
+    MP4Timestamp time = 0;
 
-	NSMutableString *srtFile = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString *srtFile = [[[NSMutableString alloc] init] autorelease];
 
-	while (1) {
-		uint8_t *pBytes = NULL;
-		uint32_t numBytes = 0;
-		MP4Duration sampleDuration;
-		MP4Duration renderingOffset;
-		MP4Timestamp pStartTime;
-		bool isSyncSample;
+    while (1) {
+        uint8_t *pBytes = NULL;
+        uint32_t pos = 0;
+        uint32_t numBytes = 0;
+        MP4Duration sampleDuration;
+        MP4Duration renderingOffset;
+        MP4Timestamp pStartTime;
+        bool isSyncSample;
 
-		if (!MP4ReadSample(fileHandle,
-						   srcTrackId,
-						   sampleId,
-						   &pBytes, &numBytes,
-						   &pStartTime, &sampleDuration, &renderingOffset,
-						   &isSyncSample)) {
-			break;
-		}
+        if (!MP4ReadSample(fileHandle,
+                           srcTrackId,
+                           sampleId,
+                           &pBytes, &numBytes,
+                           &pStartTime, &sampleDuration, &renderingOffset,
+                           &isSyncSample)) {
+            break;
+        }
 
-		NSMutableString * sampleText = nil;
-		NSUInteger textSampleLength = ((pBytes[0] << 8) & 0xff00) + pBytes[1];
+        NSMutableString * sampleText = nil;
+        NSUInteger textSampleLength = ((pBytes[0] << 8) & 0xff00) + pBytes[1];
 
-		if (textSampleLength) {
-			sampleText = [[[NSMutableString alloc] initWithBytes:(pBytes+2)
-															  length:textSampleLength
-															encoding:NSUTF8StringEncoding] autorelease];
-		}
+        if (textSampleLength) {
+            sampleText = [[[NSMutableString alloc] initWithBytes:(pBytes+2)
+                                                          length:textSampleLength
+                                                        encoding:NSUTF8StringEncoding] autorelease];
+        }
 
-		if ((textSampleLength + 7) < numBytes) {
-			uint8_t *styleAtoms = pBytes + textSampleLength + 2;
+        // Let's see if there is an atom after the text sample
+        pos = textSampleLength + 2;
+
+		while (pos + 8 < numBytes && sampleText) {
+			uint8_t *styleAtoms = pBytes + pos;
 			size_t atomLength = ((styleAtoms[0] << 24) & 0xff000000) + ((styleAtoms[1] << 16) & 0xff0000) + ((styleAtoms[2] << 8) & 0xff00) + styleAtoms[3];
-			if (atomLength < numBytes + textSampleLength + 7) {
-				uint8_t styleCount = ((styleAtoms[8] << 8) & 0xff00) + styleAtoms[9];
-				uint8_t *style_sample = styleAtoms + 10;
-				uint8_t numberOfInsertedChars = 0;
 
-				while (styleCount)
-					if (pBytes[textSampleLength + 6] == 's') {
-						struct style_record record;
-						record.startChar = (style_sample[0] << 8) & 0xff00;
-						record.startChar += style_sample[1];
-						record.endChar = (style_sample[2] << 8) & 0xff00;
-						record.endChar += style_sample[3];
-						record.fontID = (style_sample[4] << 8) & 0xff00;
-						record.fontID += style_sample[5];
-						record.fontStyleFlags	= style_sample[6];
-						record.fontSize			= style_sample[7];
-						record.textColorRGBA[0] = style_sample[8];
-						record.textColorRGBA[1] = style_sample[9];
-						record.textColorRGBA[2] = style_sample[10];
-						record.textColorRGBA[3] = style_sample[11];
+            pos += atomLength;
 
-						uint8_t insertedChars = 0;
-						uint8_t insertedStartChars = 0;
+			if (pos <= numBytes) {
+                // If we found a style atom, read it and insert html-like tags in the new file
+                if (styleAtoms[4] == 's' && styleAtoms[5] == 't' && styleAtoms[6] == 'y' && styleAtoms[7] == 'l') {
+                    uint8_t styleCount = ((styleAtoms[8] << 8) & 0xff00) + styleAtoms[9];
+                    uint8_t *style_sample = styleAtoms + 10;
+                    uint8_t numberOfInsertedChars = 0;
 
-						if (record.fontStyleFlags & 0x1) {
-								[sampleText insertString:@"<b>" atIndex:record.startChar + numberOfInsertedChars];
-								[sampleText insertString:@"</b>" atIndex:record.endChar + numberOfInsertedChars + 3];
-								insertedChars += 7;
-								insertedStartChars += 3;
-						}
-						if (record.fontStyleFlags & 0x2) {
-								[sampleText insertString:@"<i>" atIndex:record.startChar + numberOfInsertedChars + insertedStartChars];
-								[sampleText insertString:@"</i>" atIndex:record.endChar + numberOfInsertedChars + insertedStartChars + 3];
-								insertedChars += 7;
-								insertedStartChars += 3;
-						}
-						if (record.fontStyleFlags & 0x4) {
-								[sampleText insertString:@"<u>" atIndex:record.startChar + numberOfInsertedChars + insertedStartChars];
-								[sampleText insertString:@"</u>" atIndex:record.endChar + numberOfInsertedChars + insertedStartChars + 3];
-								insertedChars += 7;
-						}
+                    while (styleCount) {
+                        struct style_record record;
+                        record.startChar    = (style_sample[0] << 8) & 0xff00;
+                        record.startChar    += style_sample[1];
+                        record.endChar      = (style_sample[2] << 8) & 0xff00;
+                        record.endChar      += style_sample[3];
+                        record.fontID       = (style_sample[4] << 8) & 0xff00;
+                        record.fontID       += style_sample[5];
+                        record.fontStyleFlags	= style_sample[6];
+                        record.fontSize			= style_sample[7];
+                        record.textColorRGBA[0] = style_sample[8];
+                        record.textColorRGBA[1] = style_sample[9];
+                        record.textColorRGBA[2] = style_sample[10];
+                        record.textColorRGBA[3] = style_sample[11];
 
-						numberOfInsertedChars += insertedChars;
+                        uint8_t insertedChars = 0;
+                        uint8_t insertedStartChars = 0;
 
-						styleCount--;
-						style_sample += 12;
-					}
-			}
-		}
+                        if (record.fontStyleFlags & 0x1) {
+                            [sampleText insertString:@"<b>" atIndex:record.startChar + numberOfInsertedChars];
+                            [sampleText insertString:@"</b>" atIndex:record.endChar + numberOfInsertedChars + 3];
+                            insertedChars += 7;
+                            insertedStartChars += 3;
+                        }
+                        if (record.fontStyleFlags & 0x2) {
+                            [sampleText insertString:@"<i>" atIndex:record.startChar + numberOfInsertedChars + insertedStartChars];
+                            [sampleText insertString:@"</i>" atIndex:record.endChar + numberOfInsertedChars + insertedStartChars + 3];
+                            insertedChars += 7;
+                            insertedStartChars += 3;
+                        }
+                        if (record.fontStyleFlags & 0x4) {
+                            [sampleText insertString:@"<u>" atIndex:record.startChar + numberOfInsertedChars + insertedStartChars];
+                            [sampleText insertString:@"</u>" atIndex:record.endChar + numberOfInsertedChars + insertedStartChars + 3];
+                            insertedChars += 7;
+                        }
 
-		if (textSampleLength) {
+                        numberOfInsertedChars += insertedChars;
+
+                        styleCount--;
+                        style_sample += 12;
+                    }
+                }
+            }
+        }
+
+        if (textSampleLength) {
             if ([sampleText characterAtIndex:[sampleText length] - 1] == '\n')
-				[sampleText deleteCharactersInRange:NSMakeRange([sampleText length] - 1, 1)];
+                [sampleText deleteCharactersInRange:NSMakeRange([sampleText length] - 1, 1)];
 
-			[srtFile appendFormat:@"%d\n%@ --> %@\n", srtSampleNumber++,
-														SRTStringFromTime(time, 1000, ','), SRTStringFromTime(time + sampleDuration, 1000, ',')];
-			[srtFile appendString:sampleText];
-			[srtFile appendString:@"\n\n"];
-
+            [srtFile appendFormat:@"%d\n%@ --> %@\n", srtSampleNumber++,
+                                                      SRTStringFromTime(time, 1000, ','), SRTStringFromTime(time + sampleDuration, 1000, ',')];
+            [srtFile appendString:sampleText];
+            [srtFile appendString:@"\n\n"];
 		}
 
-		time += sampleDuration;
-		sampleId++;
-	}
+        time += sampleDuration;
+        sampleId++;
+    }
 
-	return [srtFile writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:error];
+    return [srtFile writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:error];
 }
 
 - (void) dealloc
