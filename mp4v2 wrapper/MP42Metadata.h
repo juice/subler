@@ -73,6 +73,8 @@ enum rating_type {
     NSMutableDictionary     *tagsDict;
     NSImage                 *artwork;
     NSURL                   *artworkURL;
+    NSArray                 *artworkThumbURLs;
+    NSArray                 *artworkFullsizeURLs;
 
     uint8_t mediaKind;
     uint8_t contentRating;
