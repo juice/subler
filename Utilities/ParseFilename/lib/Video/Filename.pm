@@ -135,10 +135,10 @@ $VERSION = "0.35.1";
 	},
 	{ # TV Show Support - see
 		# Perl > v5.10
-		re => '^(?:(?<name>.*?)[\/\s._-]*)?(?<season>\d{1,2}?)(?<episode>\d{2})(?:[\s._-]*(?<epname>.+?))?$',
+		re => '^(?:(?<name>.*?)[\/\s._-]*)?(?<season>\d{1,2}?)(?<episode>\d{2})(?:[^0-9][\s._-]*(?<epname>.+?))?$',
 
 		# Perl < v5.10
-		re_compat => '^(?:(.*?)[\/\s._-]*)?(\d{1,2}?)(\d{2})(?:[\s._-]*(.+?))?$',
+		re_compat => '^(?:(.*?)[\/\s._-]*)?(\d{1,2}?)(\d{2})(?:[^0-9][\s._-]*(.+?))?$',
 		keys_compat => [qw(name season episode epname)],
 
 		test_funcs => [0, 1, 1, 0], # DVD TV Episode Movie

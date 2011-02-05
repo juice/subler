@@ -118,6 +118,10 @@
 				NSString *newTitle=[[lines objectAtIndex:1] 
                                     stringByReplacingOccurrencesOfString:@"." 
                                     withString:@" "];
+                newTitle = [newTitle stringByReplacingOccurrencesOfString:@"(" withString:@" "];
+                newTitle = [newTitle stringByReplacingOccurrencesOfString:@")" withString:@" "];
+                newTitle = [newTitle stringByReplacingOccurrencesOfString:@"[" withString:@" "];
+                newTitle = [newTitle stringByReplacingOccurrencesOfString:@"]" withString:@" "];
                 [results setValue:newTitle forKey:@"title"];
             }
         }
