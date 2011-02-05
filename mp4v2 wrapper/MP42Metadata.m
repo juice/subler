@@ -1043,6 +1043,8 @@ static const genreType_t genreType_strings[] = {
 @synthesize isArtworkEdited;
 @synthesize artwork;
 @synthesize artworkURL;
+@synthesize artworkThumbURLs;
+@synthesize artworkFullsizeURLs;
 @synthesize mediaKind;
 @synthesize contentRating;
 @synthesize hdVideo;
@@ -1097,6 +1099,8 @@ static const genreType_t genreType_strings[] = {
 
     [artwork release];
     [artworkURL release];
+    [artworkThumbURLs release];
+    [artworkFullsizeURLs release];
     [tagsDict release];
     [super dealloc];
 }

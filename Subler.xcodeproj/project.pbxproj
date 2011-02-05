@@ -82,6 +82,9 @@
 		CD08BA9612F62829006BA549 /* tmdb-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD08BA9512F62829006BA549 /* tmdb-logo.png */; };
 		CD16BC4712F6BC7F00AF5453 /* tvdb-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD16BC4612F6BC7F00AF5453 /* tvdb-logo.png */; };
 		CD1894F312F3757D00582CBC /* TheMovieDB.m in Sources */ = {isa = PBXBuildFile; fileRef = CD1894F212F3757D00582CBC /* TheMovieDB.m */; };
+		CD4E6E5D12F744210095C84F /* ArtworkSelector.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD4E6E5B12F744210095C84F /* ArtworkSelector.xib */; };
+		CD56963212FAAD680029FADB /* ArtworkSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = CD56963112FAAD680029FADB /* ArtworkSelector.m */; };
+		CD56966F12FAAFA90029FADB /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD56966E12FAAFA90029FADB /* Quartz.framework */; };
 		CD71FEA312F1B5AF00F0A98D /* MetadataSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD71FEA212F1B5AF00F0A98D /* MetadataSearchController.m */; };
 		CD71FEA612F1B62600F0A98D /* MetadataSearch.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */; };
 		CD71FF1D12F1C4A900F0A98D /* TheTVDB.m in Sources */ = {isa = PBXBuildFile; fileRef = CD71FF1C12F1C4A900F0A98D /* TheTVDB.m */; };
@@ -287,6 +290,10 @@
 		CD4A86AC1234AFA10054970A /* Roman.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = Roman.pm; sourceTree = "<group>"; };
 		CD4A86AF1234AFA10054970A /* Filename.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = Filename.pm; sourceTree = "<group>"; };
 		CD4A86B01234AFA10054970A /* ParseFilename.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = ParseFilename.pl; sourceTree = "<group>"; };
+		CD4E6E5C12F744210095C84F /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ArtworkSelector.xib; sourceTree = "<group>"; };
+		CD56963012FAAD680029FADB /* ArtworkSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArtworkSelector.h; path = Classes/ArtworkSelector.h; sourceTree = "<group>"; };
+		CD56963112FAAD680029FADB /* ArtworkSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArtworkSelector.m; path = Classes/ArtworkSelector.m; sourceTree = "<group>"; };
+		CD56966E12FAAFA90029FADB /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		CD71FEA112F1B5AF00F0A98D /* MetadataSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetadataSearchController.h; path = Classes/MetadataSearchController.h; sourceTree = "<group>"; };
 		CD71FEA212F1B5AF00F0A98D /* MetadataSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetadataSearchController.m; path = Classes/MetadataSearchController.m; sourceTree = "<group>"; };
 		CD71FEA512F1B62600F0A98D /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MetadataSearch.xib; sourceTree = "<group>"; };
@@ -314,6 +321,7 @@
 				A9C095800F7B6C8C00170CAF /* AudioToolbox.framework in Frameworks */,
 				A91F622D0FB0A56F00B96B33 /* libicucore.dylib in Frameworks */,
 				948058B6106E07990037A911 /* libz.dylib in Frameworks */,
+				CD56966F12FAAFA90029FADB /* Quartz.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +331,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CD56966E12FAAFA90029FADB /* Quartz.framework */,
 				A91F622C0FB0A56F00B96B33 /* libicucore.dylib */,
 				A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */,
 				A9C8182C0F74D6E300019BFF /* QuickTime.framework */,
@@ -377,6 +386,8 @@
 				A9B46A7F12B79B240040517A /* FileImport.m */,
 				CD71FEA112F1B5AF00F0A98D /* MetadataSearchController.h */,
 				CD71FEA212F1B5AF00F0A98D /* MetadataSearchController.m */,
+				CD56963012FAAD680029FADB /* ArtworkSelector.h */,
+				CD56963112FAAD680029FADB /* ArtworkSelector.m */,
 				A9B46A8212B79B240040517A /* PrefsController.h */,
 				A9B46A8312B79B240040517A /* PrefsController.m */,
 				A9B46A8A12B79B240040517A /* VideoFramerate.h */,
@@ -429,6 +440,7 @@
 				A9FD5EC50F3C8A4800817716 /* MovieView.xib */,
 				A9C055360F6D395B00AF15B5 /* FileImport.xib */,
 				CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */,
+				CD4E6E5B12F744210095C84F /* ArtworkSelector.xib */,
 				CD08BA9512F62829006BA549 /* tmdb-logo.png */,
 				CD16BC4612F6BC7F00AF5453 /* tvdb-logo.png */,
 				A9FB9DC80F83AAC100AB791A /* VideoFramerate.xib */,
@@ -731,6 +743,7 @@
 				CD71FEA612F1B62600F0A98D /* MetadataSearch.xib in Resources */,
 				CD08BA9612F62829006BA549 /* tmdb-logo.png in Resources */,
 				CD16BC4712F6BC7F00AF5453 /* tvdb-logo.png in Resources */,
+				CD4E6E5D12F744210095C84F /* ArtworkSelector.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -807,6 +820,7 @@
 				CD71FEA312F1B5AF00F0A98D /* MetadataSearchController.m in Sources */,
 				CD71FF1D12F1C4A900F0A98D /* TheTVDB.m in Sources */,
 				CD1894F312F3757D00582CBC /* TheMovieDB.m in Sources */,
+				CD56963212FAAD680029FADB /* ArtworkSelector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -915,6 +929,14 @@
 				A9FD5EC60F3C8A4800817716 /* English */,
 			);
 			name = MovieView.xib;
+			sourceTree = "<group>";
+		};
+		CD4E6E5B12F744210095C84F /* ArtworkSelector.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD4E6E5C12F744210095C84F /* English */,
+			);
+			name = ArtworkSelector.xib;
 			sourceTree = "<group>";
 		};
 		CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */ = {

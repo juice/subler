@@ -101,8 +101,6 @@
     if ([tag count]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Long Description"];
     tag = [node nodesForXPath:@"./certification" error:&err];
     if ([tag count]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Rating"];
-    tag = [node nodesForXPath:@"./images/image[@type='poster'][@size='original']/@url" error:&err];
-    if ([tag count]) [metadata setArtworkURL:[NSURL URLWithString:[[tag objectAtIndex:0] stringValue]]];
     tag = [node nodesForXPath:@"./id" error:&err];
     if ([tag count]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TMDb ID"];
     // additional fields from detailed movie info
@@ -121,6 +119,45 @@
     if (joined) [metadata setTag:joined forKey:@"Studio"];
     // TheMovieDB does not provide the following fields normally associated with TV shows in MP42Metadata:
     // "Copyright" "Artist"
+    tag = [node nodesForXPath:@"./images/image[@type='poster'][@size='thumb']" error:&err];
+    NSMutableArray *artworkThumbURLs, *artworkFullsizeURLs;
+    if ([tag count]) {
+        artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
+        artworkFullsizeURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
+        for (int i = 0; i < [tag count]; i++) {
+            NSArray *idtag = [[tag objectAtIndex:i] nodesForXPath:@"./@id" error:&err];
+            if (![idtag count]) continue;
+            NSArray *thumbURLtag = [[tag objectAtIndex:i] nodesForXPath:@"./@url" error:&err];
+            [artworkThumbURLs addObject:[NSURL URLWithString:[[thumbURLtag objectAtIndex:0] stringValue]]];
+            if (![thumbURLtag count]) continue;
+            NSString *artworkID = [[idtag objectAtIndex:0] stringValue];
+            NSArray *fullsizeURLtag = [node nodesForXPath:[NSString stringWithFormat:@"./images/image[@type='poster'][@size='original'][@id='%@']/@url", artworkID] error:&err];
+            if (![fullsizeURLtag count]) continue;
+            [artworkFullsizeURLs addObject:[NSURL URLWithString:[[fullsizeURLtag objectAtIndex:0] stringValue]]];
+        }
+        [metadata setArtworkThumbURLs:artworkThumbURLs];
+        [metadata setArtworkFullsizeURLs:artworkFullsizeURLs];
+    }
+    tag = [node nodesForXPath:@"./images/image[@type='backdrop'][@size='thumb']" error:&err];
+    if ([tag count]) {
+        if (!artworkThumbURLs) {
+            artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
+            artworkFullsizeURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
+        }
+        for (int i = 0; i < [tag count]; i++) {
+            NSArray *idtag = [[tag objectAtIndex:i] nodesForXPath:@"./@id" error:&err];
+            if (![idtag count]) continue;
+            NSArray *thumbURLtag = [[tag objectAtIndex:i] nodesForXPath:@"./@url" error:&err];
+            [artworkThumbURLs addObject:[NSURL URLWithString:[[thumbURLtag objectAtIndex:0] stringValue]]];
+            if (![thumbURLtag count]) continue;
+            NSString *artworkID = [[idtag objectAtIndex:0] stringValue];
+            NSArray *fullsizeURLtag = [node nodesForXPath:[NSString stringWithFormat:@"./images/image[@type='backdrop'][@size='original'][@id='%@']/@url", artworkID] error:&err];
+            if (![fullsizeURLtag count]) continue;
+            [artworkFullsizeURLs addObject:[NSURL URLWithString:[[fullsizeURLtag objectAtIndex:0] stringValue]]];
+        }
+        [metadata setArtworkThumbURLs:artworkThumbURLs];
+        [metadata setArtworkFullsizeURLs:artworkFullsizeURLs];
+    }
     return metadata;
 }
 

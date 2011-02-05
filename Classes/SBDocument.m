@@ -16,6 +16,7 @@
 #import "FileImport.h"
 #import "VideoFramerate.h"
 #import "MetadataSearchController.h"
+#import "ArtworkSelector.h"
 
 #define SublerTableViewDataType @"SublerTableViewDataType"
 

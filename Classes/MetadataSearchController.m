@@ -9,6 +9,7 @@
 #import "MetadataSearchController.h"
 #import "MP42File.h"
 #import "SBDocument.h"
+#import "ArtworkSelector.h"
 
 @implementation MetadataSearchController
 
@@ -176,14 +177,14 @@
     if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"Movie"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Searching TheMovieDB for movies..."];
+        [progressText setStringValue:@"Searching TheMovieDB for movies…"];
         [progressText setHidden:NO];
         currentSearcher = [[TheMovieDB alloc] init];
         [((TheMovieDB *) currentSearcher) searchForResults:[movieName stringValue] callback:self];
     } else if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"TV Episode"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Searching TheTVDB for episode information..."];
+        [progressText setStringValue:@"Searching TheTVDB for episode information…"];
         [progressText setHidden:NO];
         currentSearcher = [[TheTVDB alloc] init];
         [((TheTVDB *) currentSearcher) searchForResults:[tvSeriesName stringValue]
@@ -212,7 +213,7 @@
     if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"Movie"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Downloading additional metadata from TheMovieDB..."];
+        [progressText setStringValue:@"Downloading additional metadata from TheMovieDB…"];
         [progressText setHidden:NO];
         currentSearcher = [[TheMovieDB alloc] init];
         [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:selectedResult callback:self];
@@ -222,18 +223,47 @@
 }
 
 - (void) loadAdditionalMetadataDone:(MP42Metadata *)metadata {
+    [progress setHidden:YES];
+    [progressText setHidden:YES];
+    [progress stopAnimation:self];
     selectedResult = metadata;
-    [self loadArtwork:nil];
-//    [self addMetadata];
+    [self selectArtwork];
+}
+
+#pragma mark Select artwork
+
+- (void) selectArtwork {
+    if (selectedResult.artworkThumbURLs && [selectedResult.artworkThumbURLs count]) {
+        if ([selectedResult.artworkThumbURLs count] == 1) {
+            selectedResult.artworkURL = [selectedResult.artworkFullsizeURLs objectAtIndex:0];
+            [self loadArtwork];
+        } else {
+            artworkSelectorWindow = [[ArtworkSelector alloc] initWithDelegate:self imageURLs:selectedResult.artworkThumbURLs];
+            [NSApp beginSheet:[artworkSelectorWindow window] modalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+        }
+    } else {
+        [self addMetadata];
+    }
+}
+
+- (void) selectArtworkDone:(NSURL *)url {
+    NSUInteger i = [selectedResult.artworkThumbURLs indexOfObject:url];
+    if (i != NSNotFound) {
+        [NSApp endSheet:[artworkSelectorWindow window]];
+        [[artworkSelectorWindow window] orderOut:self];
+        [artworkSelectorWindow release];
+        selectedResult.artworkURL = [selectedResult.artworkFullsizeURLs objectAtIndex:i];
+    }
+    [self loadArtwork];
 }
 
 #pragma mark Load artwork
 
-- (void) loadArtwork:(id)param {
+- (void) loadArtwork {
     if (selectedResult.artworkURL) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Downloading artwork..."];
+        [progressText setStringValue:@"Downloading artwork…"];
         [progressText setHidden:NO];
         [tvSeriesName setEnabled:NO];
         [tvSeasonNum setEnabled:NO];
@@ -244,18 +274,18 @@
         [metadataTable setEnabled:NO];
         [NSThread detachNewThreadSelector:@selector(runLoadArtworkThread:) toTarget:self withObject:nil];
     } else {
-        [self loadArtworkDone:nil];
+        [self addMetadata];
     }
 }
 
 - (void) runLoadArtworkThread:(id)param {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     artworkData = [NSData dataWithContentsOfURL:selectedResult.artworkURL];
-    [self loadArtworkDone:nil];
+    [self loadArtworkDone];
     [pool release];
 }
 
-- (void) loadArtworkDone:(id)param {
+- (void) loadArtworkDone {
     if (artworkData && [artworkData length]) {
         NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:artworkData];
         if (imageRep != nil) {
@@ -308,7 +338,7 @@
     [super dealloc];
 }
 
-#pragma mark ----------------------
+#pragma mark -
 
 #pragma mark Privacy
 
@@ -346,6 +376,8 @@
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://thetvdb.com/"]];
 }
 
+#pragma mark -
+
 #pragma mark NSComboBox delegates and protocols
 
 - (NSString *)comboBox:(NSComboBox *)comboBox completedString:(NSString *)uncompletedString {
@@ -374,7 +406,7 @@
         } else if ([[tvSeriesName stringValue] length] > 3) {
             tvSeriesNameSearchArray = nil;
             tvSeriesNameSearchArray = [[NSMutableArray alloc] initWithCapacity:1];
-            [tvSeriesNameSearchArray addObject:@"searching..."];
+            [tvSeriesNameSearchArray addObject:@"searching…"];
             [tvSeriesName reloadData];
             currentSearcher = [[TheTVDB alloc] init];
             [((TheTVDB *) currentSearcher) searchForTVSeriesName:[tvSeriesName stringValue] callback:self];
@@ -405,6 +437,8 @@
     }
     return nil;
 }
+
+#pragma mark -
 
 #pragma mark NSTableView delegates and protocols
 

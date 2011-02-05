@@ -38,8 +38,9 @@
     IBOutlet SBTableView         *metadataTable;
 
     IBOutlet NSButton            *addButton;
-    NSURLConnection              *artworkConnection;
-    NSMutableData                *artworkData;
+
+    NSData                       *artworkData;
+    id                           artworkSelectorWindow;
 
     IBOutlet NSProgressIndicator *progress;
     IBOutlet NSTextField         *progressText;
@@ -62,10 +63,14 @@
 - (IBAction) loadAdditionalMetadata:(id)sender;
 - (void) loadAdditionalMetadataDone:(MP42Metadata *)metadata;
 
+#pragma mark Select artwork
+- (void) selectArtwork;
+- (void) selectArtworkDone:(NSURL *)url;
+
 #pragma mark Load artwork
-- (void) loadArtwork:(id)param;
+- (void) loadArtwork;
 - (void) runLoadArtworkThread:(id)param;
-- (void) loadArtworkDone:(id)param;
+- (void) loadArtworkDone;
 
 #pragma mark Finishing up
 - (void) addMetadata;

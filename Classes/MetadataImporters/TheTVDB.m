@@ -106,9 +106,51 @@
         [metadata setTag:[TheTVDB cleanPeopleList:[episodeDict valueForKey:@"director"]] forKey:@"Director"];
         [metadata setTag:[TheTVDB cleanPeopleList:[episodeDict valueForKey:@"writer"]] forKey:@"Screenwriters"];
         [metadata setTag:[episodeDict valueForKey:@"episodenumber"] forKey:@"Track #"];
-        [metadata setArtworkURL:[NSURL URLWithString:[episodeDict valueForKey:@"filename"]]];
+        // artwork
+        NSMutableArray *artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:10];
+        NSMutableArray *artworkFullsizeURLs = [[NSMutableArray alloc] initWithCapacity:10];
+        NSURL *u;
+        if ([episodeDict valueForKey:@"filename"]) {
+            u = [NSURL URLWithString:[episodeDict valueForKey:@"filename"]];
+            [artworkThumbURLs addObject:u];
+            [artworkFullsizeURLs addObject:u];
+        }
+        if ([dict valueForKey:@"artwork_season"]) {
+            NSString *s;
+            NSEnumerator *e = [((NSArray *) [dict valueForKey:@"artwork_season"]) objectEnumerator];
+            while (s = (NSString *) [e nextObject]) {
+                u = [NSURL URLWithString:s];
+                [artworkThumbURLs addObject:u];
+                [artworkFullsizeURLs addObject:u];
+            }
+        }
+        if ([dict valueForKey:@"artwork_posters"]) {
+            NSString *s;
+            NSEnumerator *e = [((NSArray *) [dict valueForKey:@"artwork_posters"]) objectEnumerator];
+            while (s = (NSString *) [e nextObject]) {
+                u = [NSURL URLWithString:s];
+                [artworkThumbURLs addObject:u];
+                [artworkFullsizeURLs addObject:u];
+            }
+        }
+        metadata.artworkThumbURLs = artworkThumbURLs;
+        metadata.artworkFullsizeURLs = artworkFullsizeURLs;
+        // cast
+        NSString *actors = [((NSArray *) [dict valueForKey:@"actors"]) componentsJoinedByString:@", "];
+        NSString *gueststars = [TheTVDB cleanPeopleList:[episodeDict valueForKey:@"gueststars"]];
+        if ([actors length]) {
+            if ([gueststars length]) {
+                [metadata setTag:[NSString stringWithFormat:@"%@, %@", actors, gueststars] forKey:@"Cast"];
+            } else {
+                [metadata setTag:actors forKey:@"Cast"];
+            }
+        } else {
+            if ([gueststars length]) {
+                [metadata setTag:gueststars forKey:@"Cast"];
+            }
+        }
         // TheTVDB does not provide the following fields normally associated with TV shows in MP42Metadata:
-        // "TV Network", "Genre", "Copyright", "Comments", "Rating", "Cast", "Producers", "Artist"
+        // "TV Network", "Genre", "Copyright", "Comments", "Rating", "Producers", "Artist"
         [returnArray addObject:metadata];
         [metadata release];
     }
