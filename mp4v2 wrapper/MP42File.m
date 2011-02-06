@@ -42,7 +42,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     if ((self = [super init]))
 	{
         delegate = del;
-		fileHandle = MP4Read([path UTF8String], 0);
+		fileHandle = MP4Read([path UTF8String]);
 
         const char* brand = NULL;
         MP4GetStringProperty(fileHandle, "ftyp.majorBrand", &brand);
@@ -196,7 +196,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString * tempPath = [NSString stringWithFormat:@"%@%@", filePath, @".tmp"];
 
-    noErr = MP4Optimize([filePath UTF8String], [tempPath UTF8String], MP4_DETAILS_ERROR);
+    noErr = MP4Optimize([filePath UTF8String], [tempPath UTF8String]);
 
     if (noErr) {
         NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -245,7 +245,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         supportedBrandsCount = 2;
     }
 
-    fileHandle = MP4CreateEx([filePath UTF8String], MP4_DETAILS_ERROR,
+    fileHandle = MP4CreateEx([filePath UTF8String],
                              flags, 1, 1,
                              majorBrand, 0,
                              supportedBrands, supportedBrandsCount);
@@ -264,7 +264,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     BOOL success = YES;
     MP42Track *track;
 
-    fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
+    fileHandle = MP4Modify([filePath UTF8String], 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
         if ( outError != NULL) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
@@ -435,7 +435,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         }
 
         // Reopen the mp4v2 fileHandle
-        fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
+        fileHandle = MP4Modify([filePath UTF8String], 0);
         if (fileHandle == MP4_INVALID_FILE_HANDLE)
             return NO;
 
@@ -450,7 +450,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             imageSize.width = maxWidth;
         }
 
-        jpegTrack = MP4AddMJpegVideoTrack(fileHandle, MP4GetTrackTimeScale(fileHandle, [chapterTrack Id]),
+        jpegTrack = MP4AddJpegVideoTrack(fileHandle, MP4GetTrackTimeScale(fileHandle, [chapterTrack Id]),
                                           MP4_INVALID_DURATION, imageSize.width, imageSize.height);
 
         MP42VideoTrack* firstVideoTrack;
@@ -514,7 +514,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     }
     else if (chapterTrack && jpegTrack) {
         // We already have all the tracks, so hook them up.
-        fileHandle = MP4Modify([filePath UTF8String], MP4_DETAILS_ERROR, 0);
+        fileHandle = MP4Modify([filePath UTF8String], 0);
         if (fileHandle == MP4_INVALID_FILE_HANDLE)
             return NO;
 

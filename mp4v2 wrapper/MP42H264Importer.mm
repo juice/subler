@@ -1503,7 +1503,7 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
             } 
         }
         bool copy_nal_to_buffer = false;
-        if (Verbosity & MP4_DETAILS_SAMPLE) {
+        if (Verbosity) {
             printf("H264 type %x size %u\n",
                    h264_dec.nal_unit_type, nal.buffer_on);
         }

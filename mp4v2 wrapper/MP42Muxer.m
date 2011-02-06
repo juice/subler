@@ -119,7 +119,7 @@
         // Photo-JPEG video track
         else if ([track isMemberOfClass:[MP42VideoTrack class]] && [track.format isEqualToString:@"Photo - JPEG"]) {
             // Add video track
-            MP4AddMJpegVideoTrack(fileHandle, timeScale,
+            MP4AddJpegVideoTrack(fileHandle, timeScale,
                                   MP4_INVALID_DURATION, [(MP42VideoTrack*)track width], [(MP42VideoTrack*)track height]);
 
             [[track trackImporterHelper] setActiveTrack:track];

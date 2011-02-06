@@ -74,7 +74,7 @@
 - (NSData*)magicCookieForTrack:(MP42Track *)track
 {
     if (!fileHandle)
-        fileHandle = MP4Read([file UTF8String], 0);
+        fileHandle = MP4Read([file UTF8String]);
 
     NSData *magicCookie;
     MP4TrackId srcTrackId = [track sourceId];
@@ -193,7 +193,7 @@
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     if (!fileHandle)
-        fileHandle = MP4Read([file UTF8String], 0);
+        fileHandle = MP4Read([file UTF8String]);
 
     NSInteger tracksNumber = [activeTracks count];
     NSInteger tracksDone = 0;
@@ -267,7 +267,7 @@
 - (MP42SampleBuffer*)copyNextSample
 {
     if (!fileHandle)
-        fileHandle = MP4Read([file UTF8String], 0);
+        fileHandle = MP4Read([file UTF8String]);
 
     if (samplesBuffer == nil) {
         samplesBuffer = [[NSMutableArray alloc] initWithCapacity:200];
