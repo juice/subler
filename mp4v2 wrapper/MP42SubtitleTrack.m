@@ -94,6 +94,7 @@ struct style_record {
     NSUInteger srtSampleNumber = 1;
 
     MP4Timestamp time = 0;
+    uint32_t timeScale = MP4GetTrackTimeScale(fileHandle, srcTrackId);
 
     NSMutableString *srtFile = [[[NSMutableString alloc] init] autorelease];
 
@@ -190,7 +191,7 @@ struct style_record {
                 [sampleText deleteCharactersInRange:NSMakeRange([sampleText length] - 1, 1)];
 
             [srtFile appendFormat:@"%d\n%@ --> %@\n", srtSampleNumber++,
-                                                      SRTStringFromTime(time, 1000, ','), SRTStringFromTime(time + sampleDuration, 1000, ',')];
+                                                      SRTStringFromTime(time, timeScale, ','), SRTStringFromTime(time + sampleDuration, timeScale, ',')];
             [srtFile appendString:sampleText];
             [srtFile appendString:@"\n\n"];
 		}
