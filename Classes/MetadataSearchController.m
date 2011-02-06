@@ -163,9 +163,8 @@
     [searchButton setKeyEquivalent:@"\r"];
 }
 
-- (BOOL)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
+- (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
     [self updateSearchButtonVisibility];
-    return YES;
 }
 
 - (void) searchForTVSeriesNameDone:(NSMutableArray *)seriesArray {
