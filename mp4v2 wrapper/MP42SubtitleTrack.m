@@ -95,10 +95,11 @@ struct style_record {
 
     MP4Timestamp time = 0;
     uint32_t timeScale = MP4GetTrackTimeScale(fileHandle, srcTrackId);
+    uint64_t samples = MP4GetTrackNumberOfSamples(fileHandle, srcTrackId);
 
     NSMutableString *srtFile = [[[NSMutableString alloc] init] autorelease];
 
-    while (1) {
+    for (sampleId = 1; sampleId <= samples; sampleId++) {
         uint8_t *pBytes = NULL;
         uint32_t pos = 0;
         uint32_t numBytes = 0;
@@ -197,7 +198,6 @@ struct style_record {
 		}
 
         time += sampleDuration;
-        sampleId++;
     }
 
     return [srtFile writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:error];
