@@ -14,8 +14,10 @@
 {
     if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
     {
-        height = MP4GetTrackVideoHeight(fileHandle, Id);
-        width = MP4GetTrackVideoWidth(fileHandle, Id);
+        if ([self isMemberOfClass:[MP42VideoTrack class]]) {
+            height = MP4GetTrackVideoHeight(fileHandle, Id);
+            width = MP4GetTrackVideoWidth(fileHandle, Id);
+        }
 
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.width", &trackWidth);
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.height", &trackHeight);
