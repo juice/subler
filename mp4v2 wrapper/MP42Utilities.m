@@ -15,7 +15,7 @@
 
 NSString* SRTStringFromTime( long long time, long timeScale , const char separator)
 {
-    NSString *SMPTE_string;
+    NSString *SRT_string;
     int hour, minute, second, msecond;
     long long result;
 
@@ -31,9 +31,9 @@ NSString* SRTStringFromTime( long long time, long timeScale , const char separat
     result = result / 60; // hour
     hour = result % 24;
 
-    SMPTE_string = [NSString stringWithFormat:@"%02d:%02d:%02d%c%03d", hour, minute, second, separator, msecond]; // h:mm:ss:fff
+    SRT_string = [NSString stringWithFormat:@"%02d:%02d:%02d%c%03d", hour, minute, second, separator, msecond]; // h:mm:ss:fff
 
-    return SMPTE_string;
+    return SRT_string;
 }
 
 NSString* SMPTEStringFromTime( long long time, long timeScale )
