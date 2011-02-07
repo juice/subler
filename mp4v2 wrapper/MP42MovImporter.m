@@ -16,10 +16,6 @@
 
 extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
-@interface QTMovie(IdlingAdditions)
--(QTTime)maxTimeLoaded;
-@end
-
 @interface MP42MovImporter(Private)
     -(void) movieLoaded;
     -(NSString*)formatForTrack: (QTTrack *)track;
@@ -59,28 +55,19 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         delegate = del;
         file = [fileUrl retain];
 
-        sourceFile = [[QTMovie alloc] initWithFile:file error:nil];
+		NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:
+							   [NSURL fileURLWithPath:fileUrl], QTMovieURLAttribute,
+							   [NSNumber numberWithBool:NO], @"QTMovieOpenAsyncRequiredAttribute",
+							   [NSNumber numberWithBool:NO], @"QTMovieOpenAsyncOKAttribute",
+							   nil];
 
-        if ([[sourceFile attributeForKey:QTMovieLoadStateAttribute] longValue] >= QTMovieLoadStateComplete) {
-            [self movieLoaded];
-        }
-        else {
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(loadStateChanged:) 
-                                                         name:QTMovieLoadStateDidChangeNotification 
-                                                       object:sourceFile];
-            
-            //loadTimer = [NSTimer scheduledTimerWithTimeInterval:1
-            //                                             target:self
-            //                                           selector:@selector(updateUI:)
-            //                                           userInfo:nil
-            //                                            repeats:YES];
-            //[[NSRunLoop currentRunLoop] addTimer:loadTimer
-            //                             forMode:NSDefaultRunLoopMode];
-            //[loadProgressBar setIndeterminate:NO];
-            //[loadProgressBar setHidden:NO];
-            //[loadProgressBar setUsesThreadedAnimation:YES];
-        }
+        sourceFile = [[QTMovie alloc] initWithAttributes:dict 
+												   error:nil];
+
+		if (sourceFile)
+			[self movieLoaded];
+		else
+			return nil;
     }
 
     return self;
@@ -238,42 +225,6 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             [newTrack release];
         }
     }
-    //[addTracksButton setEnabled:YES];
-    //[loadProgressBar setHidden:YES];
-}
-
-
--(void)loadStateChanged:(NSNotification *)notification
-{
-    long loadState = [[sourceFile attributeForKey:QTMovieLoadStateAttribute] longValue];
-    
-    if (loadState >= QTMovieLoadStateComplete)
-    {
-        [self movieLoaded];
-        
-        //[loadTimer invalidate];
-        //loadTimer = nil;
-        //[tableView reloadData];
-    }
-    else if (loadState == -1)
-    {
-        NSLog(@"Error occurred");
-    }
-}
-
--(double)_percentLoaded
-{
-    NSTimeInterval tMaxLoaded;
-    NSTimeInterval tDuration;
-    
-    QTGetTimeInterval([sourceFile duration], &tDuration);
-    QTGetTimeInterval([sourceFile maxTimeLoaded], &tMaxLoaded);
-    
-	return (double) tMaxLoaded/tDuration;
-}
-
--(void) updateUI: (id) sender {
-    //[loadProgressBar setDoubleValue:[self _percentLoaded] * 100];
 }
 
 - (NSString*)formatForTrack: (QTTrack *)track;
