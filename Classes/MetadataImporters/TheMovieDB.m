@@ -120,7 +120,7 @@
     // TheMovieDB does not provide the following fields normally associated with TV shows in MP42Metadata:
     // "Copyright" "Artist"
     tag = [node nodesForXPath:@"./images/image[@type='poster'][@size='thumb']" error:&err];
-    NSMutableArray *artworkThumbURLs, *artworkFullsizeURLs;
+    NSMutableArray *artworkThumbURLs = nil, *artworkFullsizeURLs = nil;
     if ([tag count]) {
         artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
         artworkFullsizeURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
