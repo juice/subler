@@ -63,7 +63,7 @@ static unsigned ParseTimeCode(const char *time, unsigned secondScale, BOOL hasSi
 		time++;
 	}
     
-	if (sscanf(time,"%u:%u:%u%[,.:]%u",&hour,&minute,&second,&separator,&frame) < 5)
+	if (sscanf(time,"%u:%u:%u%[,.:;]%u",&hour,&minute,&second,&separator,&frame) < 5)
 		return 0;
     
 	timeval = (hour * 60 * 60 + minute * 60 + second) * 30 + frame;
