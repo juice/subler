@@ -9,7 +9,7 @@
 
 
 @interface PrefsController : NSWindowController {
-    IBOutlet NSView         * generalView, * audioView;
+    IBOutlet NSView         * generalView, * audioView, *setsView;
 }
 
 - (id)init;

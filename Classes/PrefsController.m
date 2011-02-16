@@ -7,9 +7,12 @@
 
 #import "PrefsController.h"
 #import "MetadataSearchController.h"
+#import "SBPresetManager.h"
+#import "MP42Metadata.h"
 
 #define TOOLBAR_GENERAL     @"TOOLBAR_GENERAL"
 #define TOOLBAR_AUDIO       @"TOOLBAR_AUDIO"
+#define TOOLBAR_SETS        @"TOOLBAR_SETS"
 
 @interface PrefsController (Private)
 
@@ -55,6 +58,11 @@
                                          label:NSLocalizedString(@"Audio", @"Preferences Audio Toolbar Item")
                                          image:[NSImage imageNamed:@"prefs-audio"]];
     }
+    else if ( [ident isEqualToString:TOOLBAR_SETS] ) {
+        return [self toolbarItemWithIdentifier:ident
+                                         label:NSLocalizedString(@"Sets", @"Preferences Sets Toolbar Item")
+                                         image:[NSImage imageNamed:NSImageNameFolderSmart]];
+    }    
 
     return nil;
 }
@@ -71,7 +79,7 @@
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: TOOLBAR_GENERAL, TOOLBAR_AUDIO, nil];
+    return [NSArray arrayWithObjects: TOOLBAR_GENERAL, TOOLBAR_AUDIO, TOOLBAR_SETS, nil];
 }
 
 - (IBAction) clearRecentSearches:(id) sender {
@@ -80,6 +88,18 @@
 
 - (IBAction) deleteCachedMetadata:(id) sender {
     [MetadataSearchController deleteCachedMetadata];
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
+    SBPresetManager *presetManager = [SBPresetManager sharedManager];
+    return [[presetManager presets] count];
+}
+
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn
+            row:(NSInteger)rowIndex {
+    SBPresetManager *presetManager = [SBPresetManager sharedManager];
+    
+    return [[[presetManager presets] objectAtIndex:rowIndex] setName];
 }
 
 @end
@@ -93,6 +113,8 @@
         NSString * identifier = [sender itemIdentifier];
         if( [identifier isEqualToString: TOOLBAR_AUDIO] )
             view = audioView;
+        else if( [identifier isEqualToString: TOOLBAR_SETS] )
+            view = setsView;
         else;
     }
 
