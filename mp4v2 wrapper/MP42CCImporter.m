@@ -52,7 +52,7 @@
     return nil;
 }
 
-static unsigned ParseTimeCode(const char *time, unsigned secondScale, BOOL hasSign, int *dropFrame)
+static unsigned ParseTimeCode(const char *time, unsigned secondScale, BOOL hasSign, uint64_t *dropFrame)
 {
 	unsigned hour, minute, second, frame, timeval;
 	char separator;
