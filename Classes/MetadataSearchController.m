@@ -122,6 +122,7 @@
                 newTitle = [newTitle stringByReplacingOccurrencesOfString:@")" withString:@" "];
                 newTitle = [newTitle stringByReplacingOccurrencesOfString:@"[" withString:@" "];
                 newTitle = [newTitle stringByReplacingOccurrencesOfString:@"]" withString:@" "];
+                newTitle = [newTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 [results setValue:newTitle forKey:@"title"];
             }
         }
@@ -180,14 +181,14 @@
     if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"Movie"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Searching TheMovieDB for movies…"];
+        [progressText setStringValue:@"Searching TheMovieDB for movies‚Ä¶"];
         [progressText setHidden:NO];
         currentSearcher = [[TheMovieDB alloc] init];
         [((TheMovieDB *) currentSearcher) searchForResults:[movieName stringValue] callback:self];
     } else if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"TV Episode"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Searching TheTVDB for episode information…"];
+        [progressText setStringValue:@"Searching TheTVDB for episode information‚Ä¶"];
         [progressText setHidden:NO];
         currentSearcher = [[TheTVDB alloc] init];
         [((TheTVDB *) currentSearcher) searchForResults:[tvSeriesName stringValue]
@@ -216,7 +217,7 @@
     if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"Movie"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Downloading additional metadata from TheMovieDB…"];
+        [progressText setStringValue:@"Downloading additional metadata from TheMovieDB‚Ä¶"];
         [progressText setHidden:NO];
         currentSearcher = [[TheMovieDB alloc] init];
         [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:selectedResult callback:self];
@@ -266,7 +267,7 @@
     if (selectedResult.artworkURL) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Downloading artwork…"];
+        [progressText setStringValue:@"Downloading artwork‚Ä¶"];
         [progressText setHidden:NO];
         [tvSeriesName setEnabled:NO];
         [tvSeasonNum setEnabled:NO];
@@ -409,7 +410,7 @@
         } else if ([[tvSeriesName stringValue] length] > 3) {
             tvSeriesNameSearchArray = nil;
             tvSeriesNameSearchArray = [[NSMutableArray alloc] initWithCapacity:1];
-            [tvSeriesNameSearchArray addObject:@"searching…"];
+            [tvSeriesNameSearchArray addObject:@"searching‚Ä¶"];
             [tvSeriesName reloadData];
             currentSearcher = [[TheTVDB alloc] init];
             [((TheTVDB *) currentSearcher) searchForTVSeriesName:[tvSeriesName stringValue] callback:self];
