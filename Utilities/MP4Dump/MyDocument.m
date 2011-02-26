@@ -26,7 +26,8 @@
 - (NSString *)windowNibName
 {
     // Override returning the nib file name of the document
-    // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
+    // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers,
+    // you should remove this method and override -makeWindowControllers instead.
     return @"MyDocument";
 }
 
@@ -51,10 +52,10 @@
     }
     NSString * tempFile = [AppSupportDirectory stringByAppendingPathComponent:@"temp.txt"];
     
-    MP4FileHandle fileHandle = MP4Read([[absoluteURL path] UTF8String], 0);
+    MP4FileHandle fileHandle = MP4Read([[absoluteURL path] UTF8String]);
     FILE * file = fopen([tempFile UTF8String], "w");
-    MP4SetVerbosity(fileHandle, 0);
-    MP4Dump(fileHandle, file, 0);
+    //MP4LogSetLevel(MP4_LOG_INFO);
+    MP4Dump(fileHandle, file);
 
     if ( outError != NULL && !fileHandle) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
