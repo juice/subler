@@ -10,6 +10,11 @@
 #import "MetadataSearchController.h"
 #import "MP42File.h"
 
+@interface TheMovieDB (Private)
+- (NSString *) nodes:(NSXMLElement *)node forXPath:(NSString *)query joinedBy:(NSString *)joiner;
+- (MP42Metadata *) metadata:(MP42Metadata *)metadata forNode:(NSXMLElement *)node;
+@end
+
 @implementation TheMovieDB
 
 #pragma mark Search for matching movies
@@ -29,11 +34,15 @@
         NSError *err;
         NSArray *nodes = [xml nodesForXPath:@"./OpenSearchDescription/movies/movie" error:&err];        
         for (NSXMLElement *node in nodes) {
-            MP42Metadata *metadata = [TheMovieDB metadata:nil forNode:node];
+            MP42Metadata *metadata = [self metadata:nil forNode:node];
             if (metadata) [results addObject:metadata];
         }
     }
-    [mCallback searchForResultsDone:[[results retain] autorelease]];
+    [xml release];
+    if (!isCancelled)
+        [mCallback performSelectorOnMainThread:@selector(searchForResultsDone:) withObject:results waitUntilDone:YES];
+
+    [results release];
     [pool release];
 }
 
@@ -55,21 +64,24 @@
             NSError *err;
             NSArray *nodes = [xml nodesForXPath:@"./OpenSearchDescription/movies/movie" error:&err];
             if ([nodes count] == 1) {
-                [TheMovieDB metadata:mMetadata forNode:[nodes objectAtIndex:0]];
+                [self metadata:mMetadata forNode:[nodes objectAtIndex:0]];
             }
         }
+        [xml release];
     }
-    [mCallback loadAdditionalMetadataDone:[[mMetadata retain] autorelease]];
+    if (!isCancelled)
+        [mCallback performSelectorOnMainThread:@selector(loadAdditionalMetadataDone:) withObject:mMetadata waitUntilDone:YES];
+
     [pool release];
 }
 
 #pragma mark Parse metadata
 
-+ (NSString *) nodes:(NSXMLElement *)node forXPath:(NSString *)query joinedBy:(NSString *)joiner {
+- (NSString *) nodes:(NSXMLElement *)node forXPath:(NSString *)query joinedBy:(NSString *)joiner {
     NSError *err;
     NSArray *tag = [node nodesForXPath:query error:&err];
     if ([tag count]) {
-        NSMutableArray *elements = [[NSMutableArray alloc] initWithCapacity:[tag count]];
+        NSMutableArray *elements = [[[NSMutableArray alloc] initWithCapacity:[tag count]] autorelease];
         NSEnumerator *tagEnum = [tag objectEnumerator];
         NSXMLNode *element;
         while (element = [tagEnum nextObject]) {
@@ -81,12 +93,12 @@
     }
 }
 
-+ (MP42Metadata *) metadata:(MP42Metadata *)aMetadata forNode:(NSXMLElement *)node {
+- (MP42Metadata *) metadata:(MP42Metadata *)aMetadata forNode:(NSXMLElement *)node {
     MP42Metadata *metadata;
     if (aMetadata == nil) {
         metadata = [[MP42Metadata alloc] init];
     } else {
-        metadata = aMetadata;
+        metadata = [aMetadata retain];
     }
     metadata.mediaKind = 9; // movie
     NSArray *tag;
@@ -105,25 +117,26 @@
     if ([tag count]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TMDb ID"];
     // additional fields from detailed movie info
     NSString *joined;
-    joined = [TheMovieDB nodes:node forXPath:@"./categories/category[@type='genre']/@name" joinedBy:@","];
+    joined = [self nodes:node forXPath:@"./categories/category[@type='genre']/@name" joinedBy:@","];
     if (joined) [metadata setTag:joined forKey:@"Genre"];
-    joined = [TheMovieDB nodes:node forXPath:@"./cast/person[@job='Actor']/@name" joinedBy:@","];
+    joined = [self nodes:node forXPath:@"./cast/person[@job='Actor']/@name" joinedBy:@","];
     if (joined) [metadata setTag:joined forKey:@"Cast"];
-    joined = [TheMovieDB nodes:node forXPath:@"./cast/person[@job='Director']/@name" joinedBy:@","];
+    joined = [self nodes:node forXPath:@"./cast/person[@job='Director']/@name" joinedBy:@","];
     if (joined) [metadata setTag:joined forKey:@"Director"];
-    joined = [TheMovieDB nodes:node forXPath:@"./cast/person[@department='Writing']/@name" joinedBy:@","];
+    joined = [self nodes:node forXPath:@"./cast/person[@department='Writing']/@name" joinedBy:@","];
     if (joined) [metadata setTag:joined forKey:@"Screenwriters"];
-    joined = [TheMovieDB nodes:node forXPath:@"./cast/person[@department='Production']/@name" joinedBy:@","];
+    joined = [self nodes:node forXPath:@"./cast/person[@department='Production']/@name" joinedBy:@","];
     if (joined) [metadata setTag:joined forKey:@"Producers"];
-    joined = [TheMovieDB nodes:node forXPath:@"./studios/studio/@name" joinedBy:@","];
+    joined = [self nodes:node forXPath:@"./studios/studio/@name" joinedBy:@","];
     if (joined) [metadata setTag:joined forKey:@"Studio"];
+
     // TheMovieDB does not provide the following fields normally associated with TV shows in MP42Metadata:
     // "Copyright" "Artist"
     tag = [node nodesForXPath:@"./images/image[@type='poster'][@size='thumb']" error:&err];
-    NSMutableArray *artworkThumbURLs = nil, *artworkFullsizeURLs = nil;
+
+    NSMutableArray *artworkThumbURLs = [[NSMutableArray alloc] init], *artworkFullsizeURLs = [[NSMutableArray alloc] init];
+    
     if ([tag count]) {
-        artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
-        artworkFullsizeURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
         for (int i = 0; i < [tag count]; i++) {
             NSArray *idtag = [[tag objectAtIndex:i] nodesForXPath:@"./@id" error:&err];
             if (![idtag count]) continue;
@@ -135,15 +148,10 @@
             if (![fullsizeURLtag count]) continue;
             [artworkFullsizeURLs addObject:[NSURL URLWithString:[[fullsizeURLtag objectAtIndex:0] stringValue]]];
         }
-        [metadata setArtworkThumbURLs:artworkThumbURLs];
-        [metadata setArtworkFullsizeURLs:artworkFullsizeURLs];
+
     }
     tag = [node nodesForXPath:@"./images/image[@type='backdrop'][@size='thumb']" error:&err];
     if ([tag count]) {
-        if (!artworkThumbURLs) {
-            artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
-            artworkFullsizeURLs = [[NSMutableArray alloc] initWithCapacity:[tag count]];
-        }
         for (int i = 0; i < [tag count]; i++) {
             NSArray *idtag = [[tag objectAtIndex:i] nodesForXPath:@"./@id" error:&err];
             if (![idtag count]) continue;
@@ -155,16 +163,32 @@
             if (![fullsizeURLtag count]) continue;
             [artworkFullsizeURLs addObject:[NSURL URLWithString:[[fullsizeURLtag objectAtIndex:0] stringValue]]];
         }
+
+    }
+
+    if ([artworkThumbURLs count]) {
         [metadata setArtworkThumbURLs:artworkThumbURLs];
         [metadata setArtworkFullsizeURLs:artworkFullsizeURLs];
     }
-    return metadata;
+
+    [artworkThumbURLs release];
+    [artworkFullsizeURLs release];
+
+    return [metadata autorelease];
 }
 
 #pragma mark Finishing up
 
 - (void) dealloc {
+    mCallback = nil;
     [super dealloc];
+}
+
+- (void)cancel
+{
+    @synchronized(self) {
+        isCancelled = YES;
+    }
 }
 
 @end

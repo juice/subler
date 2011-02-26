@@ -10,6 +10,12 @@
 #import "MetadataSearchController.h"
 #import "MP42File.h"
 
+@interface TheTVDB (Private)
+#pragma mark Parse metadata
+- (NSString *) cleanPeopleList:(NSString *)s;
+- (NSArray *) metadataForResults:(NSDictionary *)results;
+@end
+
 @implementation TheTVDB
 
 #pragma mark Search for TV series name
@@ -33,8 +39,13 @@
                 if ([node count]) [results addObject:[[node objectAtIndex:0] stringValue]];
             }
         }
+        [x release];
     }
-    [callback searchForTVSeriesNameDone:[[results retain] autorelease]];
+    if (!isCancelled)
+        [callback performSelectorOnMainThread:@selector(searchForTVSeriesNameDone:) withObject:results waitUntilDone:YES];
+
+    [u release];
+    [results release];
     [pool release];
 }
 
@@ -67,26 +78,31 @@
     // read output into dictionary
     NSFileHandle *outputFile = [outputPipe fileHandleForReading];
     NSData *outputData = [outputFile readDataToEndOfFile];
-    NSString *plistFilename = [[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *plistFilename = [[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:plistFilename];
     // construct result
-    NSArray *results = [TheTVDB metadataForResults:plist];
+    NSArray *results = [self metadataForResults:plist];
     [[NSFileManager defaultManager] removeItemAtPath:plistFilename error:NULL];
     // return results
-    [callback searchForResultsDone:[[results retain] autorelease]];
+
+    if (!isCancelled)
+        [callback performSelectorOnMainThread:@selector(searchForResultsDone:) withObject:results waitUntilDone:YES];
+
+    [args release];
+    [cmd release];
     [pool release];
 }
 
 #pragma mark Parse metadata
 
-+ (NSString *) cleanPeopleList:(NSString *)s {
+- (NSString *) cleanPeopleList:(NSString *)s {
     NSArray *a = [[[s stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
                           stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"|"]] 
                          componentsSeparatedByString:@"|"];
     return [a componentsJoinedByString:@", "];
 }
 
-+ (NSArray *) metadataForResults:(NSDictionary *)dict {
+- (NSArray *) metadataForResults:(NSDictionary *)dict {
     NSMutableArray *returnArray = [[NSMutableArray alloc] initWithCapacity:1];
     NSArray *episodesList = [dict valueForKey:@"episodes"];
     NSEnumerator *episodesEnum = [episodesList objectEnumerator];
@@ -103,8 +119,8 @@
         [metadata setTag:[episodeDict valueForKey:@"firstaired"] forKey:@"Release Date"];
         [metadata setTag:[episodeDict valueForKey:@"overview"] forKey:@"Description"];
         [metadata setTag:[episodeDict valueForKey:@"overview"] forKey:@"Long Description"];
-        [metadata setTag:[TheTVDB cleanPeopleList:[episodeDict valueForKey:@"director"]] forKey:@"Director"];
-        [metadata setTag:[TheTVDB cleanPeopleList:[episodeDict valueForKey:@"writer"]] forKey:@"Screenwriters"];
+        [metadata setTag:[self cleanPeopleList:[episodeDict valueForKey:@"director"]] forKey:@"Director"];
+        [metadata setTag:[self cleanPeopleList:[episodeDict valueForKey:@"writer"]] forKey:@"Screenwriters"];
         [metadata setTag:[episodeDict valueForKey:@"episodenumber"] forKey:@"Track #"];
         // artwork
         NSMutableArray *artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:10];
@@ -133,11 +149,15 @@
                 [artworkFullsizeURLs addObject:u];
             }
         }
-        metadata.artworkThumbURLs = artworkThumbURLs;
-        metadata.artworkFullsizeURLs = artworkFullsizeURLs;
+        [metadata setArtworkThumbURLs: artworkThumbURLs];
+        [metadata setArtworkFullsizeURLs: artworkFullsizeURLs];
+        
+        [artworkThumbURLs release];
+        [artworkFullsizeURLs release];
+
         // cast
         NSString *actors = [((NSArray *) [dict valueForKey:@"actors"]) componentsJoinedByString:@", "];
-        NSString *gueststars = [TheTVDB cleanPeopleList:[episodeDict valueForKey:@"gueststars"]];
+        NSString *gueststars = [self cleanPeopleList:[episodeDict valueForKey:@"gueststars"]];
         if ([actors length]) {
             if ([gueststars length]) {
                 [metadata setTag:[NSString stringWithFormat:@"%@, %@", actors, gueststars] forKey:@"Cast"];
@@ -154,13 +174,22 @@
         [returnArray addObject:metadata];
         [metadata release];
     }
-    return returnArray;
+    return [returnArray autorelease];
 }
 
 #pragma mark Finishing up
 
 - (void) dealloc {
+    callback = nil;
+
     [super dealloc];
+}
+
+- (void)cancel
+{
+    @synchronized(self) {
+        isCancelled = YES;
+    }
 }
 
 #pragma mark Privacy
@@ -179,8 +208,11 @@
     // read output into dictionary
     NSFileHandle *outputFile = [outputPipe fileHandleForReading];
     NSData *outputData = [outputFile readDataToEndOfFile];
-    NSString *output = [[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *output = [[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [[NSFileManager defaultManager] removeItemAtPath:[output stringByAppendingPathComponent:@"tvdb_api"] error:NULL];
+
+    [cmd release];
+    [args release];
 }
 
 @end

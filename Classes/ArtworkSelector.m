@@ -29,7 +29,7 @@
         [_url release];
         [_urlString release];
         _url = [url retain];
-        _urlString = [url absoluteString];
+        _urlString = [[url absoluteString] retain];
     }
 }
 
@@ -60,8 +60,8 @@
 - (id)initWithDelegate:(id)del imageURLs:(NSArray *)imageURLs {
 	if ((self = [super initWithWindowNibName:@"ArtworkSelector"])) {        
 		delegate = del;
+        imageURLsUnloaded = [[NSMutableArray alloc] initWithArray:imageURLs];
     }
-    imageURLsUnloaded = [[NSMutableArray alloc] initWithArray:imageURLs];
     return self;
 }
 
@@ -75,6 +75,7 @@
         [m setURL:[imageURLsUnloaded objectAtIndex:0]];
         [imageURLsUnloaded removeObjectAtIndex:0];
         [images addObject:m];
+        [m release];
     }
     [loadMoreArtworkButton setEnabled:([imageURLsUnloaded count] > 0)];
     [imageBrowser reloadData];
@@ -88,6 +89,7 @@
         [m setURL:[imageURLsUnloaded objectAtIndex:0]];
         [imageURLsUnloaded removeObjectAtIndex:0];
         [images addObject:m];
+        [m release];
     }
     [loadMoreArtworkButton setEnabled:([imageURLsUnloaded count] > 0)];
     [imageBrowser reloadData];
@@ -116,8 +118,8 @@
 }
 
 - (void) dealloc {
-    [images dealloc];
-    [imageURLsUnloaded dealloc];
+    [images release];
+    [imageURLsUnloaded release];
     [super dealloc];
 }
 

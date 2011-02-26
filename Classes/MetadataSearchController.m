@@ -169,7 +169,10 @@
 }
 
 - (void) searchForTVSeriesNameDone:(NSMutableArray *)seriesArray {
-    tvSeriesNameSearchArray = seriesArray;
+    if (tvSeriesNameSearchArray)
+        [tvSeriesNameSearchArray release];
+
+    tvSeriesNameSearchArray = [seriesArray retain];
     [tvSeriesNameSearchArray sortUsingSelector:@selector(compare:)];
     [tvSeriesName noteNumberOfItemsChanged];
     [tvSeriesName reloadData];
@@ -178,17 +181,23 @@
 #pragma mark Search for results
 
 - (IBAction) searchForResults: (id) sender {
+    if (currentSearcher) {
+        [currentSearcher cancel];
+        [currentSearcher release];
+        currentSearcher = nil;
+    }
+
     if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"Movie"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Searching TheMovieDB for movies‚Ä¶"];
+        [progressText setStringValue:@"Searching TheMovieDB for movies…"];
         [progressText setHidden:NO];
         currentSearcher = [[TheMovieDB alloc] init];
         [((TheMovieDB *) currentSearcher) searchForResults:[movieName stringValue] callback:self];
     } else if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"TV Episode"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Searching TheTVDB for episode information‚Ä¶"];
+        [progressText setStringValue:@"Searching TheTVDB for episode information…"];
         [progressText setHidden:NO];
         currentSearcher = [[TheTVDB alloc] init];
         [((TheTVDB *) currentSearcher) searchForResults:[tvSeriesName stringValue]
@@ -199,10 +208,13 @@
 }
 
 - (void) searchForResultsDone:(NSArray *)_resultsArray {
+    if (resultsArray)
+        [resultsArray release];
+
     [progressText setHidden:YES];
     [progress setHidden:YES];
     [progress stopAnimation:self];
-    resultsArray = _resultsArray;
+    resultsArray = [_resultsArray retain];
     selectedResult = nil;
     [resultsTable reloadData];
     [metadataTable reloadData];
@@ -213,11 +225,17 @@
 #pragma mark Load additional metadata
 
 - (IBAction) loadAdditionalMetadata:(id) sender {
+    if (currentSearcher) {
+        [currentSearcher cancel];
+        [currentSearcher release];
+        currentSearcher = nil;
+    }
+
     [addButton setEnabled:NO];
     if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"Movie"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Downloading additional metadata from TheMovieDB‚Ä¶"];
+        [progressText setStringValue:@"Downloading additional metadata from TheMovieDB…"];
         [progressText setHidden:NO];
         currentSearcher = [[TheMovieDB alloc] init];
         [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:selectedResult callback:self];
@@ -267,7 +285,7 @@
     if (selectedResult.artworkURL) {
         [progress startAnimation:self];
         [progress setHidden:NO];
-        [progressText setStringValue:@"Downloading artwork‚Ä¶"];
+        [progressText setStringValue:@"Downloading artwork…"];
         [progressText setHidden:NO];
         [tvSeriesName setEnabled:NO];
         [tvSeasonNum setEnabled:NO];
@@ -325,12 +343,14 @@
         }
     }
     if ([delegate respondsToSelector:@selector(metadataImportDone:)]) {
-        [delegate performSelector:@selector(metadataImportDone:) withObject:[[selectedResult retain] autorelease]];
+        [delegate performSelector:@selector(metadataImportDone:) withObject:selectedResult];
     }
 }
 
 - (IBAction) closeWindow: (id) sender
 {
+    [currentSearcher cancel];
+
     if ([delegate respondsToSelector:@selector(metadataImportDone:)]) {
         [delegate performSelector:@selector(metadataImportDone:) withObject:nil];
     }
@@ -339,6 +359,15 @@
 - (void) dealloc
 {
     [detailBoldAttr release];
+
+    //[selectedResult release];
+    [selectedResultTagsArray release];
+    [tvSeriesNameSearchArray release];
+    [resultsArray release];
+
+    [currentSearcher cancel];
+    [currentSearcher release];
+
     [super dealloc];
 }
 
@@ -410,8 +439,10 @@
         } else if ([[tvSeriesName stringValue] length] > 3) {
             tvSeriesNameSearchArray = nil;
             tvSeriesNameSearchArray = [[NSMutableArray alloc] initWithCapacity:1];
-            [tvSeriesNameSearchArray addObject:@"searching‚Ä¶"];
+            [tvSeriesNameSearchArray addObject:@"searching…"];
             [tvSeriesName reloadData];
+            [currentSearcher cancel];
+            [currentSearcher release];
             currentSearcher = [[TheTVDB alloc] init];
             [((TheTVDB *) currentSearcher) searchForTVSeriesName:[tvSeriesName stringValue] callback:self];
         } else {
@@ -424,7 +455,7 @@
 - (NSInteger)numberOfItemsInComboBox:(NSComboBox *)comboBox {
     // for some unknown reason, the number of items displayed won't be correct unless these member variables get accessed
     // bug to fix!
-    NSLog(@"in numberOfItemsInComboBox; box numberOfVisibleItems = %d, cell numberOfVisibleItems = %d", (int) [comboBox numberOfVisibleItems], (int) [[comboBox cell] numberOfVisibleItems]);
+    //NSLog(@"in numberOfItemsInComboBox; box numberOfVisibleItems = %d, cell numberOfVisibleItems = %d", (int) [comboBox numberOfVisibleItems], (int) [[comboBox cell] numberOfVisibleItems]);
     if (comboBox == tvSeriesName) {
         if (tvSeriesNameSearchArray != nil) {
             return [tvSeriesNameSearchArray count];

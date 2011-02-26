@@ -15,6 +15,7 @@
     NSString *seasonNum;
     NSString *episodeNum;
     MetadataSearchController *callback;
+    BOOL isCancelled;
 }
 
 #pragma mark Search for TV series name
@@ -25,9 +26,7 @@
 - (void) searchForResults:(NSString *)seriesName seasonNum:(NSString *)seasonNum episodeNum:(NSString *)episodeNum callback:(MetadataSearchController *) callback;
 - (void) runSearchForResultsThread:(id)param;
 
-#pragma mark Parse metadata
-+ (NSString *) cleanPeopleList:(NSString *)s;
-+ (NSArray *) metadataForResults:(NSDictionary *)results;
+- (void) cancel;
 
 + (void) deleteCachedMetadata;
 

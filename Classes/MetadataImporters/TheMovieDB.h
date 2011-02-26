@@ -15,6 +15,7 @@
     NSString *mMovieTitle;
     MP42Metadata *mMetadata;
     MetadataSearchController *mCallback;
+    BOOL isCancelled;
 }
 
 - (void) searchForResults:(NSString *)movieTitle callback:(MetadataSearchController *)callback;
@@ -23,7 +24,6 @@
 - (void) loadAdditionalMetadata:(MP42Metadata *)metadata callback:(MetadataSearchController *)callback;
 - (void) runLoadAdditionalMetadataThread:(id)param;
 
-+ (NSString *) nodes:(NSXMLElement *)node forXPath:(NSString *)query joinedBy:(NSString *)joiner;
-+ (MP42Metadata *) metadata:(MP42Metadata *)metadata forNode:(NSXMLElement *)node;
+- (void) cancel;
 
 @end
