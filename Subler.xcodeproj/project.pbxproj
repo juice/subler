@@ -21,6 +21,7 @@
 		A91E7DEE0F8A2F3D00AF387E /* SoundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */; };
 		A91F622D0FB0A56F00B96B33 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A91F622C0FB0A56F00B96B33 /* libicucore.dylib */; };
 		A92A4FB812B0F2F300751FA5 /* prefs-audio.png in Resources */ = {isa = PBXBuildFile; fileRef = A92A4FB712B0F2F300751FA5 /* prefs-audio.png */; };
+		A936E03E130BE10200CA5527 /* MAAttachedWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A936E03D130BE10200CA5527 /* MAAttachedWindow.m */; };
 		A937137512B76EAD00940FEC /* MP42H264Importer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A937137412B76EAD00940FEC /* MP42H264Importer.mm */; };
 		A9569CEB0F616926002F79F8 /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */; };
 		A95B4CFB12D0B26D006E55BD /* SBPresetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A95B4CFA12D0B26D006E55BD /* SBPresetManager.m */; };
@@ -180,6 +181,8 @@
 		A91E7DED0F8A2F3D00AF387E /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/SoundView.xib; sourceTree = "<group>"; };
 		A91F622C0FB0A56F00B96B33 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = /usr/lib/libicucore.dylib; sourceTree = "<absolute>"; };
 		A92A4FB712B0F2F300751FA5 /* prefs-audio.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "prefs-audio.png"; path = "images/prefs-audio.png"; sourceTree = "<group>"; };
+		A936E03C130BE10200CA5527 /* MAAttachedWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MAAttachedWindow.h; path = Others/MAAttachedWindow.h; sourceTree = "<group>"; };
+		A936E03D130BE10200CA5527 /* MAAttachedWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MAAttachedWindow.m; path = Others/MAAttachedWindow.m; sourceTree = "<group>"; };
 		A937137312B76EAD00940FEC /* MP42H264Importer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42H264Importer.h; path = "mp4v2 wrapper/MP42H264Importer.h"; sourceTree = "<group>"; };
 		A937137412B76EAD00940FEC /* MP42H264Importer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MP42H264Importer.mm; path = "mp4v2 wrapper/MP42H264Importer.mm"; sourceTree = "<group>"; };
 		A9569CE90F616926002F79F8 /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42VideoTrack.h; path = "mp4v2 wrapper/MP42VideoTrack.h"; sourceTree = "<group>"; };
@@ -407,6 +410,8 @@
 				32DBCF750370BD2300C91783 /* Subler_Prefix.pch */,
 				A9B46A9312B79B990040517A /* ButtonToolbarItem.h */,
 				A9B46A9412B79B990040517A /* ButtonToolbarItem.m */,
+				A936E03C130BE10200CA5527 /* MAAttachedWindow.h */,
+				A936E03D130BE10200CA5527 /* MAAttachedWindow.m */,
 				A9B46A9512B79B990040517A /* common.h */,
 				A9B46A9612B79B990040517A /* lang.c */,
 				A9B46A9712B79B990040517A /* lang.h */,
@@ -821,6 +826,7 @@
 				CD71FF1D12F1C4A900F0A98D /* TheTVDB.m in Sources */,
 				CD1894F312F3757D00582CBC /* TheMovieDB.m in Sources */,
 				CD56963212FAAD680029FADB /* ArtworkSelector.m in Sources */,
+				A936E03E130BE10200CA5527 /* MAAttachedWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

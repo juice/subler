@@ -8,6 +8,7 @@
 #import "PrefsController.h"
 #import "MetadataSearchController.h"
 #import "SBPresetManager.h"
+#import "SBTableView.h"
 #import "MP42Metadata.h"
 
 #define TOOLBAR_GENERAL     @"TOOLBAR_GENERAL"
@@ -79,7 +80,7 @@
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: TOOLBAR_GENERAL, TOOLBAR_AUDIO, TOOLBAR_SETS, nil];
+    return [NSArray arrayWithObjects: TOOLBAR_GENERAL, TOOLBAR_SETS, TOOLBAR_AUDIO, nil];
 }
 
 - (IBAction) clearRecentSearches:(id) sender {
@@ -100,6 +101,37 @@
     SBPresetManager *presetManager = [SBPresetManager sharedManager];
     
     return [[[presetManager presets] objectAtIndex:rowIndex] setName];
+}
+
+- (IBAction)toggleWindow:(id)sender
+{
+    // Attach/detach window
+    if (!attachedWindow) {
+        NSInteger row = [tableView selectedRow]; 
+
+        NSRect cellFrame = [tableView frameOfCellAtColumn:1 row:row];
+        NSRect tableFrame = [[[tableView superview] superview]frame];
+
+        NSPoint windowPoint = NSMakePoint(NSMidX(cellFrame),
+                                          NSHeight(tableFrame) + tableFrame.origin.y - cellFrame.origin.y - (cellFrame.size.height / 2));        
+
+        attachedWindow = [[MAAttachedWindow alloc] initWithView:infoView 
+                                                attachedToPoint:windowPoint 
+                                                       inWindow:[self window] 
+                                                         onSide:MAPositionRight 
+                                                     atDistance:28.0];
+
+        [[self window] addChildWindow:attachedWindow ordered:NSWindowAbove];
+    } else {
+        [[self window] removeChildWindow:attachedWindow];
+        [attachedWindow orderOut:self];
+        [attachedWindow release];
+        attachedWindow = nil;
+    }
+}
+
+- (void)_deleteSelectionFromTableView:(NSTableView *)tableView {
+    NSLog(@"Hello!");
 }
 
 @end

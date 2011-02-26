@@ -126,11 +126,11 @@ static SBPresetManager *sharedPresetManager = nil;
     NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
                                                             NSUserDomainMask,
                                                             YES);
-    if ([allPaths count])
+    if ([allPaths count]) {
         appSupportPath = [allPaths objectAtIndex:0];
-
-    if (!appSupportPath)
-        return NO;
+        if (!appSupportPath)
+            return NO;
+    }
 
     appSupportPath = [appSupportPath stringByAppendingPathComponent:@"Subler"];
 
@@ -149,6 +149,11 @@ static SBPresetManager *sharedPresetManager = nil;
         }
     }
     return noErr;
+}
+
+- (BOOL) removePresetWithName:(NSString*)name
+{
+    return YES;
 }
 
 @synthesize presets;
