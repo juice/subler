@@ -114,6 +114,12 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
     tags = metadata.tagsDict;
 }
 
+- (void) setMetadata: (MP42Metadata *)data
+{
+    metadata = data;
+    tags = data.tagsDict;
+}
+
 - (void) updateTagsArray
 {
     [tagsArray autorelease];

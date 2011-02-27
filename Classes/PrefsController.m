@@ -10,6 +10,7 @@
 #import "SBPresetManager.h"
 #import "SBTableView.h"
 #import "MP42Metadata.h"
+#import "MovieViewController.h"
 
 #define TOOLBAR_GENERAL     @"TOOLBAR_GENERAL"
 #define TOOLBAR_AUDIO       @"TOOLBAR_AUDIO"
@@ -120,6 +121,8 @@
 {
     // Attach/detach window
     if (!attachedWindow) {
+        SBPresetManager *presetManager = [SBPresetManager sharedManager];
+
         NSInteger row = [tableView selectedRow]; 
 
         NSRect cellFrame = [tableView frameOfCellAtColumn:1 row:row];
@@ -128,18 +131,27 @@
         NSPoint windowPoint = NSMakePoint(NSMidX(cellFrame),
                                           NSHeight(tableFrame) + tableFrame.origin.y - cellFrame.origin.y - (cellFrame.size.height / 2));        
 
-        attachedWindow = [[MAAttachedWindow alloc] initWithView:infoView 
+        MovieViewController* oldController = controller;
+
+        controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
+        [controller setMetadata:[[presetManager presets] objectAtIndex:row]];
+
+        attachedWindow = [[MAAttachedWindow alloc] initWithView:[controller view] 
                                                 attachedToPoint:windowPoint 
                                                        inWindow:[self window] 
                                                          onSide:MAPositionRight 
                                                      atDistance:28.0];
 
         [[self window] addChildWindow:attachedWindow ordered:NSWindowAbove];
+        
+        [oldController release];
     } else {
         [[self window] removeChildWindow:attachedWindow];
         [attachedWindow orderOut:self];
         [attachedWindow release];
         attachedWindow = nil;
+        [controller release];
+        controller = nil;
     }
 }
 

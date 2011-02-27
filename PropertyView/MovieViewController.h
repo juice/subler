@@ -23,9 +23,9 @@
     IBOutlet NSPopUpButton  *contentRating;
     IBOutlet NSButton       *hdVideo;
     IBOutlet NSButton       *gapless;
-    
+
     IBOutlet NSButton       *removeTag;
-    
+
     IBOutlet NSWindow       *saveWindow;
     IBOutlet NSTextField    *presetName;
     
@@ -43,6 +43,8 @@
 }
 
 - (void) setFile: (MP42File *)file;
+- (void) setMetadata: (MP42Metadata *)data;
+
 - (IBAction) addTag: (id) sender;
 - (IBAction) removeTag: (id) sender;
 

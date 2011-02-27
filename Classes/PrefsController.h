@@ -8,13 +8,15 @@
 #import <Cocoa/Cocoa.h>
 #import "MAAttachedWindow.h"
 
+@class MovieViewController;
 @class SBTableView;
 
 @interface PrefsController : NSWindowController {
     IBOutlet NSView         * generalView, * audioView, *setsView;
     
     MAAttachedWindow *attachedWindow;
-    IBOutlet NSView *infoView;
+    MovieViewController *controller;
+
     IBOutlet SBTableView *tableView;
 }
 
