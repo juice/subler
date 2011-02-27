@@ -142,8 +142,17 @@
                                                          onSide:MAPositionRight 
                                                      atDistance:28.0];
 
+        [attachedWindow setBackgroundColor:[NSColor whiteColor]];
+
         [[self window] addChildWindow:attachedWindow ordered:NSWindowAbove];
-        
+
+        [attachedWindow setAlphaValue:0.0];
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:0.1];  
+        [attachedWindow makeKeyAndOrderFront:self];
+        [[attachedWindow animator] setAlphaValue:1.0];
+        [NSAnimationContext endGrouping];
+
         [oldController release];
     } else {
         [[self window] removeChildWindow:attachedWindow];
