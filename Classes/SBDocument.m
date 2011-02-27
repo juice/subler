@@ -68,7 +68,7 @@
     }
 
     [documentWindow recalculateKeyViewLoop];
-    
+
     [fileTracksTable registerForDraggedTypes:[NSArray arrayWithObjects:SublerTableViewDataType, nil]];
     [documentWindow registerForDraggedTypes:[NSArray arrayWithObjects:
                                    NSColorPboardType, NSFilenamesPboardType, nil]];

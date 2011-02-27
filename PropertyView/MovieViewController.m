@@ -260,6 +260,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
 
     metadata.artwork = newTags.artwork;
     [imageView setImage:newTags.artwork];
+    [metadata setIsArtworkEdited:YES];
 
     metadata.mediaKind = newTags.mediaKind;
     [mediaKind selectItemWithTag:metadata.mediaKind];
