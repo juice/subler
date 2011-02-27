@@ -28,7 +28,12 @@
 
 -(id) init
 {
-    self = [super initWithWindowNibName:@"Prefs"];
+    if (self = [super initWithWindowNibName:@"Prefs"]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updateTableView:)
+                                                     name:@"SBPresetManagerUpdatedNotification" object:nil];
+    }        
+
     return self;
 }
 
@@ -100,7 +105,15 @@
             row:(NSInteger)rowIndex {
     SBPresetManager *presetManager = [SBPresetManager sharedManager];
     
-    return [[[presetManager presets] objectAtIndex:rowIndex] setName];
+    return [[[presetManager presets] objectAtIndex:rowIndex] presetName];
+}
+
+- (IBAction) deletePreset:(id) sender
+{
+    NSInteger rowIndex = [tableView selectedRow];
+    SBPresetManager *presetManager = [SBPresetManager sharedManager];
+    [presetManager removePresetAtIndex:rowIndex];
+    [tableView reloadData];
 }
 
 - (IBAction)toggleWindow:(id)sender
@@ -128,6 +141,11 @@
         [attachedWindow release];
         attachedWindow = nil;
     }
+}
+
+- (void)updateTableView:(id)sender
+{
+    [tableView reloadData];
 }
 
 - (void)_deleteSelectionFromTableView:(NSTableView *)tableView {

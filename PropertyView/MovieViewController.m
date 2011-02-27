@@ -305,7 +305,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
     NSUInteger i = 0;
 
     for (MP42Metadata *set in [presetManager presets]) {
-        newItem = [[NSMenuItem alloc] initWithTitle:[set setName] action:@selector(applySet:) keyEquivalent:@""];
+        newItem = [[NSMenuItem alloc] initWithTitle:[set presetName] action:@selector(applySet:) keyEquivalent:@""];
         [newItem setTarget:self];
         [newItem setTag:i++];
 
@@ -324,7 +324,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
 {
     SBPresetManager *presetManager = [SBPresetManager sharedManager];
 
-    [metadata setSetName:[setName stringValue]];
+    [metadata setPresetName:[presetName stringValue]];
     [presetManager newSetFromExistingMetadata: metadata];
     
     [NSApp endSheet: saveWindow];

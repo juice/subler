@@ -17,6 +17,8 @@ static SBPresetManager *sharedPresetManager = nil;
 @interface SBPresetManager (Private)
 - (BOOL) loadPresets;
 - (BOOL) savePresets;
+- (NSString *) appSupportPath;
+- (BOOL) removePresetWithName:(NSString*)name;
 
 @end
 
@@ -77,9 +79,25 @@ static SBPresetManager *sharedPresetManager = nil;
 
 - (void) newSetFromExistingMetadata:(MP42Metadata*)set
 {
-    [presets addObject:[set copy]];
+    id newSet = [set copy];
+    [presets addObject:newSet];
+    [newSet release];
+
     [self savePresets];
     [self updateNotification];
+}
+
+- (NSString *) appSupportPath
+{
+    NSString *appSupportPath = nil;
+
+    NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+                                                            NSUserDomainMask,
+                                                            YES);
+    if ([allPaths count])
+        appSupportPath = [[allPaths objectAtIndex:0] stringByAppendingPathComponent:@"Subler"];
+
+    return appSupportPath;
 }
 
 - (BOOL) loadPresets
@@ -88,15 +106,7 @@ static SBPresetManager *sharedPresetManager = nil;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     MP42Metadata *newPreset;
 
-    NSString *appSupportPath;
-    NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
-                                                            NSUserDomainMask,
-                                                            YES);
-    if ([allPaths count])
-        appSupportPath = [allPaths objectAtIndex:0];
-
-
-    appSupportPath = [appSupportPath stringByAppendingPathComponent:@"Subler"];
+    NSString *appSupportPath = [self appSupportPath];
 
     if (!appSupportPath)
         return NO;
@@ -122,17 +132,10 @@ static SBPresetManager *sharedPresetManager = nil;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     BOOL noErr = YES;
 
-    NSString *appSupportPath;
-    NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
-                                                            NSUserDomainMask,
-                                                            YES);
-    if ([allPaths count]) {
-        appSupportPath = [allPaths objectAtIndex:0];
-        if (!appSupportPath)
-            return NO;
-    }
+    NSString *appSupportPath = [self appSupportPath];
 
-    appSupportPath = [appSupportPath stringByAppendingPathComponent:@"Subler"];
+    if (!appSupportPath)
+            return NO;
 
     if( ![fileManager fileExistsAtPath:appSupportPath] )
         [fileManager createDirectoryAtPath:appSupportPath attributes:nil];
@@ -141,7 +144,7 @@ static SBPresetManager *sharedPresetManager = nil;
 
     for( object in presets )
     {
-        NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, [object setName]];
+        NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, [object presetName]];
         if (![fileManager fileExistsAtPath:saveLocation]) 
         {
             noErr = [NSKeyedArchiver archiveRootObject:object
@@ -151,9 +154,30 @@ static SBPresetManager *sharedPresetManager = nil;
     return noErr;
 }
 
+- (BOOL) removePresetAtIndex:(NSUInteger)index
+{
+    NSString *name = [[presets objectAtIndex:index] presetName];
+    [presets removeObjectAtIndex:index];
+
+    [self updateNotification];
+
+    return [self removePresetWithName:name];
+}
+
+
 - (BOOL) removePresetWithName:(NSString*)name
 {
-    return YES;
+    BOOL err = NO;
+    NSString *appSupportPath = [self appSupportPath];
+
+    if (!appSupportPath)
+        return NO;
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    err = [fileManager removeItemAtPath: [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, name]
+                                  error: NULL];
+
+    return err;
 }
 
 @synthesize presets;

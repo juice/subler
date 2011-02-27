@@ -68,7 +68,7 @@ enum rating_type {
 };
 
 @interface MP42Metadata : NSObject <NSCoding, NSCopying> {
-    NSString                *setName;
+    NSString                *presetName;
     NSString                *sourcePath;
     NSMutableDictionary     *tagsDict;
     NSImage                 *artwork;
@@ -106,7 +106,7 @@ enum rating_type {
 
 @property(readonly) NSMutableDictionary *tagsDict;
 
-@property(readwrite, retain) NSString   *setName;
+@property(readwrite, retain) NSString   *presetName;
 @property(readwrite, retain) NSImage    *artwork;
 @property(readwrite, retain) NSURL      *artworkURL;
 @property(readwrite, retain) NSArray    *artworkThumbURLs;

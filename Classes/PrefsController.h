@@ -23,4 +23,6 @@
 - (IBAction) deleteCachedMetadata:(id) sender;
 - (IBAction) toggleWindow:(id) sender;
 
+- (IBAction) deletePreset:(id) sender;
+
 @end

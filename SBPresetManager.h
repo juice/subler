@@ -22,7 +22,7 @@ extern NSString *SBPresetManagerUpdatedNotification;
 - (void) newSetFromExistingMetadata:(MP42Metadata*)set;
 - (BOOL) savePresets;
 
-- (BOOL) removePresetWithName:(NSString*)name;
+- (BOOL) removePresetAtIndex:(NSUInteger)index;
 
 @property (readonly) NSArray *presets;
 

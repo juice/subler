@@ -27,7 +27,7 @@
     IBOutlet NSButton       *removeTag;
     
     IBOutlet NSWindow       *saveWindow;
-    IBOutlet NSTextField    *setName;
+    IBOutlet NSTextField    *presetName;
     
     NSPopUpButtonCell       *ratingCell;
     NSComboBoxCell          *genreCell;
