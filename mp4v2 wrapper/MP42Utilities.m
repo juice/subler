@@ -21,7 +21,7 @@ NSString* SRTStringFromTime( long long time, long timeScale , const char separat
 
     result = time / timeScale; // second
 
-    msecond = (time % timeScale) / (timeScale / 1000);
+    msecond = (time % timeScale) / (timeScale / 1000.0f);
 	
     second = result % 60;
 
