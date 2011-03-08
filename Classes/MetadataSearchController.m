@@ -107,7 +107,10 @@
             if ([lines count] >= 4) {
                 results = [[NSMutableDictionary alloc] initWithCapacity:4];
                 [results setValue:@"tv" forKey:@"type"];
-                [results setValue:[lines objectAtIndex:1] forKey:@"seriesName"];
+				NSString *newSeriesName=[[lines objectAtIndex:1] 
+                                    stringByReplacingOccurrencesOfString:@"." 
+                                    withString:@" "];
+                [results setValue:newSeriesName forKey:@"seriesName"];
                 [results setValue:[lines objectAtIndex:2] forKey:@"seasonNum"];
                 [results setValue:[lines objectAtIndex:3] forKey:@"episodeNum"];
             }
