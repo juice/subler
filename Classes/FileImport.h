@@ -25,7 +25,7 @@
     NSTimer *loadTimer;
 }
 
-- (id)initWithDelegate:(id)del andFile: (NSString *)path;
+- (id)initWithDelegate:(id)del andFile: (NSString *)path error:(NSError **)outError;
 - (IBAction) closeWindow: (id) sender;
 - (IBAction) addTracks: (id) sender;
 

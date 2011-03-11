@@ -1341,7 +1341,7 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
 @implementation MP42H264Importer
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;

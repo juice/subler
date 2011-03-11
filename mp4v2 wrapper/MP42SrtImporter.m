@@ -14,7 +14,7 @@
 
 @implementation MP42SrtImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
@@ -50,7 +50,7 @@
             [tracksArray release];
             [newTrack release];
             [self release];
-            
+
             return nil;
         }
 

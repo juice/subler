@@ -49,7 +49,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
 @implementation MP42MovImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
@@ -66,8 +66,10 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
 		if (sourceFile)
 			[self movieLoaded];
-		else
+		else {
+            [self release];
 			return nil;
+        }
     }
 
     return self;

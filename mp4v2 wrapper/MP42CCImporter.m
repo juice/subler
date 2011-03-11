@@ -15,7 +15,7 @@
 
 @implementation MP42CCImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;

@@ -38,13 +38,18 @@
 
 @implementation MP42Mp4Importer
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
         file = [fileUrl retain];
 
         MP42File *sourceFile = [[MP42File alloc] initWithExistingFile:fileUrl andDelegate:self];
+
+        if(!sourceFile) {
+            [self release];
+            return nil;
+        }
 
         tracksArray = [[sourceFile tracks] retain];
         for (MP42Track * track in tracksArray) {

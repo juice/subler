@@ -89,7 +89,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 
 @implementation MP42MkvImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
@@ -97,6 +97,11 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 
         ioStream = calloc(1, sizeof(StdIoStream)); 
         matroskaFile = openMatroskaFile((char *)[file UTF8String], ioStream);
+
+        if(!matroskaFile) {
+            [self release];
+            return nil;
+        }
 
         NSInteger trackCount = mkv_GetNumTracks(matroskaFile);
         tracksArray = [[NSMutableArray alloc] initWithCapacity:trackCount];
@@ -902,9 +907,11 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 	/* close matroska parser */ 
 	mkv_Close(matroskaFile); 
 
-	/* close file */ 
-	fclose(ioStream->fp); 
-    free(ioStream);
+	/* close file */
+    if (ioStream) {
+        fclose(ioStream->fp);
+        free(ioStream);
+    }
 
     [super dealloc];
 }

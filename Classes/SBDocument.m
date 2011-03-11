@@ -360,10 +360,10 @@
 
     if (action == @selector(showTrackOffsetSheet:) && [fileTracksTable selectedRow] != -1)
         return YES;
-    
+
     if (action == @selector(addChaptersEvery:))
         return YES;
-	
+
 	if (action == @selector(export:) && [fileTracksTable selectedRow] != -1)
 		if ([[mp4File trackAtIndex:[fileTracksTable selectedRow]] respondsToSelector:@selector(exportToURL:error:)])
 			return YES;
@@ -665,10 +665,12 @@ returnCode contextInfo: (void *) contextInfo
     if ([[filePath pathExtension] isEqualToString:@"h264"] || [[filePath pathExtension] isEqualToString:@"264"])
         importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:filePath];
     else
-		importWindow = [[FileImport alloc] initWithDelegate:self andFile:filePath];
+		importWindow = [[FileImport alloc] initWithDelegate:self andFile:filePath error:NULL];
 
-    [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
-        modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+    if (importWindow) {
+        [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
+            modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+    }
 }
 
 - (void) importDoneWithTracks: (NSArray*) tracksToBeImported andMetadata: (MP42Metadata*) metadata
@@ -689,7 +691,7 @@ returnCode contextInfo: (void *) contextInfo
 
     [NSApp endSheet:[importWindow window]];
     [[importWindow window] orderOut:self];
-    [importWindow release];
+    [importWindow release], importWindow = nil;
 }
 
 - (void) metadataImportDone: (MP42Metadata*) metadataToBeImported

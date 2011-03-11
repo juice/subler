@@ -12,19 +12,22 @@
 
 @implementation FileImport
 
-- (id)initWithDelegate:(id)del andFile: (NSString *)fileUrl
+- (id)initWithDelegate:(id)del andFile: (NSString *)fileUrl error:(NSError **)outError
 {
 	if ((self = [super initWithWindowNibName:@"FileImport"]))
-	{        
+	{
 		delegate = del;
         file = [fileUrl retain];
+        
+        fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:file error:outError];
+        if (!fileImporter)
+            return nil;
 	}
 	return self;
 }
 
 - (void)awakeFromNib
 {
-    fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:file];
 
     importCheckArray = [[NSMutableArray alloc] initWithCapacity:[[fileImporter tracksArray] count]];
 

@@ -25,7 +25,7 @@
     BOOL           isCancelled;
 }
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl;
+- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError;
 
 - (NSUInteger)timescaleForTrack:(MP42Track *)track;
 - (NSSize)sizeForTrack:(MP42Track *)track;
