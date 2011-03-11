@@ -96,6 +96,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
     [contentRating selectItemWithTag:metadata.contentRating];
     [hdVideo setState:metadata.hdVideo];
     [gapless setState:metadata.gapless];
+    [podcast setState:metadata.podcast];
 
     tabCol = [[[tagsTableView tableColumns] objectAtIndex:1] retain];
 
@@ -270,6 +271,9 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
 
     metadata.gapless = newTags.gapless;
     [gapless setState:metadata.gapless];
+
+    metadata.podcast = newTags.podcast;
+    [podcast setState:metadata.podcast];
 
     metadata.contentRating = newTags.contentRating;
     [contentRating selectItemWithTag:metadata.contentRating];
@@ -563,6 +567,29 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     
     if (![undo isUndoing]) {
         [undo setActionName:@"Check Gapless"];
+    }
+}
+
+- (IBAction) changePodcast: (id) sender
+{
+    uint8_t newValue;
+    if (sender == podcast)
+        newValue = [sender state];
+    else {
+        newValue = ![podcast state];
+        [podcast setState:newValue];
+    }
+    
+    if (metadata.podcast != newValue) {
+        metadata.podcast = newValue;
+        metadata.isEdited = YES;
+    }
+    
+    NSUndoManager *undo = [[self view] undoManager];
+    [[undo prepareWithInvocationTarget:self] changePodcast: self];
+    
+    if (![undo isUndoing]) {
+        [undo setActionName:@"Check Podast"];
     }
 }
 

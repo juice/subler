@@ -23,6 +23,7 @@
     IBOutlet NSPopUpButton  *contentRating;
     IBOutlet NSButton       *hdVideo;
     IBOutlet NSButton       *gapless;
+    IBOutlet NSButton       *podcast;
 
     IBOutlet NSButton       *removeTag;
 
@@ -59,6 +60,7 @@
 - (IBAction) changeMediaKind: (id) sender;
 - (IBAction) changecContentRating: (id) sender;
 - (IBAction) changeGapless: (id) sender;
+- (IBAction) changePodcast: (id) sender;
 - (IBAction) changehdVideo: (id) sender;
 
 

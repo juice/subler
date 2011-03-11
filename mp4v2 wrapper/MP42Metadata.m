@@ -326,7 +326,7 @@ static const genreType_t genreType_strings[] = {
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
             @"Studio", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
-            @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"artistID", @"playlistID", @"genreID", @"composerID",
+            @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"Keywords", @"Category", @"contentID", @"artistID", @"playlistID", @"genreID", @"composerID",
             @"XID", @"iTunes Account", @"Sort Name", @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
 }
 
@@ -336,7 +336,7 @@ static const genreType_t genreType_strings[] = {
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Studio", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
-			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"contentID", @"XID", @"iTunes Account", @"Sort Name",
+			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"Keywords", @"Category", @"contentID", @"XID", @"iTunes Account", @"Sort Name",
             @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
 }
 
@@ -691,8 +691,18 @@ static const genreType_t genreType_strings[] = {
     if (tags->sortTVShow)
         [tagsDict setObject:[self stringFromMetadata:tags->sortTVShow]
                      forKey:@"Sort TV Show"];
-    
-    
+
+    if (tags->podcast)
+        podcast = *tags->podcast;
+
+    if (tags->keywords)
+        [tagsDict setObject:[self stringFromMetadata:tags->keywords]
+                     forKey:@"Keywords"];
+
+    if (tags->category)
+        [tagsDict setObject:[self stringFromMetadata:tags->category]
+                     forKey:@"Category"];
+
     if (tags->artwork) {
         NSData *imageData = [NSData dataWithBytes:tags->artwork->data length:tags->artwork->size];
         NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
@@ -874,9 +884,24 @@ static const genreType_t genreType_strings[] = {
     else
         MP4TagsSetMediaType(tags, NULL);
 
-    MP4TagsSetHDVideo(tags, &hdVideo);
+    if(hdVideo)
+        MP4TagsSetHDVideo(tags, &hdVideo);
+    else
+        MP4TagsSetHDVideo(tags, NULL);
+    
+    if(gapless)
+        MP4TagsSetGapless(tags, &gapless);
+    else
+        MP4TagsSetGapless(tags, NULL);
+    
+    if(podcast)
+        MP4TagsSetPodcast(tags, &podcast);
+    else
+        MP4TagsSetPodcast(tags, NULL);
 
-    MP4TagsSetGapless(tags, &gapless);
+    MP4TagsSetKeywords(tags, [[tagsDict valueForKey:@"Keywords"] UTF8String]);
+
+    MP4TagsSetCategory(tags, [[tagsDict valueForKey:@"Category"] UTF8String]);
 
     MP4TagsSetContentRating(tags, &contentRating);
 
@@ -1049,6 +1074,7 @@ static const genreType_t genreType_strings[] = {
 @synthesize contentRating;
 @synthesize hdVideo;
 @synthesize gapless;
+@synthesize podcast;
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
@@ -1062,6 +1088,7 @@ static const genreType_t genreType_strings[] = {
     [coder encodeInt:contentRating forKey:@"MP42ContentRating"];
     [coder encodeInt:hdVideo forKey:@"MP42HDVideo"];
     [coder encodeInt:gapless forKey:@"MP42Gapless"];
+    [coder encodeInt:podcast forKey:@"MP42Podcast"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -1077,6 +1104,7 @@ static const genreType_t genreType_strings[] = {
     contentRating = [decoder decodeIntForKey:@"MP42ContentRating"];
     hdVideo = [decoder decodeIntForKey:@"MP42HDVideo"];
     gapless = [decoder decodeIntForKey:@"MP42Gapless"];
+    podcast = [decoder decodeIntForKey:@"MP42Podcast"];
 
     return self;
 }

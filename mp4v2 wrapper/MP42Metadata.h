@@ -80,6 +80,7 @@ enum rating_type {
     uint8_t contentRating;
     uint8_t hdVideo;
     uint8_t gapless;
+    uint8_t podcast;
     BOOL isEdited;
     BOOL isArtworkEdited;
 }
@@ -115,6 +116,7 @@ enum rating_type {
 @property(readwrite) uint8_t    contentRating;
 @property(readwrite) uint8_t    hdVideo;
 @property(readwrite) uint8_t    gapless;
+@property(readwrite) uint8_t    podcast;
 @property(readwrite) BOOL       isEdited;
 @property(readwrite) BOOL       isArtworkEdited;
 
