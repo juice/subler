@@ -290,16 +290,20 @@
                 SBAudioConverter * audioConverter = sampleBuffer->sampleSourceTrack.trackConverterHelper;
                 [audioConverter addSample:sampleBuffer];
                 while (![audioConverter needMoreSample]) {
-                    if ((convertedSample = [audioConverter copyEncodedSample]) != nil) {
+                    convertedSample = [audioConverter copyEncodedSample];
+                    if (convertedSample != nil) {
                         MP4WriteSample(fileHandle, convertedSample->sampleTrackId,
                                        convertedSample->sampleData, convertedSample->sampleSize,
                                        convertedSample->sampleDuration, convertedSample->sampleOffset,
                                        convertedSample->sampleIsSync);
                         [convertedSample release];
                     }
-                    else {
+                    else if (![audioConverter encoderDone]) {
                         usleep(50);
                     }
+                    else
+                        break;
+
                 }
                 [sampleBuffer release];
             }
