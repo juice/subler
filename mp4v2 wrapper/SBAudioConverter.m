@@ -655,6 +655,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         }
 
         // Try to get the input channel layout, doesn't seem to be useful though 
+        /*
         UInt32 propertySize = 0;
         AudioChannelLayout * layout = NULL;
         err = AudioConverterGetPropertyInfo(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, NULL);
@@ -674,14 +675,13 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                     NSLog(@"Unable to set the new channel layout %ld",(long)err);
                 free(newLayout);
             }
-        }
-        
-        if ([track.sourceFormat isEqualToString:@"True HD"]) {
+        }*/
+
+        if (([track.sourceFormat isEqualToString:@"True HD"] || [track.sourceFormat isEqualToString:@"AC-3"]) && inputChannelsCount == 6 ) {
                 SInt32 channelMap[6] = { 2, 0, 1, 4, 5, 3 };
                 AudioConverterSetProperty( decoderData.converter, kAudioConverterChannelMap,
                                           sizeof( channelMap ), channelMap );
         }
-
 
         // set the decoder magic cookie
         if (magicCookie) {
