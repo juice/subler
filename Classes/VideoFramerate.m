@@ -25,7 +25,7 @@
 
 - (void)awakeFromNib
 {
-    fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:filePath];
+    fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:filePath error:nil];
 }
 
 - (IBAction) closeWindow: (id) sender
