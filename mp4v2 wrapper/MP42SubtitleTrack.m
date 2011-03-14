@@ -38,13 +38,10 @@
 {
     if (isEdited && !muxed)
     {
-        if (!Id && (outError != NULL)) {
-            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Error: couldn't mux subtitle track" forKey:NSLocalizedDescriptionKey];
-            *outError = [NSError errorWithDomain:@"MP42Error"
-                                            code:110
-                                        userInfo:errorDetail];
-        }
+        if (!Id && (outError != NULL))
+            *outError = MP42Error(@"Error: couldn't mux subtitle track",
+                                  nil,
+                                  120);
         else {
             muxed = YES;
             enableFirstSubtitleTrack(fileHandle);

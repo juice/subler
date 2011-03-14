@@ -763,3 +763,15 @@ int copyTrackEditLists (MP4FileHandle fileHandle, MP4TrackId srcTrackId, MP4Trac
     
     return 1;
 }
+
+NSError* MP42Error(NSString *description, NSString* recoverySuggestion, NSInteger code) {
+    NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+    [errorDetail setValue:description
+                   forKey:NSLocalizedDescriptionKey];
+    [errorDetail setValue:recoverySuggestion
+                   forKey:NSLocalizedRecoverySuggestionErrorKey];
+
+    return [NSError errorWithDomain:@"MP42Error"
+                                code:100
+                            userInfo:errorDetail];
+}

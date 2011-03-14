@@ -59,11 +59,9 @@
     BOOL success = YES;
     if (!fileHandle || !Id) {
         if ( outError != NULL) {
-            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Failed to modify track" forKey:NSLocalizedDescriptionKey];
-            *outError = [NSError errorWithDomain:@"MP42Error"
-                                            code:120
-                                        userInfo:errorDetail];
+            *outError = MP42Error(@"Failed to modify track",
+                                  nil,
+                                  120);
             return NO;
 
         }

@@ -662,15 +662,23 @@ returnCode contextInfo: (void *) contextInfo
 
 - (void) showImportSheet: (NSString *) filePath
 {
+    NSError *error = nil;
+
     if ([[filePath pathExtension] isEqualToString:@"h264"] || [[filePath pathExtension] isEqualToString:@"264"])
         importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:filePath];
     else
-		importWindow = [[FileImport alloc] initWithDelegate:self andFile:filePath error:NULL];
+		importWindow = [[FileImport alloc] initWithDelegate:self andFile:filePath error:&error];
 
     if (importWindow) {
         [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
             modalDelegate:nil didEndSelector:NULL contextInfo:nil];
     }
+    else {
+        //[self presentError:error];
+        if (error)
+            [self presentError:error modalForWindow:documentWindow delegate:nil didPresentSelector:NULL contextInfo:nil];
+    }
+
 }
 
 - (void) importDoneWithTracks: (NSArray*) tracksToBeImported andMetadata: (MP42Metadata*) metadata

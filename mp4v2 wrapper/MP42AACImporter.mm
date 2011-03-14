@@ -12,7 +12,6 @@
 
 @implementation MP42AACImporter
 
-static const char*  ProgName = "Subler";
 static int aacUseOldFile = 0;
 static int aacProfileLevel = 4;
 
@@ -732,21 +731,19 @@ static bool GetFirstHeader(FILE* inFile)
         u_int8_t mpegVersion;
         u_int8_t profile;
         u_int8_t channelConfig;
-        
+
         if (!GetFirstHeader(inFile)) {
-            fprintf(stderr,	
-                    "%s: data in file doesn't appear to be valid audio\n",
-                    ProgName);
-            return MP4_INVALID_TRACK_ID;
+            //*outError = MP42Error(@"The audio could not be opened.", @"Data in file doesn't appear to be valid audio.", 100);
+            return nil;
         }
-        
+
         samplesPerSecond = MP4AV_AdtsGetSamplingRate(firstHeader);
         mpegVersion = MP4AV_AdtsGetVersion(firstHeader);
         profile = MP4AV_AdtsGetProfile(firstHeader);
         if (aacProfileLevel == 2) {
             if (profile > MP4_MPEG4_AAC_SSR_AUDIO_TYPE) {
-                fprintf(stderr, "Can't convert profile to mpeg2\nDo not contact project creators for help\n");
-                return MP4_INVALID_TRACK_ID;
+                //*outError = MP42Error(@"The audio could not be opened.", @"Can't convert profile to mpeg2", 100);
+                return nil;
             }
             mpegVersion = 1;
         } else if (aacProfileLevel == 4) {
@@ -771,9 +768,7 @@ static bool GetFirstHeader(FILE* inFile)
                         audioType = MP4_MPEG2_AAC_SSR_AUDIO_TYPE;
                         break;
                     case 3:
-                        fprintf(stderr,	
-                                "%s: data in file doesn't appear to be valid audio\n",
-                                ProgName);
+                        //*outError = MP42Error(@"The audio could not be opened.", @"Data in file doesn't appear to be valid audio.", 100);
                         return nil;
                     default:
                         break;

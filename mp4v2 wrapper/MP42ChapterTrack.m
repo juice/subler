@@ -186,13 +186,11 @@
         success = Id = findChapterTrackId(fileHandle);
     }
     if (!success) {
-        if ( outError != NULL) {
-            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Failed to mux chapters into mp4 file" forKey:NSLocalizedDescriptionKey];
-            *outError = [NSError errorWithDomain:@"MP42Error"
-                                            code:120
-                                        userInfo:errorDetail];
-        }
+        if ( outError != NULL)
+            *outError = MP42Error(@"Failed to mux chapters into mp4 file",
+                                  nil,
+                                  120);
+
         return success;
     }
     else if (Id)

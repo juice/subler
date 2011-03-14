@@ -266,13 +266,11 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
     fileHandle = MP4Modify([filePath UTF8String], 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
-        if ( outError != NULL) {
-            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Unable to open the file" forKey:NSLocalizedDescriptionKey];
-            *outError = [NSError errorWithDomain:@"MP42Error"
-                                            code:100
-                                        userInfo:errorDetail];
-        }
+        if ( outError != NULL)
+            *outError = MP42Error(@"Unable to open the file",
+                                  nil,
+                                  100);
+
         return NO;
     }
 

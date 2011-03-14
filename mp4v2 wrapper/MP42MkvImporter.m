@@ -99,6 +99,10 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
         matroskaFile = openMatroskaFile((char *)[file UTF8String], ioStream);
 
         if(!matroskaFile) {
+            if (outError) {
+                *outError = MP42Error(@"The movie could not be opened.", @"The file is not a matroska file.", 100);
+            }
+
             [self release];
             return nil;
         }

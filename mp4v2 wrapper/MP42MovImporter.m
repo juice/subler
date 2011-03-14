@@ -62,12 +62,13 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 							   nil];
 
         sourceFile = [[QTMovie alloc] initWithAttributes:dict 
-												   error:nil];
+												   error:outError];
 
 		if (sourceFile)
 			[self movieLoaded];
 		else {
             [self release];
+
 			return nil;
         }
     }

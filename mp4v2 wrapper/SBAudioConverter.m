@@ -534,14 +534,10 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         InstallStatus installStatus = [self installStatusForComponent:@"Perian.component" type:ComponentTypeQuickTime version:@"1.2"];
 
         if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
-            if (outError) {
-                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-                [errorDetail setValue:@"Perian is not installed." forKey:NSLocalizedDescriptionKey];
-                [errorDetail setValue:@"Perian is necessary for audio conversion in Subler. You can download it from http://perian.org/"
-                               forKey:NSLocalizedRecoverySuggestionErrorKey];
-
-                *outError = [NSError errorWithDomain:@"MP42Error" code:130 userInfo:errorDetail];
-            }
+            if (outError)
+                *outError = MP42Error(@"Perian is not installed.",
+                                      @"Perian is necessary for audio conversion in Subler. You can download it from http://perian.org/",
+                                      130);
 
             [self release];
             return nil;
@@ -552,14 +548,10 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             InstallStatus installStatus = [self installStatusForComponent:@"XiphQT.component" type:ComponentTypeQuickTime version:@"0.1.9"];
             
             if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
-                if (outError) {
-                    NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-                    [errorDetail setValue:@"XiphQT is not installed." forKey:NSLocalizedDescriptionKey];
-                    [errorDetail setValue:@"XiphQT is necessary for Flac audio conversion in Subler. You can download it from http://xiph.org/quicktime/"
-                                   forKey:NSLocalizedRecoverySuggestionErrorKey];
-
-                    *outError = [NSError errorWithDomain:@"MP42Error" code:130 userInfo:errorDetail];
-                }
+                if (outError)
+                    *outError = MP42Error(@"XiphQT is not installed.",
+                                          @"XiphQT is necessary for Flac audio conversion in Subler. You can download it from http://xiph.org/quicktime/",
+                                          130);
 
                 [self release];
                 return nil;
@@ -641,15 +633,10 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         // initialize the decoder
         err = AudioConverterNew( &inputFormat, &outputFormat, &decoderData.converter );
         if ( err != noErr) {
-            if (outError) {
-                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-                [errorDetail setValue:@"Audio Converter Error." forKey:NSLocalizedDescriptionKey];
-                [errorDetail setValue:@"The Audio Converter can not be initialized"
-                               forKey:NSLocalizedRecoverySuggestionErrorKey];
-
-                *outError = [NSError errorWithDomain:@"MP42Error" code:130 userInfo:errorDetail];
-            }
-
+            if (outError)
+                *outError = MP42Error(@"Audio Converter Error.",
+                                      @"The Audio Converter can not be initialized",
+                                      130);
             [self release];
             return nil;
         }

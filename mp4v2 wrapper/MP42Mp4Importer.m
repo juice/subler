@@ -47,6 +47,10 @@
         MP42File *sourceFile = [[MP42File alloc] initWithExistingFile:fileUrl andDelegate:self];
 
         if(!sourceFile) {
+            if (outError) {
+                *outError = MP42Error(@"The movie could not be opened.", @"The file is not a mp4 file.", 100);          
+            }
+
             [self release];
             return nil;
         }

@@ -9,6 +9,8 @@
 #import "MP42AC3Importer.h"
 #import "lang.h"
 #import "MP42File.h"
+#import "MP42Utilities.h"
+
 #include <sys/stat.h>
 
 #define AC3_HEADER_MAX_SIZE 10 /* bytes */
