@@ -79,6 +79,11 @@ extern NSString *libraryPath;
     NSInteger level = [sender tag];
     [[NSUserDefaults standardUserDefaults] setInteger:level forKey:@"LogLevel"];
     MP4LogSetLevel(level);
+
+    if ([self loadFileDump:[self fileURL] error:nil]) {
+        [textView setString:@""]; 
+        [textView insertText:result];
+    }
 }
 
 @end
