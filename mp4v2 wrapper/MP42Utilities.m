@@ -225,6 +225,8 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
         return NSLocalizedString(@"MPEG-4 ODSM Track", @"MPEG-4 ODSM Track");
     else if (!strcmp(type, MP4_SCENE_TRACK_TYPE))
         return NSLocalizedString(@"MPEG-4 SDSM Track", @"MPEG-4 SDSM Track");
+    else if (!strcmp(type, "tmcd"))
+        return NSLocalizedString(@"Timecode Track", @"Timecode Track");
     else
         return NSLocalizedString(@"Unknown Track", @"Unknown Track");
 }
@@ -261,6 +263,8 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
             return @"FairPlay Sound";
         else if (!strcmp(dataName, "drmi"))
             return @"FairPlay Video";
+        else if (!strcmp(dataName, "tmcd"))
+            return @"Timecode";
 
         else
             return [NSString stringWithUTF8String:dataName];
