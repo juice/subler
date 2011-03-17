@@ -13,37 +13,6 @@ NSString *libraryPath = nil;
 
 void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 {
-    const char* level;
-    switch (loglevel) {
-        case 0:
-            level = "None";
-            break;
-        case 1:
-            level = "Error";
-            break;
-        case 2:
-            level = "Warning";
-            break;
-        case 3:
-            level = "Info";
-            break;
-        case 4:
-            level = "Verbose1";
-            break;
-        case 5:
-            level = "Verbose2";
-            break;
-        case 6:
-            level = "Verbose3";
-            break;
-        case 7:
-            level = "Verbose4";
-            break;
-        default:
-            level = "Unknown";
-            break;
-    }
-
     if (!libraryPath) {
         NSString * libraryDir = [NSSearchPathForDirectoriesInDomains( NSLibraryDirectory,
                                                                      NSUserDomainMask,
@@ -61,7 +30,6 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 
     FILE * file = fopen([libraryPath UTF8String], "a");
 
-    fprintf(file, "%s: ", level);
     vfprintf(file, fmt, ap);
     fprintf(file, "\n");
 

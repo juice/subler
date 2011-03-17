@@ -38,6 +38,8 @@ extern NSString *libraryPath;
     if ([[NSUserDefaults standardUserDefaults] valueForKey:@"LogLevel"])
         [logLevelButton selectItemWithTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"LogLevel"]];
     [super windowControllerDidLoadNib:aController];
+    [textView setFont:[NSFont fontWithName:@"Monaco" size:10]];
+    [textView setString:@""];
     [textView insertText:result];
     [textView setContinuousSpellCheckingEnabled:NO];
 }
@@ -64,7 +66,7 @@ extern NSString *libraryPath;
 {
     if ( outError != NULL && ![self loadFileDump:absoluteURL error:outError]) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
-        
+
         return NO;
 	}
 
@@ -84,6 +86,10 @@ extern NSString *libraryPath;
         [textView setString:@""]; 
         [textView insertText:result];
     }
+}
+
+- (void)updateChangeCount:(NSDocumentChangeType)changeType
+{
 }
 
 @end

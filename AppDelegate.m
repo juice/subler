@@ -58,6 +58,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
     documentController=[[SBDocumentController alloc] init];
 
     MP4SetLogCallback(logCallback);
+    MP4LogSetLevel(MP4_LOG_ERROR);
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
