@@ -12,6 +12,10 @@
 @interface MyDocument : NSDocument
 {
     IBOutlet NSTextView * textView;
+    IBOutlet NSPopUpButton *logLevelButton;
     NSString * result;
 }
+
+- (IBAction) setLogLevel: (id) sender;
+
 @end

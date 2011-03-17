@@ -14,6 +14,7 @@
 		8D15AC310486D014006FF6A4 /* MyDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.mm */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		A9DAC2FD133204BD007CA155 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DAC2FC133204BD007CA155 /* AppDelegate.m */; };
 		A9DC819C115DF59900FCD230 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DC818C115DF59900FCD230 /* libmp4v2.a */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +33,8 @@
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D15AC360486D014006FF6A4 /* MP4Dump-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MP4Dump-Info.plist"; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* MP4Dump.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MP4Dump.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9DAC2FB133204BD007CA155 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		A9DAC2FC133204BD007CA155 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		A9DC818C115DF59900FCD230 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp4v2.a; sourceTree = "<group>"; };
 		A9DC818E115DF59900FCD230 /* chapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chapter.h; sourceTree = "<group>"; };
 		A9DC818F115DF59900FCD230 /* file.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = file.h; sourceTree = "<group>"; };
@@ -113,6 +116,8 @@
 		2A37F4AFFDCFA73011CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A9DAC2FB133204BD007CA155 /* AppDelegate.h */,
+				A9DAC2FC133204BD007CA155 /* AppDelegate.m */,
 				2564AD2C0F5327BB00F57823 /* MP4Dump_Prefix.pch */,
 				2A37F4B0FDCFA73011CA2CEA /* main.mm */,
 			);
@@ -237,6 +242,7 @@
 			files = (
 				8D15AC310486D014006FF6A4 /* MyDocument.m in Sources */,
 				8D15AC320486D014006FF6A4 /* main.mm in Sources */,
+				A9DAC2FD133204BD007CA155 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,8 @@
 #import "MyDocument.h"
 #include "mp4v2.h"
 
+extern NSString *libraryPath;
+
 @implementation MyDocument
 
 - (id)init
@@ -33,41 +35,50 @@
 
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"LogLevel"])
+        [logLevelButton selectItemWithTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"LogLevel"]];
     [super windowControllerDidLoadNib:aController];
     [textView insertText:result];
     [textView setContinuousSpellCheckingEnabled:NO];
 }
 
+- (BOOL) loadFileDump:(NSURL *)absoluteURL error:(NSError **)outError
+{
+    MP4FileHandle fileHandle = MP4Read([[absoluteURL path] UTF8String]);
+
+    MP4Dump(fileHandle, 0);
+
+    MP4Close(fileHandle);
+    result = [NSString stringWithContentsOfFile:libraryPath encoding:NSASCIIStringEncoding error:outError];
+
+    if([[NSFileManager defaultManager] isDeletableFileAtPath:libraryPath])
+        [[NSFileManager defaultManager] removeItemAtPath:libraryPath error:nil];
+
+    if (result)
+        return YES;
+    else
+        return NO;
+}
+
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    NSString * libraryDir = [NSSearchPathForDirectoriesInDomains( NSLibraryDirectory,
-                                                                NSUserDomainMask,
-                                                                YES ) objectAtIndex:0];
-    NSString * AppSupportDirectory = [[libraryDir stringByAppendingPathComponent:@"Application Support"]
-                           stringByAppendingPathComponent:@"MP4Dump"];
-    if( ![[NSFileManager defaultManager] fileExistsAtPath:AppSupportDirectory] )
-    {
-        [[NSFileManager defaultManager] createDirectoryAtPath:AppSupportDirectory
-                                                   attributes:nil];
-    }
-    NSString * tempFile = [AppSupportDirectory stringByAppendingPathComponent:@"temp.txt"];
-    
-    MP4FileHandle fileHandle = MP4Read([[absoluteURL path] UTF8String]);
-    FILE * file = fopen([tempFile UTF8String], "w");
-    //MP4LogSetLevel(MP4_LOG_INFO);
-    MP4Dump(fileHandle, file);
-
-    if ( outError != NULL && !fileHandle) {
+    if ( outError != NULL && ![self loadFileDump:absoluteURL error:outError]) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
         
         return NO;
 	}
 
-    fclose(file);
-    MP4Close(fileHandle);
-    result = [NSString stringWithContentsOfFile:tempFile encoding:NSASCIIStringEncoding error:outError];
+    if([[NSFileManager defaultManager] isDeletableFileAtPath:libraryPath])
+        [[NSFileManager defaultManager] removeItemAtPath:libraryPath error:nil];
 
     return YES;
+}
+
+- (IBAction) setLogLevel: (id) sender
+{
+    NSInteger level = [sender tag];
+    [[NSUserDefaults standardUserDefaults] setInteger:level forKey:@"LogLevel"];
+    MP4LogSetLevel(level);
 }
 
 @end
