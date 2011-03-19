@@ -423,7 +423,7 @@
         if (previousTVseries == nil) return nil;
         NSEnumerator *previousTVseriesEnum = [previousTVseries objectEnumerator];
         NSString *s;
-        while (s = (NSString *) [previousTVseriesEnum nextObject]) {
+        while ((s = (NSString *) [previousTVseriesEnum nextObject])) {
             if ([[s lowercaseString] hasPrefix:[uncompletedString lowercaseString]]) {
                 return s;
             }

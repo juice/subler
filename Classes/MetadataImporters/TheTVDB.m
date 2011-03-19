@@ -107,7 +107,7 @@
     NSArray *episodesList = [dict valueForKey:@"episodes"];
     NSEnumerator *episodesEnum = [episodesList objectEnumerator];
     NSDictionary *episodeDict;
-    while (episodeDict = (NSDictionary *) [episodesEnum nextObject]) {
+    while ((episodeDict = (NSDictionary *) [episodesEnum nextObject])) {
         MP42Metadata *metadata = [[MP42Metadata alloc] init];
         metadata.mediaKind = 10; // TV show
         [metadata setTag:[dict valueForKey:@"seriesname"] forKey:@"TV Show"];
@@ -134,7 +134,7 @@
         if ([dict valueForKey:@"artwork_season"]) {
             NSString *s;
             NSEnumerator *e = [((NSArray *) [dict valueForKey:@"artwork_season"]) objectEnumerator];
-            while (s = (NSString *) [e nextObject]) {
+            while ((s = (NSString *) [e nextObject])) {
                 u = [NSURL URLWithString:s];
                 [artworkThumbURLs addObject:u];
                 [artworkFullsizeURLs addObject:u];
@@ -143,7 +143,7 @@
         if ([dict valueForKey:@"artwork_posters"]) {
             NSString *s;
             NSEnumerator *e = [((NSArray *) [dict valueForKey:@"artwork_posters"]) objectEnumerator];
-            while (s = (NSString *) [e nextObject]) {
+            while ((s = (NSString *) [e nextObject])) {
                 u = [NSURL URLWithString:s];
                 [artworkThumbURLs addObject:u];
                 [artworkFullsizeURLs addObject:u];

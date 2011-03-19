@@ -84,7 +84,7 @@
         NSMutableArray *elements = [[[NSMutableArray alloc] initWithCapacity:[tag count]] autorelease];
         NSEnumerator *tagEnum = [tag objectEnumerator];
         NSXMLNode *element;
-        while (element = [tagEnum nextObject]) {
+        while ((element = [tagEnum nextObject])) {
             [elements addObject:[element stringValue]];
         }
         return [elements componentsJoinedByString:@", "];
