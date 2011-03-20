@@ -493,6 +493,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     {
         SoundViewController *controller = [[SoundViewController alloc] initWithNibName:@"SoundView" bundle:nil];
         [controller setTrack:[mp4File trackAtIndex:row]];
+        [controller setFile:mp4File];
         if (controller !=nil)
             propertyView = controller;
     }

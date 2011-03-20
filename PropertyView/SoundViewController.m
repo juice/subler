@@ -7,16 +7,33 @@
 //
 
 #import "SoundViewController.h"
+#import "MP42File.h"
 
 @implementation SoundViewController
 
 - (void) awakeFromNib
 {
     [alternateGroup selectItemAtIndex:track.alternate_group];
-    [fallback selectItemAtIndex:track.fallbackTrackId];
+
+    for (id fileTrack in [mp4file tracks]) {
+        if ([fileTrack isMemberOfClass:[MP42AudioTrack class]] && [[fileTrack format] isEqualToString:@"AAC"]) {
+            NSMenuItem *newItem = [[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Track %d", [fileTrack Id]]
+                                                              action:@selector(setFallbackTrack:)
+                                                       keyEquivalent:@""] autorelease];
+            [newItem setTarget:self];
+            [newItem setTag: [fileTrack Id]];
+            [[fallback menu] addItem:newItem];
+        }
+    }
+
+    [fallback selectItemWithTag:track.fallbackTrackId];
     [volume setFloatValue:track.volume * 100];
 }
 
+- (void) setFile:(MP42File *) mp4
+{
+    mp4file = mp4;
+}
 - (void) setTrack:(MP42AudioTrack *) soundTrack
 {
     track = soundTrack;
@@ -33,8 +50,8 @@
 
 - (IBAction) setFallbackTrack: (id) sender
 {
-    uint8_t tagName = [[sender selectedItem] tag];
-    
+    uint8_t tagName = [sender tag];
+
     if (track.fallbackTrackId != tagName) {
         track.fallbackTrackId = tagName;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
