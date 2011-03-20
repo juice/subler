@@ -13,6 +13,7 @@
 - (void) awakeFromNib
 {
     [alternateGroup selectItemAtIndex:track.alternate_group];
+    [fallback selectItemAtIndex:track.fallbackTrackId];
     [volume setFloatValue:track.volume * 100];
 }
 
@@ -28,6 +29,16 @@
         track.volume = value;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
+}
+
+- (IBAction) setFallbackTrack: (id) sender
+{
+    uint8_t tagName = [[sender selectedItem] tag];
+    
+    if (track.fallbackTrackId != tagName) {
+        track.fallbackTrackId = tagName;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }    
 }
 
 - (IBAction) setAltenateGroup: (id) sender

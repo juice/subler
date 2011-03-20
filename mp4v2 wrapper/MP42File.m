@@ -519,7 +519,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         MP4TrackId refTrack = findFirstVideoTrack(fileHandle);
         if (!refTrack)
             refTrack = 1;
-        
+
         MP4RemoveAllTrackReferences(fileHandle, "tref.chap", refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", [chapterTrack Id], refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", jpegTrack, refTrack);

@@ -14,12 +14,16 @@
     UInt32 channels;
     UInt32 channelLayoutTag;
 
+    MP4TrackId  fallbackTrackId;
+
     NSString * mixdownType;
 }
 
 @property float volume;
 @property UInt32 channels;
 @property UInt32 channelLayoutTag;
+
+@property MP4TrackId fallbackTrackId;
 
 @property(readwrite, retain) NSString *mixdownType;
 

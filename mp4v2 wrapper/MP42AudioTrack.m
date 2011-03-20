@@ -56,12 +56,17 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
 
             readAC3Config(acmod, lfeon, &channels, &channelLayoutTag);
         }
+        if (MP4HaveTrackAtom(fileHandle, Id, "tref.fall")) {
+            uint64_t fallbackId = 0;
+            MP4GetTrackIntegerProperty(fileHandle, Id, "tref.fall.entries.trackId", &fallbackId);
+            fallbackTrackId = (MP4TrackId) fallbackId;
+        }
     }
 
     return self;
 }
 
--(id) init
+- (id) init
 {
     if ((self = [super init]))
     {
@@ -84,6 +89,16 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
 
     if ([updatedProperty valueForKey:@"volume"])
         MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.volume", volume);
+    if ([updatedProperty valueForKey:@"fallback"]) {
+        if (MP4HaveTrackAtom(fileHandle, Id, "tref.fall") && (fallbackTrackId == 0)) {
+            MP4RemoveAllTrackReferences(fileHandle, "tref.fall", Id);
+        }
+        else if (MP4HaveTrackAtom(fileHandle, Id, "tref.fall") && (fallbackTrackId)) {
+            MP4SetTrackIntegerProperty(fileHandle, Id, "tref.fall.entries.trackId", fallbackTrackId);
+        }
+        else if (fallbackTrackId)
+            MP4AddTrackReference(fileHandle, "tref.fall", fallbackTrackId, Id);
+    }
 
     return Id;
 }
@@ -103,6 +118,18 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
 - (float) volume
 {
     return volume;
+}
+
+- (void) setFallbackTrackId: (MP4TrackId) newFallbackTrackId
+{
+    fallbackTrackId = newFallbackTrackId;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"fallback"];
+}
+
+- (MP4TrackId) fallbackTrackId
+{
+    return fallbackTrackId;
 }
 
 - (NSString *)formatSummary
