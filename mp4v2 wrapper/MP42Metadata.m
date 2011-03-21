@@ -914,6 +914,18 @@ static const genreType_t genreType_strings[] = {
 
     MP4TagsSetXID(tags, [[tagsDict valueForKey:@"XID"] UTF8String]);
 
+    MP4TagsSetSortName(tags, [[tagsDict valueForKey:@"Sort Name"] UTF8String]);
+
+    MP4TagsSetSortArtist(tags, [[tagsDict valueForKey:@"Sort Artist"] UTF8String]);
+
+    MP4TagsSetSortAlbumArtist(tags, [[tagsDict valueForKey:@"Sort Album Artist"] UTF8String]);
+
+    MP4TagsSetSortAlbum(tags, [[tagsDict valueForKey:@"Sort Album"] UTF8String]);
+
+    MP4TagsSetSortComposer(tags, [[tagsDict valueForKey:@"Sort Composer"] UTF8String]);
+
+    MP4TagsSetSortTVShow(tags, [[tagsDict valueForKey:@"Sort TV Show"] UTF8String]);
+
     if (artwork && isArtworkEdited) {
         MP4TagArtwork newArtwork;
         NSArray *representations;
