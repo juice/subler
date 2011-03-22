@@ -869,6 +869,7 @@ returnCode contextInfo: (void *) contextInfo
             else if ([[file pathExtension] caseInsensitiveCompare: @"aac"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"ac3"] == NSOrderedSame)
                 [self showImportSheet:file];
+            break;
 
         }
         return YES;
