@@ -13,9 +13,11 @@
 
 @interface PrefsController : NSWindowController {
     IBOutlet NSView         * generalView, * audioView, *setsView;
-    
+
     MAAttachedWindow *attachedWindow;
+    MAAttachedWindow *oldAttachedWindow;
     MovieViewController *controller;
+    MovieViewController *oldController;
 
     IBOutlet SBTableView *tableView;
 }
@@ -23,7 +25,7 @@
 - (id)init;
 - (IBAction) clearRecentSearches:(id) sender;
 - (IBAction) deleteCachedMetadata:(id) sender;
-- (IBAction) toggleWindow:(id) sender;
+- (IBAction) toggleInfoWindow:(id) sender;
 
 - (IBAction) deletePreset:(id) sender;
 

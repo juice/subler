@@ -117,9 +117,23 @@
     [tableView reloadData];
 }
 
-- (IBAction)toggleWindow:(id)sender
+- (IBAction)hideInfoWindow:(id)sender
 {
-    // Attach/detach window
+    if(attachedWindow) {
+        [[self window] removeChildWindow:attachedWindow];
+        [attachedWindow orderOut:self];
+        [attachedWindow release];
+        attachedWindow = nil;
+        [controller release];
+        controller = nil;
+    }
+}
+
+- (IBAction)toggleInfoWindow:(id)sender
+{
+    if (attachedWindow) {
+        [self hideInfoWindow:sender];
+    }
     if (!attachedWindow) {
         SBPresetManager *presetManager = [SBPresetManager sharedManager];
 
@@ -131,30 +145,31 @@
         NSPoint windowPoint = NSMakePoint(NSMidX(cellFrame),
                                           NSHeight(tableFrame) + tableFrame.origin.y - cellFrame.origin.y - (cellFrame.size.height / 2));        
 
-        MovieViewController* oldController = controller;
-
         controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
         [controller setMetadata:[[presetManager presets] objectAtIndex:row]];
 
         attachedWindow = [[MAAttachedWindow alloc] initWithView:[controller view] 
                                                 attachedToPoint:windowPoint 
                                                        inWindow:[self window] 
-                                                         onSide:MAPositionRight 
-                                                     atDistance:28.0];
+                                                         onSide:MAPositionRightBottom 
+                                                     atDistance:10
+                                                       delegate:self];
 
-        [attachedWindow setBackgroundColor:[NSColor whiteColor]];
+        [attachedWindow setBackgroundColor:[NSColor colorWithCalibratedRed:0.98 green:0.98 blue:1 alpha:1]];
+        [attachedWindow setDelegate:self];
+        [attachedWindow setCornerRadius:15];
 
         [[self window] addChildWindow:attachedWindow ordered:NSWindowAbove];
 
         [attachedWindow setAlphaValue:0.0];
+
         [NSAnimationContext beginGrouping];
         [[NSAnimationContext currentContext] setDuration:0.1];  
         [attachedWindow makeKeyAndOrderFront:self];
         [[attachedWindow animator] setAlphaValue:1.0];
         [NSAnimationContext endGrouping];
-
-        [oldController release];
-    } else {
+    }
+    else {
         [[self window] removeChildWindow:attachedWindow];
         [attachedWindow orderOut:self];
         [attachedWindow release];
@@ -162,6 +177,7 @@
         [controller release];
         controller = nil;
     }
+
 }
 
 - (void)updateTableView:(id)sender
@@ -169,9 +185,14 @@
     [tableView reloadData];
 }
 
-- (void)_deleteSelectionFromTableView:(NSTableView *)tableView {
+/*- (void)_deleteSelectionFromTableView:(NSTableView *)tableView {
     NSLog(@"Hello!");
-}
+}*/
+
+/*- (void)windowDidResignKey:(NSNotification *)notification
+{
+    [self performSelectorOnMainThread:@selector(hideInfoWindow:) withObject:self waitUntilDone:NO];
+}*/
 
 @end
 
