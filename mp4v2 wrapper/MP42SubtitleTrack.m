@@ -85,6 +85,9 @@ struct style_record {
 - (BOOL)exportToURL:(NSURL *)url error:(NSError **)error
 {
     MP4FileHandle fileHandle = MP4Read([sourcePath UTF8String]);
+    if (!fileHandle)
+        return NO;
+
     MP4TrackId srcTrackId = Id;
 
     MP4SampleId sampleId = 1;
