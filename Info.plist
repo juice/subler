@@ -111,7 +111,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
-	<string>0.13, Copyright 2011 Damiano Galassi</string>
+	<string>0.14, Copyright 2011 Damiano Galassi</string>
 	<key>CFBundleIconFile</key>
 	<string>Subler.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -127,7 +127,7 @@
 	<key>CFBundleURLTypes</key>
 	<array/>
 	<key>CFBundleVersion</key>
-	<string>0.13</string>
+	<string>0.14</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2011, Damiano Galassi</string>
 	<key>NSMainNibFile</key>
