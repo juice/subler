@@ -185,6 +185,14 @@
     [tableView reloadData];
 }
 
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
+{
+    if ([tableView selectedRow] != -1)
+        [removeSet setEnabled:YES];
+    else
+        [removeSet setEnabled:NO];
+}
+
 /*- (void)_deleteSelectionFromTableView:(NSTableView *)tableView {
     NSLog(@"Hello!");
 }*/

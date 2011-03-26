@@ -20,6 +20,7 @@
     MovieViewController *oldController;
 
     IBOutlet SBTableView *tableView;
+    IBOutlet NSButton    *removeSet;
 }
 
 - (id)init;

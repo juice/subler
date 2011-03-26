@@ -12,9 +12,9 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="176"/>
-			<integer value="1"/>
 			<integer value="94"/>
+			<integer value="1"/>
+			<integer value="142"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -455,7 +455,7 @@
 						<reference key="NSSuperview" ref="572451373"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="167447338">
-							<int key="NSCellFlags">-2080244224</int>
+							<int key="NSCellFlags">-1543373312</int>
 							<int key="NSCellFlags2">134217728</int>
 							<string key="NSContents"/>
 							<reference key="NSSupport" ref="1049682653"/>
@@ -826,6 +826,14 @@
 						<reference key="destination" ref="512019100"/>
 					</object>
 					<int key="connectionID">187</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">removeSet</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="59907684"/>
+					</object>
+					<int key="connectionID">188</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1394,7 +1402,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">187</int>
+			<int key="maxID">188</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1489,6 +1497,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>audioView</string>
 							<string>generalView</string>
+							<string>removeSet</string>
 							<string>setsView</string>
 							<string>tableView</string>
 						</object>
@@ -1496,6 +1505,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSView</string>
 							<string>NSView</string>
+							<string>NSButton</string>
 							<string>NSView</string>
 							<string>SBTableView</string>
 						</object>
@@ -1506,6 +1516,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>audioView</string>
 							<string>generalView</string>
+							<string>removeSet</string>
 							<string>setsView</string>
 							<string>tableView</string>
 						</object>
@@ -1518,6 +1529,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">generalView</string>
 								<string key="candidateClassName">NSView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">removeSet</string>
+								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">setsView</string>
