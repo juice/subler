@@ -1130,6 +1130,11 @@ static const genreType_t genreType_strings[] = {
 
     [newObject mergeMetadata:self];
 
+    newObject.contentRating = contentRating;
+    newObject.gapless = gapless;
+    newObject.hdVideo = hdVideo;
+    newObject.podcast = podcast;
+
     return newObject;
 }
 

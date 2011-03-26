@@ -142,12 +142,10 @@ static SBPresetManager *sharedPresetManager = nil;
 
     MP42Metadata *object;
 
-    for( object in presets )
-    {
-        NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, [object presetName]];
-        if (![fileManager fileExistsAtPath:saveLocation]) 
-        {
-            noErr = [NSKeyedArchiver archiveRootObject:object
+    for( object in presets ) {
+        if ([object isEdited]) {
+            NSString * saveLocation = [NSString stringWithFormat:@"%@/%@.sbpreset", appSupportPath, [object presetName]];
+                noErr = [NSKeyedArchiver archiveRootObject:object
                                                 toFile:saveLocation];
         }
     }

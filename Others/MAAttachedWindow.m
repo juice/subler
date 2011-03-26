@@ -702,8 +702,8 @@
 		[super setContentView:frameView];
 
 		closeButton = [[NSButton alloc] initWithFrame:NSMakeRect(16, 16, 16, 16)];
-        [closeButton setImage:[NSImage imageNamed:@"close"]];
-        [closeButton setAlternateImage:[NSImage imageNamed:@"close-pressed"]];
+        [closeButton setImage:[NSImage imageNamed:@"close-pressed"]];
+        [closeButton setAlternateImage:[NSImage imageNamed:@"close"]];
 
         [[closeButton cell] setBezelStyle:NSRecessedBezelStyle];
         [[closeButton cell] setBordered:NO];
@@ -713,7 +713,7 @@
         [closeButton setTarget:delegate];
 
 		NSRect closeButtonRect = [closeButton frame];
-		[closeButton setFrame:NSMakeRect(23 - 20, bounds.size.height - (39 - 20) - closeButtonRect.size.height,
+		[closeButton setFrame:NSMakeRect(22 - 20, bounds.size.height - (39 - 20) - closeButtonRect.size.height,
                                          closeButtonRect.size.width, closeButtonRect.size.height)];
 		[closeButton setAutoresizingMask:NSViewMaxXMargin | NSViewMinYMargin];
 		[frameView addSubview:closeButton];

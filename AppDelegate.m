@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "SBDocument.h"
+#import "SBPresetManager.h"
 
 #import "mp4v2.h"
 
@@ -55,10 +56,15 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification
 {
-    documentController=[[SBDocumentController alloc] init];
+    documentController = [[SBDocumentController alloc] init];
 
     MP4SetLogCallback(logCallback);
     MP4LogSetLevel(MP4_LOG_ERROR);
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification {
+    SBPresetManager *presetManager = [SBPresetManager sharedManager];
+    [presetManager savePresets];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification

@@ -152,7 +152,7 @@
                                                 attachedToPoint:windowPoint 
                                                        inWindow:[self window] 
                                                          onSide:MAPositionRightBottom 
-                                                     atDistance:10
+                                                     atDistance:11
                                                        delegate:self];
 
         [attachedWindow setBackgroundColor:[NSColor colorWithCalibratedRed:0.98 green:0.98 blue:1 alpha:1]];
