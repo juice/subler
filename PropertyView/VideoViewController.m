@@ -79,11 +79,13 @@ static NSString *getLevelName(uint8_t level) {
             [videoProfile selectItemWithTag:1];
         } else {
             if ((track.newProfile == 66) && (track.newLevel == 21)) {
-                [videoProfile selectItemWithTag:21];
+                [videoProfile selectItemWithTag:6621];
             } else if ((track.newProfile == 77) && (track.newLevel == 31)) {
-                [videoProfile selectItemWithTag:31];
+                [videoProfile selectItemWithTag:7731];
+            } else if ((track.newProfile == 100) && (track.newLevel == 31)) {
+                [videoProfile selectItemWithTag:10031];
             } else if ((track.newProfile == 100) && (track.newLevel == 41)) {
-                [videoProfile selectItemWithTag:41];
+                [videoProfile selectItemWithTag:10041];
             }
         }
     } else {
@@ -180,7 +182,7 @@ static NSString *getLevelName(uint8_t level) {
 
 - (IBAction) setProfileLevel: (id) sender
 {
-    uint8_t tagName = [[sender selectedItem] tag];
+    NSInteger tagName = [[sender selectedItem] tag];
     switch (tagName) {
         case 1:
             track.newProfile = track.origProfile;
@@ -188,15 +190,19 @@ static NSString *getLevelName(uint8_t level) {
             [track.updatedProperty setValue:nil forKey:@"profile"];
             [track.updatedProperty setValue:nil forKey:@"level"];
             return;
-        case 21:
+        case 6621:
             track.newProfile = 66;
             track.newLevel = 21;
             break;
-        case 31:
+        case 7731:
             track.newProfile = 77;
             track.newLevel = 31;
             break;
-        case 41:
+        case 10031:
+            track.newProfile = 100;
+            track.newLevel = 31;
+            break;
+        case 10041:
             track.newProfile = 100;
             track.newLevel = 41;
             break;
