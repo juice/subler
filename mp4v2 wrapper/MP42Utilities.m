@@ -227,12 +227,15 @@ NSString* getTrackName(MP4FileHandle fileHandle, MP4TrackId Id)
         return NSLocalizedString(@"MPEG-4 SDSM Track", @"MPEG-4 SDSM Track");
     else if (!strcmp(type, "tmcd"))
         return NSLocalizedString(@"Timecode Track", @"Timecode Track");
+    else if (!strcmp(type, "subp"))
+        return NSLocalizedString(@"Subtitle Track", @"Subtitle Track");
     else
         return NSLocalizedString(@"Unknown Track", @"Unknown Track");
 }
 
 NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackId Id)
 {
+    const char* type = MP4GetTrackType(fileHandle, Id);
     const char* dataName = MP4GetTrackMediaDataName(fileHandle, Id);
     if (dataName) {
         if (!strcmp(dataName, "avc1"))
@@ -265,6 +268,8 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
             return @"FairPlay Video";
         else if (!strcmp(dataName, "tmcd"))
             return @"Timecode";
+        else if (!strcmp(dataName, "mp4s") && !strcmp(type, "subp"))
+            return @"VobSub";
 
         else
             return [NSString stringWithUTF8String:dataName];
@@ -549,8 +554,8 @@ int readAC3Config(uint64_t acmod, uint64_t lfeon, UInt32 *channelsCount, UInt32 
 
 BOOL isTrackMuxable(NSString * formatName)
 {
-    NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"AAC", @"AC-3", @"3GPP Text", @"Text", @"Plain Text", @"ASS", @"SSA",
-                                 @"CEA-608", /*@"Photo - JPEG",*/ @"Vorbis", nil];
+    NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"MPEG-4 Visual", @"AAC", @"AC-3", @"3GPP Text", @"Text", @"Plain Text", @"ASS", @"SSA",
+                                 @"CEA-608", /*@"Photo - JPEG",*/ @"Vorbis", @"VobSub", nil];
 
     for (NSString* type in supportedFormats)
         if ([formatName isEqualToString:type])
@@ -778,4 +783,29 @@ NSError* MP42Error(NSString *description, NSString* recoverySuggestion, NSIntege
     return [NSError errorWithDomain:@"MP42Error"
                                 code:100
                             userInfo:errorDetail];
+}
+
+// Taken from HandBrake common.c
+int yuv2rgb(int yuv)
+{
+    double y, Cr, Cb;
+    int r, g, b;
+    
+    y  = (yuv >> 16) & 0xff;
+    Cb = (yuv >>  8) & 0xff;
+    Cr = (yuv      ) & 0xff;
+    
+    r = 1.164 * (y - 16)                      + 2.018 * (Cb - 128);
+    g = 1.164 * (y - 16) - 0.813 * (Cr - 128) - 0.391 * (Cb - 128);
+    b = 1.164 * (y - 16) + 1.596 * (Cr - 128);
+    
+    r = (r < 0) ? 0 : r;
+    g = (g < 0) ? 0 : g;
+    b = (b < 0) ? 0 : b;
+    
+    r = (r > 255) ? 255 : r;
+    g = (g > 255) ? 255 : g;
+    b = (b > 255) ? 255 : b;
+    
+    return (r << 16) | (g << 8) | b;
 }

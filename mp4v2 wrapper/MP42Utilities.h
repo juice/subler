@@ -59,3 +59,4 @@ void setTrackStartOffset(MP4FileHandle fileHandle, MP4TrackId Id, int64_t offset
 int copyTrackEditLists (MP4FileHandle fileHandle, MP4TrackId srcTrackId, MP4TrackId dstTrackId);
 
 NSError* MP42Error(NSString *description, NSString* recoverySuggestion, NSInteger code);
+int yuv2rgb(int yuv);
