@@ -15,18 +15,24 @@
 {
     [alternateGroup selectItemAtIndex:track.alternate_group];
 
-    for (id fileTrack in [mp4file tracks]) {
-        if ([fileTrack isMemberOfClass:[MP42AudioTrack class]] && [[fileTrack format] isEqualToString:@"AAC"]) {
-            NSMenuItem *newItem = [[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Track %d", [fileTrack Id]]
-                                                              action:@selector(setFallbackTrack:)
-                                                       keyEquivalent:@""] autorelease];
-            [newItem setTarget:self];
-            [newItem setTag: [fileTrack Id]];
-            [[fallback menu] addItem:newItem];
+    if ([[track format] isEqualToString:@"AC-3"]) {
+        for (id fileTrack in [mp4file tracks]) {
+            if ([fileTrack isMemberOfClass:[MP42AudioTrack class]] && [[fileTrack format] isEqualToString:@"AAC"]) {
+                NSMenuItem *newItem = [[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Track %d", [fileTrack Id]]
+                                                                  action:@selector(setFallbackTrack:)
+                                                           keyEquivalent:@""] autorelease];
+                [newItem setTarget:self];
+                [newItem setTag: [fileTrack Id]];
+                [[fallback menu] addItem:newItem];
+            }
         }
+
+        [fallback selectItemWithTag:track.fallbackTrackId];
+    }
+    else {
+        [fallback setEnabled:NO];
     }
 
-    [fallback selectItemWithTag:track.fallbackTrackId];
     [volume setFloatValue:track.volume * 100];
 }
 
