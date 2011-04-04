@@ -67,7 +67,7 @@
         }
     }
 
-    if ([updatedProperty valueForKey:@"name"])
+    if ([updatedProperty valueForKey:@"name"]  || !muxed)
         if (![name isEqualToString:@"Video Track"] &&
             ![name isEqualToString:@"Sound Track"] &&
             ![name isEqualToString:@"Subtitle Track"] &&
@@ -79,13 +79,13 @@
             if (cString)
                 MP4SetTrackName(fileHandle, Id, cString);
         }
-    if ([updatedProperty valueForKey:@"alternate_group"])
+    if ([updatedProperty valueForKey:@"alternate_group"] || !muxed)
         MP4SetTrackIntegerProperty(fileHandle, Id, "tkhd.alternate_group", alternate_group);
     if ([updatedProperty valueForKey:@"start_offset"])
         setTrackStartOffset(fileHandle, Id, startOffset);
-    if ([updatedProperty valueForKey:@"language"])
+    if ([updatedProperty valueForKey:@"language"] || !muxed)
         MP4SetTrackLanguage(fileHandle, Id, lang_for_english([language UTF8String])->iso639_2);
-    if ([updatedProperty valueForKey:@"enabled"]) {
+    if ([updatedProperty valueForKey:@"enabled"] || !muxed) {
         if (enabled) enableTrack(fileHandle, Id);
         else disableTrack(fileHandle, Id);
     }
