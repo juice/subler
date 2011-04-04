@@ -83,6 +83,8 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             }
             else if (!strcmp(type, MP4_SUBTITLE_TRACK_TYPE))
                 track = [MP42SubtitleTrack alloc];
+            else if (!strcmp(type, MP4_SUBPIC_TRACK_TYPE))
+                track = [MP42SubtitleTrack alloc];
             else if (!strcmp(type, MP4_CC_TRACK_TYPE))
                 track = [MP42ClosedCaptionTrack alloc];
             else

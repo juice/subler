@@ -433,6 +433,21 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
         
         return [ac3Info autorelease];
     }
+    else if (!strcmp(trackInfo->CodecID, "S_VOBSUB")) {
+        char *string = (char *) trackInfo->CodecPrivate;
+        char *palette = strnstr(string, "palette:", trackInfo->CodecPrivateSize);
+
+        UInt32 colorPalette[16];
+
+        if (palette != NULL) {
+            sscanf(palette, "palette: %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx", 
+                   &colorPalette[ 0], &colorPalette[ 1], &colorPalette[ 2], &colorPalette[ 3], 
+                   &colorPalette[ 4], &colorPalette[ 5], &colorPalette[ 6], &colorPalette[ 7], 
+                   &colorPalette[ 8], &colorPalette[ 9], &colorPalette[10], &colorPalette[11], 
+                   &colorPalette[12], &colorPalette[13], &colorPalette[14], &colorPalette[15]);
+        }
+        return [NSData dataWithBytes:colorPalette length:sizeof(UInt32)*16];
+    }
 
     NSData * magicCookie = [NSData dataWithBytes:trackInfo->CodecPrivate length:trackInfo->CodecPrivateSize];
 
@@ -549,45 +564,118 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
         }
 
         if (trackInfo->Type == TT_SUB) {
-            if (!trackHelper->ss)
-                trackHelper->ss = [[SBSubSerializer alloc] init];
-            trackHelper->samplesWritten++;
+            int vobsub = !strcmp(trackInfo->CodecID, "S_VOBSUB");
+            if (!vobsub) {
+                if (!trackHelper->ss)
+                    trackHelper->ss = [[SBSubSerializer alloc] init];
+                trackHelper->samplesWritten++;
 
-            if (fseeko(ioStream->fp, FilePos, SEEK_SET)) {
-                fprintf(stderr,"fseeko(): %s\n", strerror(errno));
-                break;				
+                if (fseeko(ioStream->fp, FilePos, SEEK_SET)) {
+                    fprintf(stderr,"fseeko(): %s\n", strerror(errno));
+                    break;				
+                }
+
+                frame = malloc(FrameSize);
+                if (frame == NULL) {
+                    fprintf(stderr,"Out of memory\n");
+                    break;		
+                }
+
+                size_t rd = fread(frame,1,FrameSize,ioStream->fp);
+                if (rd != FrameSize) {
+                    if (rd == 0) {
+                        if (feof(ioStream->fp))
+                            fprintf(stderr,"Unexpected EOF while reading frame\n");
+                        else
+                            fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
+                    } else
+                        fprintf(stderr,"Short read while reading frame\n");
+
+                    free(frame);
+                    continue;
+                }
+
+                NSString *string = [[[NSString alloc] initWithBytes:frame length:FrameSize encoding:NSUTF8StringEncoding] autorelease];
+                if (!strcmp(trackInfo->CodecID, "S_TEXT/ASS") || !strcmp(trackInfo->CodecID, "S_TEXT/SSA"))
+                    string = StripSSALine(string);
+
+                if ([string length]) {
+                    SBSubLine *sl = [[SBSubLine alloc] initWithLine:string start:StartTime/1000000 end:EndTime/1000000];
+                    [trackHelper->ss addLine:[sl autorelease]];
+                }
+                free(frame);
             }
+            else {
+                BOOL compressed = NO;
+                if (trackInfo->CompEnabled)
+                        compressed = YES;
 
-            frame = malloc(FrameSize);
-            if (frame == NULL) {
-                fprintf(stderr,"Out of memory\n");
-                break;		
+                trackHelper->samplesWritten++;
+                
+                if (fseeko(ioStream->fp, FilePos, SEEK_SET)) {
+                    fprintf(stderr,"fseeko(): %s\n", strerror(errno));
+                    break;				
+                }
+
+                if (trackInfo->CompMethodPrivateSize != 0) {
+                    frame = malloc(FrameSize + trackInfo->CompMethodPrivateSize);
+                    memcpy(frame, trackInfo->CompMethodPrivate, trackInfo->CompMethodPrivateSize);
+                }
+                else
+                    frame = malloc(FrameSize);
+
+                if (frame == NULL) {
+                    fprintf(stderr,"Out of memory\n");
+                    break;		
+                }
+
+                size_t rd = fread(frame + trackInfo->CompMethodPrivateSize,1,FrameSize,ioStream->fp);
+                if (rd != FrameSize) {
+                    if (rd == 0) {
+                        if (feof(ioStream->fp))
+                            fprintf(stderr,"Unexpected EOF while reading frame\n");
+                        else
+                            fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
+                    } else
+                        fprintf(stderr,"Short read while reading frame\n");
+                    
+                    free(frame);
+                    continue;
+                }
+
+                if (StartTime > trackHelper->current_time) {
+                    MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
+                    sample->sampleDuration = (StartTime - trackHelper->current_time) / 1000000;
+                    sample->sampleTrackId = track.Id;
+                    if(track.needConversion)
+                        sample->sampleSourceTrack = track;
+
+                    @synchronized(samplesBuffer) {
+                        [samplesBuffer addObject:sample];
+                        [sample release];
+                    }
+                }
+
+                MP42SampleBuffer *nextSample = [[MP42SampleBuffer alloc] init];
+                nextSample->sampleData = frame;
+                nextSample->sampleSize = FrameSize + trackInfo->CompMethodPrivateSize;
+                nextSample->sampleDuration = (EndTime - StartTime ) / 1000000;
+                nextSample->sampleOffset = 0;
+                nextSample->sampleTimestamp = StartTime;
+                nextSample->sampleIsSync = YES;
+                nextSample->sampleTrackId = track.Id;
+                nextSample->sampleIsCompressed = compressed;
+                if(track.needConversion)
+                    nextSample->sampleSourceTrack = track;
+
+                @synchronized(samplesBuffer) {
+                    [samplesBuffer addObject:nextSample];
+                    [nextSample release];
+                }
+
+                trackHelper->current_time = EndTime;
             }
-
-            size_t rd = fread(frame,1,FrameSize,ioStream->fp);
-            if (rd != FrameSize) {
-                if (rd == 0) {
-                    if (feof(ioStream->fp))
-                        fprintf(stderr,"Unexpected EOF while reading frame\n");
-                    else
-                        fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
-                } else
-                    fprintf(stderr,"Short read while reading frame\n");
-
-				free(frame);
-				continue;
-            }
-
-            NSString *string = [[[NSString alloc] initWithBytes:frame length:FrameSize encoding:NSUTF8StringEncoding] autorelease];
-            if (!strcmp(trackInfo->CodecID, "S_TEXT/ASS") || !strcmp(trackInfo->CodecID, "S_TEXT/SSA"))
-                string = StripSSALine(string);
-
-            if ([string length]) {
-                SBSubLine *sl = [[SBSubLine alloc] initWithLine:string start:StartTime/1000000 end:EndTime/1000000];
-                [trackHelper->ss addLine:[sl autorelease]];
-            }
-            free(frame);
-        }        
+        }
 
         else if (trackInfo->Type == TT_VIDEO) {
 

@@ -119,6 +119,21 @@
         }
         return magicCookie;
     }
+    
+    else if (!strcmp(trackType, MP4_SUBPIC_TRACK_TYPE)) {
+        uint8_t *ppConfig; uint32_t pConfigSize;
+        MP4GetTrackESConfiguration(fileHandle, srcTrackId, &ppConfig, &pConfigSize);
+
+        UInt32* paletteG = (UInt32 *) ppConfig;
+
+        int ii;
+        for ( ii = 0; ii < 16; ii++ )
+            paletteG[ii] = yuv2rgb(EndianU32_BtoN(paletteG[ii]));
+
+        magicCookie = [NSData dataWithBytes:paletteG length:pConfigSize];
+
+        return magicCookie;
+    }
 
     else if (MP4_IS_VIDEO_TRACK_TYPE(trackType))
     {

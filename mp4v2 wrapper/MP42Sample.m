@@ -23,6 +23,7 @@
 @synthesize  sampleTimestamp;
 @synthesize  sampleTrackId;
 @synthesize  sampleIsSync;
+@synthesize  sampleIsCompressed;
 @synthesize  sampleSourceTrack;
 
 @end

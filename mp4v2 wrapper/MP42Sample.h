@@ -20,6 +20,7 @@
     MP4Timestamp  sampleTimestamp;
     MP4TrackId    sampleTrackId;
     BOOL          sampleIsSync;
+    BOOL          sampleIsCompressed;
     MP42Track    *sampleSourceTrack;
 }
 
@@ -30,6 +31,7 @@
 @property(readwrite) MP4Timestamp  sampleTimestamp;
 @property(readwrite) MP4TrackId    sampleTrackId;
 @property(readwrite) BOOL          sampleIsSync;
+@property(readwrite) BOOL          sampleIsCompressed;
 @property(assign)    MP42Track    *sampleSourceTrack;
 
 @end
