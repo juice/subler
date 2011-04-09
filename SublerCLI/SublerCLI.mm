@@ -130,7 +130,9 @@ int main (int argc, const char * argv[]) {
 
         if (input_file) {
             MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
-                                                                                andFile:[NSString stringWithCString:input_file                                                                                                                                                                                 encoding:NSUTF8StringEncoding]];
+                                                                                andFile:[NSString stringWithCString:input_file
+                                                                                                           encoding:NSUTF8StringEncoding]
+                                                                                error:&outError];
 
             for (MP42Track * track in [fileImporter tracksArray]) {
                 if (language)
