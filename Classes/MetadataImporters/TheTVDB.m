@@ -51,10 +51,11 @@
 
 #pragma mark Search for episode metadata
 
-- (void) searchForResults:(NSString *)_seriesName seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum callback:(MetadataSearchController *) _callback {
+- (void) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum callback:(MetadataSearchController *) _callback {
     seriesName = _seriesName;
     seasonNum = _seasonNum;
     episodeNum = _episodeNum;
+	seriesLanguage = _seriesLanguage;
     callback = _callback;
     [NSThread detachNewThreadSelector:@selector(runSearchForResultsThread:) toTarget:self withObject:nil];
 }
@@ -65,6 +66,7 @@
     NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:4];
     [args addObject:@"tvdb_main.py"];
     [args addObject:seriesName];
+	[args addObject:seriesLanguage];
     if ([seasonNum length]) [args addObject:seasonNum];
     if ([episodeNum length]) [args addObject:episodeNum];
     NSPipe *outputPipe = [NSPipe pipe];

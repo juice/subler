@@ -22,6 +22,8 @@
 
 @implementation SBDocument
 
+@synthesize languages;
+
 - (id)init
 {
     self = [super init];

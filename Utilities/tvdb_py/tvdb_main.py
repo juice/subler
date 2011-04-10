@@ -15,8 +15,7 @@ def cleanDict(d):
 	for k in d.iterkeys():
 			if d[k] is None:
 				d[k] = ""
-
-t = tvdb_api.Tvdb(apikey = "3498815BE9484A62", banners=True, actors=True)
+	
 d = dict()
 d['episodes'] = list()
 d['actors'] = list()
@@ -28,26 +27,28 @@ if len(sys.argv) >= 2:
 
 	seriesName = sys.argv[1]
 	seasonNum = -1
-
+	
+	t = tvdb_api.Tvdb(apikey = "3498815BE9484A62", banners=True, actors=True, language="" + sys.argv[2])
+	
 	try:
 
-		if len(sys.argv) is 2:
+		if len(sys.argv) is 3:
 			for seasonNum in t[seriesName].iterkeys():
 				for episodeNum in t[seriesName][seasonNum].iterkeys():
 					e = dict(t[seriesName][seasonNum][episodeNum])
 					cleanDict(e)
 					d['episodes'].append(e)
 
-		if len(sys.argv) is 3:
-			seasonNum  = int(sys.argv[2])
+		if len(sys.argv) is 4:
+			seasonNum  = int(sys.argv[3])
 			for episodeNum in t[seriesName][seasonNum].iterkeys():
 				e = dict(t[seriesName][seasonNum][episodeNum])
 				cleanDict(e)
 				d['episodes'].append(e)
 
-		if len(sys.argv) is 4:
-			seasonNum  = int(sys.argv[2])
-			episodeNum = int(sys.argv[3])
+		if len(sys.argv) is 5:
+			seasonNum  = int(sys.argv[3])
+			episodeNum = int(sys.argv[4])
 			e = dict(t[seriesName][seasonNum][episodeNum])
 			cleanDict(e)
 			d['episodes'].append(e)

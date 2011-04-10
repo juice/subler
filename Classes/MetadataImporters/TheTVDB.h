@@ -12,6 +12,7 @@
 
 @interface TheTVDB : NSObject {
     NSString *seriesName;
+	NSString *seriesLanguage;
     NSString *seasonNum;
     NSString *episodeNum;
     MetadataSearchController *callback;
@@ -23,7 +24,7 @@
 - (void) runSearchForTVSeriesNameThread:(id)param;
 
 #pragma mark Search for episode metadata
-- (void) searchForResults:(NSString *)seriesName seasonNum:(NSString *)seasonNum episodeNum:(NSString *)episodeNum callback:(MetadataSearchController *) callback;
+- (void) searchForResults:(NSString *)seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)seasonNum episodeNum:(NSString *)episodeNum callback:(MetadataSearchController *) callback;
 - (void) runSearchForResultsThread:(id)param;
 
 - (void) cancel;

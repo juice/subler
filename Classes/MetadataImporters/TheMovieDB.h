@@ -13,15 +13,16 @@
 
 @interface TheMovieDB : NSObject {
     NSString *mMovieTitle;
+	NSString *mMovieLanguage;
     MP42Metadata *mMetadata;
     MetadataSearchController *mCallback;
     BOOL isCancelled;
 }
 
-- (void) searchForResults:(NSString *)movieTitle callback:(MetadataSearchController *)callback;
+- (void) searchForResults:(NSString *)movieTitle mMovieLanguage:(NSString *)aMovieLanguage callback:(MetadataSearchController *)callback;
 - (void) runSearchForResultsThread:(id)param;
 
-- (void) loadAdditionalMetadata:(MP42Metadata *)metadata callback:(MetadataSearchController *)callback;
+- (void) loadAdditionalMetadata:(MP42Metadata *)metadata mMovieLanguage:(NSString *)aMovieLanguage callback:(MetadataSearchController *)callback;
 - (void) runLoadAdditionalMetadataThread:(id)param;
 
 - (void) cancel;

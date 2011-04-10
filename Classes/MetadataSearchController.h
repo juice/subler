@@ -21,11 +21,13 @@
     IBOutlet NSTabView           *searchMode;
     
     IBOutlet NSTextField         *movieName;
+    IBOutlet NSPopUpButton       *movieLanguage;
     
     IBOutlet NSComboBox          *tvSeriesName;
     NSMutableArray               *tvSeriesNameSearchArray;
     IBOutlet NSTextField         *tvSeasonNum;
     IBOutlet NSTextField         *tvEpisodeNum;
+    IBOutlet NSPopUpButton       *tvLanguage;
     
     IBOutlet NSButton            *searchButton;
     id                            currentSearcher;

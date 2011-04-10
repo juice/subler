@@ -10,6 +10,7 @@
 #import "MP42File.h"
 #import "SBDocument.h"
 #import "ArtworkSelector.h"
+#import "lang.h"
 
 @implementation MetadataSearchController
 
@@ -39,8 +40,41 @@
 
     [[self window] makeFirstResponder:movieName];
     
-    NSString *filename = nil;
     MP42File *mp4File = [((SBDocument *) delegate) mp4File];
+    
+    // construct movie language menu
+    [movieLanguage removeAllItems];
+    for (NSString *lang in [(SBDocument *) delegate languages]) {
+        if ([lang isEqualToString:@"Unknown"]) continue;
+        [movieLanguage addItemWithTitle:lang];
+    }
+    [movieLanguage selectItemWithTitle:@"English"];
+    for (MP42Track *track in [mp4File tracks]) {
+        if (![[track language] isEqualToString:@"Unknown"]) {
+            if ([movieLanguage indexOfItemWithTitle:[track language]] >= 0) {
+                [movieLanguage selectItemWithTitle:[track language]];
+                break;
+            }
+        }
+    }
+
+    // construct tv language menu
+    [tvLanguage removeAllItems];
+    NSArray *tvLanguages = [NSArray arrayWithObjects:@"Chinese", @"Croatian", @"Czech", @"Danish", @"Dutch", @"English", @"Finnish", @"French", @"German", @"Greek, Modern", @"Hebrew", @"Hungarian", @"Italian", @"Japanese", @"Korean", @"Norwegian", @"Polish", @"Portuguese", @"Russian", @"Slovenian", @"Spanish", @"Swedish", @"Turkish", nil];
+    for (NSString *lang in tvLanguages) {
+        [tvLanguage addItemWithTitle:lang];
+    }
+    [tvLanguage selectItemWithTitle:@"English"];
+    for (MP42Track *track in [mp4File tracks]) {
+        if (![[track language] isEqualToString:@"Unknown"]) {
+            if ([tvLanguage indexOfItemWithTitle:[track language]] >= 0) {
+                [tvLanguage selectItemWithTitle:[track language]];
+                break;
+            }
+        }
+    }
+    
+    NSString *filename = nil;
     for (NSUInteger i = 0; i < [mp4File tracksCount]; i++) {
         MP42Track *track = [mp4File trackAtIndex:i];
         if ([track sourcePath]) {
@@ -69,6 +103,7 @@
     if ([searchButton isEnabled]) {
         [self searchForResults:nil];
     }
+    
     return;
 }
 
@@ -183,6 +218,12 @@
 
 #pragma mark Search for results
 
++ (NSString *)langCodeFor:(NSString *)language {
+    iso639_lang_t *lang = lang_for_english([language cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (lang == NULL) return nil;
+    else return [NSString stringWithFormat:@"%s", lang->iso639_1];
+}
+
 - (IBAction) searchForResults: (id) sender {
     if (currentSearcher) {
         [currentSearcher cancel];
@@ -196,7 +237,9 @@
         [progressText setStringValue:@"Searching TheMovieDB for movies…"];
         [progressText setHidden:NO];
         currentSearcher = [[TheMovieDB alloc] init];
-        [((TheMovieDB *) currentSearcher) searchForResults:[movieName stringValue] callback:self];
+        [((TheMovieDB *) currentSearcher) searchForResults:[movieName stringValue] 
+                                            mMovieLanguage:[MetadataSearchController langCodeFor:[movieLanguage titleOfSelectedItem]] 
+                                                  callback:self];
     } else if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"TV Episode"]) {
         [progress startAnimation:self];
         [progress setHidden:NO];
@@ -204,6 +247,7 @@
         [progressText setHidden:NO];
         currentSearcher = [[TheTVDB alloc] init];
         [((TheTVDB *) currentSearcher) searchForResults:[tvSeriesName stringValue]
+                                         seriesLanguage:[MetadataSearchController langCodeFor:[tvLanguage titleOfSelectedItem]] 
                                               seasonNum:[tvSeasonNum stringValue]
                                              episodeNum:[tvEpisodeNum stringValue]
                                                callback:self];        
@@ -241,7 +285,9 @@
         [progressText setStringValue:@"Downloading additional metadata from TheMovieDB…"];
         [progressText setHidden:NO];
         currentSearcher = [[TheMovieDB alloc] init];
-        [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:selectedResult callback:self];
+        [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:selectedResult 
+                                                  mMovieLanguage:[MetadataSearchController langCodeFor:[movieLanguage titleOfSelectedItem]] 
+                                                        callback:self];
     } else if ([[[searchMode selectedTabViewItem] label] isEqualToString:@"TV Episode"]) {
         [self loadAdditionalMetadataDone:selectedResult];
     }

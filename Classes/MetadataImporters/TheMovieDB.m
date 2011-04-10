@@ -19,8 +19,9 @@
 
 #pragma mark Search for matching movies
 
-- (void) searchForResults:(NSString *)aMovieTitle callback:(MetadataSearchController *)aCallback {
+- (void) searchForResults:(NSString *)aMovieTitle mMovieLanguage:(NSString *)aMovieLanguage callback:(MetadataSearchController *)aCallback {
     mMovieTitle = aMovieTitle;
+	mMovieLanguage	=	aMovieLanguage;
     mCallback = aCallback;
     [NSThread detachNewThreadSelector:@selector(runSearchForResultsThread:) toTarget:self withObject:nil];
 }
@@ -29,7 +30,9 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:1];
     NSString *url = [NSString stringWithFormat:@"http://api.themoviedb.org/2.1/Movie.search/en/xml/b0073bafb08b4f68df101eb2325f27dc/%@", [MetadataSearchController urlEncoded:mMovieTitle]];
-    NSXMLDocument *xml = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:url] options:0 error:NULL];
+	url = [[url stringByReplacingOccurrencesOfString:@"/en/" withString:[NSString stringWithFormat:@"/%@/", mMovieLanguage]] mutableCopy];
+	NSLog(@"Nachher 1: %@", url);
+	NSXMLDocument *xml = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:url] options:0 error:NULL];
     if (xml) {
         NSError *err;
         NSArray *nodes = [xml nodesForXPath:@"./OpenSearchDescription/movies/movie" error:&err];        
@@ -48,8 +51,9 @@
 
 #pragma mark Load additional metadata
 
-- (void) loadAdditionalMetadata:(MP42Metadata *)aMetadata callback:(MetadataSearchController *) aCallback {
+- (void) loadAdditionalMetadata:(MP42Metadata *)aMetadata mMovieLanguage:(NSString *)aMovieLanguage callback:(MetadataSearchController *) aCallback {
     mMetadata = aMetadata;
+	mMovieLanguage = aMovieLanguage;
     mCallback = aCallback;
     [NSThread detachNewThreadSelector:@selector(runLoadAdditionalMetadataThread:) toTarget:self withObject:nil];
 }
@@ -59,7 +63,8 @@
     NSString *tmdbID = [mMetadata.tagsDict valueForKey:@"TMDb ID"];
     if (tmdbID && ([tmdbID length] > 0)) {
         NSString *url = [NSString stringWithFormat:@"http://api.themoviedb.org/2.1/Movie.getInfo/en/xml/b0073bafb08b4f68df101eb2325f27dc/%@", [MetadataSearchController urlEncoded:tmdbID]];
-        NSXMLDocument *xml = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:url] options:0 error:NULL];
+		url = [[url stringByReplacingOccurrencesOfString:@"/en/" withString:[NSString stringWithFormat:@"/%@/", mMovieLanguage]] mutableCopy];
+		NSXMLDocument *xml = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:url] options:0 error:NULL];
         if (xml) {
             NSError *err;
             NSArray *nodes = [xml nodesForXPath:@"./OpenSearchDescription/movies/movie" error:&err];
