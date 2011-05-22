@@ -19,10 +19,11 @@ void print_help()
     printf("\t\t-h print this help information\n");
     printf("\t\t-v print version\n");
     printf("\t\t-t set tags {Tag Name:Tag Value}*\n");
+    printf("\t\t-m downmix audio (mono, stereo, dolby, pl2)\n");
 }
 void print_version()
 {
-    printf("\t\tversion 0.13\n");
+    printf("\t\tversion 0.15\n");
 }
 
 int main (int argc, const char * argv[]) {
@@ -41,13 +42,16 @@ int main (int argc, const char * argv[]) {
     BOOL optimize = false;
     char* tags = NULL;
 
+    BOOL downmixAudio = NO;
+    NSString *downmixType = nil;
+
     if (argc == 1) {
         print_help();
         exit(-1);
     }
 
     char opt_char=0;
-    while ((opt_char = getopt(argc, (char * const*)argv, "o:i:c:d:a:l:n:t:prvhO")) != -1) {
+    while ((opt_char = getopt(argc, (char * const*)argv, "o:i:c:d:a:l:n:t:prvhOm")) != -1) {
         switch(opt_char) {
             case 'h':
                 print_help();
@@ -90,6 +94,18 @@ int main (int argc, const char * argv[]) {
             case 'p':
                 chapterPreview = YES;
                 break;
+            case 'm':
+                downmixAudio = YES;
+                if (strcasecmp( optarg, "mono" ) == 0) downmixType = SBMonoMixdown;
+                else if (strcasecmp( optarg, "stereo" ) == 0) downmixType = SBStereoMixdown;
+                else if (strcasecmp( optarg, "dolby" ) == 0) downmixType = SBDolbyMixdown;
+                else if (strcasecmp( optarg, "pl2" ) == 0) downmixType = SBDolbyPlIIMixdown;
+                else {
+                    printf( "Error: unsupported downmix type '%s'\n", optarg );
+                    printf( "Valid downmix types are: 'mono', 'stereo', 'dolby' and 'pl2'\n" );
+                    exit( -1 );
+                }
+                break;                
             default:
                 print_help();
                 exit(-1);
@@ -171,6 +187,17 @@ int main (int argc, const char * argv[]) {
             [mp4File addTrack:newChapterTrack];            
             modified = YES;      
           }
+        }
+
+        if (downmixAudio) {
+            for (MP42AudioTrack *track in [mp4File tracks]) {
+                if (![track isKindOfClass: [MP42AudioTrack class]]) continue;
+                
+                [track setNeedConversion: YES];
+                [track setMixdownType: downmixType];
+                
+                modified = YES;
+            }
         }
 
         if (tags) {
