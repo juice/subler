@@ -116,8 +116,24 @@ static const iTMF_rating_t rating_strings[] = {
     {"fr-tv|-12|200|", "-12"},
     {"fr-tv|-16|500|", "-16"},
     {"fr-tv|-18|600|", "-18"},
+    {"--", "-- Canada"},
+    {"ca-movie|G|100|", "G"},               // 70
+    {"ca-movie|PG|200|", "PG"},
+    {"ca-movie|14A|300|", "14A"},
+    {"ca-movie|18A|350|", "18A"},
+    {"ca-movie|R|400|", "R"},
+    {"ca-movie|A|500|", "A"},
     {"--", ""},
-    {"--", "Unknown"},                      // 70
+    {"ca-tv|TV-E|000|", "TV-E"},              // 77
+    {"ca-tv|TV-C|50|", "TV-C"},
+    {"ca-tv|TV-C8|75|", "TV-C8"},
+    {"ca-tv|TV-G|100|", "TV-G"},
+    {"ca-tv|TV-PG|200|", "TV-PG"},
+    {"ca-tv|TV-14+|300|", "TV-14+"},
+    {"ca-tv|TV-18+|350|", "TV-18+"},
+    {"ca-tv|TV-21+|500|", "TV-21+"},
+    {"--", ""},
+    {"--", "Unknown"},                      // 85
     {NULL, NULL},
 };
 
