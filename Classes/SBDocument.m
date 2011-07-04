@@ -174,10 +174,10 @@
                                     [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
                                     nil];
 
-    [[NSFileManager defaultManager] changeFileAttributes:fileAttributes atPath:[absoluteURL path]];
+    [[NSFileManager defaultManager] setAttributes:fileAttributes ofItemAtPath:[absoluteURL path] error:nil];
     [self setFileURL:absoluteURL];
     [self setFileModificationDate:[[[NSFileManager defaultManager]  
-                                    fileAttributesAtPath:[absoluteURL path] traverseLink:YES]  
+                                    attributesOfItemAtPath:[absoluteURL path] error:nil]  
                                    fileModificationDate]];
     if (success && outError)
         outError = nil;

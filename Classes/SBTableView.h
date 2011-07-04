@@ -8,13 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface SBTableView : NSTableView {
-    NSArray *_pasteboardTypes;
-}
-- (void)keyDown:(NSEvent *)event;
-@property(readwrite, retain) NSArray* _pasteboardTypes;
-@end
-
 @protocol SBTableViewDelegate
 @optional
 - (void)_deleteSelectionFromTableView:(NSTableView *)tableView;
@@ -23,3 +16,11 @@
 - (void)_pasteToTableView:(NSTableView *)tableView;
 
 @end
+
+@interface SBTableView : NSTableView<SBTableViewDelegate> {
+    NSArray *_pasteboardTypes;
+}
+- (void)keyDown:(NSEvent *)event;
+@property(readwrite, retain) NSArray* _pasteboardTypes;
+@end
+

@@ -14,7 +14,7 @@
 #import "TheMovieDB.h"
 #import "TheTVDB.h"
 
-@interface MetadataSearchController : NSWindowController {
+@interface MetadataSearchController : NSWindowController<NSTableViewDelegate> {
     id                            delegate;
     NSDictionary                 *detailBoldAttr;
 

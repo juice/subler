@@ -11,7 +11,7 @@
 @class MovieViewController;
 @class SBTableView;
 
-@interface PrefsController : NSWindowController {
+@interface PrefsController : NSWindowController <NSToolbarDelegate, NSWindowDelegate> {
     IBOutlet NSView         * generalView, * audioView, *setsView;
 
     MAAttachedWindow *attachedWindow;

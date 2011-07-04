@@ -10,7 +10,7 @@
 
 @class MP42File;
 
-@interface SBDocument : NSDocument
+@interface SBDocument : NSDocument <NSTableViewDelegate>
 {
     MP42File  *mp4File;
     IBOutlet NSWindow       *documentWindow;
