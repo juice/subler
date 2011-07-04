@@ -74,7 +74,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstLaunch"])
         firstLaunch = NO;
 
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"warningDonate"]) {        
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"WarningDonate"]) {        
         NSDate * lastDonateDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"DonateAskDate"];
         const BOOL timePassed = !lastDonateDate || (-1 * [lastDonateDate timeIntervalSinceNow]) >= DONATE_NAG_TIME;
 
