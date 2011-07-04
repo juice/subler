@@ -125,7 +125,7 @@
     joined = [self nodes:node forXPath:@"./categories/category[@type='genre']/@name" joinedBy:@","];
     if (joined) [metadata setTag:joined forKey:@"Genre"];
     joined = [self nodes:node forXPath:@"./cast/person[@job='Actor']/@name" joinedBy:@","];
-    if (joined) [metadata setTag:joined forKey:@"Cast"];
+    if (joined) {[metadata setTag:joined forKey:@"Cast"]; [metadata setTag:joined forKey:@"Artist"]; }
     joined = [self nodes:node forXPath:@"./cast/person[@job='Director']/@name" joinedBy:@","];
     if (joined) [metadata setTag:joined forKey:@"Director"];
     joined = [self nodes:node forXPath:@"./cast/person[@department='Writing']/@name" joinedBy:@","];
