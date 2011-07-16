@@ -63,8 +63,7 @@
             track.trackConverterHelper = audioConverter;
             [audioConverter release];
         }
-        if([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"VobSub"] /*track.needConversion*/) {
-            track.needConversion = YES;
+        if([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"VobSub"] && track.needConversion) {
             track.format = @"3GPP Text";
             SBVobSubConverter *subConverter = [[SBVobSubConverter alloc] initWithTrack:(MP42SubtitleTrack*)track
                                                                                  error:outError];
@@ -76,7 +75,7 @@
             track.trackConverterHelper = subConverter;
             [subConverter release];
         }
-        else if([track isMemberOfClass:[MP42SubtitleTrack class]] /*track.needConversion*/) {
+        else if([track isMemberOfClass:[MP42SubtitleTrack class]] && track.needConversion) {
             track.format = @"3GPP Text";
         }
 
@@ -238,6 +237,9 @@
         // VobSub bitmap track
         else if ([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"VobSub"]) {
             dstTrackId = MP4AddSubpicTrack(fileHandle, timeScale, 640, 480);
+
+            MP4SetTrackESConfiguration( fileHandle, dstTrackId,
+                                       [magicCookie bytes], [magicCookie length]);
 
             [[track trackImporterHelper] setActiveTrack:track];
         }

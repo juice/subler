@@ -542,7 +542,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                     else
                         fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
                 } else
-                    fprintf(stderr,"Short read while reading frame\n");
+                    fprintf(stderr,"Short read while reading audio frame\n");
 				
 				free(frame);
 				continue;
@@ -591,7 +591,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                         else
                             fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
                     } else
-                        fprintf(stderr,"Short read while reading frame\n");
+                        fprintf(stderr,"Short read while reading sub frame\n");
 
                     free(frame);
                     continue;
@@ -639,7 +639,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                         else
                             fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
                     } else
-                        fprintf(stderr,"Short read while reading frame\n");
+                        fprintf(stderr,"Short read while reading vobsub frame\n");
                     
                     free(frame);
                     continue;
@@ -741,7 +741,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                         else
                             fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
                     } else
-                        fprintf(stderr,"Short read while reading frame\n");
+                        fprintf(stderr,"Short read while reading video frame\n");
                     break;
 
 					free(frame);

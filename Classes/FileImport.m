@@ -40,10 +40,16 @@
         else
             [importCheckArray addObject: [NSNumber numberWithBool:NO]];
         
-        if (!trackNeedConversion(track.format))
+        if ([track.format isEqualToString:@"AC-3"] &&
+            [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
+            [actionArray addObject:[NSNumber numberWithInteger:[[[NSUserDefaults standardUserDefaults]
+                                                                 valueForKey:@"SBAudioMixdown"] integerValue]]];
+        else if (!trackNeedConversion(track.format))
             [actionArray addObject:[NSNumber numberWithInteger:0]];
         else 
-            [actionArray addObject:[NSNumber numberWithInteger:1]];
+            [actionArray addObject:[NSNumber numberWithInteger:[[[NSUserDefaults standardUserDefaults]
+                                                                 valueForKey:@"SBAudioMixdown"] integerValue]]];
+
     }
 
     if ([fileImporter metadata])
@@ -177,16 +183,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     for (MP42Track * track in [fileImporter tracksArray]) {
         if ([[importCheckArray objectAtIndex: i] boolValue]) {
-            if (trackNeedConversion(track.format))
-                track.needConversion = YES;
+            NSUInteger conversion = [[actionArray objectAtIndex:i] integerValue];
 
-            if ([track.format isEqualToString:@"AC-3"] &&
-                [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
-                track.needConversion = YES;
+            if ([track isMemberOfClass:[MP42AudioTrack class]]) {
+                if (conversion)
+                    track.needConversion = YES;
 
-            if (track.needConversion) {
-                NSUInteger mixdown = [[actionArray objectAtIndex:i] integerValue];
-                switch(mixdown) {
+                switch(conversion) {
                     case 5:
                         [(MP42AudioTrack*) track setMixdownType:nil];
                         break;
@@ -206,6 +209,10 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                         [(MP42AudioTrack*) track setMixdownType:SBDolbyPlIIMixdown];
                         break;
                 }
+            }
+            else if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
+                if (conversion)
+                    track.needConversion = YES;
             }
 
             [track setTrackImporterHelper:fileImporter];
