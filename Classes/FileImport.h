@@ -11,10 +11,11 @@
 @class MP42FileImporter;
 @class MP42Metadata;
 
-@interface FileImport : NSWindowController {
+@interface FileImport : NSWindowController <NSTableViewDelegate> {
 
 	NSString            * file;
     NSMutableArray		* importCheckArray;
+    NSMutableArray      * actionArray;
     MP42FileImporter    * fileImporter;
 
 	id delegate;
