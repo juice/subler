@@ -290,28 +290,37 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 	UniversalDetector *ud = [[UniversalDetector alloc] init];
 	NSString *res = nil;
 	NSStringEncoding enc;
+	float conf;
 	NSString *enc_str;
 	BOOL latin2;
 
 	[ud analyzeData:data];
-	
+
 	enc = [ud encoding];
+	conf = [ud confidence];
 	enc_str = [ud MIMECharset];
-	latin2 = [enc_str isEqualToString:@"windows-1250"];
-	
+	latin2 = enc == NSWindowsCP1250StringEncoding;
+
 	if (latin2) {
 		if (DifferentiateLatin12([data bytes], [data length])) { // seems to actually be latin1
 			enc = NSWindowsCP1252StringEncoding;
+			enc_str = @"windows-1252";
 		}
 	}
-	
+
+	if (conf < .6 || latin2) {
+		NSLog(@"Guessed encoding \"%s\" for \"%s\", but not sure (confidence %f%%).\n",[enc_str UTF8String],[path UTF8String],conf*100.);
+	}
+
 	res = [[[NSString alloc] initWithData:data encoding:enc] autorelease];
 
 	if (!res) {
 		if (latin2) {
+			NSLog(@"Encoding %s failed, retrying.\n",[enc_str UTF8String]);
 			enc = (enc == NSWindowsCP1252StringEncoding) ? NSWindowsCP1250StringEncoding : NSWindowsCP1252StringEncoding;
 			res = [[[NSString alloc] initWithData:data encoding:enc] autorelease];
-		}
+			if (!res) NSLog(@"Both of latin1/2 failed.");
+		} else NSLog(@"Failed to load file as guessed encoding %@.",enc_str);
 	}
 	[ud release];
 

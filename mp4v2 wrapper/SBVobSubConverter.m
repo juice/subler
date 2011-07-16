@@ -353,6 +353,11 @@ CGImageRef resizedImage(CGImageRef imageRef, CGRect thumbRect)
 
         if (ret < 0 || !got_sub) {
             NSLog(@"Error decoding DVD subtitle %d / %ld", ret, (long)bufferSize);
+            
+            MP42SampleBuffer* subSample = copyEmptySubtitleSample(trackId, sampleBuffer->sampleDuration);
+            [outputSamplesBuffer addObject:subSample];    
+            [subSample release];
+            
             [inputSamplesBuffer removeObjectAtIndex:0];
 
             continue;
@@ -425,10 +430,10 @@ CGImageRef resizedImage(CGImageRef imageRef, CGRect thumbRect)
                                                kCGRenderingIntentDefault);
             CGColorSpaceRelease(colorSpace);
 
-            /*
-            NSBitmapImageRep *bitmapImage = [[NSBitmapImageRep alloc]initWithCGImage:(CGImageRef)cgImageBig];
-            [[bitmapImage representationUsingType:NSTIFFFileType properties:nil] writeToFile:@"/tmp/foo.tif" atomically:YES];
-            */
+
+            //NSBitmapImageRep *bitmapImage = [[NSBitmapImageRep alloc]initWithCGImage:(CGImageRef)cgImage];
+            //[[bitmapImage representationUsingType:NSTIFFFileType properties:nil] writeToFile:@"/tmp/foo.tif" atomically:YES];
+
             NSString *text = [ocr performOCROnCGImage:cgImage];
 
             MP42SampleBuffer* subSample = copySubtitleSample(trackId, text, sampleBuffer->sampleDuration);

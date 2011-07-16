@@ -23,7 +23,7 @@ class OCRWrapper {
 public:
 OCRWrapper(const char* lang) {
     NSString * path = [[NSBundle mainBundle] bundlePath];
-    path = [string stringByAppendingString:@"/Contents/Resources/"];
+    path = [path stringByAppendingString:@"/Contents/Resources/"];
 
     setenv("TESSDATA_PREFIX", [path UTF8String], 1);
     tess_base_api.Init("/usr/local/share", lang);

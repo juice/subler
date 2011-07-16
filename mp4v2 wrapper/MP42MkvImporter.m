@@ -289,6 +289,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
             return @"AC-3";
         else if (!strcmp(track->CodecID, "V_MPEG4/ISO/SP"))
             return @"MPEG-4 Visual";
+        else if (!strcmp(track->CodecID, "V_MPEG4/ISO/ASP"))
+            return @"MPEG-4 Visual";
         else if (!strcmp(track->CodecID, "A_DTS"))
             return @"DTS";
         else if (!strcmp(track->CodecID, "A_VORBIS"))

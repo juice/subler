@@ -11,6 +11,7 @@
 #import "MP42FileImporter.h"
 #import "MP42Sample.h"
 #import "SBAudioConverter.h"
+#import "SBVobSubConverter.h"
 
 @implementation MP42Muxer
 
@@ -61,6 +62,22 @@
 
             track.trackConverterHelper = audioConverter;
             [audioConverter release];
+        }
+        if([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"VobSub"] /*track.needConversion*/) {
+            track.needConversion = YES;
+            track.format = @"3GPP Text";
+            SBVobSubConverter *subConverter = [[SBVobSubConverter alloc] initWithTrack:(MP42SubtitleTrack*)track
+                                                                                 error:outError];
+
+            if (subConverter == nil) {
+                noErr = NO;
+            }
+
+            track.trackConverterHelper = subConverter;
+            [subConverter release];
+        }
+        else if([track isMemberOfClass:[MP42SubtitleTrack class]] /*track.needConversion*/) {
+            track.format = @"3GPP Text";
         }
 
         // H.264 video track
@@ -156,7 +173,7 @@
         }
 
         // 3GPP text track
-        else if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
+        else if ([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"3GPP Text"]) {
             NSSize subSize = [[track trackImporterHelper] sizeForTrack:track];
             NSSize videoSize = NSMakeSize(0, 0);
 
@@ -218,6 +235,13 @@
             
             [[track trackImporterHelper] setActiveTrack:track];
         }
+        // VobSub bitmap track
+        else if ([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"VobSub"]) {
+            dstTrackId = MP4AddSubpicTrack(fileHandle, timeScale, 640, 480);
+
+            [[track trackImporterHelper] setActiveTrack:track];
+        }
+
         // Closed Caption text track
         else if ([track isMemberOfClass:[MP42ClosedCaptionTrack class]]) {
             NSSize videoSize = [[track trackImporterHelper] sizeForTrack:track];
@@ -287,10 +311,10 @@
             // The sample need additional conversion
             if (sampleBuffer->sampleSourceTrack) {
                 MP42SampleBuffer *convertedSample;
-                SBAudioConverter * audioConverter = sampleBuffer->sampleSourceTrack.trackConverterHelper;
-                [audioConverter addSample:sampleBuffer];
-                while (![audioConverter needMoreSample]) {
-                    convertedSample = [audioConverter copyEncodedSample];
+                id converter = sampleBuffer->sampleSourceTrack.trackConverterHelper;
+                [converter addSample:sampleBuffer];
+                while (![converter needMoreSample]) {
+                    convertedSample = [converter copyEncodedSample];
                     if (convertedSample != nil) {
                         MP4WriteSample(fileHandle, convertedSample->sampleTrackId,
                                        convertedSample->sampleData, convertedSample->sampleSize,
@@ -298,7 +322,7 @@
                                        convertedSample->sampleIsSync);
                         [convertedSample release];
                     }
-                    else if (![audioConverter encoderDone]) {
+                    else if (![converter encoderDone]) {
                         usleep(50);
                     }
                     else
@@ -317,7 +341,7 @@
                 [sampleBuffer release];
             }
 
-            if (currentNumber == 300) {
+            if (currentNumber == 150) {
                 status = [importerHelper progress] / tracksImportersCount;
 
                 if ([delegate respondsToSelector:@selector(progressStatus:)]) 
@@ -339,15 +363,14 @@
             [importerHelper cleanUp:fileHandle];
     }
 
-
     // Write the last samples from the encoder
     for (MP42Track * track in workingTracks) {
         if([track isMemberOfClass:[MP42AudioTrack class]] && track.needConversion) {
-            SBAudioConverter * audioConverter = (SBAudioConverter *) track.trackConverterHelper;
-            [audioConverter setDone:YES];
+            id converter = track.trackConverterHelper;
+            [converter setDone:YES];
             MP42SampleBuffer *convertedSample;
-            while (![audioConverter encoderDone]) {
-                if ((convertedSample = [audioConverter copyEncodedSample]) != nil) {
+            while (![converter encoderDone]) {
+                if ((convertedSample = [converter copyEncodedSample]) != nil) {
                     MP4WriteSample(fileHandle, convertedSample->sampleTrackId,
                                    convertedSample->sampleData, convertedSample->sampleSize,
                                    convertedSample->sampleDuration, convertedSample->sampleOffset,

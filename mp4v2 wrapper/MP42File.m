@@ -203,8 +203,8 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     if (noErr) {
         NSFileManager *fileManager = [NSFileManager defaultManager];
 
-        [fileManager removeFileAtPath:filePath handler:nil];
-        [fileManager movePath:tempPath toPath:filePath handler:nil];
+        [fileManager removeItemAtPath:filePath error:nil];
+        [fileManager moveItemAtPath:tempPath toPath:filePath error:nil];
     }
 
     [pool release];
@@ -407,6 +407,8 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             [qtTrack setAttribute:[NSNumber numberWithBool:NO] forKey:QTTrackEnabledAttribute];
 
         NSMutableArray * previewImages = [NSMutableArray arrayWithCapacity:[chapterTrack chapterCount]];
+        NSDictionary *attributes = [NSDictionary dictionaryWithObject:QTMovieFrameImageTypeNSImage forKey:QTMovieFrameImageType];
+        NSError *error;
 
         for (SBTextSample * chapter in [chapterTrack chapters]) {
             QTTime chapterTime = {
@@ -415,9 +417,17 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                 0
             };
 
-            NSImage *previewImage = [qtMovie frameImageAtTime:chapterTime];
+            NSImage *previewImage = [qtMovie frameImageAtTime:chapterTime withAttributes:attributes error:&error];
             if (previewImage)
                 [previewImages addObject:previewImage];
+            else {
+                NSLog(@"code: %d", [error code]);
+                NSLog(@"domain: %@", [error domain]);
+                NSLog(@"userInfo: %@", [error userInfo]);
+
+                [previewImages addObject:[NSNull null]];
+            }
+
         }
 
         //[qtMovie detachFromCurrentThread];
@@ -484,7 +494,9 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                                                                              bitsPerPixel:32];
             [NSGraphicsContext saveGraphicsState];
             [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:bitmap]];
+
             [[previewImages objectAtIndex:0] drawInRect:newRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+
             [NSGraphicsContext restoreGraphicsState];
 
             NSData * jpegData = [bitmap representationUsingType:NSJPEGFileType properties:nil];
