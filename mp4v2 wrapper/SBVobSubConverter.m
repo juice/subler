@@ -122,14 +122,6 @@ int ExtractVobSubPacket(UInt8 *dest, UInt8 *framedSrc, int srcSize, int *usedSrc
 	return copiedBytes;
 }
 
-void *fast_realloc_with_padding(void *ptr, unsigned int *size, unsigned int min_size)
-{
-	void *res = ptr;
-	av_fast_malloc(&res, size, min_size + FF_INPUT_BUFFER_PADDING_SIZE);
-	if (res) memset(res + min_size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-	return res;
-}
-
 static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], PacketControlData *controlDataOut) {
 	// to set whether the key sequences 0x03 - 0x06 have been seen
 	UInt16 controlSeqSeen = 0;
@@ -211,45 +203,6 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
 	if (controlSeqSeen != 0xff)
 		return -1;
 	return noErr;
-}
-
-void DecompressZlib(uint8_t **codecData, unsigned int *bufferSize, uint8_t *sampleData, uint64_t sampleSize)
-{
-    unsigned int bufferSizeDec = 0;
-	ComponentResult err = noErr;
-	z_stream strm;
-	strm.zalloc = Z_NULL;
-	strm.zfree = Z_NULL;
-	strm.opaque = Z_NULL;
-	strm.avail_in = 0;
-	strm.next_in = Z_NULL;
-	err = inflateInit(&strm);
-	if (err != Z_OK) return;
-
-	strm.avail_in = sampleSize;
-	strm.next_in = sampleData;
-
-	// first, get the size of the decompressed data
-	strm.avail_out = 2;
-	strm.next_out = *codecData;
-
-	err = inflate(&strm, Z_SYNC_FLUSH);
-	if (err < Z_OK) goto bail;
-	if (strm.avail_out != 0) goto bail;
-
-	// reallocate our buffer to be big enough to store the decompressed packet
-	bufferSizeDec = AV_RB16(*codecData);
-	*codecData = fast_realloc_with_padding(*codecData, bufferSize, bufferSizeDec);
-
-	// then decompress the rest of it
-	strm.avail_out = *bufferSize - 2;
-	strm.next_out = *codecData + 2;
-
-	inflate(&strm, Z_SYNC_FLUSH);
-bail:
-	inflateEnd(&strm);
-    
-    *bufferSize = bufferSizeDec;
 }
 
 //	==============================================================
@@ -429,7 +382,6 @@ CGImageRef resizedImage(CGImageRef imageRef, CGRect thumbRect)
                                                NO,
                                                kCGRenderingIntentDefault);
             CGColorSpaceRelease(colorSpace);
-
 
             //NSBitmapImageRep *bitmapImage = [[NSBitmapImageRep alloc]initWithCGImage:(CGImageRef)cgImage];
             //[[bitmapImage representationUsingType:NSTIFFFileType properties:nil] writeToFile:@"/tmp/foo.tif" atomically:YES];

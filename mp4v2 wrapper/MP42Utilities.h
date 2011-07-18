@@ -60,3 +60,7 @@ int copyTrackEditLists (MP4FileHandle fileHandle, MP4TrackId srcTrackId, MP4Trac
 
 NSError* MP42Error(NSString *description, NSString* recoverySuggestion, NSInteger code);
 int yuv2rgb(int yuv);
+int rgb2yuv(int rgb);
+
+void *fast_realloc_with_padding(void *ptr, unsigned int *size, unsigned int min_size);
+void DecompressZlib(uint8_t **codecData, unsigned int *bufferSize, uint8_t *sampleData, uint64_t sampleSize);

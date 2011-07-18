@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#include <zlib.h>
 #include "avcodec.h"
 
 @class MP42SampleBuffer;

@@ -10,8 +10,11 @@
 #import "MP42Utilities.h"
 #import <string.h>
 #import <CoreAudio/CoreAudio.h>
+#include <zlib.h>
 
 #include "lang.h"
+#include "intreadwrite.h"
+#include "avcodec.h"
 
 NSString* SRTStringFromTime( long long time, long timeScale , const char separator)
 {
@@ -809,3 +812,75 @@ int yuv2rgb(int yuv)
     
     return (r << 16) | (g << 8) | b;
 }
+
+int rgb2yuv(int rgb)
+{
+    double r, g, b;
+    int y, Cr, Cb;
+    
+    r = (rgb >> 16) & 0xff;
+    g = (rgb >>  8) & 0xff;
+    b = (rgb      ) & 0xff;
+    
+    y  =  16. + ( 0.257 * r) + (0.504 * g) + (0.098 * b);
+    Cb = 128. + (-0.148 * r) - (0.291 * g) + (0.439 * b);
+    Cr = 128. + ( 0.439 * r) - (0.368 * g) - (0.071 * b);
+    
+    y = (y < 0) ? 0 : y;
+    Cb = (Cb < 0) ? 0 : Cb;
+    Cr = (Cr < 0) ? 0 : Cr;
+    
+    y = (y > 255) ? 255 : y;
+    Cb = (Cb > 255) ? 255 : Cb;
+    Cr = (Cr > 255) ? 255 : Cr;
+    
+    return (y << 16) | (Cr << 8) | Cb;
+}
+
+void *fast_realloc_with_padding(void *ptr, unsigned int *size, unsigned int min_size)
+{
+	void *res = ptr;
+	av_fast_malloc(&res, size, min_size + FF_INPUT_BUFFER_PADDING_SIZE);
+	if (res) memset(res + min_size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+	return res;
+}
+
+void DecompressZlib(uint8_t **codecData, unsigned int *bufferSize, uint8_t *sampleData, uint64_t sampleSize)
+{
+    unsigned int bufferSizeDec = 0;
+	ComponentResult err = noErr;
+	z_stream strm;
+	strm.zalloc = Z_NULL;
+	strm.zfree = Z_NULL;
+	strm.opaque = Z_NULL;
+	strm.avail_in = 0;
+	strm.next_in = Z_NULL;
+	err = inflateInit(&strm);
+	if (err != Z_OK) return;
+    
+	strm.avail_in = sampleSize;
+	strm.next_in = sampleData;
+    
+	// first, get the size of the decompressed data
+	strm.avail_out = 2;
+	strm.next_out = *codecData;
+    
+	err = inflate(&strm, Z_SYNC_FLUSH);
+	if (err < Z_OK) goto bail;
+	if (strm.avail_out != 0) goto bail;
+    
+	// reallocate our buffer to be big enough to store the decompressed packet
+	bufferSizeDec = AV_RB16(*codecData);
+	*codecData = fast_realloc_with_padding(*codecData, bufferSize, bufferSizeDec);
+    
+	// then decompress the rest of it
+	strm.avail_out = *bufferSize - 2;
+	strm.next_out = *codecData + 2;
+    
+	inflate(&strm, Z_SYNC_FLUSH);
+bail:
+	inflateEnd(&strm);
+    
+    *bufferSize = bufferSizeDec;
+}
+

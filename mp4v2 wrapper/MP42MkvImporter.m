@@ -14,6 +14,7 @@
 #import "MP42File.h"
 
 #include "rational.h"
+#include "avcodec.h"
 
 u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 
@@ -659,14 +660,35 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                 }
 
                 MP42SampleBuffer *nextSample = [[MP42SampleBuffer alloc] init];
-                nextSample->sampleData = frame;
-                nextSample->sampleSize = FrameSize + trackInfo->CompMethodPrivateSize;
+
+                if (FrameSize + trackInfo->CompMethodPrivateSize && compressed) {
+                    uint8_t                 *codecData = NULL;
+                    unsigned int            bufferSize2 = 0;
+
+                    codecData = av_malloc(FrameSize + trackInfo->CompMethodPrivateSize + 2);
+                    bufferSize2 = FrameSize + trackInfo->CompMethodPrivateSize + 2;
+
+                    DecompressZlib(&codecData, &bufferSize2, frame, FrameSize + trackInfo->CompMethodPrivateSize + 2);
+
+                    codecData[0] = (bufferSize2 >> 8) & 0xff;
+                    codecData[1] = bufferSize2 & 0xff;
+
+                    nextSample->sampleData = malloc(bufferSize2);
+                    memcpy(nextSample->sampleData, codecData, bufferSize2);
+                    nextSample->sampleSize = bufferSize2;
+
+                    if (codecData)
+                        av_free(codecData);
+                }
+                else {
+                    nextSample->sampleData = frame;
+                    nextSample->sampleSize = FrameSize + trackInfo->CompMethodPrivateSize;
+                }
                 nextSample->sampleDuration = (EndTime - StartTime ) / 1000000;
                 nextSample->sampleOffset = 0;
                 nextSample->sampleTimestamp = StartTime;
                 nextSample->sampleIsSync = YES;
                 nextSample->sampleTrackId = track.Id;
-                nextSample->sampleIsCompressed = compressed;
                 if(track.needConversion)
                     nextSample->sampleSourceTrack = track;
 

@@ -238,8 +238,22 @@
         else if ([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"VobSub"]) {
             dstTrackId = MP4AddSubpicTrack(fileHandle, timeScale, 640, 480);
 
+            uint32_t *subPalette = (uint32_t*) [magicCookie bytes];
+            int ii;
+            for ( ii = 0; ii < 16; ii++ )
+                subPalette[ii] = rgb2yuv(subPalette[ii]);
+
+            uint8_t palette[16][4];
+            for ( ii = 0; ii < 16; ii++ )
+            {
+                palette[ii][0] = 0;
+                palette[ii][1] = (subPalette[ii] >> 16) & 0xff;
+                palette[ii][2] = (subPalette[ii] >> 8) & 0xff;
+                palette[ii][3] = (subPalette[ii]) & 0xff;
+            }
             MP4SetTrackESConfiguration( fileHandle, dstTrackId,
-                                       [magicCookie bytes], [magicCookie length]);
+                                             (uint8_t*)palette, 16 * 4 );
+
 
             [[track trackImporterHelper] setActiveTrack:track];
         }
