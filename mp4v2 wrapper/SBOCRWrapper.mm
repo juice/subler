@@ -58,8 +58,15 @@ protected:
     if ((self = [super init]))
     {
         _language = [language retain];
+
+        NSString * lang = [NSString stringWithUTF8String:lang_for_english([_language UTF8String])->iso639_2];        
+        NSString * path = [[NSBundle mainBundle] resourcePath];
+        path = [path stringByAppendingFormat:@"/tessdata/%@.traineddata", lang];
         
-        tess_base = (void *)new OCRWrapper(lang_for_english([_language UTF8String])->iso639_2);
+        if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+            lang = @"eng";
+
+        tess_base = (void *)new OCRWrapper([lang UTF8String]);
     }
     return self;
 }
