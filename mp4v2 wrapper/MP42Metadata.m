@@ -758,6 +758,8 @@ static const genreType_t genreType_strings[] = {
                 [tagsDict setObject:[NSNumber numberWithInt:ratingIndex] forKey:@"Rating"];
                 if ([ratingItems count] >= 4)
                     [tagsDict setObject:[ratingItems objectAtIndex:3] forKey:@"Rating Annotation"];
+                
+                [rating release];
             }
         }
         MP4ItmfItemListFree(list);

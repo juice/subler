@@ -30,7 +30,7 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:1];
     NSString *url = [NSString stringWithFormat:@"http://api.themoviedb.org/2.1/Movie.search/en/xml/b0073bafb08b4f68df101eb2325f27dc/%@", [MetadataSearchController urlEncoded:mMovieTitle]];
-	url = [[url stringByReplacingOccurrencesOfString:@"/en/" withString:[NSString stringWithFormat:@"/%@/", mMovieLanguage]] mutableCopy];
+	url = [url stringByReplacingOccurrencesOfString:@"/en/" withString:[NSString stringWithFormat:@"/%@/", mMovieLanguage]];
 	NSLog(@"Nachher 1: %@", url);
 	NSXMLDocument *xml = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:url] options:0 error:NULL];
     if (xml) {
@@ -63,7 +63,7 @@
     NSString *tmdbID = [mMetadata.tagsDict valueForKey:@"TMDb ID"];
     if (tmdbID && ([tmdbID length] > 0)) {
         NSString *url = [NSString stringWithFormat:@"http://api.themoviedb.org/2.1/Movie.getInfo/en/xml/b0073bafb08b4f68df101eb2325f27dc/%@", [MetadataSearchController urlEncoded:tmdbID]];
-		url = [[url stringByReplacingOccurrencesOfString:@"/en/" withString:[NSString stringWithFormat:@"/%@/", mMovieLanguage]] mutableCopy];
+		url = [url stringByReplacingOccurrencesOfString:@"/en/" withString:[NSString stringWithFormat:@"/%@/", mMovieLanguage]];
 		NSXMLDocument *xml = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:url] options:0 error:NULL];
         if (xml) {
             NSError *err;
