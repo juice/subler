@@ -46,10 +46,11 @@
                                                                  valueForKey:@"SBAudioMixdown"] integerValue]]];
         else if (!trackNeedConversion(track.format))
             [actionArray addObject:[NSNumber numberWithInteger:0]];
-        else 
+        else if ([track isMemberOfClass:[MP42AudioTrack class]])
             [actionArray addObject:[NSNumber numberWithInteger:[[[NSUserDefaults standardUserDefaults]
                                                                  valueForKey:@"SBAudioMixdown"] integerValue]]];
-
+        else
+            [actionArray addObject:[NSNumber numberWithInteger:1]];
     }
 
     if ([fileImporter metadata])
@@ -71,26 +72,35 @@
     MP42Track *track = [[fileImporter tracksArray] objectAtIndex:rowIndex];
 
     if ([tableColumn.identifier isEqualToString:@"trackAction"]) {
-        NSPopUpButtonCell *ratingCell = [[NSPopUpButtonCell alloc] init];
-        [ratingCell setAutoenablesItems:NO];
-        [ratingCell setFont:[NSFont systemFontOfSize:11]];
-        [ratingCell setControlSize:NSSmallControlSize];
-        [ratingCell setBordered:NO];
+        NSPopUpButtonCell *actionCell = [[NSPopUpButtonCell alloc] init];
+        [actionCell setAutoenablesItems:NO];
+        [actionCell setFont:[NSFont systemFontOfSize:11]];
+        [actionCell setControlSize:NSSmallControlSize];
+        [actionCell setBordered:NO];
 
         if ([track isMemberOfClass:[MP42VideoTrack class]]) {
             NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle:@"Passthru" action:NULL keyEquivalent:@""] autorelease];
             [item setTag:0];
             [item setEnabled:YES];
-            [[ratingCell menu] addItem:item];
+            [[actionCell menu] addItem:item];
         }
+
         else if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
             NSInteger tag = 0;
-            NSArray *formatArray = [NSArray arrayWithObjects:@"Passthru", @"3GPP Text", nil];
+            NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle:@"Passthru" action:NULL keyEquivalent:@""] autorelease];
+            [item setTag:tag++];
+            if (!trackNeedConversion(track.format))
+                [item setEnabled:YES];
+            else
+                [item setEnabled:NO];
+            [[actionCell menu] addItem:item];
+
+            NSArray *formatArray = [NSArray arrayWithObjects:@"3GPP Text", nil];
             for (NSString* format in formatArray) {
-                NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle:format action:NULL keyEquivalent:@""] autorelease];
+                item = [[[NSMenuItem alloc] initWithTitle:format action:NULL keyEquivalent:@""] autorelease];
                 [item setTag:tag++];
                 [item setEnabled:YES];
-                [[ratingCell menu] addItem:item];
+                [[actionCell menu] addItem:item];
             }
         }
         else if ([track isMemberOfClass:[MP42AudioTrack class]]) {
@@ -101,23 +111,23 @@
                 [item setEnabled:YES];
             else
                 [item setEnabled:NO];
-            [[ratingCell menu] addItem:item];
+            [[actionCell menu] addItem:item];
 
             NSArray *formatArray = [NSArray arrayWithObjects:@"AAC - Dolby Pro Logic II", @"AAC - Dolby Pro Logic", @"AAC - Stereo", @"AAC - Mono", @"AAC - Multi-channel", nil];
             for (NSString* format in formatArray) {
                 item = [[[NSMenuItem alloc] initWithTitle:format action:NULL keyEquivalent:@""] autorelease];
                 [item setTag:tag++];
                 [item setEnabled:YES];
-                [[ratingCell menu] addItem:item];
+                [[actionCell menu] addItem:item];
             }
         }
         else if ([track isMemberOfClass:[MP42ChapterTrack class]]) {
             NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle:@"Text" action:NULL keyEquivalent:@""] autorelease];
             [item setTag:0];
             [item setEnabled:YES];
-            [[ratingCell menu] addItem:item];
+            [[actionCell menu] addItem:item];
         }
-        cell = ratingCell;
+        cell = actionCell;
 
     }
     else
