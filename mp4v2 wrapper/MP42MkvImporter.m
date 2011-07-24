@@ -862,8 +862,10 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                             fprintf(stderr,"Unexpected EOF while reading frame\n");
                         else
                             fprintf(stderr,"Error reading frame: %s\n",strerror(errno));
-                    } else
+                    } else {
                         fprintf(stderr,"Short read while reading frame\n");
+                        break;
+                    }
 					free(frame);
 					continue;
                 }
