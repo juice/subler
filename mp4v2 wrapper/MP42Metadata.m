@@ -415,7 +415,7 @@ static const genreType_t genreType_strings[] = {
 }
 
 - (NSString *) genreFromIndex: (NSInteger)index {
-    if (index >= 0 && index < 127 || index == 255) {
+    if ((index >= 0 && index < 127) || index == 255) {
         genreType_t *genre = (genreType_t*) genreType_strings;
         genre += index - 1;
         return [NSString stringWithUTF8String:genre->english_name];

@@ -640,7 +640,7 @@ int LoadSMIFromPath(NSString *path, SBSubSerializer *ss, int subCount)
 					endTime = syncTime;
 					if (subCount == 2 && cc == 2)
 						[cmt insertString:@"{\\an8}" atIndex:0];
-					if (subCount == 1 && cc == 1 || subCount == 2 && cc == 2) {
+					if ((subCount == 1 && cc == 1) || (subCount == 2 && cc == 2)) {
 						SBSubLine *sl = [[SBSubLine alloc] initWithLine:cmt start:startTime end:endTime];
 						[ss addLine:[sl autorelease]];
 					}

@@ -62,7 +62,7 @@ static SBPresetManager *sharedPresetManager = nil;
     return NSUIntegerMax;  //denotes an object that cannot be released
 }
 
-- (void)release
+- (oneway void)release
 {
     //do nothing
 }
@@ -138,7 +138,7 @@ static SBPresetManager *sharedPresetManager = nil;
             return NO;
 
     if( ![fileManager fileExistsAtPath:appSupportPath] )
-        [fileManager createDirectoryAtPath:appSupportPath attributes:nil];
+        [fileManager createDirectoryAtPath:appSupportPath withIntermediateDirectories:noErr attributes:nil error:NULL];
 
     MP42Metadata *object;
 

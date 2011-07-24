@@ -557,8 +557,8 @@ int readAC3Config(uint64_t acmod, uint64_t lfeon, UInt32 *channelsCount, UInt32 
 
 BOOL isTrackMuxable(NSString * formatName)
 {
-    NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"MPEG-4 Visual", @"AAC", @"AC-3", @"3GPP Text", @"Text", @"Plain Text", @"ASS", @"SSA",
-                                 @"CEA-608", /*@"Photo - JPEG",*/ @"Vorbis", @"VobSub", nil];
+    NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"MPEG-4 Visual", @"AAC", @"AC-3", @"3GPP Text", @"Text", @"Plain Text",
+                                 @"CEA-608", /*@"Photo - JPEG",*/ @"VobSub", nil];
 
     for (NSString* type in supportedFormats)
         if ([formatName isEqualToString:type])
@@ -568,7 +568,7 @@ BOOL isTrackMuxable(NSString * formatName)
 }
 
 BOOL trackNeedConversion(NSString * formatName) {
-    NSArray* supportedConversionFormats = [NSArray arrayWithObjects:@"Vorbis", @"DTS", @"Flac", @"Mp3", @"True HD", nil];
+    NSArray* supportedConversionFormats = [NSArray arrayWithObjects:@"Vorbis", @"DTS", @"Flac", @"Mp3", @"True HD", @"ASS", @"SSA", nil];
 
     for (NSString* type in supportedConversionFormats)
         if ([formatName isEqualToString:type])
