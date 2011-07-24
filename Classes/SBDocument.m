@@ -86,7 +86,7 @@
 
 + (BOOL)canConcurrentlyReadDocumentsOfType:(NSString *)type
 {
-    return YES;
+    return NO;
 }
 
 #pragma mark Read methods
