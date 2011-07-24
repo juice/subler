@@ -225,12 +225,10 @@
 
     for (MP42Track * track in activeTracks) {
         if (track.trackDemuxerHelper == nil) {
-            track.trackDemuxerHelper = [[Mp4TrackHelper alloc] init];
+            track.trackDemuxerHelper = [[[Mp4TrackHelper alloc] init] autorelease];
 
             trackHelper = track.trackDemuxerHelper;
             trackHelper->totalSampleNumber = MP4GetTrackNumberOfSamples(fileHandle, [track Id]);
-
-            [trackHelper release];
         }
     }
 

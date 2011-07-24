@@ -11,6 +11,8 @@
 #import "MP42File.h"
 #include <sys/stat.h>
 
+#define DEBUG_H264
+
 static const framerate_t framerates[] =
 { { 2398, 24000, 1001 },
     { 24, 600, 25 },
@@ -173,7 +175,7 @@ static uint8_t exp_golomb_bits[256] = {
 };
 
 static const char*  ProgName = "Subler";
-static int Verbosity = 0;
+static int Verbosity = 1;
 
 #include "mp4v2.h"
 #include <assert.h>
@@ -1112,11 +1114,11 @@ static bool remove_unused_sei_messages (nal_reader_t *nal,
         }
         if (nal->buffer_on - buffer_on <= 2) {
             //fprintf(stderr, "extra bytes after SEI message\n");
-#if 0
+//#if 0
             memset(nal->buffer + buffer_on, 0,
                    nal->buffer_on - buffer_on); 
             nal->buffer_on = buffer_on;
-#endif
+//#endif
             
             return true;
         }
@@ -1517,6 +1519,7 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
             
             nal_is_sync = h264_slice_is_idr(&h264_dec);
         } else {
+            
             switch (h264_dec.nal_unit_type) {
                 case H264_NAL_TYPE_SEQ_PARAM:
                     // doesn't get added to sample buffer

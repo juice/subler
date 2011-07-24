@@ -320,7 +320,11 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 			enc = (enc == NSWindowsCP1252StringEncoding) ? NSWindowsCP1250StringEncoding : NSWindowsCP1252StringEncoding;
 			res = [[[NSString alloc] initWithData:data encoding:enc] autorelease];
 			if (!res) NSLog(@"Both of latin1/2 failed.");
-		} else NSLog(@"Failed to load file as guessed encoding %@.",enc_str);
+		}
+        else {
+            res = [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
+            if (!res) NSLog(@"ASCII failed."), NSLog(@"Failed to load file as guessed encoding %@.",enc_str);
+        }
 	}
 	[ud release];
 

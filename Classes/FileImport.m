@@ -128,12 +128,11 @@
             [[actionCell menu] addItem:item];
         }
         cell = actionCell;
-
+        
+        return [cell autorelease];
     }
-    else
-        cell = [tableColumn dataCell];
     
-    return cell;
+    return [tableColumn dataCell];
 }
 
 - (id) tableView:(NSTableView *)tableView 
