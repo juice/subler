@@ -160,13 +160,13 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
     if ([[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
         [[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame ||
         [[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
-        doc = [self openUntitledDocumentAndDisplay:YES error:nil];
-        [doc showImportSheet:[absoluteURL path]];
+        doc = [self openUntitledDocumentAndDisplay:displayDocument error:outError];
+        [doc performSelectorOnMainThread:@selector(showImportSheet:) withObject:[absoluteURL path] waitUntilDone:NO];
         return doc;
     }
     else {
         return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
     }
 }
-
+         
 @end
