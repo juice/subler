@@ -333,9 +333,16 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
     TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, [track sourceId]);
     if (trackInfo->Type == TT_VIDEO)
         return 100000;
-    else if (trackInfo->Type == TT_AUDIO)
+    else if (trackInfo->Type == TT_AUDIO) {
+        NSUInteger sampleRate = mkv_TruncFloat(trackInfo->AV.Audio.SamplingFreq);
+        if (!strcmp(trackInfo->CodecID, "A_AC3")) {
+            if (sampleRate < 24000)
+                return 48000;
+        }
+
         return mkv_TruncFloat(trackInfo->AV.Audio.SamplingFreq);
-    
+    }
+
     return 1000;
 }
 
