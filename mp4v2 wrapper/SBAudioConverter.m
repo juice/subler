@@ -641,8 +641,16 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             return nil;
         }
 
-        // Try to get the input channel layout, doesn't seem to be useful though 
-        /*
+        // set the decoder magic cookie
+        if (magicCookie) {
+            err = AudioConverterSetProperty(decoderData.converter, kAudioConverterDecompressionMagicCookie,
+                                            CFDataGetLength(magicCookie) , CFDataGetBytePtr(magicCookie) );
+            if( err != noErr)
+                NSLog(@"Boom Magic Cookie %ld",(long)err);
+            CFRelease(magicCookie);
+        }
+
+        // Try to set the input channel layout 
         UInt32 propertySize = 0;
         AudioChannelLayout * layout = NULL;
         err = AudioConverterGetPropertyInfo(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, NULL);
@@ -651,9 +659,9 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             layout = malloc(sizeof(propertySize));
             err = AudioConverterGetProperty(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, layout);
             if (err) {
-                free(layout);
+                NSLog(@"Unable to read the channel layout %ld",(long)err);
             }
-            if (layout->mChannelLayoutTag != kAudioChannelLayoutTag_MPEG_5_1_D && inputChannelsCount == 6) {
+            if (layout->mChannelLayoutTag != kAudioChannelLayoutTag_MPEG_5_1_D && inputChannelsCount > 2) {
                 AudioChannelLayout * newLayout = malloc(sizeof(AudioChannelLayout));
                 bzero( newLayout, sizeof( AudioChannelLayout ) );
                 newLayout->mChannelLayoutTag = kAudioChannelLayoutTag_MPEG_5_1_D;
@@ -662,21 +670,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                     NSLog(@"Unable to set the new channel layout %ld",(long)err);
                 free(newLayout);
             }
-        }*/
-
-        if (([track.sourceFormat isEqualToString:@"True HD"] || [track.sourceFormat isEqualToString:@"AC-3"]) && inputChannelsCount == 6 ) {
-                SInt32 channelMap[6] = { 2, 0, 1, 4, 5, 3 };
-                AudioConverterSetProperty( decoderData.converter, kAudioConverterChannelMap,
-                                          sizeof( channelMap ), channelMap );
-        }
-
-        // set the decoder magic cookie
-        if (magicCookie) {
-            err = AudioConverterSetProperty(decoderData.converter, kAudioConverterDecompressionMagicCookie,
-                                            CFDataGetLength(magicCookie) , CFDataGetBytePtr(magicCookie) );
-            if( err != noErr)
-                NSLog(@"Boom Magic Cookie %ld",(long)err);
-            CFRelease(magicCookie);
+            free(layout);
         }
 
         // Read the complete inputStreamDescription from the audio converter.
