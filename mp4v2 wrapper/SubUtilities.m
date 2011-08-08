@@ -874,11 +874,11 @@ NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *s
 {
     u_int16_t styleCount = 0;
     memcpy(buffer + 4, "styl", 4);
-    
+
     u_int8_t italic = 0;
     u_int8_t bold = 0;
     u_int8_t underlined = 0;
-    
+
     // Parse the tags in the line, remove them and create a style record for every style change
     NSRange endRange;
     NSRange tagEndRange;
@@ -894,37 +894,41 @@ NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *s
             startRange.length = 2;
         string = [string stringByReplacingCharactersInRange:startRange withString:@""];
     }
-    
+
     while (startRange.location != NSNotFound) {
         endRange = [string rangeOfString: @"<"];
         if (endRange.location == NSNotFound)
             endRange.location = [string length] -1;
-        
+
         u_int8_t styl = 0;
         if (italic) styl |= STYLE_ITALIC;
         if (bold) styl |= STYLE_BOLD;
         if (underlined) styl |= STYLE_UNDERLINED;
-        
+
         if (styl && startRange.location != endRange.location) {
             u_int8_t styleRecord[12];
             createStyleRecord(startRange.location, endRange.location, 1, styl, styleRecord);
             memcpy(buffer + 10 + (12 * styleCount), styleRecord, 12);
             styleCount++;
         }
-        
+
         endRange = [string rangeOfString: @"<"];
         if (endRange.location != NSNotFound && (endRange.location + 1) < [string length]) {
             unichar tag = [string characterAtIndex:endRange.location + 1];
             if (tag == 'i') italic++;
             else if (tag == 'b') bold++;
             else if (tag == 'u') underlined++;
-            
+
             if (tag == '/' && (endRange.location + 2) < [string length]) {
                 unichar tag2 = [string characterAtIndex:endRange.location + 2];
                 if (tag2 == 'i') italic--;
                 else if (tag2 == 'b') bold--;
                 else if (tag2 == 'u') underlined--;
                 tagEndRange = [string rangeOfString: @">"];
+                if (tagEndRange.location < endRange.location) {
+                    string = [string stringByReplacingCharactersInRange:tagEndRange withString:@""];
+                    tagEndRange = [string rangeOfString: @">"];
+                }
                 endRange.length = tagEndRange.location - endRange.location +1;
                 if (tagEndRange.location == NSNotFound || endRange.length > [string length])
                     endRange.length = 2;
@@ -942,7 +946,7 @@ NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *s
         else
             break;
     }
-    
+
     if (styleCount)
         *size = closeStyleAtom(styleCount, buffer);
     
