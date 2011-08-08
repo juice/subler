@@ -95,10 +95,14 @@
 {
     if ([self fileURL]) {
         MP42File *newFile = [[MP42File alloc] initWithExistingFile:[[self fileURL] path] andDelegate:self];
-        [mp4File autorelease];
-        mp4File = newFile;
-        [fileTracksTable reloadData];
-        [self tableViewSelectionDidChange:nil];
+        if (newFile) {
+            [mp4File autorelease];
+            mp4File = newFile;
+            [fileTracksTable reloadData];
+            [self tableViewSelectionDidChange:nil];
+        }
+        else
+            [self close];
     }
 }
 
