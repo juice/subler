@@ -211,7 +211,7 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
 // Return a scaled copy of the image.  
 
 
-CGImageRef resizedImage(CGImageRef imageRef, CGRect thumbRect)
+CGImageRef createResizedImage(CGImageRef imageRef, CGRect thumbRect)
 {
 	CGImageAlphaInfo	alphaInfo = CGImageGetAlphaInfo(imageRef);
 	
@@ -404,7 +404,6 @@ CGImageRef resizedImage(CGImageRef imageRef, CGRect thumbRect)
 
     encoderDone = YES;
 
-    [pool drain];
     [pool release];
 
 	return;

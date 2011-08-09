@@ -7,16 +7,16 @@
 //
 
 #if !__LP64__
-#import "MP42MovImporter.h"
+#import "MP42QTImporter.h"
 #import "MP42File.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <QuickTime/QuickTime.h>
 #include "lang.h"
-#include "rational.h"
+#include "avcodec.h"
 
 extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
-@interface MP42MovImporter(Private)
+@interface MP42QTImporter(Private)
     -(void) movieLoaded;
     -(NSString*)formatForTrack: (QTTrack *)track;
     -(NSString*)langForTrack: (QTTrack *)track;
@@ -47,7 +47,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 }
 @end
 
-@implementation MP42MovImporter
+@implementation MP42QTImporter
 
 - (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
 {

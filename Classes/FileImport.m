@@ -12,14 +12,14 @@
 
 @implementation FileImport
 
-- (id)initWithDelegate:(id)del andFile: (NSString *)fileUrl error:(NSError **)outError
+- (id)initWithDelegate:(id)del andFile: (NSURL *)file error:(NSError **)outError
 {
 	if ((self = [super initWithWindowNibName:@"FileImport"]))
 	{
 		delegate = del;
-        file = [fileUrl retain];
+        fileURL = [file retain];
         
-        fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:file error:outError];
+        fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:[fileURL path] error:outError];
         if (!fileImporter)
             return nil;
 	}
@@ -131,7 +131,7 @@
         
         return [cell autorelease];
     }
-    
+
     return [tableColumn dataCell];
 }
 
@@ -243,7 +243,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
     [importCheckArray release];
     [actionArray release];
-	[file release];
+	[fileURL release];
     [fileImporter release];
 
     [super dealloc];

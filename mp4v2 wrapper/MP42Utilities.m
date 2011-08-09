@@ -417,7 +417,7 @@ enum {
 
 // xiph-qt expects these this sound extension to have been created from first 3 packets
 // which are stored in CodecPrivate in Matroska
-CFDataRef DescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate)
+CFDataRef createDescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate)
 {
 	if (codecPrivateSize) {
         CFMutableDataRef sndDescExt = CFDataCreateMutable(NULL, 0);
@@ -482,7 +482,7 @@ CFDataRef DescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate)
 
 // xiph-qt expects these this sound extension to have been created in this way
 // from the packets which are stored in the CodecPrivate element in Matroska
-CFDataRef DescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate)
+CFDataRef createDescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate)
 {	
 	if (codecPrivateSize) {
         CFMutableDataRef sndDescExt = CFDataCreateMutable(NULL, 0);

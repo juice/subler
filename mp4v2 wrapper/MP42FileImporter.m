@@ -16,8 +16,10 @@
 #import "MP42H264Importer.h"
 
 #if !__LP64__
-#import "MP42MovImporter.h"
+#import "MP42QTImporter.h"
 #endif
+
+#import "MP42AVFImporter.h"
 
 @implementation MP42FileImporter
 
@@ -46,7 +48,7 @@
 
 #if !__LP64__
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
-        self = [[MP42MovImporter alloc] initWithDelegate:del andFile:fileUrl error:outError];
+        self = [[MP42QTImporter alloc] initWithDelegate:del andFile:fileUrl error:outError];
 #endif
 
     return self;

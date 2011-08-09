@@ -236,7 +236,27 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
                               sizeof( tmp ), &tmp );
 
     // set bitrate
-    tmp = inputFormat.mChannelsPerFrame * 80 * 1000;
+    UInt32 bitrate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioBitrate"] integerValue];
+    if (!bitrate) bitrate = 80;
+
+    // get available bitrates
+    AudioValueRange *bitrates;
+    ssize_t bitrateCounts;
+    err = AudioConverterGetPropertyInfo( converterEnc, kAudioConverterApplicableEncodeBitRates,
+                                        &tmpsiz, NULL);
+    bitrates = malloc( tmpsiz );
+    err = AudioConverterGetProperty( converterEnc, kAudioConverterApplicableEncodeBitRates,
+                                    &tmpsiz, bitrates);
+    bitrateCounts = tmpsiz / sizeof( AudioValueRange );
+    
+    // set bitrate
+    tmp = bitrate * outputChannelCount * 1000;
+    if( tmp < bitrates[0].mMinimum )
+        tmp = bitrates[0].mMinimum;
+    if( tmp > bitrates[bitrateCounts-1].mMinimum )
+        tmp = bitrates[bitrateCounts-1].mMinimum;
+    free( bitrates );
+
     AudioConverterSetProperty( converterEnc, kAudioConverterEncodeBitRate,
                               sizeof( tmp ), &tmp );
 
@@ -593,15 +613,20 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         inputFormat.mChannelsPerFrame = track.channels;
 
         if (track.sourceFormat) {
+            if ([track.sourceFormat isEqualToString:@"AAC"]) {
+                inputFormat.mFormatID = kAudioFormatMPEG4AAC;
+
+                magicCookie = (CFDataRef) srcMagicCookie;
+            }
             if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
                 inputFormat.mFormatID = 'XiVs';
 
-                magicCookie = DescExt_XiphVorbis([srcMagicCookie length], [srcMagicCookie bytes]);
+                magicCookie = createDescExt_XiphVorbis([srcMagicCookie length], [srcMagicCookie bytes]);
             }
             if ([track.sourceFormat isEqualToString:@"Flac"]) {
                 inputFormat.mFormatID = 'XiFL';
 
-                magicCookie = DescExt_XiphFLAC([srcMagicCookie length], [srcMagicCookie bytes]);
+                magicCookie = createDescExt_XiphFLAC([srcMagicCookie length], [srcMagicCookie bytes]);
             }
             else if ([track.sourceFormat isEqualToString:@"AC-3"]) {
                 inputFormat.mFormatID = kAudioFormatAC3;
@@ -617,7 +642,6 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             else if ([track.sourceFormat isEqualToString:@"True HD"]) {
                 inputFormat.mFormatID = 'trhd';
             }
-            
         }
 
         bzero( &outputFormat, sizeof( AudioStreamBasicDescription ) );

@@ -46,8 +46,8 @@ NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId vid
 NSString* getFilenameLanguage(CFStringRef filename);
 
 ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int versionFlags);
-CFDataRef DescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate);
-CFDataRef DescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate);
+CFDataRef createDescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate);
+CFDataRef createDescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate);
 
 int readAC3Config(uint64_t acmod, uint64_t lfeon, UInt32 *channelsCount, UInt32 *channelLayoutTag);
 

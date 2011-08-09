@@ -8,6 +8,7 @@
 
 #import "MP42File.h"
 #import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 #import "SubUtilities.h"
 #include "lang.h"
 
@@ -389,55 +390,82 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
     if (chapterTrack && !jpegTrack) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        QTMovie * qtMovie;
-        NSMutableDictionary * dict = [[NSMutableDictionary dictionaryWithObject:[NSURL fileURLWithPath:filePath] forKey:@"URL"] retain];
-        // QTMovie objects must always be create on the main thread.
-        [self performSelectorOnMainThread:@selector(openQTMovieOnTheMainThread:)
-                               withObject:dict 
-                            waitUntilDone:YES];
-        qtMovie = [[dict valueForKey:@"QTMovieObject"] retain];
-        [dict release];
-        //[QTMovie enterQTKitOnThread];
-        //[qtMovie attachToCurrentThread];
-
-        if (!qtMovie)
-            return NO;
-
-        for (QTTrack* qtTrack in [qtMovie tracksOfMediaType:@"sbtl"])
-            [qtTrack setAttribute:[NSNumber numberWithBool:NO] forKey:QTTrackEnabledAttribute];
-
         NSMutableArray * previewImages = [NSMutableArray arrayWithCapacity:[chapterTrack chapterCount]];
-        NSDictionary *attributes = [NSDictionary dictionaryWithObject:QTMovieFrameImageTypeNSImage forKey:QTMovieFrameImageType];
-        NSError *error;
 
-        for (SBTextSample * chapter in [chapterTrack chapters]) {
-            QTTime chapterTime = {
-                [chapter timestamp] + 1500, // Add a short offset, hopefully we will get a better image
-                1000,                       // if there is a fade
-                0
-            };
+        // If we are on 10.7, use the AVFoundation path
+        if (NSClassFromString(@"AVAsset")) {
+            AVAsset *asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
 
-            NSImage *previewImage = [qtMovie frameImageAtTime:chapterTime withAttributes:attributes error:&error];
-            if (previewImage)
-                [previewImages addObject:previewImage];
-            else {
-                NSLog(@"code: %d", [error code]);
-                NSLog(@"domain: %@", [error domain]);
-                NSLog(@"userInfo: %@", [error userInfo]);
+            if ([asset tracksWithMediaCharacteristic:AVMediaCharacteristicVisual]) {
+                NSError *error;
+                AVAssetImageGenerator *generator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
+                generator.appliesPreferredTrackTransform = YES;
+                generator.apertureMode = AVAssetImageGeneratorApertureModeCleanAperture;
 
-                [previewImages addObject:[NSNull null]];
+                for (SBTextSample * chapter in [chapterTrack chapters]) {
+                    CMTime time = CMTimeMake([chapter timestamp] + 2500, 1000);
+                    CGImageRef imgRef = [generator copyCGImageAtTime:time actualTime:NULL error:&error];
+                    if (imgRef) {
+                        NSSize size = NSMakeSize(CGImageGetWidth(imgRef), CGImageGetHeight(imgRef));
+                        NSImage *previewImage = [[NSImage alloc] initWithCGImage:imgRef size:size];
+
+                        [previewImages addObject:previewImage];
+                        [previewImage release];
+                    }
+                    else
+                        NSLog(@"code: %d, domain: %@, userInfo: %@", [error code], [error domain], [error userInfo]);
+
+                    CGImageRelease(imgRef);
+                }
+            }
+        }
+        // Else fall back to QTKit
+        else {
+            QTMovie * qtMovie;
+            NSMutableDictionary * dict = [[NSMutableDictionary dictionaryWithObject:[NSURL fileURLWithPath:filePath] forKey:@"URL"] retain];
+            // QTMovie objects must always be create on the main thread.
+            [self performSelectorOnMainThread:@selector(openQTMovieOnTheMainThread:)
+                                   withObject:dict 
+                                waitUntilDone:YES];
+            qtMovie = [[dict valueForKey:@"QTMovieObject"] retain];
+            [dict release];
+            //[QTMovie enterQTKitOnThread];
+            //[qtMovie attachToCurrentThread];
+
+            if (!qtMovie)
+                return NO;
+
+            for (QTTrack* qtTrack in [qtMovie tracksOfMediaType:@"sbtl"])
+                [qtTrack setAttribute:[NSNumber numberWithBool:NO] forKey:QTTrackEnabledAttribute];
+
+            NSDictionary *attributes = [NSDictionary dictionaryWithObject:QTMovieFrameImageTypeNSImage forKey:QTMovieFrameImageType];
+            NSError *error;
+
+            for (SBTextSample * chapter in [chapterTrack chapters]) {
+                QTTime chapterTime = {
+                    [chapter timestamp] + 1500, // Add a short offset, hopefully we will get a better image
+                    1000,                       // if there is a fade
+                    0
+                };
+
+                NSImage *previewImage = [qtMovie frameImageAtTime:chapterTime withAttributes:attributes error:&error];
+                if (previewImage)
+                    [previewImages addObject:previewImage];
+                else {
+                    NSLog(@"code: %d, domain: %@, userInfo: %@", [error code], [error domain], [error userInfo]);
+
+                    [previewImages addObject:[NSNull null]];
+                }
             }
 
-        }
-
-        //[qtMovie detachFromCurrentThread];
-        //[QTMovie exitQTKitOnThread];
-        // Release the movie, we don't want to keep it open while we are writing in it using another library.
-        // I am not sure if it is safe to release a QTMovie from a background thread, let's do it on the main just to be sure.
-        [self performSelectorOnMainThread:@selector(closeQTMovieOnTheMainThread:)
-                               withObject:qtMovie 
-                            waitUntilDone:YES];
-
+            //[qtMovie detachFromCurrentThread];
+            //[QTMovie exitQTKitOnThread];
+            // Release the movie, we don't want to keep it open while we are writing in it using another library.
+            // I am not sure if it is safe to release a QTMovie from a background thread, let's do it on the main just to be sure.
+            [self performSelectorOnMainThread:@selector(closeQTMovieOnTheMainThread:)
+                                   withObject:qtMovie 
+                                waitUntilDone:YES];
+            }
         // If we haven't got enought images, return.
         if (([previewImages count] < [[chapterTrack chapters] count]) || [previewImages count] == 0 ) {
             [pool release];
@@ -463,12 +491,12 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         jpegTrack = MP4AddJpegVideoTrack(fileHandle, MP4GetTrackTimeScale(fileHandle, [chapterTrack Id]),
                                           MP4_INVALID_DURATION, imageSize.width, imageSize.height);
 
-        MP42VideoTrack* firstVideoTrack;
+        NSString *language = @"Unknown";
         for (MP42Track * track in tracks)
             if ([track isMemberOfClass:[MP42VideoTrack class]])
-                firstVideoTrack = (MP42VideoTrack*) track;
+                language = ((MP42VideoTrack*) track).language;
 
-        MP4SetTrackLanguage(fileHandle, jpegTrack, lang_for_english([firstVideoTrack.language UTF8String])->iso639_2);
+        MP4SetTrackLanguage(fileHandle, jpegTrack, lang_for_english([language UTF8String])->iso639_2);
 
         MP4SetTrackIntegerProperty(fileHandle, jpegTrack, "tkhd.layer", 1);
         disableTrack(fileHandle, jpegTrack);
@@ -540,6 +568,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         disableTrack(fileHandle, jpegTrack);
         MP4Close(fileHandle);
     }
+
     return NO;
 }
 

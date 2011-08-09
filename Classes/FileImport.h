@@ -13,7 +13,7 @@
 
 @interface FileImport : NSWindowController <NSTableViewDelegate> {
 
-	NSString            * file;
+	NSURL               * fileURL;
     NSMutableArray		* importCheckArray;
     NSMutableArray      * actionArray;
     MP42FileImporter    * fileImporter;
@@ -26,7 +26,7 @@
     NSTimer *loadTimer;
 }
 
-- (id)initWithDelegate:(id)del andFile: (NSString *)path error:(NSError **)outError;
+- (id)initWithDelegate:(id)del andFile: (NSURL *)file error:(NSError **)outError;
 - (IBAction) closeWindow: (id) sender;
 - (IBAction) addTracks: (id) sender;
 

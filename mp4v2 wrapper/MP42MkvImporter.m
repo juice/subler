@@ -13,7 +13,6 @@
 #import "lang.h"
 #import "MP42File.h"
 
-#include "rational.h"
 #include "avcodec.h"
 
 u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);

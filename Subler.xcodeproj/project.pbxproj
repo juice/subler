@@ -35,6 +35,7 @@
 		A92A4FB812B0F2F300751FA5 /* prefs-audio.png in Resources */ = {isa = PBXBuildFile; fileRef = A92A4FB712B0F2F300751FA5 /* prefs-audio.png */; };
 		A936E03E130BE10200CA5527 /* MAAttachedWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A936E03D130BE10200CA5527 /* MAAttachedWindow.m */; };
 		A937137512B76EAD00940FEC /* MP42H264Importer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A937137412B76EAD00940FEC /* MP42H264Importer.mm */; };
+		A940E0FF13F130FB007AB5C6 /* MP42AVFImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A940E0FE13F130FB007AB5C6 /* MP42AVFImporter.m */; };
 		A941B4D9134A52B600E22F45 /* eng.traineddata in CopyFiles */ = {isa = PBXBuildFile; fileRef = A941B4D7134A52B600E22F45 /* eng.traineddata */; };
 		A941B4DA134A52B600E22F45 /* ita.traineddata in CopyFiles */ = {isa = PBXBuildFile; fileRef = A941B4D8134A52B600E22F45 /* ita.traineddata */; };
 		A9569CEB0F616926002F79F8 /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */; };
@@ -61,6 +62,9 @@
 		A984DB530F52D679001A20B2 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A984DB4A0F52D644001A20B2 /* Sparkle.framework */; };
 		A984DB740F52DD4B001A20B2 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = A984DB730F52DD4B001A20B2 /* dsa_pub.pem */; };
 		A9891D5E124502C000427CF9 /* MP42SrtImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9891D5D124502C000427CF9 /* MP42SrtImporter.m */; };
+		A991319813F060C600DCAA12 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A991319713F060C600DCAA12 /* Quartz.framework */; };
+		A991319A13F0615700DCAA12 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A991319913F0615700DCAA12 /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A991319C13F0668300DCAA12 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A991319B13F0668300DCAA12 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		A99EAC7C1115BED200D89903 /* MP42FileImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EAC7B1115BED200D89903 /* MP42FileImporter.m */; };
 		A99EACA31115C18000D89903 /* MP42MkvImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EACA21115C18000D89903 /* MP42MkvImporter.m */; };
 		A99EEA3F12B801AE002367D3 /* SBDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9B46AC012B79E230040517A /* SBDocument.xib */; };
@@ -93,7 +97,7 @@
 		A9E2B960133E18C10009F4BC /* SBVobSubConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2B95F133E18C10009F4BC /* SBVobSubConverter.m */; };
 		A9EBA68912AE28DF0092D645 /* MP42AC3Importer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EBA68812AE28DF0092D645 /* MP42AC3Importer.m */; };
 		A9ED7C4E1115CFBD00423241 /* MP42Mp4Importer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ED7C4D1115CFBD00423241 /* MP42Mp4Importer.m */; };
-		A9ED7C8B1115D32E00423241 /* MP42MovImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ED7C8A1115D32E00423241 /* MP42MovImporter.m */; };
+		A9ED7C8B1115D32E00423241 /* MP42QTImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ED7C8A1115D32E00423241 /* MP42QTImporter.m */; };
 		A9F183DD12C201760035BDE1 /* downmix.c in Sources */ = {isa = PBXBuildFile; fileRef = A9F183DB12C201760035BDE1 /* downmix.c */; };
 		A9F284A0133C9F6E00F10951 /* close.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9F2849D133C9F6E00F10951 /* close.pdf */; };
 		A9F284A1133C9F6E00F10951 /* close-over.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9F2849E133C9F6E00F10951 /* close-over.pdf */; };
@@ -110,7 +114,6 @@
 		CD1894F312F3757D00582CBC /* TheMovieDB.m in Sources */ = {isa = PBXBuildFile; fileRef = CD1894F212F3757D00582CBC /* TheMovieDB.m */; };
 		CD4E6E5D12F744210095C84F /* ArtworkSelector.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD4E6E5B12F744210095C84F /* ArtworkSelector.xib */; };
 		CD56963212FAAD680029FADB /* ArtworkSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = CD56963112FAAD680029FADB /* ArtworkSelector.m */; };
-		CD56966F12FAAFA90029FADB /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD56966E12FAAFA90029FADB /* Quartz.framework */; };
 		CD71FEA312F1B5AF00F0A98D /* MetadataSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD71FEA212F1B5AF00F0A98D /* MetadataSearchController.m */; };
 		CD71FEA612F1B62600F0A98D /* MetadataSearch.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */; };
 		CD71FF1D12F1C4A900F0A98D /* TheTVDB.m in Sources */ = {isa = PBXBuildFile; fileRef = CD71FF1C12F1C4A900F0A98D /* TheTVDB.m */; };
@@ -234,6 +237,8 @@
 		A936E03D130BE10200CA5527 /* MAAttachedWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MAAttachedWindow.m; path = Others/MAAttachedWindow.m; sourceTree = "<group>"; };
 		A937137312B76EAD00940FEC /* MP42H264Importer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42H264Importer.h; path = "mp4v2 wrapper/MP42H264Importer.h"; sourceTree = "<group>"; };
 		A937137412B76EAD00940FEC /* MP42H264Importer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MP42H264Importer.mm; path = "mp4v2 wrapper/MP42H264Importer.mm"; sourceTree = "<group>"; };
+		A940E0FD13F130FB007AB5C6 /* MP42AVFImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AVFImporter.h; path = "mp4v2 wrapper/MP42AVFImporter.h"; sourceTree = "<group>"; };
+		A940E0FE13F130FB007AB5C6 /* MP42AVFImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42AVFImporter.m; path = "mp4v2 wrapper/MP42AVFImporter.m"; sourceTree = "<group>"; };
 		A941B4D7134A52B600E22F45 /* eng.traineddata */ = {isa = PBXFileReference; lastKnownFileType = file; path = eng.traineddata; sourceTree = "<group>"; };
 		A941B4D8134A52B600E22F45 /* ita.traineddata */ = {isa = PBXFileReference; lastKnownFileType = file; path = ita.traineddata; sourceTree = "<group>"; };
 		A9569CE90F616926002F79F8 /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42VideoTrack.h; path = "mp4v2 wrapper/MP42VideoTrack.h"; sourceTree = "<group>"; };
@@ -270,6 +275,9 @@
 		A984DB730F52DD4B001A20B2 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		A9891D5C124502C000427CF9 /* MP42SrtImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42SrtImporter.h; path = "mp4v2 wrapper/MP42SrtImporter.h"; sourceTree = "<group>"; };
 		A9891D5D124502C000427CF9 /* MP42SrtImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42SrtImporter.m; path = "mp4v2 wrapper/MP42SrtImporter.m"; sourceTree = "<group>"; };
+		A991319713F060C600DCAA12 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Quartz.framework; sourceTree = DEVELOPER_DIR; };
+		A991319913F0615700DCAA12 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A991319B13F0668300DCAA12 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		A99EAC7A1115BED200D89903 /* MP42FileImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42FileImporter.h; path = "mp4v2 wrapper/MP42FileImporter.h"; sourceTree = "<group>"; };
 		A99EAC7B1115BED200D89903 /* MP42FileImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42FileImporter.m; path = "mp4v2 wrapper/MP42FileImporter.m"; sourceTree = "<group>"; };
 		A99EACA11115C18000D89903 /* MP42MkvImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42MkvImporter.h; path = "mp4v2 wrapper/MP42MkvImporter.h"; sourceTree = "<group>"; };
@@ -328,8 +336,8 @@
 		A9EBA68812AE28DF0092D645 /* MP42AC3Importer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42AC3Importer.m; path = "mp4v2 wrapper/MP42AC3Importer.m"; sourceTree = "<group>"; };
 		A9ED7C4C1115CFBD00423241 /* MP42Mp4Importer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42Mp4Importer.h; path = "mp4v2 wrapper/MP42Mp4Importer.h"; sourceTree = "<group>"; };
 		A9ED7C4D1115CFBD00423241 /* MP42Mp4Importer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42Mp4Importer.m; path = "mp4v2 wrapper/MP42Mp4Importer.m"; sourceTree = "<group>"; };
-		A9ED7C891115D32E00423241 /* MP42MovImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42MovImporter.h; path = "mp4v2 wrapper/MP42MovImporter.h"; sourceTree = "<group>"; };
-		A9ED7C8A1115D32E00423241 /* MP42MovImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42MovImporter.m; path = "mp4v2 wrapper/MP42MovImporter.m"; sourceTree = "<group>"; };
+		A9ED7C891115D32E00423241 /* MP42QTImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42QTImporter.h; path = "mp4v2 wrapper/MP42QTImporter.h"; sourceTree = "<group>"; };
+		A9ED7C8A1115D32E00423241 /* MP42QTImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42QTImporter.m; path = "mp4v2 wrapper/MP42QTImporter.m"; sourceTree = "<group>"; };
 		A9F183DB12C201760035BDE1 /* downmix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = downmix.c; path = "mp4v2 wrapper/muxer/downmix.c"; sourceTree = "<group>"; };
 		A9F183DC12C201760035BDE1 /* downmix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = downmix.h; path = "mp4v2 wrapper/muxer/downmix.h"; sourceTree = "<group>"; };
 		A9F2849D133C9F6E00F10951 /* close.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = close.pdf; path = images/close.pdf; sourceTree = "<group>"; };
@@ -375,6 +383,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A991319C13F0668300DCAA12 /* CoreMedia.framework in Frameworks */,
+				A991319A13F0615700DCAA12 /* AVFoundation.framework in Frameworks */,
+				A991319813F060C600DCAA12 /* Quartz.framework in Frameworks */,
 				A91103E40F321DBA0013D1E0 /* libuniversaldetector.a in Frameworks */,
 				A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */,
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
@@ -384,7 +395,6 @@
 				A9C095800F7B6C8C00170CAF /* AudioToolbox.framework in Frameworks */,
 				A91F622D0FB0A56F00B96B33 /* libicucore.dylib in Frameworks */,
 				948058B6106E07990037A911 /* libz.dylib in Frameworks */,
-				CD56966F12FAAFA90029FADB /* Quartz.framework in Frameworks */,
 				A95FE301133E3DCB00D35687 /* libavcodec.a in Frameworks */,
 				A95FE302133E3DCB00D35687 /* libavcore.a in Frameworks */,
 				A95FE303133E3DCB00D35687 /* libavdevice.a in Frameworks */,
@@ -411,6 +421,9 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A991319B13F0668300DCAA12 /* CoreMedia.framework */,
+				A991319913F0615700DCAA12 /* AVFoundation.framework */,
+				A991319713F060C600DCAA12 /* Quartz.framework */,
 				CD56966E12FAAFA90029FADB /* Quartz.framework */,
 				A91F622C0FB0A56F00B96B33 /* libicucore.dylib */,
 				A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */,
@@ -615,8 +628,10 @@
 				A99EACA21115C18000D89903 /* MP42MkvImporter.m */,
 				A9ED7C4C1115CFBD00423241 /* MP42Mp4Importer.h */,
 				A9ED7C4D1115CFBD00423241 /* MP42Mp4Importer.m */,
-				A9ED7C891115D32E00423241 /* MP42MovImporter.h */,
-				A9ED7C8A1115D32E00423241 /* MP42MovImporter.m */,
+				A9ED7C891115D32E00423241 /* MP42QTImporter.h */,
+				A9ED7C8A1115D32E00423241 /* MP42QTImporter.m */,
+				A940E0FD13F130FB007AB5C6 /* MP42AVFImporter.h */,
+				A940E0FE13F130FB007AB5C6 /* MP42AVFImporter.m */,
 				A9891D5C124502C000427CF9 /* MP42SrtImporter.h */,
 				A9891D5D124502C000427CF9 /* MP42SrtImporter.m */,
 				A9D825A712ABF72D00C1AA54 /* MP42CCImporter.h */,
@@ -787,7 +802,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 			};
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "Subler" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -916,7 +931,7 @@
 				A99EAC7C1115BED200D89903 /* MP42FileImporter.m in Sources */,
 				A99EACA31115C18000D89903 /* MP42MkvImporter.m in Sources */,
 				A9ED7C4E1115CFBD00423241 /* MP42Mp4Importer.m in Sources */,
-				A9ED7C8B1115D32E00423241 /* MP42MovImporter.m in Sources */,
+				A9ED7C8B1115D32E00423241 /* MP42QTImporter.m in Sources */,
 				A9B8E895123A95BA006A6EB8 /* MP42Muxer.m in Sources */,
 				A9B8E896123A95BA006A6EB8 /* MP42Sample.m in Sources */,
 				A9891D5E124502C000427CF9 /* MP42SrtImporter.m in Sources */,
@@ -947,6 +962,7 @@
 				A936E03E130BE10200CA5527 /* MAAttachedWindow.m in Sources */,
 				A9E2B960133E18C10009F4BC /* SBVobSubConverter.m in Sources */,
 				A90327E4133F68C5004E0D41 /* SBOCRWrapper.mm in Sources */,
+				A940E0FF13F130FB007AB5C6 /* MP42AVFImporter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1102,7 +1118,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = Subler;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -1130,7 +1146,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = Subler;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -1156,9 +1172,10 @@
 					"\"$(SRCROOT)/Tesseract\"/**",
 				);
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/mp4v2\"/**";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				RUN_CLANG_STATIC_ANALYZER = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Tesseract\"/** \"$(SRCROOT)/mp4v2\"/** \"$(SRCROOT)/ffmpeg\"/**";
@@ -1190,8 +1207,9 @@
 					"\"$(SRCROOT)/Tesseract\"/**",
 				);
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/mp4v2\"/**";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				RUN_CLANG_STATIC_ANALYZER = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Tesseract\"/** \"$(SRCROOT)/mp4v2\"/** \"$(SRCROOT)/ffmpeg\"/**";
 			};

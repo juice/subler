@@ -253,7 +253,7 @@
 
     [fileFormat selectItemAtIndex:[[[NSUserDefaults standardUserDefaults] valueForKey:@"defaultSaveFormat"] integerValue]];
 	if ([[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"])
-		[_currentSavePanel setRequiredFileType:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"]];
+		[_currentSavePanel setAllowedFileTypes:[NSArray arrayWithObject:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"]]];
 
     // note this is only available in Mac OS X 10.6+
     if ([savePanel respondsToSelector:@selector(setNameFieldStringValue:)]) {
@@ -292,7 +292,7 @@
             break;
     }
 
-    [_currentSavePanel setRequiredFileType:requiredFileType];
+    [_currentSavePanel setAllowedFileTypes:[NSArray arrayWithObject:requiredFileType]];
     [[NSUserDefaults standardUserDefaults] setObject:requiredFileType forKey:@"SBSaveFormat"];
 }
 
@@ -628,9 +628,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 // Import tracks from file
 
-- (void) addChapterTrack: (NSString *) path
+- (void) addChapterTrack: (NSURL *) fileURL
 {
-    [mp4File addTrack:[MP42ChapterTrack chapterTrackFromFile:path]];
+    [mp4File addTrack:[MP42ChapterTrack chapterTrackFromFile:[fileURL path]]];
 
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
@@ -642,39 +642,32 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     NSOpenPanel *panel = [NSOpenPanel openPanel];
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = YES;
-    panel.canChooseDirectories = YES;
+    panel.canChooseDirectories = NO;
+    [panel setAllowedFileTypes:[NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
+                                @"aac", @"h264", @"264", @"ac3",
+                                @"txt", @"srt", @"smi", @"scc", @"mkv", nil]];
 
-    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
-                                                                                    @"aac", @"h264", @"264", @"ac3",
-                                                                                    @"txt", @"srt", @"smi", @"scc", @"mkv", nil]
-                   modalForWindow: documentWindow modalDelegate: self
-                   didEndSelector: @selector( selectFileDidEnd:returnCode:contextInfo: )
-                      contextInfo: nil];                                                      
+    [panel beginSheetModalForWindow:documentWindow completionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton) {
+            NSString *fileExtension = [[panel.URLs objectAtIndex: 0] pathExtension];
+
+            if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
+                [self addChapterTrack:[panel.URLs objectAtIndex: 0]];
+            else
+                [self performSelectorOnMainThread:@selector(showImportSheet:)
+                                       withObject:[panel.URLs objectAtIndex: 0] waitUntilDone: NO];
+        }
+    }];
 }
 
-- (void) selectFileDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
-returnCode contextInfo: (void *) contextInfo
-{
-    if (returnCode != NSOKButton)
-        return;
-
-    NSString *fileExtension = [[sheet.filenames objectAtIndex: 0] pathExtension];
-
-    if ([fileExtension caseInsensitiveCompare: @"txt"] == NSOrderedSame)
-         [self addChapterTrack:[sheet.filenames objectAtIndex: 0]];
-    else
-        [self performSelectorOnMainThread:@selector(showImportSheet:)
-                               withObject:[sheet.filenames objectAtIndex: 0] waitUntilDone: NO];
-}
-
-- (void) showImportSheet: (NSString *) filePath
+- (void) showImportSheet: (NSURL *) fileURL
 {
     NSError *error = nil;
 
-    if ([[filePath pathExtension] isEqualToString:@"h264"] || [[filePath pathExtension] isEqualToString:@"264"])
-        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:filePath];
+    if ([[fileURL pathExtension] isEqualToString:@"h264"] || [[fileURL pathExtension] isEqualToString:@"264"])
+        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:[fileURL path]];
     else
-		importWindow = [[FileImport alloc] initWithDelegate:self andFile:filePath error:&error];
+		importWindow = [[FileImport alloc] initWithDelegate:self andFile:fileURL error:&error];
 
     if (importWindow) {
         [NSApp beginSheet:[importWindow window] modalForWindow:documentWindow
@@ -685,7 +678,6 @@ returnCode contextInfo: (void *) contextInfo
         if (error)
             [self presentError:error modalForWindow:documentWindow delegate:nil didPresentSelector:NULL contextInfo:nil];
     }
-
 }
 
 - (void) importDoneWithTracks: (NSArray*) tracksToBeImported andMetadata: (MP42Metadata*) metadata
@@ -750,22 +742,14 @@ returnCode contextInfo: (void *) contextInfo
     NSOpenPanel *panel = [NSOpenPanel openPanel];
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = YES;
-    panel.canChooseDirectories = YES;
-
-    [panel beginSheetForDirectory: nil file: nil types: [NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", nil]
-                   modalForWindow: documentWindow modalDelegate: self
-                   didEndSelector: @selector( selectMetadataFileDidEnd:returnCode:contextInfo: )
-                      contextInfo: nil];                                                      
-}
-
-- (void) selectMetadataFileDidEnd: (NSOpenPanel *) sheet returnCode: (NSInteger)
-returnCode contextInfo: (void *) contextInfo
-{
-    if (returnCode != NSOKButton)
-        return;
+    panel.canChooseDirectories = NO;
+    [panel setAllowedFileTypes:[NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", nil]];
     
-    [self addMetadata:[sheet.filenames objectAtIndex: 0]];
-
+    [panel beginSheetModalForWindow:documentWindow completionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton) {
+            [self addMetadata:[[panel URL] path]];
+        }
+    }];
 }
 
 - (IBAction) export: (id) sender
@@ -775,41 +759,37 @@ returnCode contextInfo: (void *) contextInfo
     NSString *filename = [[[[self fileURL] path] stringByDeletingPathExtension] lastPathComponent];
 
     if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42SubtitleTrack class]]) {
-        [panel setRequiredFileType: @"srt"];
+        [panel setAllowedFileTypes:[NSArray arrayWithObject: @"srt"]];
         filename = [filename stringByAppendingString:@" - Subtitles"];
     }
 	else if (row != -1 ) {
         filename = [filename stringByAppendingString:@" - Chapters"];
-		[panel setRequiredFileType: @"txt"];
+		[panel setAllowedFileTypes:[NSArray arrayWithObject: @"txt"]];
     }
 
     [panel setCanSelectHiddenExtension: YES];
+    [panel setNameFieldStringValue:filename];
+    
+    [panel beginSheetModalForWindow:documentWindow completionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton) {
+            id track = [mp4File trackAtIndex:[fileTracksTable selectedRow]];
+            
+            if (![track exportToURL: [panel URL] error: nil]) {
+                NSAlert * alert = [[NSAlert alloc] init];
+                [alert addButtonWithTitle: NSLocalizedString(@"OK", "Export alert panel -> button")];
+                [alert setMessageText: NSLocalizedString(@"File Could Not Be Saved", "Export alert panel -> title")];
+                [alert setInformativeText: [NSString stringWithFormat:
+                                            NSLocalizedString(@"There was a problem creating the file \"%@\".",
+                                                              "Export alert panel -> message"), [[[panel URL] path] lastPathComponent]]];
+                [alert setAlertStyle: NSWarningAlertStyle];
+                
+                [alert runModal];
+                [alert release];
+            }
 
-    [panel beginSheetForDirectory: nil file:filename
-                   modalForWindow: documentWindow modalDelegate: self
-                   didEndSelector: @selector(writeToFileSheetClosed:returnCode:contextInfo:) contextInfo: nil];
-}
-
-- (void) writeToFileSheetClosed: (NSSavePanel *) panel returnCode: (NSInteger) code contextInfo: (id) info
-{
-    if (code == NSOKButton) {
-        id track = [mp4File trackAtIndex:[fileTracksTable selectedRow]];
-
-        if (![track exportToURL: [panel URL] error: nil]) {
-            NSAlert * alert = [[NSAlert alloc] init];
-            [alert addButtonWithTitle: NSLocalizedString(@"OK", "Export alert panel -> button")];
-            [alert setMessageText: NSLocalizedString(@"File Could Not Be Saved", "Export alert panel -> title")];
-            [alert setInformativeText: [NSString stringWithFormat:
-										NSLocalizedString(@"There was a problem creating the file \"%@\".",
-														  "Export alert panel -> message"), [[panel filename] lastPathComponent]]];
-            [alert setAlertStyle: NSWarningAlertStyle];
-
-            [alert runModal];
-            [alert release];
         }
-    }
+    }];
 }
-
 
 - (IBAction) addChaptersEvery: (id) sender
 {
@@ -851,9 +831,10 @@ returnCode contextInfo: (void *) contextInfo
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard = [sender draggingPasteboard];
 
-    if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
-        NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
-        for (NSString * file in files)
+    if ( [[pboard types] containsObject:NSURLPboardType] ) {
+        NSArray * items = [pboard readObjectsForClasses:
+                           [NSArray arrayWithObject: [NSURL class]] options: nil];
+        for (NSURL * file in items)
         {
             if ([[file pathExtension] caseInsensitiveCompare: @"txt"] == NSOrderedSame)
                 [self addChapterTrack:file];
