@@ -39,13 +39,15 @@
 		A941B4D9134A52B600E22F45 /* eng.traineddata in CopyFiles */ = {isa = PBXBuildFile; fileRef = A941B4D7134A52B600E22F45 /* eng.traineddata */; };
 		A941B4DA134A52B600E22F45 /* ita.traineddata in CopyFiles */ = {isa = PBXBuildFile; fileRef = A941B4D8134A52B600E22F45 /* ita.traineddata */; };
 		A9569CEB0F616926002F79F8 /* MP42VideoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */; };
-		A95B4CFB12D0B26D006E55BD /* SBPresetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A95B4CFA12D0B26D006E55BD /* SBPresetManager.m */; };
 		A95C881D0F827BFB00F51A22 /* ToolbarRemoveTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */; };
 		A95FE301133E3DCB00D35687 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE2FC133E3DCB00D35687 /* libavcodec.a */; };
 		A95FE302133E3DCB00D35687 /* libavcore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE2FD133E3DCB00D35687 /* libavcore.a */; };
 		A95FE303133E3DCB00D35687 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE2FE133E3DCB00D35687 /* libavdevice.a */; };
 		A95FE304133E3DCB00D35687 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE2FF133E3DCB00D35687 /* libavformat.a */; };
 		A95FE305133E3DCB00D35687 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE300133E3DCB00D35687 /* libavutil.a */; };
+		A961476313F567E10068F161 /* SBBatchController.m in Sources */ = {isa = PBXBuildFile; fileRef = A961476013F567E10068F161 /* SBBatchController.m */; };
+		A961476413F567E10068F161 /* SBPresetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A961476213F567E10068F161 /* SBPresetManager.m */; };
+		A961476713F568210068F161 /* Batch.xib in Resources */ = {isa = PBXBuildFile; fileRef = A961476513F568210068F161 /* Batch.xib */; };
 		A9629C8D0F56F7B6001D6A75 /* MP42ChapterTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C820F56F7B6001D6A75 /* MP42ChapterTrack.m */; };
 		A9629C8E0F56F7B6001D6A75 /* MP42File.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C840F56F7B6001D6A75 /* MP42File.m */; };
 		A9629C8F0F56F7B6001D6A75 /* MP42Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C860F56F7B6001D6A75 /* MP42Metadata.m */; };
@@ -244,14 +246,17 @@
 		A9569CE90F616926002F79F8 /* MP42VideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42VideoTrack.h; path = "mp4v2 wrapper/MP42VideoTrack.h"; sourceTree = "<group>"; };
 		A9569CEA0F616926002F79F8 /* MP42VideoTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42VideoTrack.m; path = "mp4v2 wrapper/MP42VideoTrack.m"; sourceTree = "<group>"; };
 		A95A60470F4422DB00767D87 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mp4v2.h; path = mp4v2/mp4v2.h; sourceTree = "<group>"; };
-		A95B4CF912D0B26D006E55BD /* SBPresetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBPresetManager.h; sourceTree = "<group>"; };
-		A95B4CFA12D0B26D006E55BD /* SBPresetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBPresetManager.m; sourceTree = "<group>"; };
 		A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToolbarRemoveTemplate.png; path = images/ToolbarRemoveTemplate.png; sourceTree = "<group>"; };
 		A95FE2FC133E3DCB00D35687 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = ffmpeg/lib/libavcodec.a; sourceTree = "<group>"; };
 		A95FE2FD133E3DCB00D35687 /* libavcore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcore.a; path = ffmpeg/lib/libavcore.a; sourceTree = "<group>"; };
 		A95FE2FE133E3DCB00D35687 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = ffmpeg/lib/libavdevice.a; sourceTree = "<group>"; };
 		A95FE2FF133E3DCB00D35687 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = ffmpeg/lib/libavformat.a; sourceTree = "<group>"; };
 		A95FE300133E3DCB00D35687 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = ffmpeg/lib/libavutil.a; sourceTree = "<group>"; };
+		A961475F13F567E10068F161 /* SBBatchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBBatchController.h; path = Classes/SBBatchController.h; sourceTree = "<group>"; };
+		A961476013F567E10068F161 /* SBBatchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBBatchController.m; path = Classes/SBBatchController.m; sourceTree = "<group>"; };
+		A961476113F567E10068F161 /* SBPresetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBPresetManager.h; path = Classes/SBPresetManager.h; sourceTree = "<group>"; };
+		A961476213F567E10068F161 /* SBPresetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBPresetManager.m; path = Classes/SBPresetManager.m; sourceTree = "<group>"; };
+		A961476613F568210068F161 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Batch.xib; sourceTree = "<group>"; };
 		A9629C810F56F7B6001D6A75 /* MP42ChapterTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42ChapterTrack.h; path = "mp4v2 wrapper/MP42ChapterTrack.h"; sourceTree = "<group>"; };
 		A9629C820F56F7B6001D6A75 /* MP42ChapterTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42ChapterTrack.m; path = "mp4v2 wrapper/MP42ChapterTrack.m"; sourceTree = "<group>"; };
 		A9629C830F56F7B6001D6A75 /* MP42File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42File.h; path = "mp4v2 wrapper/MP42File.h"; sourceTree = "<group>"; };
@@ -478,6 +483,7 @@
 			children = (
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
+				A961475E13F5676E0068F161 /* NIBs */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
@@ -490,8 +496,10 @@
 			children = (
 				A9B46ABD12B79D1C0040517A /* SBDocument.h */,
 				A9B46ABE12B79D1C0040517A /* SBDocument.m */,
-				A95B4CF912D0B26D006E55BD /* SBPresetManager.h */,
-				A95B4CFA12D0B26D006E55BD /* SBPresetManager.m */,
+				A961475F13F567E10068F161 /* SBBatchController.h */,
+				A961476013F567E10068F161 /* SBBatchController.m */,
+				A961476113F567E10068F161 /* SBPresetManager.h */,
+				A961476213F567E10068F161 /* SBPresetManager.m */,
 				A9B46A7E12B79B240040517A /* FileImport.h */,
 				A9B46A7F12B79B240040517A /* FileImport.m */,
 				CD71FEA112F1B5AF00F0A98D /* MetadataSearchController.h */,
@@ -544,20 +552,8 @@
 				A984DB730F52DD4B001A20B2 /* dsa_pub.pem */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
-				A90B023910F3290A000416F3 /* Prefs.xib */,
-				A9B46AC012B79E230040517A /* SBDocument.xib */,
-				1DDD582A0DA1D0D100B32029 /* MainMenu.xib */,
-				A9629D050F56FB2A001D6A75 /* VideoView.xib */,
-				A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */,
-				A9FD5DA30F3C6F8100817716 /* EmptyView.xib */,
-				A9FD5DA50F3C6F8A00817716 /* ChapterView.xib */,
-				A9FD5EC50F3C8A4800817716 /* MovieView.xib */,
-				A9C055360F6D395B00AF15B5 /* FileImport.xib */,
-				CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */,
-				CD4E6E5B12F744210095C84F /* ArtworkSelector.xib */,
 				CD08BA9512F62829006BA549 /* tmdb-logo.png */,
 				CD16BC4612F6BC7F00AF5453 /* tvdb-logo.png */,
-				A9FB9DC80F83AAC100AB791A /* VideoFramerate.xib */,
 				A9B46AA312B79BB10040517A /* Subler.icns */,
 				A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */,
 				A92A4FB712B0F2F300751FA5 /* prefs-audio.png */,
@@ -612,6 +608,26 @@
 			);
 			name = tessdata;
 			path = Tesseract/share/tessdata/tessdata;
+			sourceTree = "<group>";
+		};
+		A961475E13F5676E0068F161 /* NIBs */ = {
+			isa = PBXGroup;
+			children = (
+				A90B023910F3290A000416F3 /* Prefs.xib */,
+				A9B46AC012B79E230040517A /* SBDocument.xib */,
+				1DDD582A0DA1D0D100B32029 /* MainMenu.xib */,
+				A9629D050F56FB2A001D6A75 /* VideoView.xib */,
+				A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */,
+				A9FD5DA30F3C6F8100817716 /* EmptyView.xib */,
+				A9FD5DA50F3C6F8A00817716 /* ChapterView.xib */,
+				A9FD5EC50F3C8A4800817716 /* MovieView.xib */,
+				A9C055360F6D395B00AF15B5 /* FileImport.xib */,
+				CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */,
+				CD4E6E5B12F744210095C84F /* ArtworkSelector.xib */,
+				A9FB9DC80F83AAC100AB791A /* VideoFramerate.xib */,
+				A961476513F568210068F161 /* Batch.xib */,
+			);
+			name = NIBs;
 			sourceTree = "<group>";
 		};
 		A9C03EB41116DFE700DA6FF6 /* Muxer */ = {
@@ -884,6 +900,7 @@
 				A9F284A0133C9F6E00F10951 /* close.pdf in Resources */,
 				A9F284A1133C9F6E00F10951 /* close-over.pdf in Resources */,
 				A9F284A2133C9F6E00F10951 /* close-pressed.pdf in Resources */,
+				A961476713F568210068F161 /* Batch.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -954,7 +971,6 @@
 				A9B46AB312B79BF60040517A /* sfifo.c in Sources */,
 				A9B46ABF12B79D1C0040517A /* SBDocument.m in Sources */,
 				A9F183DD12C201760035BDE1 /* downmix.c in Sources */,
-				A95B4CFB12D0B26D006E55BD /* SBPresetManager.m in Sources */,
 				CD71FEA312F1B5AF00F0A98D /* MetadataSearchController.m in Sources */,
 				CD71FF1D12F1C4A900F0A98D /* TheTVDB.m in Sources */,
 				CD1894F312F3757D00582CBC /* TheMovieDB.m in Sources */,
@@ -963,6 +979,8 @@
 				A9E2B960133E18C10009F4BC /* SBVobSubConverter.m in Sources */,
 				A90327E4133F68C5004E0D41 /* SBOCRWrapper.mm in Sources */,
 				A940E0FF13F130FB007AB5C6 /* MP42AVFImporter.m in Sources */,
+				A961476313F567E10068F161 /* SBBatchController.m in Sources */,
+				A961476413F567E10068F161 /* SBPresetManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1015,6 +1033,14 @@
 				A91E7DED0F8A2F3D00AF387E /* English */,
 			);
 			name = SoundView.xib;
+			sourceTree = "<group>";
+		};
+		A961476513F568210068F161 /* Batch.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A961476613F568210068F161 /* English */,
+			);
+			name = Batch.xib;
 			sourceTree = "<group>";
 		};
 		A9629D050F56FB2A001D6A75 /* VideoView.xib */ = {

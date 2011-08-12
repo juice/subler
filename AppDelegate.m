@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "SBDocument.h"
 #import "SBPresetManager.h"
+#import "SBBatchController.h"
+#import "PrefsController.h"
 
 #import "mp4v2.h"
 
@@ -120,12 +122,20 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
     return NO;
 }
 
-- (void) showPrefsWindow: (id) sender;
+- (IBAction) showBatchWindow: (id) sender
 {
-    if (!fPrefs) {
-        fPrefs = [[PrefsController alloc] init];
+    if (!batchController) {
+        batchController = [[SBBatchController alloc] initWithWindowNibName:@"Batch"];
     }
-    [fPrefs showWindow:self];
+    [batchController showWindow:self];
+}
+
+- (IBAction) showPrefsWindow: (id) sender
+{
+    if (!prefController) {
+        prefController = [[PrefsController alloc] init];
+    }
+    [prefController showWindow:self];
 }
 
 - (IBAction) donate:(id)sender
@@ -139,7 +149,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
                                              URLWithString:@"http://code.google.com/p/subler/wiki/Documentation"]];
 }
 
-- (void) linkDonate:(id)sender
+- (IBAction) linkDonate:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL: [NSURL
                                              URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YKZHVC6HG6AFQ&lc=EN&item_name=Subler&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"]];

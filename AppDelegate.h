@@ -7,7 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PrefsController.h"
+
+@class SBBatchController;
+@class PrefsController;
 
 @interface SBDocumentController : NSDocumentController {
 }
@@ -15,16 +17,17 @@
 @end
 
 @interface AppDelegate : NSObject {
-
-    PrefsController *fPrefs;
+    SBBatchController *batchController;
+    PrefsController *prefController;
 	SBDocumentController *documentController;
 }
 
+- (IBAction) showBatchWindow: (id) sender;
 - (IBAction) showPrefsWindow: (id) sender;
 - (IBAction) donate:(id)sender;
 - (IBAction) help:(id)sender;
 
-- (void) linkDonate: (id) sender;
+- (IBAction) linkDonate: (id) sender;
 
 @end
 
