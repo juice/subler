@@ -138,7 +138,22 @@
 
 #pragma mark Save methods
 
-// Hook into the flow to fork a thread
+- (void) saveDidComplete: (NSError *)outError
+{
+    [NSApp endSheet: savingWindow];
+    [savingWindow orderOut:self];
+
+    if (outError) {
+        [self presentError:outError
+            modalForWindow:documentWindow
+                  delegate:nil
+        didPresentSelector:NULL
+               contextInfo:NULL];
+    }
+
+    [self reloadFile:self];
+}
+
 - (void)saveToURL:(NSURL *)absoluteURL
 		   ofType:(NSString *)typeName
  forSaveOperation:(NSSaveOperationType)saveOperation
@@ -146,47 +161,30 @@
   didSaveSelector:(SEL)didSaveSelector
 	  contextInfo:(void *)contextInfo
 {
-	NSString * fileName=nil;
-	
+    __block NSError	 *outError;
+
     [optBar setIndeterminate:YES];
     [optBar startAnimation:nil];
     [saveOperationName setStringValue:@"Saving…"];
     [NSApp beginSheet:savingWindow modalForWindow:documentWindow
         modalDelegate:nil didEndSelector:NULL contextInfo:nil];
 
-    fileName = [[absoluteURL path]lastPathComponent];
-    [documentWindow setTitle:fileName];
+    [documentWindow setTitle:[[absoluteURL path] lastPathComponent]];
 
-    [NSApplication detachDrawingThread:@selector(saveDocumentToDisk:) toTarget:self
-							withObject:[NSDictionary dictionaryWithObjectsAndKeys:absoluteURL, @"absoluteURL",
-										typeName, @"typeName",
-										[NSNumber numberWithInteger:saveOperation], @"saveOperation", nil]];
-}
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        BOOL success = [self saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&outError];
 
-// Thread entry
-- (void)saveDocumentToDisk:(NSDictionary *)info
-{
-    NSURL       *absoluteURL = [info objectForKey:@"absoluteURL"];
-    NSString    *typeName = [info objectForKey:@"typeName"];
-    NSSaveOperationType	saveOperation = [[info objectForKey:@"saveOperation"] integerValue];
-    NSError	 *outError;
+        [self setFileURL:absoluteURL];
+        [self setFileModificationDate:[[[NSFileManager defaultManager]  
+                                        attributesOfItemAtPath:[absoluteURL path] error:nil]  
+                                       fileModificationDate]];
+        if (success && outError)
+            outError = nil;
 
-    BOOL success = [self saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&outError];
-
-    NSDictionary *fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    [NSNumber numberWithUnsignedInt:'M4V '], NSFileHFSTypeCode,
-                                    [NSNumber numberWithUnsignedInt:0], NSFileHFSCreatorCode,
-                                    nil];
-
-    [[NSFileManager defaultManager] setAttributes:fileAttributes ofItemAtPath:[absoluteURL path] error:nil];
-    [self setFileURL:absoluteURL];
-    [self setFileModificationDate:[[[NSFileManager defaultManager]  
-                                    attributesOfItemAtPath:[absoluteURL path] error:nil]  
-                                   fileModificationDate]];
-    if (success && outError)
-        outError = nil;
-
-    [self performSelectorOnMainThread:@selector(saveDidComplete:) withObject:outError waitUntilDone: NO];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self saveDidComplete:outError];
+        });
+    });
 }
 
 - (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName 
@@ -223,23 +221,6 @@
     return success;
 }
 
-- (void) saveDidComplete: (NSError *)outError
-{
-    [NSApp endSheet: savingWindow];
-    [savingWindow orderOut:self];
-    
-    
-    if (outError) {
-        [self presentError:outError
-            modalForWindow:documentWindow
-                  delegate:nil
-        didPresentSelector:NULL
-               contextInfo:NULL];
-    }
-    
-    [self reloadFile:self];
-}
-
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
     _currentSavePanel = savePanel;
@@ -255,19 +236,16 @@
 	if ([[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"])
 		[_currentSavePanel setAllowedFileTypes:[NSArray arrayWithObject:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBSaveFormat"]]];
 
-    // note this is only available in Mac OS X 10.6+
-    if ([savePanel respondsToSelector:@selector(setNameFieldStringValue:)]) {
-        NSString *filename = nil;
-        for (NSUInteger i = 0; i < [mp4File tracksCount]; i++) {
-            MP42Track *track = [mp4File trackAtIndex:i];
-            if ([track sourcePath]) {
-                filename = [[[track sourcePath] lastPathComponent] stringByDeletingPathExtension];
-                break;
-            }
+    NSString *filename = nil;
+    for (NSUInteger i = 0; i < [mp4File tracksCount]; i++) {
+        MP42Track *track = [mp4File trackAtIndex:i];
+        if ([track sourcePath]) {
+            filename = [[[track sourcePath] lastPathComponent] stringByDeletingPathExtension];
+            break;
         }
-        if (filename) {
-            [savePanel performSelector:@selector(setNameFieldStringValue:) withObject:filename];
-        }
+    }
+    if (filename) {
+        [savePanel performSelector:@selector(setNameFieldStringValue:) withObject:filename];
     }
 
     return YES;
