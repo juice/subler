@@ -49,6 +49,9 @@
 #if !__LP64__
     else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
         self = [[MP42QTImporter alloc] initWithDelegate:del andFile:fileUrl error:outError];
+#else
+    else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
+        self = [[MP42AVFImporter alloc] initWithDelegate:del andFile:fileUrl error:outError];
 #endif
 
     return self;
