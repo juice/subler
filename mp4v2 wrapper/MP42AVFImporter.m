@@ -42,64 +42,65 @@
 {
     NSString* result = @"";
     
-    CMFormatDescriptionRef formatDescription;
+    CMFormatDescriptionRef formatDescription = NULL;
     NSArray *formatDescriptions = track.formatDescriptions;
     if ([formatDescriptions count] > 0)
         formatDescription = (CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
     
-    FourCharCode code = CMFormatDescriptionGetMediaSubType(formatDescription);
-    switch (code) {
-        case kCMVideoCodecType_H264:
-            result = @"H.264";
-            break;
-        case kCMVideoCodecType_MPEG4Video:
-            result = @"MPEG-4 Visual";
-            break;
-        case kAudioFormatMPEG4AAC:
-            result = @"AAC";
-            break;
-        case kAudioFormatAC3:
-        case 'ms \0':
-            result = @"AC-3";
-            break;
-        case kAudioFormatAMR:
-            result = @"AMR Narrow Band";
-            break;
-        case kCMTextFormatType_QTText:
-            result = @"Text";
-            break;
-        case kCMTextFormatType_3GText:
-            result = @"3GPP Text";
-            break;
-        case 'SRT ':
-            result = @"Text";
-            break;
-        case 'SSA ':
-            result = @"SSA";
-            break;
-        case kCMClosedCaptionFormatType_CEA608:
-            result = @"CEA-608";
-            break;
-        case kCMClosedCaptionFormatType_CEA708:
-            result = @"CEA-708";
-            break;
-        case kCMClosedCaptionFormatType_ATSC:
-            result = @"ATSC/52 part-4";
-            break;
-        case kCMTimeCodeFormatType_TimeCode32:
-        case kCMTimeCodeFormatType_TimeCode64:
-        case kCMTimeCodeFormatType_Counter32:
-        case kCMTimeCodeFormatType_Counter64:
-            result = @"Timecode";
-            break;
-        case kCMVideoCodecType_JPEG:
-            result = @"Photo - JPEG";
-            break;
-        default:
-            result = @"Unknown";
-            break;
+    if (formatDescription) {
+        FourCharCode code = CMFormatDescriptionGetMediaSubType(formatDescription);
+        switch (code) {
+            case kCMVideoCodecType_H264:
+                result = @"H.264";
+                break;
+            case kCMVideoCodecType_MPEG4Video:
+                result = @"MPEG-4 Visual";
+                break;
+            case kAudioFormatMPEG4AAC:
+                result = @"AAC";
+                break;
+            case kAudioFormatAC3:
+            case 'ms \0':
+                result = @"AC-3";
+                break;
+            case kAudioFormatAMR:
+                result = @"AMR Narrow Band";
+                break;
+            case kCMTextFormatType_QTText:
+                result = @"Text";
+                break;
+            case kCMTextFormatType_3GText:
+                result = @"3GPP Text";
+                break;
+            case 'SRT ':
+                result = @"Text";
+                break;
+            case 'SSA ':
+                result = @"SSA";
+                break;
+            case kCMClosedCaptionFormatType_CEA608:
+                result = @"CEA-608";
+                break;
+            case kCMClosedCaptionFormatType_CEA708:
+                result = @"CEA-708";
+                break;
+            case kCMClosedCaptionFormatType_ATSC:
+                result = @"ATSC/52 part-4";
+                break;
+            case kCMTimeCodeFormatType_TimeCode32:
+            case kCMTimeCodeFormatType_TimeCode64:
+            case kCMTimeCodeFormatType_Counter32:
+            case kCMTimeCodeFormatType_Counter64:
+                result = @"Timecode";
+                break;
+            case kCMVideoCodecType_JPEG:
+                result = @"Photo - JPEG";
+                break;
+            default:
+                result = @"Unknown";
+                break;
+        }
     }
-    
     return result;
 }
 
@@ -124,10 +125,12 @@
         for (AVAssetTrack *track in tracks) {
             MP42Track *newTrack = nil;
 
-            CMFormatDescriptionRef formatDescription;
+            CMFormatDescriptionRef formatDescription = NULL;
             NSArray *formatDescriptions = track.formatDescriptions;
 			if ([formatDescriptions count] > 0)
 				formatDescription = (CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
+
+            //NSArray *trackMetadata = [track metadataForFormat:AVMetadataFormatQuickTimeUserData];
 
             if ([[track mediaType] isEqualToString:AVMediaTypeVideo]) {
                 newTrack = [[MP42VideoTrack alloc] init];
@@ -135,38 +138,49 @@
 
                 [(MP42VideoTrack*)newTrack setTrackWidth: naturalSize.width];
                 [(MP42VideoTrack*)newTrack setTrackHeight: naturalSize.height];
-                
+
                 [(MP42VideoTrack*)newTrack setWidth: naturalSize.width];
                 [(MP42VideoTrack*)newTrack setHeight: naturalSize.height];
-                
-                CFDictionaryRef pixelAspectRatioFromCMFormatDescription = CMFormatDescriptionGetExtension(formatDescription, kCMFormatDescriptionExtension_PixelAspectRatio);
-				if (pixelAspectRatioFromCMFormatDescription)
-				{
-                    NSInteger hSpacing, vSpacing;
-                    CFNumberGetValue(CFDictionaryGetValue(pixelAspectRatioFromCMFormatDescription, kCMFormatDescriptionKey_PixelAspectRatioHorizontalSpacing), kCFNumberIntType, &hSpacing);
-                    CFNumberGetValue(CFDictionaryGetValue(pixelAspectRatioFromCMFormatDescription, kCMFormatDescriptionKey_PixelAspectRatioVerticalSpacing), kCFNumberIntType, &vSpacing);
-                    [(MP42VideoTrack*)newTrack setHSpacing:hSpacing];
-                    [(MP42VideoTrack*)newTrack setVSpacing:vSpacing];
-				}
+
+                if (formatDescription) {
+                    CFDictionaryRef pixelAspectRatioFromCMFormatDescription = CMFormatDescriptionGetExtension(formatDescription, kCMFormatDescriptionExtension_PixelAspectRatio);
+                    if (pixelAspectRatioFromCMFormatDescription)
+                    {
+                        NSInteger hSpacing, vSpacing;
+                        CFNumberGetValue(CFDictionaryGetValue(pixelAspectRatioFromCMFormatDescription, kCMFormatDescriptionKey_PixelAspectRatioHorizontalSpacing), kCFNumberIntType, &hSpacing);
+                        CFNumberGetValue(CFDictionaryGetValue(pixelAspectRatioFromCMFormatDescription, kCMFormatDescriptionKey_PixelAspectRatioVerticalSpacing), kCFNumberIntType, &vSpacing);
+                        [(MP42VideoTrack*)newTrack setHSpacing:hSpacing];
+                        [(MP42VideoTrack*)newTrack setVSpacing:vSpacing];
+                    }
+                }
             }
             else if ([[track mediaType] isEqualToString:AVMediaTypeAudio]) {
                 newTrack = [[MP42AudioTrack alloc] init];
 
-                size_t layoutSize = 1;
-                const AudioChannelLayout *layout = CMAudioFormatDescriptionGetChannelLayout(formatDescription, &layoutSize);
+                if (formatDescription) {
+                    size_t layoutSize = 0;
+                    const AudioChannelLayout *layout = CMAudioFormatDescriptionGetChannelLayout(formatDescription, &layoutSize);
 
-                [(MP42AudioTrack*)newTrack setChannels: AudioChannelLayoutTag_GetNumberOfChannels(layout->mChannelLayoutTag)];
-                [(MP42AudioTrack*)newTrack setChannelLayoutTag: layout->mChannelLayoutTag];
+                    if (layoutSize) {
+                        [(MP42AudioTrack*)newTrack setChannels: AudioChannelLayoutTag_GetNumberOfChannels(layout->mChannelLayoutTag)];
+                        [(MP42AudioTrack*)newTrack setChannelLayoutTag: layout->mChannelLayoutTag];
+                    }
+                    else
+                        [(MP42AudioTrack*)newTrack setChannels: 1];
+                }
             }
             else if ([[track mediaType] isEqualToString:AVMediaTypeSubtitle]) {
                 newTrack = [[MP42SubtitleTrack alloc] init];
+            }
+            else {
+                newTrack = [[MP42Track alloc] init];
             }
 
             newTrack.format = [self formatForTrack:track];
             newTrack.Id = [track trackID];
             newTrack.sourcePath = file;
             newTrack.sourceFileHandle = localAsset;
-            //newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
+            //newTrack.name = [[[AVMetadataItem metadataItemsFromArray:trackMetadata withKey:@"name" keySpace:nil] lastObject] value];
             newTrack.language = [self langForTrack:track];
 
             CMTimeRange timeRange = [track timeRange];
@@ -198,33 +212,34 @@
 {
     AVAssetTrack *assetTrack = [localAsset trackWithTrackID:[track sourceId]];
 
-    CMFormatDescriptionRef formatDescription;
+    CMFormatDescriptionRef formatDescription = NULL;
     NSArray *formatDescriptions = assetTrack.formatDescriptions;
     if ([formatDescriptions count] > 0)
         formatDescription = (CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
 
-    FourCharCode code = CMFormatDescriptionGetMediaSubType(formatDescription);
-    if ([[assetTrack mediaType] isEqualToString:AVMediaTypeVideo]) {
-        if (code == kCMVideoCodecType_H264) {
-            CFDictionaryRef extentions = CMFormatDescriptionGetExtensions(formatDescription);
-            CFDictionaryRef atoms = CFDictionaryGetValue(extentions, kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms);
-            CFDataRef avcC = CFDictionaryGetValue(atoms, @"avcC");
+    if (formatDescription) {
+        FourCharCode code = CMFormatDescriptionGetMediaSubType(formatDescription);
+        if ([[assetTrack mediaType] isEqualToString:AVMediaTypeVideo]) {
+            if (code == kCMVideoCodecType_H264) {
+                CFDictionaryRef extentions = CMFormatDescriptionGetExtensions(formatDescription);
+                CFDictionaryRef atoms = CFDictionaryGetValue(extentions, kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms);
+                CFDataRef avcC = CFDictionaryGetValue(atoms, @"avcC");
 
-            return (NSData*)avcC;
+                return (NSData*)avcC;
+            }
+        }
+        else if ([[assetTrack mediaType] isEqualToString:AVMediaTypeAudio]) {
+            size_t cookieSizeOut;
+            const void *magicCookie = CMAudioFormatDescriptionGetMagicCookie(formatDescription, &cookieSizeOut);
+
+            // Extract DecoderSpecific info
+            UInt8* buffer;
+            int size;
+            ReadESDSDescExt((void*)magicCookie, &buffer, &size, 0);
+
+            return [NSData dataWithBytes:buffer length:size];
         }
     }
-    else if ([[assetTrack mediaType] isEqualToString:AVMediaTypeAudio]) {
-        size_t cookieSizeOut;
-        const void *magicCookie = CMAudioFormatDescriptionGetMagicCookie(formatDescription, &cookieSizeOut);
-
-        // Extract DecoderSpecific info
-        UInt8* buffer;
-        int size;
-        ReadESDSDescExt((void*)magicCookie, &buffer, &size, 0);
-
-        return [NSData dataWithBytes:buffer length:size];
-    }
-
     return nil;
 }
 
@@ -293,7 +308,7 @@
                     sample->sampleData = sampleData;
                     sample->sampleSize = sampleSize;
                     sample->sampleDuration = duration.value;
-                    sample->sampleOffset = decodeTimeStamp.value - presentationTimeStamp.value;
+                    sample->sampleOffset = -decodeTimeStamp.value + presentationTimeStamp.value;
                     sample->sampleTimestamp = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer).value;
                     sample->sampleIsSync = sync;
                     sample->sampleTrackId = track.Id;
@@ -317,7 +332,7 @@
                     err = CMSampleBufferGetOutputSampleTimingInfoArray(sampleBuffer, timingArrayEntries, timingArrayOut, &timingArrayEntriesNeededOut);
                     if (err)
                         continue;
-                    
+
                     // Then the array with the size of each sample
                     CMItemCount sizeArrayEntries = 0;
                     CMItemCount sizeArrayEntriesNeededOut = 0;
@@ -331,13 +346,14 @@
                     if (err)
                         continue;
 
-                    // Get CMBlockBufferRef to extrac the actual data later
+                    // Get CMBlockBufferRef to extract the actual data later
                     CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(sampleBuffer);
                     size_t bufferSize = CMBlockBufferGetDataLength(buffer);
 
                     int i = 0, pos = 0;
                     for (i = 0; i < sizeArrayEntries; i++) {
                         CMSampleTimingInfo sampleTimingInfo = timingArrayOut[i];
+                        // It seems that sometimes only 1 sample timing info is return, check it to avoid reading garbage
                         if (timingArrayEntries < i +1)
                             sampleTimingInfo = timingArrayOut[0];
 
