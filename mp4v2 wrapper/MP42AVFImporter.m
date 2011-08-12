@@ -116,6 +116,7 @@
 
         NSURL *url = (NSURL*) CFURLCreateWithFileSystemPath(NULL, (CFStringRef) fileUrl, kCFURLPOSIXPathStyle, NO);
         localAsset = [[AVAsset assetWithURL:url] retain];
+        [url release];
 
         tracksArray = [[NSMutableArray alloc] init];
         NSArray *tracks = [localAsset tracks];
@@ -209,7 +210,7 @@
             CFDictionaryRef atoms = CFDictionaryGetValue(extentions, kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms);
             CFDataRef avcC = CFDictionaryGetValue(atoms, @"avcC");
 
-            return [(NSData*)avcC autorelease];
+            return (NSData*)avcC;
         }
     }
     else if ([[assetTrack mediaType] isEqualToString:AVMediaTypeAudio]) {
@@ -231,6 +232,7 @@
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	BOOL success = YES;
+    OSStatus err = noErr;
 
     AVFTrackHelper * trackHelper=nil; 
 
@@ -265,34 +267,119 @@
 
             CMSampleBufferRef sampleBuffer = [assetReaderOutput copyNextSampleBuffer];
             if (sampleBuffer) {
-                CMTime duration = CMSampleBufferGetDuration(sampleBuffer);
-                CMTime decodeTimeStamp = CMSampleBufferGetDecodeTimeStamp(sampleBuffer);
-                CMTime presentationTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+                CMItemCount samplesNum = CMSampleBufferGetNumSamples(sampleBuffer);
+                if (!samplesNum)
+                    continue;
+                if (samplesNum == 1) {
+                    // We have only a sample
+                    CMTime duration = CMSampleBufferGetDuration(sampleBuffer);
+                    CMTime decodeTimeStamp = CMSampleBufferGetDecodeTimeStamp(sampleBuffer);
+                    CMTime presentationTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
 
-                CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(sampleBuffer);
-                size_t sampleSize = CMBlockBufferGetDataLength(buffer);
-                void *sampleData = malloc(sampleSize);
-                CMBlockBufferCopyDataBytes(buffer, 0, sampleSize, sampleData);
+                    CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(sampleBuffer);
+                    size_t sampleSize = CMBlockBufferGetDataLength(buffer);
+                    void *sampleData = malloc(sampleSize);
+                    CMBlockBufferCopyDataBytes(buffer, 0, sampleSize, sampleData);
 
-                CFArrayRef attachmentsArray = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, NO);
-                if (attachmentsArray) {
-                    CFRange theRange = { 0, CFArrayGetCount(attachmentsArray)};
-                    if (CFArrayContainsValue(attachmentsArray, theRange, kCMSampleAttachmentKey_NotSync)) {
-                        NSLog(@"Not Sync");
+                    BOOL sync = 1;
+                    CFArrayRef attachmentsArray = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, NO);
+                    if (attachmentsArray) {
+                        for (NSDictionary *dict in (NSArray*)attachmentsArray) {
+                            if ([dict valueForKey:(NSString*)kCMSampleAttachmentKey_NotSync])
+                                sync = 0;
+                        }
+                    }
+                    MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
+                    sample->sampleData = sampleData;
+                    sample->sampleSize = sampleSize;
+                    sample->sampleDuration = duration.value;
+                    sample->sampleOffset = decodeTimeStamp.value - presentationTimeStamp.value;
+                    sample->sampleTimestamp = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer).value;
+                    sample->sampleIsSync = sync;
+                    sample->sampleTrackId = track.Id;
+
+                    @synchronized(samplesBuffer) {
+                        [samplesBuffer addObject:sample];
+                        [sample release];
                     }
                 }
-                MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
-                sample->sampleData = sampleData;
-                sample->sampleSize = sampleSize;
-                sample->sampleDuration = duration.value;
-                sample->sampleOffset = decodeTimeStamp.value - presentationTimeStamp.value;
-                sample->sampleTimestamp = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer).value;
-                sample->sampleIsSync = 0;
-                sample->sampleTrackId = track.Id;
+                else {
+                    // A CMSampleBufferRef can contains an unknown number of samples, check how many needs to be divided to separated MP42SampleBuffers
+                    // First get the array with the timings for each sample
+                    CMItemCount timingArrayEntries = 0;
+                    CMItemCount timingArrayEntriesNeededOut = 0;
+                    err = CMSampleBufferGetOutputSampleTimingInfoArray(sampleBuffer, timingArrayEntries, NULL, &timingArrayEntriesNeededOut);
+                    if (err)
+                        continue;
 
-                @synchronized(samplesBuffer) {
-                    [samplesBuffer addObject:sample];
-                    [sample release];
+                    CMSampleTimingInfo *timingArrayOut = malloc(sizeof(CMSampleTimingInfo) * timingArrayEntriesNeededOut);
+                    timingArrayEntries = timingArrayEntriesNeededOut;
+                    err = CMSampleBufferGetOutputSampleTimingInfoArray(sampleBuffer, timingArrayEntries, timingArrayOut, &timingArrayEntriesNeededOut);
+                    if (err)
+                        continue;
+                    
+                    // Then the array with the size of each sample
+                    CMItemCount sizeArrayEntries = 0;
+                    CMItemCount sizeArrayEntriesNeededOut = 0;
+                    err = CMSampleBufferGetSampleSizeArray(sampleBuffer, sizeArrayEntries, NULL, &sizeArrayEntriesNeededOut);
+                    if (err)
+                        continue;
+
+                    size_t *sizeArrayOut = malloc(sizeof(CMSampleTimingInfo) * sizeArrayEntriesNeededOut);
+                    sizeArrayEntries = sizeArrayEntriesNeededOut;
+                    err = CMSampleBufferGetSampleSizeArray(sampleBuffer, sizeArrayEntries, sizeArrayOut, &sizeArrayEntriesNeededOut);
+                    if (err)
+                        continue;
+
+                    // Get CMBlockBufferRef to extrac the actual data later
+                    CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(sampleBuffer);
+                    size_t bufferSize = CMBlockBufferGetDataLength(buffer);
+
+                    int i = 0, pos = 0;
+                    for (i = 0; i < sizeArrayEntries; i++) {
+                        CMSampleTimingInfo sampleTimingInfo = timingArrayOut[i];
+                        if (timingArrayEntries < i +1)
+                            sampleTimingInfo = timingArrayOut[0];
+
+                        size_t sampleSize = sizeArrayOut[i];
+                        if (!sampleSize)
+                            continue;
+
+                        void *sampleData = malloc(sampleSize);
+
+                        if (pos < bufferSize) {
+                            CMBlockBufferCopyDataBytes(buffer, pos, sampleSize, sampleData);
+                            pos += sampleSize;
+                        }
+
+                        BOOL sync = 1;
+                        CFArrayRef attachmentsArray = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, NO);
+                        if (attachmentsArray) {
+                            for (NSDictionary *dict in (NSArray*)attachmentsArray) {
+                                if ([dict valueForKey:(NSString*)kCMSampleAttachmentKey_NotSync])
+                                    sync = 0;
+                            }
+                        }
+
+                        MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
+                        sample->sampleData = sampleData;
+                        sample->sampleSize = sampleSize;
+                        sample->sampleDuration = sampleTimingInfo.duration.value;
+                        //sample->sampleOffset = sampleTimingInfo.decodeTimeStamp.value - sampleTimingInfo.presentationTimeStamp.value;
+                        sample->sampleTimestamp = sampleTimingInfo.presentationTimeStamp.value;
+                        sample->sampleIsSync = sync;
+                        sample->sampleTrackId = track.Id;
+
+                        @synchronized(samplesBuffer) {
+                            [samplesBuffer addObject:sample];
+                            [sample release];
+                        }
+                    }
+
+                    if(timingArrayOut)
+                        free(timingArrayOut);
+                    if(sizeArrayOut)
+                        free(sizeArrayOut);
                 }
             }
             else {
