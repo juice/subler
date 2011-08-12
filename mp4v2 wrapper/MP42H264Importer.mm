@@ -1343,11 +1343,11 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
 @implementation MP42H264Importer
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
-        file = [fileUrl retain];
+        fileURL = [URL retain];
 
         tracksArray = [[NSMutableArray alloc] initWithCapacity:1];
 
@@ -1355,18 +1355,18 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
         newTrack.format = @"H.264";
         newTrack.sourceFormat = @"H.264";
-        newTrack.sourcePath = file;
+        newTrack.sourceURL = URL;
 
         if (!inFile)
-            inFile = fopen([file UTF8String], "rb");
+            inFile = fopen([[fileURL path] UTF8String], "rb");
 
         struct stat st;
-        stat([file UTF8String], &st);
+        stat([[fileURL path] UTF8String], &st);
         size = st.st_size * 8;
 
         uint32_t tw, th;
         uint8_t profile, level;
-        if ((avcC = H264Info([file cStringUsingEncoding:NSASCIIStringEncoding], &tw, &th, &profile, &level))) {
+        if ((avcC = H264Info([[fileURL path] cStringUsingEncoding:NSASCIIStringEncoding], &tw, &th, &profile, &level))) {
             newTrack.width = newTrack.trackWidth = tw;
             newTrack.height = newTrack.trackHeight = th;
             newTrack.hSpacing = newTrack.vSpacing = 1;
@@ -1410,7 +1410,7 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     if (!inFile)
-        inFile = fopen([file UTF8String], "rb");
+        inFile = fopen([[fileURL path] UTF8String], "rb");
 
     MP42Track *track = [activeTracks lastObject];
     MP4TrackId dstTrackId = [track Id];
@@ -1679,7 +1679,7 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     fclose(inFile);
 
     [avcC release];
-	[file release];
+	[fileURL release];
     [tracksArray release];
     [activeTracks release];
 

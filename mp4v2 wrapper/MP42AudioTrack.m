@@ -13,9 +13,9 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
 
 @implementation MP42AudioTrack
 
-- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
+- (id) initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle])) {
+    if ((self = [super initWithSourceURL:URL trackID:trackID fileHandle:fileHandle])) {
         MP4GetTrackFloatProperty(fileHandle, Id, "tkhd.volume", &volume);
 
         u_int8_t audioType = 

@@ -29,9 +29,9 @@
     return self;
 }
 
-- (id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
+- (id)initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
+    if ((self = [super initWithSourceURL:URL trackID:trackID fileHandle:fileHandle]))
     {
         if (!name || [name isEqualToString:@"Text Track"])
             name = @"Chapter Track";
@@ -72,29 +72,29 @@
     return self;
 }
 
-- (id) initWithTextFile:(NSString *)filePath
+- (id) initWithTextFile:(NSURL *)URL
 {
     if ((self = [super init]))
     {
         name = @"Chapter Track";
         format = @"Text";
-        sourcePath = [filePath retain];
+        sourceURL = [URL retain];
         language = @"English";
         isEdited = YES;
         muxed = NO;
         enabled = NO;
 
         chapters = [[NSMutableArray alloc] init];
-        LoadChaptersFromPath(filePath, chapters);   
+        LoadChaptersFromPath([sourceURL path], chapters);   
         [chapters sortUsingSelector:@selector(compare:)];
     }
     
     return self;
 }
 
-+ (id) chapterTrackFromFile:(NSString *)filePath
++ (id) chapterTrackFromFile:(NSURL *)URL
 {
-    return [[[MP42ChapterTrack alloc] initWithTextFile:filePath] autorelease];
+    return [[[MP42ChapterTrack alloc] initWithTextFile:URL] autorelease];
 }
 
 - (void) addChapter:(NSString *)title duration:(uint64_t)timestamp

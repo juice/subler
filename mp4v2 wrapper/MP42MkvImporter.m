@@ -89,14 +89,14 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 
 @implementation MP42MkvImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
-        file = [fileUrl retain];
+        fileURL = [URL retain];
 
         ioStream = calloc(1, sizeof(StdIoStream)); 
-        matroskaFile = openMatroskaFile((char *)[file UTF8String], ioStream);
+        matroskaFile = openMatroskaFile((char *)[[fileURL path] UTF8String], ioStream);
 
         if(!matroskaFile) {
             if (outError) {
@@ -164,7 +164,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                 newTrack.format = [self matroskaCodecIDToHumanReadableName:mkvTrack];
                 newTrack.sourceFormat = [self matroskaCodecIDToHumanReadableName:mkvTrack];
                 newTrack.Id = i;
-                newTrack.sourcePath = file;
+                newTrack.sourceURL = fileURL;
 
                 if ([newTrack.format isEqualToString:@"H.264"]) {
                     uint8_t* avcCAtom = (uint8_t *)malloc(mkvTrack->CodecPrivateSize); // mkv stores h.264 avcC in CodecPrivate
@@ -1026,7 +1026,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
     [activeTracks release], activeTracks = nil;
     [tracksArray release], tracksArray = nil;
     [samplesBuffer release], samplesBuffer = nil;
-	[file release], file = nil;
+	[fileURL release], fileURL = nil;
 
 	/* close matroska parser */ 
 	mkv_Close(matroskaFile); 

@@ -12,14 +12,14 @@
 @class MP42Metadata;
 
 @interface VideoFramerate : NSWindowController {
-    NSString    *filePath;
+    NSURL    *fileURL;
     MP42FileImporter    * fileImporter;
     IBOutlet NSPopUpButton  *framerateSelection;
 
     id delegate;
 }
 
-- (id)initWithDelegate:(id)del andFile: (NSString *)path;
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL;
 - (IBAction) closeWindow: (id) sender;
 - (IBAction) addTracks: (id) sender;
 

@@ -290,7 +290,7 @@ static const genreType_t genreType_strings[] = {
 	if ((self = [super init]))
 	{
         presetName = @"Unnamed Set";
-		sourcePath = nil;
+		sourceURL = nil;
         tagsDict = [[NSMutableDictionary alloc] init];
         isEdited = NO;
         isArtworkEdited = NO;
@@ -299,11 +299,11 @@ static const genreType_t genreType_strings[] = {
     return self;
 }
 
--(id)initWithSourcePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle
+-(id)initWithSourceURL:(NSURL *)URL fileHandle:(MP4FileHandle)fileHandle
 {
 	if ((self = [super init]))
 	{
-		sourcePath = source;
+		sourceURL = URL;
         tagsDict = [[NSMutableDictionary alloc] init];
 
         [self readMetaDataFromFileHandle: fileHandle];

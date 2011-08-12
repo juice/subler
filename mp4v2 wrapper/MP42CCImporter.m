@@ -15,11 +15,11 @@
 
 @implementation MP42CCImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
-        file = [fileUrl retain];
+        fileURL = [fileURL retain];
 
         tracksArray = [[NSMutableArray alloc] initWithCapacity:1];
 
@@ -27,7 +27,7 @@
 
         newTrack.name = @"Closed Caption Track";
         newTrack.format = @"CEA-608";
-        newTrack.sourcePath = file;
+        newTrack.sourceURL = fileURL;
 
         [tracksArray addObject:newTrack];
         [newTrack release];
@@ -111,7 +111,7 @@ static int ParseByte(const char *string, UInt8 *byte, Boolean hex)
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     MP4TrackId dstTrackId = [[activeTracks lastObject] Id];
 
-    NSString *scc = STStandardizeStringNewlines(STLoadFileWithUnknownEncoding(file));
+    NSString *scc = STStandardizeStringNewlines(STLoadFileWithUnknownEncoding([fileURL path]));
     if (!scc) return;
 
     NSScanner *sc = [NSScanner scannerWithString:scc];
@@ -286,7 +286,7 @@ static int ParseByte(const char *string, UInt8 *byte, Boolean hex)
 
 - (void) dealloc
 {
-	[file release];
+	[fileURL release];
     [tracksArray release];
 
     [super dealloc];

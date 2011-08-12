@@ -15,7 +15,7 @@
 @class MP42Track;
 
 @interface MP42FileImporter : NSObject {
-    NSString       *file;
+    NSURL          *fileURL;
 
     NSInteger      chapterTrackId;
     MP42Metadata   *metadata;
@@ -25,7 +25,7 @@
     BOOL           isCancelled;
 }
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError;
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL error:(NSError **)outError;
 
 - (NSUInteger)timescaleForTrack:(MP42Track *)track;
 - (NSSize)sizeForTrack:(MP42Track *)track;

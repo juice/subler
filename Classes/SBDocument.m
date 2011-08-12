@@ -94,7 +94,7 @@
 - (void) reloadFile: (id) sender
 {
     if ([self fileURL]) {
-        MP42File *newFile = [[MP42File alloc] initWithExistingFile:[[self fileURL] path] andDelegate:self];
+        MP42File *newFile = [[MP42File alloc] initWithExistingFile:[self fileURL] andDelegate:self];
         if (newFile) {
             [mp4File autorelease];
             mp4File = newFile;
@@ -108,7 +108,7 @@
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    mp4File = [[MP42File alloc] initWithExistingFile:[absoluteURL path] andDelegate:self];
+    mp4File = [[MP42File alloc] initWithExistingFile:absoluteURL andDelegate:self];
     
     if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
@@ -122,7 +122,7 @@
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
     [mp4File release];
-    mp4File = [[MP42File alloc] initWithExistingFile:[absoluteURL path] andDelegate:self];
+    mp4File = [[MP42File alloc] initWithExistingFile:absoluteURL andDelegate:self];
     
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
@@ -239,8 +239,8 @@
     NSString *filename = nil;
     for (NSUInteger i = 0; i < [mp4File tracksCount]; i++) {
         MP42Track *track = [mp4File trackAtIndex:i];
-        if ([track sourcePath]) {
-            filename = [[[track sourcePath] lastPathComponent] stringByDeletingPathExtension];
+        if ([track sourceURL]) {
+            filename = [[[track sourceURL] lastPathComponent] stringByDeletingPathExtension];
             break;
         }
     }
@@ -608,7 +608,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (void) addChapterTrack: (NSURL *) fileURL
 {
-    [mp4File addTrack:[MP42ChapterTrack chapterTrackFromFile:[fileURL path]]];
+    [mp4File addTrack:[MP42ChapterTrack chapterTrackFromFile:fileURL]];
 
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
@@ -643,7 +643,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     NSError *error = nil;
 
     if ([[fileURL pathExtension] isEqualToString:@"h264"] || [[fileURL pathExtension] isEqualToString:@"264"])
-        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:[fileURL path]];
+        importWindow = [[VideoFramerate alloc] initWithDelegate:self andFile:fileURL];
     else
 		importWindow = [[FileImport alloc] initWithDelegate:self andFile:fileURL error:&error];
 
@@ -705,9 +705,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     [importWindow release];
 }
 
-- (void) addMetadata: (NSString *) path
+- (void) addMetadata: (NSURL *) URL
 {
-    MP42File *file = [[MP42File alloc] initWithExistingFile:path andDelegate:self];
+    MP42File *file = [[MP42File alloc] initWithExistingFile:URL andDelegate:self];
     [mp4File.metadata mergeMetadata:file.metadata];
 
     [self tableViewSelectionDidChange:nil];
@@ -725,7 +725,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     
     [panel beginSheetModalForWindow:documentWindow completionHandler:^(NSInteger result) {
         if (result == NSFileHandlingPanelOKButton) {
-            [self addMetadata:[[panel URL] path]];
+            [self addMetadata:[panel URL]];
         }
     }];
 }

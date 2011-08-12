@@ -38,12 +38,12 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     return self;
 }
 
-- (id)initWithExistingFile:(NSString *)path andDelegate:(id)del;
+- (id)initWithExistingFile:(NSURL *)URL andDelegate:(id)del;
 {
     if ((self = [super init]))
 	{
         delegate = del;
-		fileHandle = MP4Read([path UTF8String]);
+		fileHandle = MP4Read([[URL path] UTF8String]);
 
         const char* brand = NULL;
         MP4GetStringProperty(fileHandle, "ftyp.majorBrand", &brand);
@@ -55,7 +55,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             }
         }
 
-        filePath = [path retain];
+        fileURL = [URL retain];
         hasFileRepresentation = YES;
 
 		if (!fileHandle) {
@@ -91,13 +91,13 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             else
                 track = [MP42Track alloc];
 
-            track = [track initWithSourcePath:filePath trackID:trackId fileHandle:fileHandle];
+            track = [track initWithSourceURL:fileURL trackID:trackId fileHandle:fileHandle];
             [tracks addObject:track];
             [track release];
         }
 
         tracksToBeDeleted = [[NSMutableArray alloc] init];
-        metadata = [[MP42Metadata alloc] initWithSourcePath:filePath fileHandle:fileHandle];
+        metadata = [[MP42Metadata alloc] initWithSourceURL:fileURL fileHandle:fileHandle];
         MP4Close(fileHandle);
 	}
 
@@ -197,15 +197,15 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 {
     BOOL noErr;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString * tempPath = [NSString stringWithFormat:@"%@%@", filePath, @".tmp"];
+    NSString * tempPath = [NSString stringWithFormat:@"%@%@", [fileURL path], @".tmp"];
 
-    noErr = MP4Optimize([filePath UTF8String], [tempPath UTF8String]);
+    noErr = MP4Optimize([[fileURL path] UTF8String], [tempPath UTF8String]);
 
     if (noErr) {
         NSFileManager *fileManager = [NSFileManager defaultManager];
 
-        [fileManager removeItemAtPath:filePath error:nil];
-        [fileManager moveItemAtPath:tempPath toPath:filePath error:nil];
+        [fileManager removeItemAtURL:fileURL error:nil];
+        [fileManager moveItemAtPath:tempPath toPath:[fileURL path] error:nil];
     }
 
     [pool release];
@@ -214,8 +214,8 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 - (BOOL) writeToUrl:(NSURL *)url withAttributes:(NSDictionary *)attributes error:(NSError **)outError
 {
     BOOL success = YES;
-    filePath = [[url path] retain];
-    NSString *fileExtension = [filePath pathExtension];
+    fileURL = [url retain];
+    NSString *fileExtension = [fileURL pathExtension];
     char* majorBrand = "mp42";
     char* supportedBrands[4];
     uint32_t supportedBrandsCount = 0;
@@ -248,7 +248,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         supportedBrandsCount = 2;
     }
 
-    fileHandle = MP4CreateEx([filePath UTF8String],
+    fileHandle = MP4CreateEx([[fileURL path] UTF8String],
                              flags, 1, 1,
                              majorBrand, 0,
                              supportedBrands, supportedBrandsCount);
@@ -267,7 +267,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     BOOL success = YES;
     MP42Track *track;
 
-    fileHandle = MP4Modify([filePath UTF8String], 0);
+    fileHandle = MP4Modify([[fileURL path] UTF8String], 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
         if ( outError != NULL)
             *outError = MP42Error(@"Unable to open the file",
@@ -394,7 +394,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
         // If we are on 10.7, use the AVFoundation path
         if (NSClassFromString(@"AVAsset")) {
-            AVAsset *asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
+            AVAsset *asset = [AVAsset assetWithURL:fileURL];
 
             if ([asset tracksWithMediaCharacteristic:AVMediaCharacteristicVisual]) {
                 NSError *error;
@@ -422,7 +422,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         // Else fall back to QTKit
         else {
             QTMovie * qtMovie;
-            NSMutableDictionary * dict = [[NSMutableDictionary dictionaryWithObject:[NSURL fileURLWithPath:filePath] forKey:@"URL"] retain];
+            NSMutableDictionary * dict = [[NSMutableDictionary dictionaryWithObject:fileURL forKey:@"URL"] retain];
             // QTMovie objects must always be create on the main thread.
             [self performSelectorOnMainThread:@selector(openQTMovieOnTheMainThread:)
                                    withObject:dict 
@@ -473,7 +473,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         }
 
         // Reopen the mp4v2 fileHandle
-        fileHandle = MP4Modify([filePath UTF8String], 0);
+        fileHandle = MP4Modify([[fileURL path] UTF8String], 0);
         if (fileHandle == MP4_INVALID_FILE_HANDLE)
             return NO;
 
@@ -554,7 +554,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     }
     else if (chapterTrack && jpegTrack) {
         // We already have all the tracks, so hook them up.
-        fileHandle = MP4Modify([filePath UTF8String], 0);
+        fileHandle = MP4Modify([[fileURL path] UTF8String], 0);
         if (fileHandle == MP4_INVALID_FILE_HANDLE)
             return NO;
 
@@ -578,7 +578,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
 - (void) dealloc
 {
-    [filePath release];
+    [fileURL release];
     [tracks release];
     [tracksToBeDeleted release];
     [metadata release];

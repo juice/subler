@@ -49,14 +49,14 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
 @implementation MP42QTImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
-        file = [fileUrl retain];
+        fileURL = [URL retain];
 
 		NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:
-							   [NSURL fileURLWithPath:fileUrl], QTMovieURLAttribute,
+							   fileURL, QTMovieURLAttribute,
 							   [NSNumber numberWithBool:NO], @"QTMovieOpenAsyncRequiredAttribute",
 							   [NSNumber numberWithBool:NO], @"QTMovieOpenAsyncOKAttribute",
 							   nil];
@@ -216,7 +216,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         if (newTrack) {
             newTrack.format = [self formatForTrack:track];
             newTrack.Id = i++;
-            newTrack.sourcePath = file;
+            newTrack.sourceURL = fileURL;
             newTrack.sourceFileHandle = sourceFile;
             newTrack.name = [track attributeForKey:QTTrackDisplayNameAttribute];
             newTrack.language = [self langForTrack:track];
@@ -678,7 +678,7 @@ bail:
     if (dataReader)
         [dataReader release];
 
-	[file release];
+	[fileURL release];
     [tracksArray release];
 
     if (activeTracks)

@@ -10,9 +10,9 @@
 
 @implementation MP42VideoTrack
 
-- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
+- (id) initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
+    if ((self = [super initWithSourceURL:URL trackID:trackID fileHandle:fileHandle]))
     {
         if ([self isMemberOfClass:[MP42VideoTrack class]]) {
             height = MP4GetTrackVideoHeight(fileHandle, Id);

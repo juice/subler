@@ -12,9 +12,9 @@
 
 @implementation MP42SubtitleTrack
 
-- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
+- (id) initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
-    if ((self = [super initWithSourcePath:source trackID:trackID fileHandle:fileHandle]))
+    if ((self = [super initWithSourceURL:URL trackID:trackID fileHandle:fileHandle]))
     {
         if (![format isEqualToString:@"VobSub"]) {
             MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", &height);
@@ -90,7 +90,7 @@ struct style_record {
 
 - (BOOL)exportToURL:(NSURL *)url error:(NSError **)error
 {
-    MP4FileHandle fileHandle = MP4Read([sourcePath UTF8String]);
+    MP4FileHandle fileHandle = MP4Read([[sourceURL path] UTF8String]);
     if (!fileHandle)
         return NO;
 

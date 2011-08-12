@@ -25,7 +25,7 @@ extern NSString * const MP42CreateChaptersPreviewTrack;
 @interface MP42File : NSObject {
 @private
     MP4FileHandle  fileHandle;
-    NSString      *filePath;
+    NSURL          *fileURL;
     id delegate;
 
     NSMutableArray  *tracksToBeDeleted;
@@ -43,7 +43,7 @@ extern NSString * const MP42CreateChaptersPreviewTrack;
 @property(readonly) BOOL hasFileRepresentation;
 
 - (id)   initWithDelegate:(id)del;
-- (id)   initWithExistingFile:(NSString *)path andDelegate:(id)del;
+- (id)   initWithExistingFile:(NSURL *)URL andDelegate:(id)del;
 
 - (NSUInteger) movieDuration;
 - (MP42ChapterTrack*) chapters;

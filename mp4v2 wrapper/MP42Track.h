@@ -15,11 +15,11 @@
     MP4TrackId  sourceId;
     id          sourceFileHandle;
 
-    NSString*   sourcePath;
-    NSString*   sourceFormat;
-    NSString*   format;
-    NSString*   name;
-    NSString*   language;
+    NSURL       *sourceURL;
+    NSString    *sourceFormat;
+    NSString    *format;
+    NSString    *name;
+    NSString    *language;
     BOOL        enabled;
     uint64_t    alternate_group;
     int64_t     startOffset;
@@ -44,7 +44,7 @@
 @property(readwrite) MP4TrackId sourceId;
 @property(readwrite, retain) id sourceFileHandle;
 
-@property(readwrite, retain) NSString *sourcePath;
+@property(readwrite, retain) NSURL *sourceURL;
 @property(readwrite, retain) NSString *sourceFormat;
 @property(readwrite, retain) NSString *format;
 @property(readwrite, retain) NSString *name;
@@ -68,7 +68,7 @@
 
 @property(readwrite, retain) NSMutableDictionary *updatedProperty;
 
-- (id) initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;
+- (id) initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;
 - (BOOL) writeToFile:(MP4FileHandle)fileHandle error:(NSError **)outError;
 
 - (NSString *) timeString;

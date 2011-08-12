@@ -252,11 +252,11 @@ static bool GetFirstHeader(FILE* inFile)
 }
 
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
-        file = [fileUrl retain];
+        fileURL = [URL retain];
 
         tracksArray = [[NSMutableArray alloc] initWithCapacity:1];
 
@@ -264,13 +264,13 @@ static bool GetFirstHeader(FILE* inFile)
 
         newTrack.format = @"AC-3";
         newTrack.sourceFormat = @"AC-3";
-        newTrack.sourcePath = file;
+        newTrack.sourceURL = fileURL;
 
         if (!inFile)
-            inFile = fopen([file UTF8String], "rb");
+            inFile = fopen([[fileURL path] UTF8String], "rb");
 
         struct stat st;
-        stat([file UTF8String], &st);
+        stat([[fileURL path] UTF8String], &st);
         size = st.st_size * 8;
 
         // collect all the necessary meta information
@@ -340,7 +340,7 @@ static bool GetFirstHeader(FILE* inFile)
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     if (!inFile)
-        inFile = fopen([file UTF8String], "rb");
+        inFile = fopen([[fileURL path] UTF8String], "rb");
 
     MP42Track *track = [activeTracks lastObject];
     MP4TrackId dstTrackId = [track Id];
@@ -443,7 +443,7 @@ static bool GetFirstHeader(FILE* inFile)
     fclose(inFile);
 
     [ac3Info release];
-	[file release];
+	[fileURL release];
     [tracksArray release];
     [activeTracks release];
 

@@ -77,8 +77,8 @@
     NSString *filename = nil;
     for (NSUInteger i = 0; i < [mp4File tracksCount]; i++) {
         MP42Track *track = [mp4File trackAtIndex:i];
-        if ([track sourcePath]) {
-            filename = [[track sourcePath] lastPathComponent];
+        if ([track sourceURL]) {
+            filename = [[track sourceURL] lastPathComponent];
             break;
         }
     }

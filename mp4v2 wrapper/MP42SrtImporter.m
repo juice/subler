@@ -14,11 +14,11 @@
 
 @implementation MP42SrtImporter
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
-        file = [fileUrl retain];
+        fileURL = [URL retain];
 
         NSInteger trackCount =1;
         tracksArray = [[NSMutableArray alloc] initWithCapacity:trackCount];
@@ -30,17 +30,17 @@
 
         newTrack.format = @"3GPP Text";
         newTrack.sourceFormat = @"Srt";
-        newTrack.sourcePath = file;
+        newTrack.sourceURL = fileURL;
         newTrack.alternate_group = 2;
         newTrack.trackHeight = 80;
-        newTrack.language = getFilenameLanguage((CFStringRef)fileUrl);
+        newTrack.language = getFilenameLanguage((CFStringRef)[fileURL path]);
 
         ss = [[SBSubSerializer alloc] init];
-        if ([[fileUrl pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
-            success = LoadSRTFromPath(fileUrl, ss, &duration);
+        if ([[fileURL pathExtension] caseInsensitiveCompare: @"srt"] == NSOrderedSame) {
+            success = LoadSRTFromPath([fileURL path], ss, &duration);
         }
-        else if ([[fileUrl pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame) {
-            success = LoadSMIFromPath(fileUrl, ss, 1);
+        else if ([[fileURL pathExtension] caseInsensitiveCompare: @"smi"] == NSOrderedSame) {
+            success = LoadSMIFromPath([fileURL path], ss, 1);
         }
 
         [newTrack setDuration:duration];
@@ -116,7 +116,7 @@
 - (void) dealloc
 {
     [ss release];
-	[file release];
+	[fileURL release];
     [tracksArray release];
 
     [super dealloc];

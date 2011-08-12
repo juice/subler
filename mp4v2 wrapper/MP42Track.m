@@ -22,11 +22,11 @@
     return self;
 }
 
--(id)initWithSourcePath:(NSString *)source trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
+-(id)initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
 	if ((self = [super init]))
 	{
-		sourcePath = [source retain];
+		sourceURL = [URL retain];
 		Id = trackID;
         isEdited = NO;
         muxed = YES;
@@ -104,7 +104,7 @@
 
     [updatedProperty release];
     [format release];
-    [sourcePath release];
+    [sourceURL release];
     [name release];
     [language release];
     [sourceFileHandle release];
@@ -116,7 +116,7 @@
         return SMPTEStringFromTime(duration, 1000);
 }
 
-@synthesize sourcePath;
+@synthesize sourceURL;
 @synthesize Id;
 @synthesize sourceId;
 @synthesize sourceFileHandle;

@@ -109,15 +109,13 @@
     return [NSString stringWithUTF8String:lang_for_qtcode([[track languageCode] integerValue])->eng_name];
 }
 
-- (id)initWithDelegate:(id)del andFile:(NSString *)fileUrl error:(NSError **)outError
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL error:(NSError **)outError
 {
     if ((self = [super init])) {
         delegate = del;
-        file = [fileUrl retain];
+        fileURL = [URL retain];
 
-        NSURL *url = (NSURL*) CFURLCreateWithFileSystemPath(NULL, (CFStringRef) fileUrl, kCFURLPOSIXPathStyle, NO);
-        localAsset = [[AVAsset assetWithURL:url] retain];
-        [url release];
+        localAsset = [[AVAsset assetWithURL:fileURL] retain];
 
         tracksArray = [[NSMutableArray alloc] init];
         NSArray *tracks = [localAsset tracks];
@@ -178,7 +176,7 @@
 
             newTrack.format = [self formatForTrack:track];
             newTrack.Id = [track trackID];
-            newTrack.sourcePath = file;
+            newTrack.sourceURL = fileURL;
             newTrack.sourceFileHandle = localAsset;
             //newTrack.name = [[[AVMetadataItem metadataItemsFromArray:trackMetadata withKey:@"name" keySpace:nil] lastObject] value];
             newTrack.language = [self langForTrack:track];
@@ -470,7 +468,7 @@
     if (dataReader)
         [dataReader release];
 
-	[file release];
+	[fileURL release];
     [tracksArray release];
 
     if (activeTracks)

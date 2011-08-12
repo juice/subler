@@ -12,12 +12,12 @@
 
 @implementation VideoFramerate
 
-- (id)initWithDelegate:(id)del andFile: (NSString *)path
+- (id)initWithDelegate:(id)del andFile:(NSURL *)URL
 {
 	if ((self = [super initWithWindowNibName:@"VideoFramerate"]))
 	{        
 		delegate = del;
-        filePath = [path retain];
+        fileURL = [URL retain];
     }
 
 	return self;
@@ -25,7 +25,7 @@
 
 - (void)awakeFromNib
 {
-    fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:filePath error:nil];
+    fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:fileURL error:nil];
 }
 
 - (IBAction) closeWindow: (id) sender
@@ -53,7 +53,7 @@ uint8_t H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
 - (void) dealloc
 {
-    [filePath release];
+    [fileURL release];
     [super dealloc];
 }
 

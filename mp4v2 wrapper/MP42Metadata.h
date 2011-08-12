@@ -69,7 +69,7 @@ enum rating_type {
 
 @interface MP42Metadata : NSObject <NSCoding, NSCopying> {
     NSString                *presetName;
-    NSString                *sourcePath;
+    NSURL                   *sourceURL;
     NSMutableDictionary     *tagsDict;
     NSImage                 *artwork;
     NSURL                   *artworkURL;
@@ -85,7 +85,7 @@ enum rating_type {
     BOOL isArtworkEdited;
 }
 
-- (id) initWithSourcePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle;
+- (id) initWithSourceURL:(NSURL *)URL fileHandle:(MP4FileHandle)fileHandle;
 - (NSArray *) availableMetadata;
 - (NSArray *) writableMetadata;
 

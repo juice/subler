@@ -19,7 +19,7 @@
 		delegate = del;
         fileURL = [file retain];
         
-        fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:[fileURL path] error:outError];
+        fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:file error:outError];
         if (!fileImporter)
             return nil;
 	}
