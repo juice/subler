@@ -125,7 +125,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 - (IBAction) showBatchWindow: (id) sender
 {
     if (!batchController) {
-        batchController = [[SBBatchController alloc] initWithWindowNibName:@"Batch"];
+        batchController = [[SBBatchController alloc] init];
     }
     [batchController showWindow:self];
 }
