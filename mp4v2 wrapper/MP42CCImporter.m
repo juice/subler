@@ -19,7 +19,7 @@
 {
     if ((self = [super init])) {
         delegate = del;
-        fileURL = [fileURL retain];
+        fileURL = [URL retain];
 
         tracksArray = [[NSMutableArray alloc] initWithCapacity:1];
 

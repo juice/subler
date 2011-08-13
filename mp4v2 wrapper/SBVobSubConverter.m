@@ -362,7 +362,7 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
 
     encoderDone = YES;
 
-    [pool release];
+    [pool drain];
 
 	return;
 }

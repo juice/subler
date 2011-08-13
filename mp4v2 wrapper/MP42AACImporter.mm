@@ -744,6 +744,7 @@ static bool GetFirstHeader(FILE* inFile)
         if (aacProfileLevel == 2) {
             if (profile > MP4_MPEG4_AAC_SSR_AUDIO_TYPE) {
                 //*outError = MP42Error(@"The audio could not be opened.", @"Can't convert profile to mpeg2", 100);
+                [newTrack release];
                 return nil;
             }
             mpegVersion = 1;

@@ -580,7 +580,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
     MP42Track *selectedTrack = [[mp4File tracks] objectAtIndex:[fileTracksTable selectedRow]];
     [selectedTrack setStartOffset:[offset integerValue]];
-    
+
     [self updateChangeCount:NSChangeDone];
 
     [NSApp endSheet: offsetWindow];
@@ -597,9 +597,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
     if ([fileTracksTable selectedRow] == -1  || [fileTracksTable editedRow] != -1)
         return;
-    
+
     [mp4File removeTrackAtIndex:[fileTracksTable selectedRow]];
-    
+
     [fileTracksTable reloadData];
     [self updateChangeCount:NSChangeDone];
 }

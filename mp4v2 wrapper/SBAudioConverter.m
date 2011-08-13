@@ -244,9 +244,15 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
     ssize_t bitrateCounts;
     err = AudioConverterGetPropertyInfo( converterEnc, kAudioConverterApplicableEncodeBitRates,
                                         &tmpsiz, NULL);
+    if (err) {
+        NSLog(@"err kAudioConverterApplicableEncodeBitRates From AudioConverter");
+    }
     bitrates = malloc( tmpsiz );
     err = AudioConverterGetProperty( converterEnc, kAudioConverterApplicableEncodeBitRates,
                                     &tmpsiz, bitrates);
+    if (err) {
+        NSLog(@"err kAudioConverterApplicableEncodeBitRates From AudioConverter");
+    }
     bitrateCounts = tmpsiz / sizeof( AudioValueRange );
     
     // set bitrate

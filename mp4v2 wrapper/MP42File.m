@@ -24,15 +24,22 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
 @implementation MP42File
 
-- (id)initWithDelegate:(id)del;
+- (id)init
 {
     if ((self = [super init])) {
-        delegate = del;
         hasFileRepresentation = NO;
         tracks = [[NSMutableArray alloc] init];
         tracksToBeDeleted = [[NSMutableArray alloc] init];
 
         metadata = [[MP42Metadata alloc] init];
+    }
+    return self;
+}
+
+- (id)initWithDelegate:(id)del;
+{
+    if ((self = [self init])) {
+        delegate = del;
     }
 
     return self;
@@ -349,34 +356,8 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         enableFirstSubtitleTrack(fileHandle);
 }
 
-- (void) openQTMovieOnTheMainThread:(NSMutableDictionary*)dict {
-    QTMovie * qtMovie;
-    NSDictionary *movieAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                     [dict valueForKey:@"URL"], QTMovieURLAttribute,
-                                     [NSNumber numberWithBool:NO], QTMovieAskUnresolvedDataRefsAttribute,
-                                     [NSNumber numberWithBool:YES], @"QTMovieOpenForPlaybackAttribute",
-                                     [NSNumber numberWithBool:NO], @"QTMovieOpenAsyncRequiredAttribute",
-                                     [NSNumber numberWithBool:NO], @"QTMovieOpenAsyncOKAttribute",
-                                     QTMovieApertureModeClean, QTMovieApertureModeAttribute,
-                                     nil];
-    qtMovie = [[QTMovie alloc] initWithAttributes:movieAttributes error:nil];
-    if(!qtMovie)
-        NSLog(@"QTKit error");
-    else {
-        //[qtMovie detachFromCurrentThread];
-        [dict setObject:qtMovie forKey:@"QTMovieObject"];
-        [qtMovie release]; //dict is a Collection
-    }
-}
-
-- (void) closeQTMovieOnTheMainThread:(QTMovie*)qtMovie {
-    if (qtMovie) {
-        //[qtMovie attachToCurrentThread];
-        [qtMovie release];
-    }
-}
-
 - (BOOL) createChaptersPreview {
+    NSError *error;
     MP42ChapterTrack * chapterTrack = nil;
     MP4TrackId jpegTrack = 0;
 
@@ -397,13 +378,13 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             AVAsset *asset = [AVAsset assetWithURL:fileURL];
 
             if ([asset tracksWithMediaCharacteristic:AVMediaCharacteristicVisual]) {
-                NSError *error;
                 AVAssetImageGenerator *generator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
                 generator.appliesPreferredTrackTransform = YES;
                 generator.apertureMode = AVAssetImageGeneratorApertureModeCleanAperture;
+                generator.requestedTimeToleranceBefore = kCMTimeZero;
 
                 for (SBTextSample * chapter in [chapterTrack chapters]) {
-                    CMTime time = CMTimeMake([chapter timestamp] + 2500, 1000);
+                    CMTime time = CMTimeMake([chapter timestamp] + 2000, 1000);
                     CGImageRef imgRef = [generator copyCGImageAtTime:time actualTime:NULL error:&error];
                     if (imgRef) {
                         NSSize size = NSMakeSize(CGImageGetWidth(imgRef), CGImageGetHeight(imgRef));
@@ -421,16 +402,19 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         }
         // Else fall back to QTKit
         else {
-            QTMovie * qtMovie;
-            NSMutableDictionary * dict = [[NSMutableDictionary dictionaryWithObject:fileURL forKey:@"URL"] retain];
+            __block QTMovie * qtMovie;
             // QTMovie objects must always be create on the main thread.
-            [self performSelectorOnMainThread:@selector(openQTMovieOnTheMainThread:)
-                                   withObject:dict 
-                                waitUntilDone:YES];
-            qtMovie = [[dict valueForKey:@"QTMovieObject"] retain];
-            [dict release];
-            //[QTMovie enterQTKitOnThread];
-            //[qtMovie attachToCurrentThread];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                NSDictionary *movieAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                 fileURL, QTMovieURLAttribute,
+                                                 [NSNumber numberWithBool:NO], QTMovieAskUnresolvedDataRefsAttribute,
+                                                 [NSNumber numberWithBool:YES], @"QTMovieOpenForPlaybackAttribute",
+                                                 [NSNumber numberWithBool:NO], @"QTMovieOpenAsyncRequiredAttribute",
+                                                 [NSNumber numberWithBool:NO], @"QTMovieOpenAsyncOKAttribute",
+                                                 QTMovieApertureModeClean, QTMovieApertureModeAttribute,
+                                                 nil];
+                qtMovie = [[QTMovie alloc] initWithAttributes:movieAttributes error:nil];
+            });
 
             if (!qtMovie)
                 return NO;
@@ -439,7 +423,6 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                 [qtTrack setAttribute:[NSNumber numberWithBool:NO] forKey:QTTrackEnabledAttribute];
 
             NSDictionary *attributes = [NSDictionary dictionaryWithObject:QTMovieFrameImageTypeNSImage forKey:QTMovieFrameImageType];
-            NSError *error;
 
             for (SBTextSample * chapter in [chapterTrack chapters]) {
                 QTTime chapterTime = {
@@ -458,14 +441,12 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                 }
             }
 
-            //[qtMovie detachFromCurrentThread];
-            //[QTMovie exitQTKitOnThread];
             // Release the movie, we don't want to keep it open while we are writing in it using another library.
             // I am not sure if it is safe to release a QTMovie from a background thread, let's do it on the main just to be sure.
-            [self performSelectorOnMainThread:@selector(closeQTMovieOnTheMainThread:)
-                                   withObject:qtMovie 
-                                waitUntilDone:YES];
-            }
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [qtMovie release];
+            });
+        }
         // If we haven't got enought images, return.
         if (([previewImages count] < [[chapterTrack chapters] count]) || [previewImages count] == 0 ) {
             [pool release];

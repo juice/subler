@@ -33,7 +33,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(updateTableView:)
                                                      name:@"SBPresetManagerUpdatedNotification" object:nil];
-    }        
+    }
 
     return self;
 }
