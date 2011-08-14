@@ -10,6 +10,7 @@
 #import "MP42File.h"
 #import "SBDocument.h"
 #import "ArtworkSelector.h"
+#import "RegexKitLite.h"
 #import "lang.h"
 
 @implementation MetadataSearchController
@@ -110,11 +111,27 @@
 + (NSDictionary *) parseFilename: (NSString *) filename
 {
     NSMutableDictionary *results = nil;
-    
+
     if (!filename || ![filename length]) {
         return results;
     }
-    
+
+    NSString *regexString  = @"^\\[(.+)\\](?:(?:\\s|_)+)([^()]+)(?:(?:\\s|_)+)(?:(?:-\\s|-_|Ep)+)([0-9][0-9]?)";
+    NSDictionary *resultDictionary = [filename dictionaryByMatchingRegex:regexString
+                                                      withKeysAndCaptures:@"fanSubGroup", 1, @"seriesName", 2,  @"episodeNumber", 3, nil];
+
+    if (resultDictionary != nil && [resultDictionary count]) {
+        results = [[NSMutableDictionary alloc] initWithCapacity:2];
+        NSString *seriesName = [[resultDictionary valueForKey:@"seriesName"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+        NSInteger episodeNumber = [[resultDictionary valueForKey:@"episodeNumber"] integerValue];
+        [results setValue:@"tv" forKey:@"type"];
+        [results setValue:seriesName forKey:@"seriesName"];
+        [results setValue:@"1" forKey:@"seasonNum"];
+        [results setValue:[NSString stringWithFormat:@"%ld", episodeNumber] forKey:@"episodeNum"];
+
+        return results;
+    }
+
     NSTask *task = [[NSTask alloc] init];
     [task setLaunchPath:@"/usr/bin/perl"];
     
