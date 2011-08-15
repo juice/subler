@@ -206,7 +206,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
     NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSInteger originalFileSize = [[[fileManager attributesOfItemAtPath:[fileURL path] error:nil] valueForKey:NSFileSize] integerValue];
+    unsigned long long originalFileSize = [[[fileManager attributesOfItemAtPath:[fileURL path] error:nil] valueForKey:NSFileSize] unsignedLongLongValue];
 
     NSString * tempPath = [NSString stringWithFormat:@"%@%@", [fileURL path], @".tmp"];
 
@@ -215,9 +215,9 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     });
 
     while (!noErr) {
-        NSInteger fileSize = [[[fileManager attributesOfItemAtPath:tempPath error:nil] valueForKey:NSFileSize] integerValue];
+        unsigned long long fileSize = [[[fileManager attributesOfItemAtPath:tempPath error:nil] valueForKey:NSFileSize] unsignedLongLongValue];
         [self progressStatus:((CGFloat)fileSize / originalFileSize) * 100];
-        usleep(250000);
+        usleep(450000);
     }
 
     if (noErr) {
@@ -237,16 +237,16 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         if (![fileURL isEqualTo:url]) {
             __block BOOL done = NO;
             NSFileManager *fileManager = [[NSFileManager alloc] init];
-            NSInteger originalFileSize = [[[fileManager attributesOfItemAtPath:[fileURL path] error:outError] valueForKey:NSFileSize] integerValue];
+            unsigned long long originalFileSize = [[[fileManager attributesOfItemAtPath:[fileURL path] error:outError] valueForKey:NSFileSize] unsignedLongLongValue];
 
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 done = [fileManager copyItemAtURL:fileURL toURL:url error:outError];
             });
 
             while (!done) {
-                NSInteger fileSize = [[[fileManager attributesOfItemAtPath:[url path] error:outError] valueForKey:NSFileSize] integerValue];
+                unsigned long long fileSize = [[[fileManager attributesOfItemAtPath:[url path] error:outError] valueForKey:NSFileSize] unsignedLongLongValue];
                 [self progressStatus:((CGFloat)fileSize / originalFileSize) * 100];
-                usleep(250000);
+                usleep(450000);
             }
             [fileManager release];
         }
