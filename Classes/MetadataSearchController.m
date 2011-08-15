@@ -129,7 +129,7 @@
         [results setValue:@"1" forKey:@"seasonNum"];
         [results setValue:[NSString stringWithFormat:@"%ld", episodeNumber] forKey:@"episodeNum"];
 
-        return results;
+        return [results autorelease];
     }
 
     NSTask *task = [[NSTask alloc] init];
