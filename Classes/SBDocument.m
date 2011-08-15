@@ -705,7 +705,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     [NSApp endSheet:[importWindow window]];
     [[importWindow window] orderOut:self];
-    [importWindow release];
+    [importWindow autorelease], importWindow = nil;
 }
 
 - (void) addMetadata: (NSURL *) URL
