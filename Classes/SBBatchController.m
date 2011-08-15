@@ -9,6 +9,7 @@
 #import "SBBatchController.h"
 #import "MP42File.h"
 #import "MP42FileImporter.h"
+#import "MetadataSearchController.h"
 
 @implementation SBBatchController
 
@@ -30,6 +31,49 @@
     [countLabel setStringValue:@"Empty queue"];
 }
 
+- (NSImage*)loadArtwork:(NSURL*)url
+{
+    NSData *artworkData = [NSData dataWithContentsOfURL:url];
+    if (artworkData && [artworkData length]) {
+        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:artworkData];
+        if (imageRep != nil) {
+            NSImage *artwork = [[NSImage alloc] initWithSize:[imageRep size]];
+            [artwork addRepresentation:imageRep];
+            return [artwork autorelease];
+        }
+    }
+
+    return nil;
+}
+
+- (MP42Metadata *)searchMetadataForFile:(NSURL*) url
+{
+    id  currentSearcher;
+    MP42Metadata *metadata = nil;
+    // Parse FileName and search for metadata
+    NSDictionary *parsed = [MetadataSearchController parseFilename:[url lastPathComponent]];
+    if ([@"movie" isEqualToString:(NSString *) [parsed valueForKey:@"type"]]) {
+        currentSearcher = [[TheMovieDB alloc] init];
+        NSArray *results = [((TheMovieDB *) currentSearcher) searchForResults:[parsed valueForKey:@"title"]
+                                            mMovieLanguage:[MetadataSearchController langCodeFor:@"English"]];
+        metadata = [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:[results objectAtIndex:0] mMovieLanguage:@"English"];
+
+    } else if ([@"tv" isEqualToString:(NSString *) [parsed valueForKey:@"type"]]) {
+        currentSearcher = [[TheTVDB alloc] init];
+        NSArray *results = [((TheTVDB *) currentSearcher) searchForResults:[parsed valueForKey:@"seriesName"]
+                                         seriesLanguage:[MetadataSearchController langCodeFor:@"English"] 
+                                              seasonNum:[parsed valueForKey:@"seasonNum"]
+                                             episodeNum:[parsed valueForKey:@"episodeNum"]];
+        metadata = [results objectAtIndex:0];
+    }
+
+    if (metadata.artworkThumbURLs && [metadata.artworkThumbURLs count]) {
+        [metadata setArtwork:[self loadArtwork:[metadata.artworkFullsizeURLs lastObject]]];
+    }
+
+    return metadata;
+}
+
 - (IBAction)start:(id)sender
 {
     [countLabel setStringValue:@"Working."];
@@ -38,6 +82,8 @@
     [start setEnabled:NO];
     [open setEnabled:NO];
 
+    NSArray * urlArray = [filesArray copy];
+
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
     if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
@@ -45,9 +91,9 @@
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSError *outError;
         BOOL success = YES;
-        for (NSURL *url in filesArray) {
+        for (NSURL *url in urlArray) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %ld of %ld.",[filesArray indexOfObject:url] + 1, [filesArray count]]];
+                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %ld of %ld.",[urlArray indexOfObject:url] + 1, [urlArray count]]];
             });
 
             MP42File *mp4File = [[MP42File alloc] initWithDelegate:self];
@@ -55,12 +101,19 @@
                                                                                 andFile:url
                                                                                   error:&outError];
 
-            for (MP42Track *track in [fileImporter tracksArray]) {            
+            for (MP42Track *track in [fileImporter tracksArray]) {
+                if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
+                    track.needConversion = YES;
+
                 [track setTrackImporterHelper:fileImporter];
                 [mp4File addTrack:track];
             }
             [fileImporter release];
 
+            MP42Metadata *metadata = [self searchMetadataForFile:url];
+            [[mp4File metadata] mergeMetadata:metadata];
+
+            // Write the file to disk
             NSURL *newURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
             success = [mp4File writeToUrl:newURL
                            withAttributes:attributes
@@ -81,6 +134,7 @@
         });
     });
 
+    [urlArray release];
     [attributes release];
 }
 

@@ -36,26 +36,23 @@
         }
         [x release];
     }
-    
+
     [u release];
-    
+
     return [results autorelease];
 }
 
 - (void) searchForTVSeriesName:(NSString *)_seriesName callback:(MetadataSearchController *)_callback {
-    seriesName = _seriesName;
     callback = _callback;
-    [NSThread detachNewThreadSelector:@selector(runSearchForTVSeriesNameThread:) toTarget:self withObject:nil];
-}
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSArray *results = [self searchForTVSeriesName:_seriesName];
 
-- (void) runSearchForTVSeriesNameThread:(id)param {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSArray *results = [self searchForTVSeriesName:seriesName];
+        if (!isCancelled)
+            [callback performSelectorOnMainThread:@selector(searchForTVSeriesNameDone:) withObject:results waitUntilDone:YES];
 
-    if (!isCancelled)
-        [callback performSelectorOnMainThread:@selector(searchForTVSeriesNameDone:) withObject:results waitUntilDone:YES];
-
-    [pool release];
+        [pool release];
+    });
 }
 
 #pragma mark Search for episode metadata
@@ -66,7 +63,7 @@
     seasonNum = _seasonNum;
     episodeNum = _episodeNum;
 	seriesLanguage = _seriesLanguage;
-    
+
     // load data from tvdb via python on command line
     NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:4];
     [args addObject:@"tvdb_main.py"];
@@ -94,28 +91,24 @@
 
     [args release];
     [cmd release];
-    
+
     return results;
 }
 
-- (void) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum callback:(MetadataSearchController *) _callback {
-    seriesName = _seriesName;
-    seasonNum = _seasonNum;
-    episodeNum = _episodeNum;
-	seriesLanguage = _seriesLanguage;
+- (void) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum callback:(MetadataSearchController *) _callback
+{
     callback = _callback;
-    [NSThread detachNewThreadSelector:@selector(runSearchForResultsThread:) toTarget:self withObject:nil];
-}
 
-- (void) runSearchForResultsThread:(id)param {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSArray *results = [self searchForResults:seriesName seriesLanguage:seriesLanguage seasonNum:seasonNum episodeNum:episodeNum];
-    // return results
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSArray *results = [self searchForResults:_seriesName seriesLanguage:_seriesLanguage seasonNum:_seasonNum episodeNum:_episodeNum];
 
-    if (!isCancelled)
-        [callback performSelectorOnMainThread:@selector(searchForResultsDone:) withObject:results waitUntilDone:YES];
+        // return results
+        if (!isCancelled)
+            [callback performSelectorOnMainThread:@selector(searchForResultsDone:) withObject:results waitUntilDone:YES];
 
-    [pool release];
+        [pool release];
+    });
 }
 
 #pragma mark Parse metadata

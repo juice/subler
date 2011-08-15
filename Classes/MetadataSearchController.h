@@ -52,6 +52,7 @@
 #pragma mark Initialization
 - (id)initWithDelegate:(id)del;
 + (NSDictionary *) parseFilename: (NSString *) filename;
++ (NSString *)langCodeFor:(NSString *)language;
 
 #pragma mark Search input fields
 - (void) updateSearchButtonVisibility;

@@ -22,7 +22,7 @@
 - (NSArray*) searchForResults:(NSString *)aMovieTitle mMovieLanguage:(NSString *)aMovieLanguage
 {
     mMovieTitle = aMovieTitle;
-	mMovieLanguage	=	aMovieLanguage;
+	mMovieLanguage	= aMovieLanguage;
 
     NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:1];
     NSString *url = [NSString stringWithFormat:@"http://api.themoviedb.org/2.1/Movie.search/en/xml/b0073bafb08b4f68df101eb2325f27dc/%@", [MetadataSearchController urlEncoded:mMovieTitle]];
@@ -43,20 +43,17 @@
 }
 
 - (void) searchForResults:(NSString *)aMovieTitle mMovieLanguage:(NSString *)aMovieLanguage callback:(MetadataSearchController *)aCallback {
-    mMovieTitle = aMovieTitle;
-	mMovieLanguage	=	aMovieLanguage;
     mCallback = aCallback;
-    [NSThread detachNewThreadSelector:@selector(runSearchForResultsThread:) toTarget:self withObject:nil];
-}
 
-- (void) runSearchForResultsThread:(id)param {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSArray *results = [self searchForResults:mMovieTitle mMovieLanguage:mMovieLanguage];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSArray *results = [self searchForResults:aMovieTitle mMovieLanguage:aMovieLanguage];
 
-    if (!isCancelled)
-        [mCallback performSelectorOnMainThread:@selector(searchForResultsDone:) withObject:results waitUntilDone:YES];
+        if (!isCancelled)
+            [mCallback performSelectorOnMainThread:@selector(searchForResultsDone:) withObject:results waitUntilDone:YES];
 
-    [pool release];
+        [pool release];
+    });
 }
 
 #pragma mark Load additional metadata
@@ -85,20 +82,18 @@
 }
 
 - (void) loadAdditionalMetadata:(MP42Metadata *)aMetadata mMovieLanguage:(NSString *)aMovieLanguage callback:(MetadataSearchController *) aCallback {
-    mMetadata = aMetadata;
-	mMovieLanguage = aMovieLanguage;
     mCallback = aCallback;
-    [NSThread detachNewThreadSelector:@selector(runLoadAdditionalMetadataThread:) toTarget:self withObject:nil];
-}
 
-- (void) runLoadAdditionalMetadataThread:(id) param {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    [self loadAdditionalMetadata:mMetadata mMovieLanguage:mMovieLanguage];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        [self loadAdditionalMetadata:aMetadata mMovieLanguage:aMovieLanguage];
 
-    if (!isCancelled)
-        [mCallback performSelectorOnMainThread:@selector(loadAdditionalMetadataDone:) withObject:mMetadata waitUntilDone:YES];
+        if (!isCancelled)
+            [mCallback performSelectorOnMainThread:@selector(loadAdditionalMetadataDone:) withObject:mMetadata waitUntilDone:YES];
 
-    [pool release];
+        [pool release];
+
+    });
 }
 
 #pragma mark Parse metadata
