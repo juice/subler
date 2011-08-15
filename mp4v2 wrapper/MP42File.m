@@ -202,68 +202,104 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
 - (void) optimize
 {
-    BOOL noErr;
+    __block BOOL noErr = NO;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    NSInteger originalFileSize = [[[fileManager attributesOfItemAtPath:[fileURL path] error:nil] valueForKey:NSFileSize] integerValue];
+
     NSString * tempPath = [NSString stringWithFormat:@"%@%@", [fileURL path], @".tmp"];
 
-    noErr = MP4Optimize([[fileURL path] UTF8String], [tempPath UTF8String]);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        noErr = MP4Optimize([[fileURL path] UTF8String], [tempPath UTF8String]);
+    });
+
+    while (!noErr) {
+        NSInteger fileSize = [[[fileManager attributesOfItemAtPath:tempPath error:nil] valueForKey:NSFileSize] integerValue];
+        [self progressStatus:((CGFloat)fileSize / originalFileSize) * 100];
+        usleep(250000);
+    }
 
     if (noErr) {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-
         [fileManager removeItemAtURL:fileURL error:nil];
         [fileManager moveItemAtPath:tempPath toPath:[fileURL path] error:nil];
     }
 
+    [fileManager release];
     [pool release];
 }
 
 - (BOOL) writeToUrl:(NSURL *)url withAttributes:(NSDictionary *)attributes error:(NSError **)outError
 {
     BOOL success = YES;
-    fileURL = [url retain];
-    NSString *fileExtension = [fileURL pathExtension];
-    char* majorBrand = "mp42";
-    char* supportedBrands[4];
-    uint32_t supportedBrandsCount = 0;
-    uint32_t flags = 0;
 
-    if ([[attributes valueForKey:MP42Create64BitData] boolValue])
-        flags += 0x01;
+    if ([self hasFileRepresentation]) {
+        if (![fileURL isEqualTo:url]) {
+            __block BOOL done = NO;
+            NSFileManager *fileManager = [[NSFileManager alloc] init];
+            NSInteger originalFileSize = [[[fileManager attributesOfItemAtPath:[fileURL path] error:outError] valueForKey:NSFileSize] integerValue];
 
-    if ([[attributes valueForKey:MP42Create64BitTime] boolValue])
-        flags += 0x02;
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                done = [fileManager copyItemAtURL:fileURL toURL:url error:outError];
+            });
 
-    if ([fileExtension isEqualToString:@"m4v"]) {
-        majorBrand = "M4V ";
-        supportedBrands[0] = majorBrand;
-        supportedBrands[1] = "M4A ";
-        supportedBrands[2] = "mp42";
-        supportedBrands[3] = "isom";
-        supportedBrandsCount = 4;
-    }
-    else if ([fileExtension isEqualToString:@"m4a"]) {
-        majorBrand = "M4A ";
-        supportedBrands[0] = majorBrand;
-        supportedBrands[1] = "mp42";
-        supportedBrands[2] = "isom";
-        supportedBrandsCount = 3;
+            while (!done) {
+                NSInteger fileSize = [[[fileManager attributesOfItemAtPath:[url path] error:outError] valueForKey:NSFileSize] integerValue];
+                [self progressStatus:((CGFloat)fileSize / originalFileSize) * 100];
+                usleep(250000);
+            }
+            [fileManager release];
+        }
+
+        fileURL = [url retain];
+        success = [self updateMP4FileWithAttributes:attributes error:outError];
     }
     else {
-        supportedBrands[0] = majorBrand;
-        supportedBrands[3] = "isom";
-        supportedBrandsCount = 2;
-    }
+        fileURL = [url retain];
 
-    fileHandle = MP4CreateEx([[fileURL path] UTF8String],
-                             flags, 1, 1,
-                             majorBrand, 0,
-                             supportedBrands, supportedBrandsCount);
-    if (fileHandle) {
-        MP4SetTimeScale(fileHandle, 600);
-        MP4Close(fileHandle);
+        NSString *fileExtension = [fileURL pathExtension];
+        char* majorBrand = "mp42";
+        char* supportedBrands[4];
+        uint32_t supportedBrandsCount = 0;
+        uint32_t flags = 0;
 
-        success = [self updateMP4FileWithAttributes:attributes error:outError];
+        if ([[attributes valueForKey:MP42Create64BitData] boolValue])
+            flags += 0x01;
+
+        if ([[attributes valueForKey:MP42Create64BitTime] boolValue])
+            flags += 0x02;
+
+        if ([fileExtension isEqualToString:@"m4v"]) {
+            majorBrand = "M4V ";
+            supportedBrands[0] = majorBrand;
+            supportedBrands[1] = "M4A ";
+            supportedBrands[2] = "mp42";
+            supportedBrands[3] = "isom";
+            supportedBrandsCount = 4;
+        }
+        else if ([fileExtension isEqualToString:@"m4a"]) {
+            majorBrand = "M4A ";
+            supportedBrands[0] = majorBrand;
+            supportedBrands[1] = "mp42";
+            supportedBrands[2] = "isom";
+            supportedBrandsCount = 3;
+        }
+        else {
+            supportedBrands[0] = majorBrand;
+            supportedBrands[3] = "isom";
+            supportedBrandsCount = 2;
+        }
+
+        fileHandle = MP4CreateEx([[fileURL path] UTF8String],
+                                 flags, 1, 1,
+                                 majorBrand, 0,
+                                 supportedBrands, supportedBrandsCount);
+        if (fileHandle) {
+            MP4SetTimeScale(fileHandle, 600);
+            MP4Close(fileHandle);
+
+            success = [self updateMP4FileWithAttributes:attributes error:outError];
+        }
     }
 
     return success;

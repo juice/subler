@@ -313,6 +313,9 @@
         if ([self isDocumentEdited])
             return YES;
 
+    if (action == @selector(saveDocumentAs:))
+        return YES;
+    
     if (action == @selector(revertDocumentToSaved:))
         if ([self isDocumentEdited])
             return YES;

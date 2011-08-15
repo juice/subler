@@ -38,9 +38,9 @@ extern NSString * const MP42CreateChaptersPreviewTrack;
     MP42Muxer       *muxer;
 }
 
-@property(readonly) NSMutableArray  *tracks;
-@property(readonly) MP42Metadata    *metadata;
-@property(readonly) BOOL hasFileRepresentation;
+@property (readonly) NSMutableArray  *tracks;
+@property (readonly) MP42Metadata    *metadata;
+@property (readonly) BOOL hasFileRepresentation;
 
 - (id)   initWithDelegate:(id)del;
 - (id)   initWithExistingFile:(NSURL *)URL andDelegate:(id)del;
