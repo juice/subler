@@ -20,14 +20,9 @@
 
 #pragma mark Search for TV series name
 
-- (void) searchForTVSeriesName:(NSString *)_seriesName callback:(MetadataSearchController *)_callback {
+- (NSArray*) searchForTVSeriesName:(NSString *)_seriesName {
     seriesName = _seriesName;
-    callback = _callback;
-    [NSThread detachNewThreadSelector:@selector(runSearchForTVSeriesNameThread:) toTarget:self withObject:nil];
-}
 
-- (void) runSearchForTVSeriesNameThread:(id)param {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:3];
     NSURL *u = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://www.thetvdb.com/api/GetSeries.php?seriesname=%@", [MetadataSearchController urlEncoded:seriesName]]];
     if (u != nil) {
@@ -41,27 +36,37 @@
         }
         [x release];
     }
+    
+    [u release];
+    
+    return [results autorelease];
+}
+
+- (void) searchForTVSeriesName:(NSString *)_seriesName callback:(MetadataSearchController *)_callback {
+    seriesName = _seriesName;
+    callback = _callback;
+    [NSThread detachNewThreadSelector:@selector(runSearchForTVSeriesNameThread:) toTarget:self withObject:nil];
+}
+
+- (void) runSearchForTVSeriesNameThread:(id)param {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *results = [self searchForTVSeriesName:seriesName];
+
     if (!isCancelled)
         [callback performSelectorOnMainThread:@selector(searchForTVSeriesNameDone:) withObject:results waitUntilDone:YES];
 
-    [u release];
-    [results release];
     [pool release];
 }
 
 #pragma mark Search for episode metadata
 
-- (void) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum callback:(MetadataSearchController *) _callback {
+- (NSArray*) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum
+{
     seriesName = _seriesName;
     seasonNum = _seasonNum;
     episodeNum = _episodeNum;
 	seriesLanguage = _seriesLanguage;
-    callback = _callback;
-    [NSThread detachNewThreadSelector:@selector(runSearchForResultsThread:) toTarget:self withObject:nil];
-}
-
-- (void) runSearchForResultsThread:(id)param {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
     // load data from tvdb via python on command line
     NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:4];
     [args addObject:@"tvdb_main.py"];
@@ -87,11 +92,29 @@
     [[NSFileManager defaultManager] removeItemAtPath:plistFilename error:NULL];
     // return results
 
+    [args release];
+    [cmd release];
+    
+    return results;
+}
+
+- (void) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum callback:(MetadataSearchController *) _callback {
+    seriesName = _seriesName;
+    seasonNum = _seasonNum;
+    episodeNum = _episodeNum;
+	seriesLanguage = _seriesLanguage;
+    callback = _callback;
+    [NSThread detachNewThreadSelector:@selector(runSearchForResultsThread:) toTarget:self withObject:nil];
+}
+
+- (void) runSearchForResultsThread:(id)param {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *results = [self searchForResults:seriesName seriesLanguage:seriesLanguage seasonNum:seasonNum episodeNum:episodeNum];
+    // return results
+
     if (!isCancelled)
         [callback performSelectorOnMainThread:@selector(searchForResultsDone:) withObject:results waitUntilDone:YES];
 
-    [args release];
-    [cmd release];
     [pool release];
 }
 

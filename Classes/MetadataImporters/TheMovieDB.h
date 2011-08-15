@@ -19,11 +19,11 @@
     BOOL isCancelled;
 }
 
+- (NSArray*) searchForResults:(NSString *)movieTitle mMovieLanguage:(NSString *)aMovieLanguage;
 - (void) searchForResults:(NSString *)movieTitle mMovieLanguage:(NSString *)aMovieLanguage callback:(MetadataSearchController *)callback;
-- (void) runSearchForResultsThread:(id)param;
 
+- (MP42Metadata*) loadAdditionalMetadata:(MP42Metadata *)metadata mMovieLanguage:(NSString *)aMovieLanguage;
 - (void) loadAdditionalMetadata:(MP42Metadata *)metadata mMovieLanguage:(NSString *)aMovieLanguage callback:(MetadataSearchController *)callback;
-- (void) runLoadAdditionalMetadataThread:(id)param;
 
 - (void) cancel;
 

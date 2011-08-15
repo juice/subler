@@ -20,12 +20,14 @@
 }
 
 #pragma mark Search for TV series name
+- (NSArray*) searchForTVSeriesName:(NSString *)seriesName;
 - (void) searchForTVSeriesName:(NSString *)seriesName callback:(MetadataSearchController *) callback;
-- (void) runSearchForTVSeriesNameThread:(id)param;
 
 #pragma mark Search for episode metadata
-- (void) searchForResults:(NSString *)seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)seasonNum episodeNum:(NSString *)episodeNum callback:(MetadataSearchController *) callback;
-- (void) runSearchForResultsThread:(id)param;
+- (NSArray*) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)seasonNum
+               episodeNum:(NSString *)episodeNum;
+- (void) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)seasonNum
+               episodeNum:(NSString *)episodeNum callback:(MetadataSearchController *) callback;
 
 - (void) cancel;
 
