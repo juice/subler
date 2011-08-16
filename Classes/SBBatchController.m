@@ -33,6 +33,38 @@
     [countLabel setStringValue:@"Empty queue"];
 }
 
+- (NSArray*)loadSubtitles:(NSURL*)url
+{
+    NSError *outError;
+    NSMutableArray *tracksArray = [[NSMutableArray alloc] init];
+    NSArray *directory = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[url URLByDeletingLastPathComponent] includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsSubdirectoryDescendants | NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants error:nil];
+
+    for (NSURL *dirUrl in directory) {
+        if ([[dirUrl pathExtension] isEqualToString:@"srt"]) {
+            NSComparisonResult result;
+            NSString *movieFilename = [[url URLByDeletingPathExtension] lastPathComponent];
+            NSString *subtitleFilename = [[dirUrl URLByDeletingPathExtension] lastPathComponent];
+            NSRange range = { 0, [movieFilename length] };
+
+            result = [subtitleFilename compare:movieFilename options:kCFCompareCaseInsensitive range:range];
+
+            if (result == NSOrderedSame) {
+                MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
+                                                                                    andFile:dirUrl
+                                                                                      error:&outError];
+                
+                for (MP42Track *track in [fileImporter tracksArray]) {
+                    [track setTrackImporterHelper:fileImporter];
+                    [tracksArray addObject:track];                    
+                }
+                [fileImporter release];
+            }
+        }
+    }
+
+    return [tracksArray autorelease];
+}
+
 - (NSImage*)loadArtwork:(NSURL*)url
 {
     NSData *artworkData = [NSData dataWithContentsOfURL:url];
@@ -115,6 +147,12 @@
             }
             [fileImporter release];
 
+            // Search for external subtitles files
+            NSArray *subtitles = [self loadSubtitles:url];
+            for (MP42SubtitleTrack *subTrack in subtitles)
+                [mp4File addTrack:subTrack];
+
+            // Search for metadata
             MP42Metadata *metadata = [self searchMetadataForFile:url];
             [[mp4File metadata] mergeMetadata:metadata];
 
