@@ -82,7 +82,7 @@
 
 - (MP42Metadata *)searchMetadataForFile:(NSURL*) url
 {
-    id  currentSearcher;
+    id  currentSearcher = nil;
     MP42Metadata *metadata = nil;
     // Parse FileName and search for metadata
     NSDictionary *parsed = [MetadataSearchController parseFilename:[url lastPathComponent]];
@@ -107,6 +107,7 @@
         [metadata setArtwork:[self loadArtwork:[metadata.artworkFullsizeURLs lastObject]]];
     }
 
+    [currentSearcher release];
     return metadata;
 }
 
