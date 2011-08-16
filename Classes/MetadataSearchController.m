@@ -40,9 +40,9 @@
     [super windowDidLoad];
 
     [[self window] makeFirstResponder:movieName];
-    
+
     MP42File *mp4File = [((SBDocument *) delegate) mp4File];
-    
+
     // construct movie language menu
     [movieLanguage removeAllItems];
     for (NSString *lang in [(SBDocument *) delegate languages]) {
@@ -116,7 +116,7 @@
         return results;
     }
 
-    NSString *regexString  = @"^\\[(.+)\\](?:(?:\\s|_)+)([^()]+)(?:(?:\\s|_)+)(?:(?:-\\s|-_|Ep)+)([0-9][0-9]?)";
+    NSString *regexString  = @"^\\[(.+)\\](?:(?:\\s|_)+)?([^()]+)(?:(?:\\s|_)+)(?:(?:-\\s|-_|Ep)+)([0-9][0-9]?)";
     NSDictionary *resultDictionary = [filename dictionaryByMatchingRegex:regexString
                                                       withKeysAndCaptures:@"fanSubGroup", 1, @"seriesName", 2,  @"episodeNumber", 3, nil];
 
