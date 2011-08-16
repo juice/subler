@@ -418,6 +418,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                 generator.appliesPreferredTrackTransform = YES;
                 generator.apertureMode = AVAssetImageGeneratorApertureModeCleanAperture;
                 generator.requestedTimeToleranceBefore = kCMTimeZero;
+                generator.requestedTimeToleranceAfter  = kCMTimeZero;
 
                 for (SBTextSample * chapter in [chapterTrack chapters]) {
                     CMTime time = CMTimeMake([chapter timestamp] + 2000, 1000);
