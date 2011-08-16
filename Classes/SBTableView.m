@@ -29,31 +29,31 @@
         [super keyDown:event];
 }
 
-- (void)delete:(id)sender
+- (IBAction)delete:(id)sender
 {
     if ([self selectedRow] == -1)
         return;
     else if ([[self delegate] respondsToSelector:@selector(_deleteSelectionFromTableView:)])
-        [[self delegate] _deleteSelectionFromTableView:self];
+        [(SBTableView *)[self delegate] _deleteSelectionFromTableView:self];
 }
 
-- (IBAction) copy:(id)sender {
+- (IBAction)copy:(id)sender {
     if ([self selectedRow] == -1)
         return;
     else if ([[self delegate] respondsToSelector:@selector(_copySelectionFromTableView:)])
-        [[self delegate] _copySelectionFromTableView:self];
+        [(SBTableView *)[self delegate] _copySelectionFromTableView:self];
 }
 
-- (IBAction) cut:(id)sender {
+- (IBAction)cut:(id)sender {
     if ([self selectedRow] == -1)
         return;
     else if ([[self delegate] respondsToSelector:@selector(_cutSelectionFromTableView:)])
-        [[self delegate] _cutSelectionFromTableView:self];
+        [(SBTableView *)[self delegate] _cutSelectionFromTableView:self];
 }
 
-- (IBAction) paste:(id)sender {
+- (IBAction)paste:(id)sender {
     if ([[self delegate] respondsToSelector:@selector(_pasteToTableView:)])
-        [[self delegate] _pasteToTableView:self];
+        [(SBTableView *)[self delegate] _pasteToTableView:self];
 }
 
 - (BOOL)pasteboardHasSupportedType {

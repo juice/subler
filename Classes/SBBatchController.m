@@ -3,13 +3,15 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 12/08/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 Damiano Galassi. All rights reserved.
 //
 
 #import "SBBatchController.h"
 #import "MP42File.h"
 #import "MP42FileImporter.h"
 #import "MetadataSearchController.h"
+
+#define SublerBatchTableViewDataType @"SublerBatchTableViewDataType"
 
 @implementation SBBatchController
 
@@ -31,6 +33,8 @@
 
     [spinningIndicator setHidden:YES];
     [countLabel setStringValue:@"Empty queue"];
+
+    [tableView registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, SublerBatchTableViewDataType, nil]];
 }
 
 - (NSArray*)loadSubtitles:(NSURL*)url
@@ -52,7 +56,7 @@
                 MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
                                                                                     andFile:dirUrl
                                                                                       error:&outError];
-                
+
                 for (MP42Track *track in [fileImporter tracksArray]) {
                     [track setTrackImporterHelper:fileImporter];
                     [tracksArray addObject:track];                    
@@ -162,6 +166,9 @@
             success = [mp4File writeToUrl:newURL
                            withAttributes:attributes
                                     error:&outError];
+            
+            if (success)
+                [mp4File optimize];
 
             if (!success) {
                 NSLog(@"Error: %@", [outError localizedDescription]);
@@ -210,7 +217,13 @@
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-    return [[filesArray objectAtIndex:rowIndex] lastPathComponent];
+    if ([aTableColumn.identifier isEqualToString:@"nameColumn"])
+        return [[filesArray objectAtIndex:rowIndex] lastPathComponent];
+
+    if ([aTableColumn.identifier isEqualToString:@"statusColumn"])
+        return [NSImage imageNamed:NSImageNameFollowLinkFreestandingTemplate];
+
+    return nil;
 }
 
 - (void)_deleteSelectionFromTableView:(NSTableView *)aTableView
@@ -227,6 +240,73 @@
     if (status != SBBatchStatusWorking) {
         [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
     }
+}
+
+- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
+{
+    // Copy the row numbers to the pasteboard.    
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes];
+    [pboard declareTypes:[NSArray arrayWithObject:SublerBatchTableViewDataType] owner:self];
+    [pboard setData:data forType:SublerBatchTableViewDataType];
+    return YES;
+}
+
+- (NSDragOperation) tableView: (NSTableView *) view
+                 validateDrop: (id <NSDraggingInfo>) info
+                  proposedRow: (NSInteger) row
+        proposedDropOperation: (NSTableViewDropOperation) operation
+{
+    if (nil == [info draggingSource]) { // From other application
+        [view setDropRow: row dropOperation: NSTableViewDropAbove];
+        return NSDragOperationCopy;
+    }
+    else if (view == [info draggingSource] && operation == NSTableViewDropAbove) { // From self
+        return NSDragOperationEvery;
+    }
+    else { // From other documents 
+        [view setDropRow: row dropOperation: NSTableViewDropAbove];
+        return NSDragOperationCopy;
+    }
+}
+
+- (BOOL) tableView: (NSTableView *) view
+        acceptDrop: (id <NSDraggingInfo>) info
+               row: (NSInteger) row
+     dropOperation: (NSTableViewDropOperation) operation
+{
+    NSPasteboard *pboard = [info draggingPasteboard];
+
+    if (tableView == [info draggingSource]) { // From self
+        NSData* rowData = [pboard dataForType:SublerBatchTableViewDataType];
+        NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+        NSInteger dragRow = [rowIndexes firstIndex];
+
+        id object = [[filesArray objectAtIndex:dragRow] retain];
+
+        [filesArray removeObjectAtIndex:dragRow];
+        if (row > [filesArray count] || row > dragRow)
+            row--;
+        [filesArray insertObject:object atIndex:row];
+        [object release];
+        [view reloadData];
+
+        return YES;
+    }
+    else { // From other documents
+        if ( [[pboard types] containsObject:NSURLPboardType] ) {
+            NSArray * items = [pboard readObjectsForClasses:
+                               [NSArray arrayWithObject: [NSURL class]] options: nil];
+            for (NSURL * file in items)
+                [filesArray insertObject:file atIndex:row];
+            
+            [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+            [tableView reloadData];
+            
+            return YES;
+        }
+    }
+
+    return NO;
 }
 
 @end
