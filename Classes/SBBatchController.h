@@ -7,17 +7,31 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "SBTableView.h"
 
-@interface SBBatchController : NSWindowController<NSTableViewDelegate, NSTableViewDataSource> {
+enum {
+    SBBatchStatusUnknown = 0,
+    SBBatchStatusWorking,
+    SBBatchStatusCompleted,
+    SBBatchStatusFailed,
+    SBBatchStatusCancelled,
+};
+typedef NSInteger SBBatchStatus;
+
+@interface SBBatchController : NSWindowController<NSTableViewDelegate, NSTableViewDataSource, SBTableViewDelegate> {
     IBOutlet NSButton *start;
     IBOutlet NSButton *open;
-    
+
     IBOutlet NSTextField *countLabel;
     IBOutlet NSProgressIndicator *spinningIndicator;
-    
-    IBOutlet NSTableView *tableView;
+
+    IBOutlet SBTableView *tableView;
     NSMutableArray *filesArray;
+
+    SBBatchStatus status;
 }
+
+@property (readonly) SBBatchStatus status;
 
 - (IBAction)start:(id)sender;
 - (IBAction)open:(id)sender;

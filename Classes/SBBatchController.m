@@ -13,6 +13,8 @@
 
 @implementation SBBatchController
 
+@synthesize status;
+
 - (id)init
 {
     self = [super initWithWindowNibName:@"Batch"];
@@ -56,7 +58,8 @@
         currentSearcher = [[TheMovieDB alloc] init];
         NSArray *results = [((TheMovieDB *) currentSearcher) searchForResults:[parsed valueForKey:@"title"]
                                             mMovieLanguage:[MetadataSearchController langCodeFor:@"English"]];
-        metadata = [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:[results objectAtIndex:0] mMovieLanguage:@"English"];
+        if ([results count])
+            metadata = [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:[results objectAtIndex:0] mMovieLanguage:@"English"];
 
     } else if ([@"tv" isEqualToString:(NSString *) [parsed valueForKey:@"type"]]) {
         currentSearcher = [[TheTVDB alloc] init];
@@ -64,7 +67,8 @@
                                          seriesLanguage:[MetadataSearchController langCodeFor:@"English"] 
                                               seasonNum:[parsed valueForKey:@"seasonNum"]
                                              episodeNum:[parsed valueForKey:@"episodeNum"]];
-        metadata = [results objectAtIndex:0];
+        if ([results count])
+            metadata = [results objectAtIndex:0];
     }
 
     if (metadata.artworkThumbURLs && [metadata.artworkThumbURLs count]) {
@@ -81,6 +85,7 @@
     [spinningIndicator startAnimation:self];
     [start setEnabled:NO];
     [open setEnabled:NO];
+    status = SBBatchStatusWorking;
 
     NSArray * urlArray = [filesArray copy];
 
@@ -167,6 +172,22 @@
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     return [[filesArray objectAtIndex:rowIndex] lastPathComponent];
+}
+
+- (void)_deleteSelectionFromTableView:(NSTableView *)aTableView
+{
+    NSIndexSet *rowIndexes = [aTableView selectedRowIndexes];
+    NSUInteger selectedIndex = [rowIndexes lastIndex];
+
+    [aTableView beginUpdates];
+    [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
+    [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
+    [filesArray removeObjectsAtIndexes:rowIndexes];
+    [aTableView endUpdates];
+
+    if (status != SBBatchStatusWorking) {
+        [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+    }
 }
 
 @end
