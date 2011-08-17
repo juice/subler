@@ -78,11 +78,25 @@ static SBBatchController *sharedController = nil;
     [tableView registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, SublerBatchTableViewDataType, nil]];
 }
 
+- (void)updateDockTile
+{
+    NSInteger count = 0;
+    for (SBBatchItem *item in filesArray)
+        if ([item status] != SBBatchItemStatusCompleted)
+            count++;
+
+    if (count)
+        [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%ld", count]];
+    else
+        [[NSApp dockTile] setBadgeLabel:nil];
+}
+
 - (void)updateUI
 {
     [tableView reloadData];
     if (status != SBBatchStatusWorking) {
         [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+        [self updateDockTile];
     }
 }
 
@@ -177,7 +191,7 @@ static SBBatchController *sharedController = nil;
     MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
                                                                         andFile:url
                                                                           error:outError];
-    
+
     for (MP42Track *track in [fileImporter tracksArray]) {
         if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
             track.needConversion = YES;
@@ -186,16 +200,16 @@ static SBBatchController *sharedController = nil;
         [mp4File addTrack:track];
     }
     [fileImporter release];
-    
+
     // Search for external subtitles files
     NSArray *subtitles = [self loadSubtitles:url];
     for (MP42SubtitleTrack *subTrack in subtitles)
         [mp4File addTrack:subTrack];
-    
+
     // Search for metadata
     MP42Metadata *metadata = [self searchMetadataForFile:url];
     [[mp4File metadata] mergeMetadata:metadata];
-    
+
     return [mp4File autorelease];
 }
 
@@ -208,7 +222,11 @@ static SBBatchController *sharedController = nil;
     [open setEnabled:NO];
     status = SBBatchStatusWorking;
 
-    NSArray * itemsArray = [filesArray copy];
+    NSMutableArray * itemsArray = [[NSMutableArray alloc] init];
+    
+    for (SBBatchItem *item in filesArray)
+        if ([item status] != SBBatchItemStatusCompleted)
+            [itemsArray addObject:item];
 
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
     if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
@@ -219,7 +237,7 @@ static SBBatchController *sharedController = nil;
         BOOL success = YES;
         for (SBBatchItem *item in itemsArray) {
             NSURL * url = [item URL];
-            MP42File *mp4File = [item mp4File];
+            MP42File *mp4File = [[item mp4File] retain];
             [mp4File setDelegate:self];
 
             [item setStatus:SBBatchItemStatusWorking];
@@ -228,13 +246,15 @@ static SBBatchController *sharedController = nil;
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSInteger itemIndex = [itemsArray indexOfObject:item];
                 [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %ld of %ld.",itemIndex + 1, [itemsArray count]]];
+                [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%ld", [itemsArray count] - itemIndex]];
                 [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             });
+
             // The file has been added directly to the queue, or is not an mp4file
             if (!mp4File) {
                 mp4File = [[self prepareQueueItem:url error:&outError] retain];
-
             }
+
             // We have an existing mp4 file
             if ([mp4File hasFileRepresentation])
                 success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
@@ -273,9 +293,11 @@ static SBBatchController *sharedController = nil;
             [open setEnabled:YES];
 
             status = SBBatchStatusCompleted;
+
+            [self updateDockTile];
         });
     });
-    
+
     [itemsArray release];
     [attributes release];
 }
@@ -295,8 +317,7 @@ static SBBatchController *sharedController = nil;
             for (NSURL *url in [panel URLs]) {
                 [filesArray addObject:[SBBatchItem itemWithURL:url]];
             }
-            [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
-            [tableView reloadData];
+            [self updateUI];
         }
     }];
 }
@@ -339,6 +360,7 @@ static SBBatchController *sharedController = nil;
 
     if (status != SBBatchStatusWorking) {
         [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+        [self updateDockTile];
     }
 }
 
@@ -398,10 +420,9 @@ static SBBatchController *sharedController = nil;
                                [NSArray arrayWithObject: [NSURL class]] options: nil];
             for (NSURL * url in items)
                 [filesArray insertObject:[SBBatchItem itemWithURL:url] atIndex:row];
-            
-            [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
-            [tableView reloadData];
-            
+
+            [self updateUI];
+
             return YES;
         }
     }

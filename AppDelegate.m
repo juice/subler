@@ -69,6 +69,26 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
     [presetManager savePresets];
 }
 
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)app
+{
+    SBBatchStatus status= [[SBBatchController sharedController] status];
+    NSInteger result;
+    if (status == SBBatchStatusWorking)
+    {
+        result = NSRunCriticalAlertPanel(
+                                         NSLocalizedString(@"Are you sure you want to quit Subler?", nil),
+                                         NSLocalizedString(@"Your current queue will be lost. Do you want to quit anyway?", nil),
+                                         NSLocalizedString(@"Quit", nil), NSLocalizedString(@"Don't Quit", nil), nil);
+        
+        if (result == NSAlertDefaultReturn)
+            return NSTerminateNow;
+        else
+            return NSTerminateCancel;
+    }
+
+    return NSTerminateNow;
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     BOOL firstLaunch = YES;

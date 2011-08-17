@@ -884,7 +884,7 @@
 								</object>
 								<object class="NSMenuItem" id="73636801">
 									<reference key="NSMenu" ref="835318025"/>
-									<string key="NSTitle">Show Batch</string>
+									<string key="NSTitle">Show Queue</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="1033313550"/>
@@ -2549,12 +2549,14 @@
 							<string>selectFile:</string>
 							<string>selectMetadataFile:</string>
 							<string>sendToExternalApp:</string>
+							<string>sendToQueue:</string>
 							<string>setSaveFormat:</string>
 							<string>setTrackOffset:</string>
 							<string>showTrackOffsetSheet:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2584,6 +2586,7 @@
 							<string>selectFile:</string>
 							<string>selectMetadataFile:</string>
 							<string>sendToExternalApp:</string>
+							<string>sendToQueue:</string>
 							<string>setSaveFormat:</string>
 							<string>setTrackOffset:</string>
 							<string>showTrackOffsetSheet:</string>
@@ -2631,6 +2634,10 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">sendToQueue:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">setSaveFormat:</string>
 								<string key="candidateClassName">id</string>
 							</object>
@@ -2663,6 +2670,7 @@
 							<string>saveView</string>
 							<string>savingWindow</string>
 							<string>searchMetadata</string>
+							<string>sendToQueue</string>
 							<string>splitView</string>
 							<string>targetView</string>
 						</object>
@@ -2682,6 +2690,7 @@
 							<string>NSTextField</string>
 							<string>NSView</string>
 							<string>NSWindow</string>
+							<string>NSToolbarItem</string>
 							<string>NSToolbarItem</string>
 							<string>NSSplitView</string>
 							<string>NSView</string>
@@ -2706,6 +2715,7 @@
 							<string>saveView</string>
 							<string>savingWindow</string>
 							<string>searchMetadata</string>
+							<string>sendToQueue</string>
 							<string>splitView</string>
 							<string>targetView</string>
 						</object>
@@ -2769,6 +2779,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">searchMetadata</string>
+								<string key="candidateClassName">NSToolbarItem</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">sendToQueue</string>
 								<string key="candidateClassName">NSToolbarItem</string>
 							</object>
 							<object class="IBToOneOutletInfo">
