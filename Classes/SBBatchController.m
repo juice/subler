@@ -73,7 +73,7 @@ static SBBatchController *sharedController = nil;
     [super windowDidLoad];
 
     [spinningIndicator setHidden:YES];
-    [countLabel setStringValue:@"Empty queue"];
+    [countLabel setStringValue:@"Empty"];
 
     [tableView registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, SublerBatchTableViewDataType, nil]];
 }
@@ -207,10 +207,28 @@ static SBBatchController *sharedController = nil;
         [mp4File addTrack:subTrack];
 
     // Search for metadata
-    MP42Metadata *metadata = [self searchMetadataForFile:url];
-    [[mp4File metadata] mergeMetadata:metadata];
+    if ([MetadataOption state]) {
+        MP42Metadata *metadata = [self searchMetadataForFile:url];
+        [[mp4File metadata] mergeMetadata:metadata];
+
+        for (MP42Track *track in mp4File.tracks)
+            if ([track isKindOfClass:[MP42VideoTrack class]]) {
+                uint64_t tw = (uint64_t) [((MP42VideoTrack *) track) trackWidth];
+                uint64_t th = (uint64_t) [((MP42VideoTrack *) track) trackHeight];
+                if ((tw >= 1024) && (th >= 720))
+                    [metadata setTag:@"YES" forKey:@"HD Video"];
+            }
+    }
 
     return [mp4File autorelease];
+}
+
+- (SBBatchItem*)firstItemInQueue
+{
+    for (SBBatchItem *item in filesArray)
+        if ([item status] != SBBatchItemStatusCompleted)
+            return item;
+    return nil;
 }
 
 - (IBAction)start:(id)sender
@@ -221,12 +239,6 @@ static SBBatchController *sharedController = nil;
     [open setEnabled:NO];
     status = SBBatchStatusWorking;
 
-    NSMutableArray * itemsArray = [[NSMutableArray alloc] init];
-
-    for (SBBatchItem *item in filesArray)
-        if ([item status] != SBBatchItemStatusCompleted)
-            [itemsArray addObject:item];
-
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
     if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
@@ -234,7 +246,11 @@ static SBBatchController *sharedController = nil;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSError *outError = nil;
         BOOL success = NO;
-        for (SBBatchItem *item in itemsArray) {
+        for (;;) {
+            SBBatchItem *item = [self firstItemInQueue];
+            if (item == nil)
+                break;
+
             NSURL * url = [item URL];
             MP42File *mp4File = [[item mp4File] retain];
             [mp4File setDelegate:self];
@@ -243,9 +259,9 @@ static SBBatchController *sharedController = nil;
 
             // Update the UI
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSInteger itemIndex = [itemsArray indexOfObject:item];
-                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %ld of %ld.",itemIndex + 1, [itemsArray count]]];
-                [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%ld", [itemsArray count] - itemIndex]];
+                NSInteger itemIndex = [filesArray indexOfObject:item];
+                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %ld of %ld.",itemIndex + 1, [filesArray count]]];
+                [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%ld", [filesArray count] - itemIndex]];
                 [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             });
 
@@ -268,7 +284,8 @@ static SBBatchController *sharedController = nil;
             }
 
             if (success) {
-                [mp4File optimize];
+                if ([OptimizeOption state])
+                    [mp4File optimize];
                 [item setStatus:SBBatchItemStatusCompleted];
             }
             else {
@@ -281,7 +298,7 @@ static SBBatchController *sharedController = nil;
 
             // Update the UI
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSInteger itemIndex = [itemsArray indexOfObject:item];
+                NSInteger itemIndex = [filesArray indexOfObject:item];
                 [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             });
         }
@@ -299,7 +316,6 @@ static SBBatchController *sharedController = nil;
         });
     });
 
-    [itemsArray release];
     [attributes release];
 }
 

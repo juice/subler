@@ -27,6 +27,10 @@ typedef NSInteger SBBatchStatus;
     IBOutlet NSTextField *countLabel;
     IBOutlet NSProgressIndicator *spinningIndicator;
 
+    IBOutlet NSButton *OptimizeOption;
+    IBOutlet NSButton *MetadataOption;
+    IBOutlet NSButton *AutoStartOption;
+
     IBOutlet SBTableView *tableView;
     NSMutableArray *filesArray;
 
