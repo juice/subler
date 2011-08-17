@@ -24,11 +24,13 @@ typedef NSInteger SBBatchItemStatus;
 @interface SBBatchItem : NSObject {
     MP42File *mp4File;
     NSURL   *fileURL;
+    NSDictionary *attributes;
 
     SBBatchItemStatus status;
     BOOL humanEdited;
 }
 
+@property (readonly) NSDictionary *attributes;
 @property (readonly) NSURL *URL;
 @property (readonly) MP42File *mp4File;
 @property (readwrite) SBBatchItemStatus status;

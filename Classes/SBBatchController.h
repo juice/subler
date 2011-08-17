@@ -39,7 +39,8 @@ typedef NSInteger SBBatchStatus;
 
 - (void)addItem:(MP42File*)mp4File;
 
-- (IBAction)start:(id)sender;
+- (IBAction)toggleStartStop:(id)sender;
+
 - (IBAction)open:(id)sender;
 
 @end

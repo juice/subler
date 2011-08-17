@@ -11,6 +11,7 @@
 
 @implementation SBBatchItem
 
+@synthesize attributes;
 @synthesize URL = fileURL;
 @synthesize mp4File;
 @synthesize status;
@@ -18,7 +19,7 @@
 {
     self = [super init];
     if (self) {
-        // Initialization code here.
+
     }
 
     return self;
@@ -34,6 +35,11 @@
             MP42File *file = [[MP42File alloc] initWithExistingFile:fileURL andDelegate:nil];
             if (file)
                 mp4File = file;
+        }
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        unsigned long long originalFileSize = [[[fileManager attributesOfItemAtPath:[fileURL path] error:nil] valueForKey:NSFileSize] unsignedLongLongValue];
+        if (originalFileSize > 4257218560) {
+            attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithBool:YES], MP42Create64BitData, nil];
         }
     }
 
@@ -75,6 +81,7 @@
 
 - (void)dealloc
 {
+    [attributes release];
     [fileURL release];
     [mp4File release];
 }

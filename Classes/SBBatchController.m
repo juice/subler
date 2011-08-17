@@ -218,12 +218,11 @@ static SBBatchController *sharedController = nil;
     [countLabel setStringValue:@"Working."];
     [spinningIndicator setHidden:NO];
     [spinningIndicator startAnimation:self];
-    [start setEnabled:NO];
     [open setEnabled:NO];
     status = SBBatchStatusWorking;
 
     NSMutableArray * itemsArray = [[NSMutableArray alloc] init];
-    
+
     for (SBBatchItem *item in filesArray)
         if ([item status] != SBBatchItemStatusCompleted)
             [itemsArray addObject:item];
@@ -262,6 +261,7 @@ static SBBatchController *sharedController = nil;
                 // Write the file to disk
                 NSURL *newURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
                 if (newURL)
+                    [attributes addEntriesFromDictionary:[item attributes]];
                     success = [mp4File writeToUrl:newURL
                                    withAttributes:attributes
                                             error:&outError];
@@ -290,7 +290,7 @@ static SBBatchController *sharedController = nil;
             [countLabel setStringValue:@"Done."];
             [spinningIndicator setHidden:YES];
             [spinningIndicator stopAnimation:self];
-            [start setEnabled:YES];
+            [start setTitle:@"Start"];
             [open setEnabled:YES];
 
             status = SBBatchStatusCompleted;
@@ -301,6 +301,23 @@ static SBBatchController *sharedController = nil;
 
     [itemsArray release];
     [attributes release];
+}
+
+- (IBAction)stop:(id)sender
+{
+    
+}
+
+- (IBAction)toggleStartStop:(id)sender
+{
+    if (status == SBBatchStatusWorking) {
+        [self stop:sender];
+        [start setTitle:@"Start"];
+    }
+    else {
+        [self start:sender];
+        [start setTitle:@"Stop"];
+    }
 }
 
 - (IBAction)open:(id)sender
