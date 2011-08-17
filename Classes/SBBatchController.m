@@ -233,8 +233,8 @@ static SBBatchController *sharedController = nil;
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
 
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSError *outError;
-        BOOL success = YES;
+        NSError *outError = nil;
+        BOOL success = NO;
         for (SBBatchItem *item in itemsArray) {
             NSURL * url = [item URL];
             MP42File *mp4File = [[item mp4File] retain];
@@ -251,32 +251,33 @@ static SBBatchController *sharedController = nil;
             });
 
             // The file has been added directly to the queue, or is not an mp4file
-            if (!mp4File) {
+            if (!mp4File && url) {
                 mp4File = [[self prepareQueueItem:url error:&outError] retain];
             }
 
             // We have an existing mp4 file
             if ([mp4File hasFileRepresentation])
                 success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
-            else {
+            else if (mp4File) {
                 // Write the file to disk
                 NSURL *newURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
-                success = [mp4File writeToUrl:newURL
-                                withAttributes:attributes
-                                        error:&outError];
+                if (newURL)
+                    success = [mp4File writeToUrl:newURL
+                                   withAttributes:attributes
+                                            error:&outError];
             }
 
-            if (success)
+            if (success) {
                 [mp4File optimize];
-
-            if (!success) {
-                [item setStatus:SBBatchItemhStatusFailed];
-                NSLog(@"Error: %@", [outError localizedDescription]);
+                [item setStatus:SBBatchItemStatusCompleted];
+            }
+            else {
+                [item setStatus:SBBatchItemStatusFailed];
+                if (outError)
+                    NSLog(@"Error: %@", [outError localizedDescription]);
             }
 
             [mp4File release];
-
-            [item setStatus:SBBatchItemStatusCompleted];
 
             // Update the UI
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -338,8 +339,8 @@ static SBBatchController *sharedController = nil;
             return [NSImage imageNamed:@"EncodeComplete"];
         else if (batchStatus == SBBatchItemStatusWorking)
             return [NSImage imageNamed:@"EncodeWorking"];
-        else if (batchStatus == SBBatchItemhStatusFailed)
-            return [NSImage imageNamed:@"EncodeFailed"];
+        else if (batchStatus == SBBatchItemStatusFailed)
+            return [NSImage imageNamed:@"EncodeCanceled"];
         else
             return [NSImage imageNamed:NSImageNameFollowLinkFreestandingTemplate];
     }

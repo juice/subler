@@ -15,7 +15,7 @@ enum {
     SBBatchItemStatusReady,
     SBBatchItemStatusWorking,
     SBBatchItemStatusCompleted,
-    SBBatchItemhStatusFailed,
+    SBBatchItemStatusFailed,
     SBBatchItemStatusCancelled,
 };
 typedef NSInteger SBBatchItemStatus;
