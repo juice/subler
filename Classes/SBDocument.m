@@ -7,6 +7,7 @@
 //
 
 #import "SBDocument.h"
+#import "SBBatchController.h"
 #import "MP42File.h"
 #import "EmptyViewController.h"
 #import "MovieViewController.h"
@@ -342,6 +343,9 @@
     if (action == @selector(searchMetadata:))
         return YES;
 
+    if (action == @selector(sendToQueue:))
+        return YES;
+
     if (action == @selector(sendToExternalApp:))
         return YES;
 
@@ -368,6 +372,9 @@
                 return YES;
 
     if (toolbarItem == searchMetadata)
+        return YES;
+
+    if (toolbarItem == sendToQueue)
         return YES;
 
     return NO;
@@ -561,6 +568,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 }
 
 #pragma mark Various things
+
+- (IBAction) sendToQueue:(id)sender
+{
+    SBBatchController *batch =  [SBBatchController sharedController];
+    [batch addItem:mp4File];
+    [self close];
+}
 
 - (IBAction) searchMetadata: (id) sender
 {

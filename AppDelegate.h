@@ -17,7 +17,6 @@
 @end
 
 @interface AppDelegate : NSObject {
-    SBBatchController *batchController;
     PrefsController *prefController;
 	SBDocumentController *documentController;
 }

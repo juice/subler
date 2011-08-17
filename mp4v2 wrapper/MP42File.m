@@ -590,6 +590,8 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
     return NO;
 }
 
+@synthesize delegate;
+@synthesize URL = fileURL;
 @synthesize tracks;
 @synthesize metadata;
 @synthesize hasFileRepresentation;

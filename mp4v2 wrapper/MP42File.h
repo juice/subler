@@ -38,6 +38,8 @@ extern NSString * const MP42CreateChaptersPreviewTrack;
     MP42Muxer       *muxer;
 }
 
+@property (readwrite, assign) id delegate;
+@property (readonly) NSURL  *URL;
 @property (readonly) NSMutableArray  *tracks;
 @property (readonly) MP42Metadata    *metadata;
 @property (readonly) BOOL hasFileRepresentation;

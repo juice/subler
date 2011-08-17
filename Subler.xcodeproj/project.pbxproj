@@ -63,6 +63,7 @@
 		A984DB4B0F52D644001A20B2 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A984DB4A0F52D644001A20B2 /* Sparkle.framework */; };
 		A984DB530F52D679001A20B2 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A984DB4A0F52D644001A20B2 /* Sparkle.framework */; };
 		A984DB740F52DD4B001A20B2 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = A984DB730F52DD4B001A20B2 /* dsa_pub.pem */; };
+		A98739FE13FBB09B00B795A7 /* ToolbarActionTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = A98739FD13FBB09B00B795A7 /* ToolbarActionTemplate.png */; };
 		A9891D5E124502C000427CF9 /* MP42SrtImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9891D5D124502C000427CF9 /* MP42SrtImporter.m */; };
 		A991319813F060C600DCAA12 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A991319713F060C600DCAA12 /* Quartz.framework */; };
 		A991319A13F0615700DCAA12 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A991319913F0615700DCAA12 /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -92,9 +93,13 @@
 		A9BB60D80F834E0A005CD0BB /* mbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BB60D70F834E0A005CD0BB /* mbs.cpp */; };
 		A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C055360F6D395B00AF15B5 /* FileImport.xib */; };
 		A9C095800F7B6C8C00170CAF /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */; };
+		A9C1E77613FAB98C009DCFD7 /* SBBatchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C1E77513FAB98C009DCFD7 /* SBBatchItem.m */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
 		A9C4ECF712AE562A00BDBB7D /* MP42AACImporter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */; };
 		A9C8182D0F74D6E300019BFF /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C8182C0F74D6E300019BFF /* QuickTime.framework */; };
+		A9C9E34213FBC1EB00CA3B4E /* EncodeCanceled.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C9E33F13FBC1EB00CA3B4E /* EncodeCanceled.png */; };
+		A9C9E34313FBC1EB00CA3B4E /* EncodeComplete.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C9E34013FBC1EB00CA3B4E /* EncodeComplete.png */; };
+		A9C9E34413FBC1EB00CA3B4E /* EncodeWorking.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C9E34113FBC1EB00CA3B4E /* EncodeWorking.png */; };
 		A9D825A912ABF72D00C1AA54 /* MP42CCImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D825A812ABF72D00C1AA54 /* MP42CCImporter.m */; };
 		A9E2B960133E18C10009F4BC /* SBVobSubConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2B95F133E18C10009F4BC /* SBVobSubConverter.m */; };
 		A9EBA68912AE28DF0092D645 /* MP42AC3Importer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EBA68812AE28DF0092D645 /* MP42AC3Importer.m */; };
@@ -278,6 +283,7 @@
 		A97BE36E0F73D72E00652CBD /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		A984DB4A0F52D644001A20B2 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		A984DB730F52DD4B001A20B2 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
+		A98739FD13FBB09B00B795A7 /* ToolbarActionTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToolbarActionTemplate.png; path = images/ToolbarActionTemplate.png; sourceTree = "<group>"; };
 		A9891D5C124502C000427CF9 /* MP42SrtImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42SrtImporter.h; path = "mp4v2 wrapper/MP42SrtImporter.h"; sourceTree = "<group>"; };
 		A9891D5D124502C000427CF9 /* MP42SrtImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42SrtImporter.m; path = "mp4v2 wrapper/MP42SrtImporter.m"; sourceTree = "<group>"; };
 		A991319713F060C600DCAA12 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Quartz.framework; sourceTree = DEVELOPER_DIR; };
@@ -329,10 +335,15 @@
 		A9BB60D70F834E0A005CD0BB /* mbs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mbs.cpp; path = "mp4v2 wrapper/muxer/mbs.cpp"; sourceTree = "<group>"; };
 		A9C055330F6D394F00AF15B5 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FileImport.xib; sourceTree = "<group>"; };
 		A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
+		A9C1E77413FAB98C009DCFD7 /* SBBatchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBBatchItem.h; sourceTree = "<group>"; };
+		A9C1E77513FAB98C009DCFD7 /* SBBatchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBBatchItem.m; sourceTree = "<group>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9C4ECF512AE562A00BDBB7D /* MP42AACImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AACImporter.h; path = "mp4v2 wrapper/MP42AACImporter.h"; sourceTree = "<group>"; };
 		A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MP42AACImporter.mm; path = "mp4v2 wrapper/MP42AACImporter.mm"; sourceTree = "<group>"; };
 		A9C8182C0F74D6E300019BFF /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		A9C9E33F13FBC1EB00CA3B4E /* EncodeCanceled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = EncodeCanceled.png; path = images/EncodeCanceled.png; sourceTree = "<group>"; };
+		A9C9E34013FBC1EB00CA3B4E /* EncodeComplete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = EncodeComplete.png; path = images/EncodeComplete.png; sourceTree = "<group>"; };
+		A9C9E34113FBC1EB00CA3B4E /* EncodeWorking.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = EncodeWorking.png; path = images/EncodeWorking.png; sourceTree = "<group>"; };
 		A9D825A712ABF72D00C1AA54 /* MP42CCImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42CCImporter.h; path = "mp4v2 wrapper/MP42CCImporter.h"; sourceTree = "<group>"; };
 		A9D825A812ABF72D00C1AA54 /* MP42CCImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42CCImporter.m; path = "mp4v2 wrapper/MP42CCImporter.m"; sourceTree = "<group>"; };
 		A9E2B95E133E18C10009F4BC /* SBVobSubConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBVobSubConverter.h; path = "mp4v2 wrapper/SBVobSubConverter.h"; sourceTree = "<group>"; };
@@ -498,6 +509,8 @@
 				A9B46ABE12B79D1C0040517A /* SBDocument.m */,
 				A961475F13F567E10068F161 /* SBBatchController.h */,
 				A961476013F567E10068F161 /* SBBatchController.m */,
+				A9C1E77413FAB98C009DCFD7 /* SBBatchItem.h */,
+				A9C1E77513FAB98C009DCFD7 /* SBBatchItem.m */,
 				A961476113F567E10068F161 /* SBPresetManager.h */,
 				A961476213F567E10068F161 /* SBPresetManager.m */,
 				A9B46A7E12B79B240040517A /* FileImport.h */,
@@ -541,22 +554,26 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A941B4D6134A52B600E22F45 /* tessdata */,
+				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
+				A984DB730F52DD4B001A20B2 /* dsa_pub.pem */,
+				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
+				8D15AC360486D014006FF6A4 /* Info.plist */,
 				A9F2849D133C9F6E00F10951 /* close.pdf */,
 				A9F2849E133C9F6E00F10951 /* close-over.pdf */,
 				A9F2849F133C9F6E00F10951 /* close-pressed.pdf */,
 				A975644A132A325C0051ED08 /* info.pdf */,
 				A975644B132A325C0051ED08 /* info-over.pdf */,
 				A975644C132A325C0051ED08 /* info-pressed.pdf */,
-				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
-				A984DB730F52DD4B001A20B2 /* dsa_pub.pem */,
-				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				8D15AC360486D014006FF6A4 /* Info.plist */,
 				CD08BA9512F62829006BA549 /* tmdb-logo.png */,
 				CD16BC4612F6BC7F00AF5453 /* tvdb-logo.png */,
 				A9B46AA312B79BB10040517A /* Subler.icns */,
 				A95C881C0F827BFB00F51A22 /* ToolbarRemoveTemplate.png */,
+				A98739FD13FBB09B00B795A7 /* ToolbarActionTemplate.png */,
+				A9C9E33F13FBC1EB00CA3B4E /* EncodeCanceled.png */,
+				A9C9E34013FBC1EB00CA3B4E /* EncodeComplete.png */,
+				A9C9E34113FBC1EB00CA3B4E /* EncodeWorking.png */,
 				A92A4FB712B0F2F300751FA5 /* prefs-audio.png */,
+				A941B4D6134A52B600E22F45 /* tessdata */,
 				CD4A86A71234AFA10054970A /* ParseFilename */,
 				CD8935FF12F34F500085C2B5 /* tvdb_py */,
 			);
@@ -901,6 +918,10 @@
 				A9F284A1133C9F6E00F10951 /* close-over.pdf in Resources */,
 				A9F284A2133C9F6E00F10951 /* close-pressed.pdf in Resources */,
 				A961476713F568210068F161 /* Batch.xib in Resources */,
+				A98739FE13FBB09B00B795A7 /* ToolbarActionTemplate.png in Resources */,
+				A9C9E34213FBC1EB00CA3B4E /* EncodeCanceled.png in Resources */,
+				A9C9E34313FBC1EB00CA3B4E /* EncodeComplete.png in Resources */,
+				A9C9E34413FBC1EB00CA3B4E /* EncodeWorking.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -981,6 +1002,7 @@
 				A940E0FF13F130FB007AB5C6 /* MP42AVFImporter.m in Sources */,
 				A961476313F567E10068F161 /* SBBatchController.m in Sources */,
 				A961476413F567E10068F161 /* SBPresetManager.m in Sources */,
+				A9C1E77613FAB98C009DCFD7 /* SBBatchItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

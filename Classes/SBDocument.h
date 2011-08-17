@@ -29,6 +29,7 @@
     IBOutlet NSToolbarItem  *addTracks;
     IBOutlet NSToolbarItem  *deleteTrack;
     IBOutlet NSToolbarItem  *searchMetadata;
+    IBOutlet NSToolbarItem  *sendToQueue;
 
     NSMutableArray          *languages;
 
@@ -49,6 +50,7 @@
 
 - (IBAction) selectFile: (id) sender;
 - (IBAction) deleteTrack: (id) sender;
+- (IBAction) sendToQueue:(id)sender;
 - (IBAction) searchMetadata: (id) sender;
 
 - (IBAction) showTrackOffsetSheet: (id) sender;

@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import "SBTableView.h"
 
+@class MP42File;
+
 enum {
     SBBatchStatusUnknown = 0,
     SBBatchStatusWorking,
@@ -32,6 +34,10 @@ typedef NSInteger SBBatchStatus;
 }
 
 @property (readonly) SBBatchStatus status;
+
++ (SBBatchController*)sharedController;
+
+- (void)addItem:(MP42File*)mp4File;
 
 - (IBAction)start:(id)sender;
 - (IBAction)open:(id)sender;

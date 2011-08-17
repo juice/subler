@@ -7,15 +7,31 @@
 //
 
 #import "SBBatchController.h"
+#import "SBBatchItem.h"
 #import "MP42File.h"
 #import "MP42FileImporter.h"
 #import "MetadataSearchController.h"
 
 #define SublerBatchTableViewDataType @"SublerBatchTableViewDataType"
 
+static SBBatchController *sharedController = nil;
+
 @implementation SBBatchController
 
 @synthesize status;
+
++ (SBBatchController*)sharedController
+{
+    if (sharedController == nil) {
+        sharedController = [[super allocWithZone:NULL] init];
+    }
+    return sharedController;
+}
+
++ (id)allocWithZone:(NSZone *)zone
+{
+    return [[self sharedController] retain];
+}
 
 - (id)init
 {
@@ -27,6 +43,31 @@
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    return self;
+}
+
+- (id)retain
+{
+    return self;
+}
+
+- (NSUInteger)retainCount
+{
+    return NSUIntegerMax;  //denotes an object that cannot be released
+}
+
+- (oneway void)release
+{
+    //do nothing
+}
+
+- (id)autorelease
+{
+    return self;
+}
+
 - (void)windowDidLoad
 {
     [super windowDidLoad];
@@ -35,6 +76,22 @@
     [countLabel setStringValue:@"Empty queue"];
 
     [tableView registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, SublerBatchTableViewDataType, nil]];
+}
+
+- (void)updateUI
+{
+    [tableView reloadData];
+    if (status != SBBatchStatusWorking) {
+        [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+    }
+}
+
+- (void)addItem:(MP42File*)mp4File;
+{
+    SBBatchItem *newItem = [SBBatchItem itemWithMP4:mp4File];
+    [filesArray addObject:newItem];
+
+    [self updateUI];
 }
 
 - (NSArray*)loadSubtitles:(NSURL*)url
@@ -115,6 +172,33 @@
     return metadata;
 }
 
+- (MP42File*)prepareQueueItem:(NSURL*)url error:(NSError**)outError {
+    MP42File *mp4File = [[MP42File alloc] initWithDelegate:self];
+    MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
+                                                                        andFile:url
+                                                                          error:outError];
+    
+    for (MP42Track *track in [fileImporter tracksArray]) {
+        if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
+            track.needConversion = YES;
+        
+        [track setTrackImporterHelper:fileImporter];
+        [mp4File addTrack:track];
+    }
+    [fileImporter release];
+    
+    // Search for external subtitles files
+    NSArray *subtitles = [self loadSubtitles:url];
+    for (MP42SubtitleTrack *subTrack in subtitles)
+        [mp4File addTrack:subTrack];
+    
+    // Search for metadata
+    MP42Metadata *metadata = [self searchMetadataForFile:url];
+    [[mp4File metadata] mergeMetadata:metadata];
+    
+    return [mp4File autorelease];
+}
+
 - (IBAction)start:(id)sender
 {
     [countLabel setStringValue:@"Working."];
@@ -124,7 +208,7 @@
     [open setEnabled:NO];
     status = SBBatchStatusWorking;
 
-    NSArray * urlArray = [filesArray copy];
+    NSArray * itemsArray = [filesArray copy];
 
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
     if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
@@ -133,47 +217,52 @@
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSError *outError;
         BOOL success = YES;
-        for (NSURL *url in urlArray) {
+        for (SBBatchItem *item in itemsArray) {
+            NSURL * url = [item URL];
+            MP42File *mp4File = [item mp4File];
+            [mp4File setDelegate:self];
+
+            [item setStatus:SBBatchItemStatusWorking];
+
+            // Update the UI
             dispatch_async(dispatch_get_main_queue(), ^{
-                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %ld of %ld.",[urlArray indexOfObject:url] + 1, [urlArray count]]];
+                NSInteger itemIndex = [itemsArray indexOfObject:item];
+                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %ld of %ld.",itemIndex + 1, [itemsArray count]]];
+                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             });
+            // The file has been added directly to the queue, or is not an mp4file
+            if (!mp4File) {
+                mp4File = [[self prepareQueueItem:url error:&outError] retain];
 
-            MP42File *mp4File = [[MP42File alloc] initWithDelegate:self];
-            MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
-                                                                                andFile:url
-                                                                                  error:&outError];
-
-            for (MP42Track *track in [fileImporter tracksArray]) {
-                if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
-                    track.needConversion = YES;
-
-                [track setTrackImporterHelper:fileImporter];
-                [mp4File addTrack:track];
             }
-            [fileImporter release];
+            // We have an existing mp4 file
+            if ([mp4File hasFileRepresentation])
+                success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
+            else {
+                // Write the file to disk
+                NSURL *newURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
+                success = [mp4File writeToUrl:newURL
+                                withAttributes:attributes
+                                        error:&outError];
+            }
 
-            // Search for external subtitles files
-            NSArray *subtitles = [self loadSubtitles:url];
-            for (MP42SubtitleTrack *subTrack in subtitles)
-                [mp4File addTrack:subTrack];
-
-            // Search for metadata
-            MP42Metadata *metadata = [self searchMetadataForFile:url];
-            [[mp4File metadata] mergeMetadata:metadata];
-
-            // Write the file to disk
-            NSURL *newURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
-            success = [mp4File writeToUrl:newURL
-                           withAttributes:attributes
-                                    error:&outError];
-            
             if (success)
                 [mp4File optimize];
 
             if (!success) {
+                [item setStatus:SBBatchItemhStatusFailed];
                 NSLog(@"Error: %@", [outError localizedDescription]);
             }
+
             [mp4File release];
+
+            [item setStatus:SBBatchItemStatusCompleted];
+
+            // Update the UI
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSInteger itemIndex = [itemsArray indexOfObject:item];
+                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+            });
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -182,10 +271,12 @@
             [spinningIndicator stopAnimation:self];
             [start setEnabled:YES];
             [open setEnabled:YES];
+
+            status = SBBatchStatusCompleted;
         });
     });
-
-    [urlArray release];
+    
+    [itemsArray release];
     [attributes release];
 }
 
@@ -202,7 +293,7 @@
     [panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
         if (result == NSFileHandlingPanelOKButton) {
             for (NSURL *url in [panel URLs]) {
-                [filesArray addObject:url];
+                [filesArray addObject:[SBBatchItem itemWithURL:url]];
             }
             [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
             [tableView reloadData];
@@ -218,10 +309,19 @@
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     if ([aTableColumn.identifier isEqualToString:@"nameColumn"])
-        return [[filesArray objectAtIndex:rowIndex] lastPathComponent];
+        return [[[filesArray objectAtIndex:rowIndex] URL] lastPathComponent];
 
-    if ([aTableColumn.identifier isEqualToString:@"statusColumn"])
-        return [NSImage imageNamed:NSImageNameFollowLinkFreestandingTemplate];
+    if ([aTableColumn.identifier isEqualToString:@"statusColumn"]) {
+        SBBatchItemStatus batchStatus = [[filesArray objectAtIndex:rowIndex] status];
+        if (batchStatus == SBBatchItemStatusCompleted)
+            return [NSImage imageNamed:@"EncodeComplete"];
+        else if (batchStatus == SBBatchItemStatusWorking)
+            return [NSImage imageNamed:@"EncodeWorking"];
+        else if (batchStatus == SBBatchItemhStatusFailed)
+            return [NSImage imageNamed:@"EncodeFailed"];
+        else
+            return [NSImage imageNamed:NSImageNameFollowLinkFreestandingTemplate];
+    }
 
     return nil;
 }
@@ -296,8 +396,8 @@
         if ( [[pboard types] containsObject:NSURLPboardType] ) {
             NSArray * items = [pboard readObjectsForClasses:
                                [NSArray arrayWithObject: [NSURL class]] options: nil];
-            for (NSURL * file in items)
-                [filesArray insertObject:file atIndex:row];
+            for (NSURL * url in items)
+                [filesArray insertObject:[SBBatchItem itemWithURL:url] atIndex:row];
             
             [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
             [tableView reloadData];
