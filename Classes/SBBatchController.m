@@ -68,12 +68,27 @@ static SBBatchController *sharedController = nil;
     return self;
 }
 
+- (void)awakeFromNib
+{
+    [spinningIndicator setHidden:YES];
+    [countLabel setStringValue:@"Empty"];
+    
+    NSRect frame = [[self window] frame];
+    frame.size.height -= 54;
+    frame.origin.y += 54;
+    
+    [tableScrollView setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
+    [optionsBox setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
+    
+    [[self window] setFrame:frame display:YES animate:NO];
+    
+    [tableScrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    [optionsBox setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+}
+
 - (void)windowDidLoad
 {
     [super windowDidLoad];
-
-    [spinningIndicator setHidden:YES];
-    [countLabel setStringValue:@"Empty"];
 
     [tableView registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, SublerBatchTableViewDataType, nil]];
 }
@@ -106,6 +121,9 @@ static SBBatchController *sharedController = nil;
     [filesArray addObject:newItem];
 
     [self updateUI];
+
+    if ([AutoStartOption state])
+        [self start:self];
 }
 
 - (NSArray*)loadSubtitles:(NSURL*)url
@@ -231,13 +249,18 @@ static SBBatchController *sharedController = nil;
     return nil;
 }
 
-- (IBAction)start:(id)sender
+- (void)start:(id)sender
 {
+    if (status == SBBatchStatusWorking)
+        return;
+
+    status = SBBatchStatusWorking;
+
+    [start setTitle:@"Stop"];
     [countLabel setStringValue:@"Working."];
     [spinningIndicator setHidden:NO];
     [spinningIndicator startAnimation:self];
     [open setEnabled:NO];
-    status = SBBatchStatusWorking;
 
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
     if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
@@ -319,21 +342,44 @@ static SBBatchController *sharedController = nil;
     [attributes release];
 }
 
-- (IBAction)stop:(id)sender
+- (void)stop:(id)sender
 {
-    
+
 }
 
 - (IBAction)toggleStartStop:(id)sender
 {
     if (status == SBBatchStatusWorking) {
         [self stop:sender];
-        [start setTitle:@"Start"];
     }
     else {
         [self start:sender];
-        [start setTitle:@"Stop"];
     }
+}
+
+- (IBAction)toggleOptions:(id)sender
+{
+    NSInteger value = 0;
+    if (optionsStatus) {
+        value = -54;
+        optionsStatus = NO;
+    }
+    else {
+        value = 54;
+        optionsStatus = YES;
+    }
+
+    NSRect frame = [[self window] frame];
+    frame.size.height += value;
+    frame.origin.y -= value;
+
+    [tableScrollView setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
+    [optionsBox setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
+
+    [[self window] setFrame:frame display:YES animate:YES];
+
+    [tableScrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    [optionsBox setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
 }
 
 - (IBAction)open:(id)sender
@@ -352,6 +398,9 @@ static SBBatchController *sharedController = nil;
                 [filesArray addObject:[SBBatchItem itemWithURL:url]];
             }
             [self updateUI];
+            
+            if ([AutoStartOption state])
+                [self start:self];
         }
     }];
 }
@@ -457,8 +506,12 @@ static SBBatchController *sharedController = nil;
 
             [self updateUI];
 
+            if ([AutoStartOption state])
+                [self start:self];
+
             return YES;
         }
+        
     }
 
     return NO;

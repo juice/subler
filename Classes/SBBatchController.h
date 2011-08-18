@@ -30,8 +30,11 @@ typedef NSInteger SBBatchStatus;
     IBOutlet NSButton *OptimizeOption;
     IBOutlet NSButton *MetadataOption;
     IBOutlet NSButton *AutoStartOption;
+    IBOutlet NSBox    *optionsBox;
+    BOOL optionsStatus;
 
-    IBOutlet SBTableView *tableView;
+    IBOutlet NSScrollView   *tableScrollView;
+    IBOutlet SBTableView    *tableView;
     NSMutableArray *filesArray;
 
     SBBatchStatus status;
@@ -41,9 +44,13 @@ typedef NSInteger SBBatchStatus;
 
 + (SBBatchController*)sharedController;
 
+- (void)start:(id)sender;
+- (void)stop:(id)sender;
+
 - (void)addItem:(MP42File*)mp4File;
 
 - (IBAction)toggleStartStop:(id)sender;
+- (IBAction)toggleOptions:(id)sender;
 
 - (IBAction)open:(id)sender;
 
