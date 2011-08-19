@@ -8,7 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SBBatchController;
 @class PrefsController;
 
 @interface SBDocumentController : NSDocumentController {

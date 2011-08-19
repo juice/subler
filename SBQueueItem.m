@@ -1,15 +1,15 @@
 //
-//  SBBatchItem.m
+//  SBQueueItem.m
 //  Subler
 //
 //  Created by Damiano Galassi on 16/08/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "SBBatchItem.h"
+#import "SBQueueItem.h"
 #import "MP42File.h"
 
-@implementation SBBatchItem
+@implementation SBQueueItem
 
 @synthesize attributes;
 @synthesize URL = fileURL;
@@ -29,13 +29,7 @@
     self = [super init];
     if (self) {
         fileURL = [URL retain];
-        if ([[URL pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
-                 [[URL pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
-            [[URL pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame) {
-            MP42File *file = [[MP42File alloc] initWithExistingFile:fileURL andDelegate:nil];
-            if (file)
-                mp4File = file;
-        }
+
         NSFileManager *fileManager = [NSFileManager defaultManager];
         unsigned long long originalFileSize = [[[fileManager attributesOfItemAtPath:[fileURL path] error:nil] valueForKey:NSFileSize] unsignedLongLongValue];
         if (originalFileSize > 4257218560) {
@@ -48,7 +42,7 @@
 
 + (id)itemWithURL:(NSURL*)URL
 {
-    return [[[SBBatchItem alloc] initWithURL:URL] autorelease];
+    return [[[SBQueueItem alloc] initWithURL:URL] autorelease];
 }
 
 - (id)initWithMP4:(MP42File*)MP4 {
@@ -68,7 +62,7 @@
             }
         }
 
-        status = SBBatchItemStatusReady;
+        status = SBQueueItemStatusReady;
     }
 
     return self;
@@ -76,7 +70,26 @@
 
 + (id)itemWithMP4:(MP42File*)MP4
 {
-    return [[[SBBatchItem alloc] initWithMP4:MP4] autorelease];
+    return [[[SBQueueItem alloc] initWithMP4:MP4] autorelease];
+}
+
+- (id)initWithMP4:(MP42File*)MP4 url:(NSURL*)URL attributes:(NSDictionary*)dict
+{
+    if (self = [super init])
+    {
+        mp4File = [MP4 retain];
+        fileURL = [URL retain];
+        attributes = [dict retain];
+
+        status = SBQueueItemStatusReady;
+    }
+
+    return self;
+}
+
++ (id)itemWithMP4:(MP42File*)MP4 url:(NSURL*)URL attributes:(NSDictionary*)dict
+{
+    return [[[SBQueueItem alloc] initWithMP4:MP4 url:URL attributes:dict] autorelease];
 }
 
 - (void)dealloc

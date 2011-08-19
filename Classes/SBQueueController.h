@@ -1,5 +1,5 @@
 //
-//  SBBatchController.h
+//  SBQueueController.h
 //  Subler
 //
 //  Created by Damiano Galassi on 12/08/11.
@@ -10,7 +10,7 @@
 #import "SBTableView.h"
 
 @class MP42File;
-
+@class SBQueueItem;
 enum {
     SBBatchStatusUnknown = 0,
     SBBatchStatusWorking,
@@ -20,7 +20,7 @@ enum {
 };
 typedef NSInteger SBBatchStatus;
 
-@interface SBBatchController : NSWindowController<NSTableViewDelegate, NSTableViewDataSource, SBTableViewDelegate> {
+@interface SBQueueController : NSWindowController<NSTableViewDelegate, NSTableViewDataSource, SBTableViewDelegate> {
     IBOutlet NSButton *start;
     IBOutlet NSButton *open;
 
@@ -42,12 +42,12 @@ typedef NSInteger SBBatchStatus;
 
 @property (readonly) SBBatchStatus status;
 
-+ (SBBatchController*)sharedController;
++ (SBQueueController*)sharedController;
 
 - (void)start:(id)sender;
 - (void)stop:(id)sender;
 
-- (void)addItem:(MP42File*)mp4File;
+- (void)addItem:(SBQueueItem*)item;
 
 - (IBAction)toggleStartStop:(id)sender;
 - (IBAction)toggleOptions:(id)sender;

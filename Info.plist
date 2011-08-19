@@ -111,7 +111,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
-	<string>0.14, Copyright 2011 Damiano Galassi</string>
+	<string>0.15, Copyright 2011 Damiano Galassi</string>
 	<key>CFBundleIconFile</key>
 	<string>Subler.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -122,26 +122,24 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.15</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array/>
 	<key>CFBundleVersion</key>
-	<string>0.14</string>
+	<string>0.15</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.video</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2011, Damiano Galassi</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>NSServices</key>
-	<array/>
 	<key>SUFeedURL</key>
 	<string>http://subler.googlecode.com/svn/doc/appcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
-	<key>UTExportedTypeDeclarations</key>
-	<array/>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>

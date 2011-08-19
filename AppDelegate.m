@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "SBDocument.h"
 #import "SBPresetManager.h"
-#import "SBBatchController.h"
+#import "SBQueueController.h"
 #import "PrefsController.h"
 
 #import "mp4v2.h"
@@ -71,7 +71,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)app
 {
-    SBBatchStatus status= [[SBBatchController sharedController] status];
+    SBBatchStatus status= [[SBQueueController sharedController] status];
     NSInteger result;
     if (status == SBBatchStatusWorking)
     {
@@ -144,7 +144,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 
 - (IBAction) showBatchWindow: (id) sender
 {
-    [[SBBatchController sharedController] showWindow:self];
+    [[SBQueueController sharedController] showWindow:self];
 }
 
 - (IBAction) showPrefsWindow: (id) sender

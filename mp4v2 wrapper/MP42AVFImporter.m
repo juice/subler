@@ -58,8 +58,30 @@
             case kCMVideoCodecType_MPEG4Video:
                 result = @"MPEG-4 Visual";
                 break;
+            case kCMVideoCodecType_MPEG2Video:
+                result = @"MPEG-2";
+                break;
+            case kCMVideoCodecType_MPEG1Video:
+                result = @"MPEG-1";
+                break;
+            case kCMVideoCodecType_AppleProRes422:
+            case kCMVideoCodecType_AppleProRes422HQ:
+            case kCMVideoCodecType_AppleProRes422LT:
+            case kCMVideoCodecType_AppleProRes422Proxy:
+            case kCMVideoCodecType_AppleProRes4444:
+                result = @"Apple ProRes";
+                break;
             case kAudioFormatMPEG4AAC:
                 result = @"AAC";
+                break;
+            case kAudioFormatMPEG4AAC_HE:
+                result = @"HE-AAC";
+                break;
+            case kAudioFormatLinearPCM:
+                result = @"PCM";
+                break;
+            case kAudioFormatAppleLossless:
+                result = @"Apple Lossless";
                 break;
             case kAudioFormatAC3:
             case 'ms \0':

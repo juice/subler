@@ -7,7 +7,8 @@
 //
 
 #import "SBDocument.h"
-#import "SBBatchController.h"
+#import "SBQueueController.h"
+#import "SBQueueItem.h"
 #import "MP42File.h"
 #import "EmptyViewController.h"
 #import "MovieViewController.h"
@@ -571,9 +572,32 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (IBAction) sendToQueue:(id)sender
 {
-    SBBatchController *batch =  [SBBatchController sharedController];
-    [batch addItem:mp4File];
-    [self close];
+    SBQueueController *queue =  [SBQueueController sharedController];
+    if ([mp4File hasFileRepresentation]) {
+        SBQueueItem *item = [SBQueueItem itemWithMP4:mp4File];
+        [queue addItem:item];
+        [self close];
+    }
+    else {
+        NSSavePanel * panel = [NSSavePanel savePanel];
+        [self prepareSavePanel:panel];
+
+        [panel setPrompt:@"Send To Queue"];
+
+        [panel beginSheetModalForWindow:documentWindow completionHandler:^(NSInteger result) {
+            if (result == NSFileHandlingPanelOKButton) {
+                NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+                if ([_64bit_data state]) [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42Create64BitData];
+                if ([_64bit_time state]) [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42Create64BitTime];
+
+                SBQueueItem *item = [SBQueueItem itemWithMP4:mp4File url:[panel URL] attributes:attributes];
+                [queue addItem:item];
+
+                [attributes release];
+                [self close];
+            }
+        }];
+    }
 }
 
 - (IBAction) searchMetadata: (id) sender

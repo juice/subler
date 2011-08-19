@@ -45,7 +45,7 @@
 		A95FE303133E3DCB00D35687 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE2FE133E3DCB00D35687 /* libavdevice.a */; };
 		A95FE304133E3DCB00D35687 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE2FF133E3DCB00D35687 /* libavformat.a */; };
 		A95FE305133E3DCB00D35687 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE300133E3DCB00D35687 /* libavutil.a */; };
-		A961476313F567E10068F161 /* SBBatchController.m in Sources */ = {isa = PBXBuildFile; fileRef = A961476013F567E10068F161 /* SBBatchController.m */; };
+		A961476313F567E10068F161 /* SBQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A961476013F567E10068F161 /* SBQueueController.m */; };
 		A961476413F567E10068F161 /* SBPresetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A961476213F567E10068F161 /* SBPresetManager.m */; };
 		A961476713F568210068F161 /* Batch.xib in Resources */ = {isa = PBXBuildFile; fileRef = A961476513F568210068F161 /* Batch.xib */; };
 		A9629C8D0F56F7B6001D6A75 /* MP42ChapterTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C820F56F7B6001D6A75 /* MP42ChapterTrack.m */; };
@@ -93,7 +93,7 @@
 		A9BB60D80F834E0A005CD0BB /* mbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9BB60D70F834E0A005CD0BB /* mbs.cpp */; };
 		A9C055370F6D395B00AF15B5 /* FileImport.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C055360F6D395B00AF15B5 /* FileImport.xib */; };
 		A9C095800F7B6C8C00170CAF /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */; };
-		A9C1E77613FAB98C009DCFD7 /* SBBatchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C1E77513FAB98C009DCFD7 /* SBBatchItem.m */; };
+		A9C1E77613FAB98C009DCFD7 /* SBQueueItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C1E77513FAB98C009DCFD7 /* SBQueueItem.m */; };
 		A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C1E8550F31F395003A08F3 /* libmp4v2.a */; };
 		A9C4ECF712AE562A00BDBB7D /* MP42AACImporter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */; };
 		A9C8182D0F74D6E300019BFF /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C8182C0F74D6E300019BFF /* QuickTime.framework */; };
@@ -257,8 +257,8 @@
 		A95FE2FE133E3DCB00D35687 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = ffmpeg/lib/libavdevice.a; sourceTree = "<group>"; };
 		A95FE2FF133E3DCB00D35687 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = ffmpeg/lib/libavformat.a; sourceTree = "<group>"; };
 		A95FE300133E3DCB00D35687 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = ffmpeg/lib/libavutil.a; sourceTree = "<group>"; };
-		A961475F13F567E10068F161 /* SBBatchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBBatchController.h; path = Classes/SBBatchController.h; sourceTree = "<group>"; };
-		A961476013F567E10068F161 /* SBBatchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBBatchController.m; path = Classes/SBBatchController.m; sourceTree = "<group>"; };
+		A961475F13F567E10068F161 /* SBQueueController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBQueueController.h; path = Classes/SBQueueController.h; sourceTree = "<group>"; };
+		A961476013F567E10068F161 /* SBQueueController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBQueueController.m; path = Classes/SBQueueController.m; sourceTree = "<group>"; };
 		A961476113F567E10068F161 /* SBPresetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBPresetManager.h; path = Classes/SBPresetManager.h; sourceTree = "<group>"; };
 		A961476213F567E10068F161 /* SBPresetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBPresetManager.m; path = Classes/SBPresetManager.m; sourceTree = "<group>"; };
 		A961476613F568210068F161 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Batch.xib; sourceTree = "<group>"; };
@@ -335,8 +335,8 @@
 		A9BB60D70F834E0A005CD0BB /* mbs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mbs.cpp; path = "mp4v2 wrapper/muxer/mbs.cpp"; sourceTree = "<group>"; };
 		A9C055330F6D394F00AF15B5 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FileImport.xib; sourceTree = "<group>"; };
 		A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
-		A9C1E77413FAB98C009DCFD7 /* SBBatchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBBatchItem.h; sourceTree = "<group>"; };
-		A9C1E77513FAB98C009DCFD7 /* SBBatchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBBatchItem.m; sourceTree = "<group>"; };
+		A9C1E77413FAB98C009DCFD7 /* SBQueueItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBQueueItem.h; sourceTree = "<group>"; };
+		A9C1E77513FAB98C009DCFD7 /* SBQueueItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBQueueItem.m; sourceTree = "<group>"; };
 		A9C1E8550F31F395003A08F3 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = mp4v2/libmp4v2.a; sourceTree = "<group>"; };
 		A9C4ECF512AE562A00BDBB7D /* MP42AACImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AACImporter.h; path = "mp4v2 wrapper/MP42AACImporter.h"; sourceTree = "<group>"; };
 		A9C4ECF612AE562A00BDBB7D /* MP42AACImporter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MP42AACImporter.mm; path = "mp4v2 wrapper/MP42AACImporter.mm"; sourceTree = "<group>"; };
@@ -507,10 +507,10 @@
 			children = (
 				A9B46ABD12B79D1C0040517A /* SBDocument.h */,
 				A9B46ABE12B79D1C0040517A /* SBDocument.m */,
-				A961475F13F567E10068F161 /* SBBatchController.h */,
-				A961476013F567E10068F161 /* SBBatchController.m */,
-				A9C1E77413FAB98C009DCFD7 /* SBBatchItem.h */,
-				A9C1E77513FAB98C009DCFD7 /* SBBatchItem.m */,
+				A961475F13F567E10068F161 /* SBQueueController.h */,
+				A961476013F567E10068F161 /* SBQueueController.m */,
+				A9C1E77413FAB98C009DCFD7 /* SBQueueItem.h */,
+				A9C1E77513FAB98C009DCFD7 /* SBQueueItem.m */,
 				A961476113F567E10068F161 /* SBPresetManager.h */,
 				A961476213F567E10068F161 /* SBPresetManager.m */,
 				A9B46A7E12B79B240040517A /* FileImport.h */,
@@ -1000,9 +1000,9 @@
 				A9E2B960133E18C10009F4BC /* SBVobSubConverter.m in Sources */,
 				A90327E4133F68C5004E0D41 /* SBOCRWrapper.mm in Sources */,
 				A940E0FF13F130FB007AB5C6 /* MP42AVFImporter.m in Sources */,
-				A961476313F567E10068F161 /* SBBatchController.m in Sources */,
+				A961476313F567E10068F161 /* SBQueueController.m in Sources */,
 				A961476413F567E10068F161 /* SBPresetManager.m in Sources */,
-				A9C1E77613FAB98C009DCFD7 /* SBBatchItem.m in Sources */,
+				A9C1E77613FAB98C009DCFD7 /* SBQueueItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
