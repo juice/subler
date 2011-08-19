@@ -352,7 +352,8 @@ static const genreType_t genreType_strings[] = {
 			@"Comments", @"Genre", @"Release Date", @"Track #", @"Disk #", @"Tempo", @"TV Show", @"TV Episode #",
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Studio", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
-			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"Keywords", @"Category", @"contentID", @"XID", @"iTunes Account", @"Sort Name",
+			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"Keywords", @"Category", @"contentID", @"artistID", @"playlistID", @"genreID", @"composerID",
+            @"XID", @"iTunes Account", @"Sort Name",
             @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
 }
 
@@ -930,6 +931,34 @@ static const genreType_t genreType_strings[] = {
     else
         MP4TagsSetContentID(tags, NULL);
 
+    if ([tagsDict valueForKey:@"genreID"]) {
+        const uint32_t i = [[tagsDict valueForKey:@"genreID"] integerValue];
+        MP4TagsSetGenreID(tags, &i);
+    }
+    else
+        MP4TagsSetGenreID(tags, NULL);
+
+    if ([tagsDict valueForKey:@"artistID"]) {
+        const uint32_t i = [[tagsDict valueForKey:@"artistID"] integerValue];
+        MP4TagsSetArtistID(tags, &i);
+    }
+    else
+        MP4TagsSetArtistID(tags, NULL);
+
+    if ([tagsDict valueForKey:@"playlistID"]) {
+        const uint64_t i = [[tagsDict valueForKey:@"playlistID"] longValue];
+        MP4TagsSetPlaylistID(tags, &i);
+    }
+    else
+        MP4TagsSetPlaylistID(tags, NULL);
+
+    if ([tagsDict valueForKey:@"composerID"]) {
+        const uint32_t i = [[tagsDict valueForKey:@"composerID"] integerValue];
+        MP4TagsSetComposerID(tags, &i);
+    }
+    else
+        MP4TagsSetComposerID(tags, NULL);
+
     MP4TagsSetXID(tags, [[tagsDict valueForKey:@"XID"] UTF8String]);
 
     MP4TagsSetSortName(tags, [[tagsDict valueForKey:@"Sort Name"] UTF8String]);
@@ -1084,9 +1113,9 @@ static const genreType_t genreType_strings[] = {
     }
 
     mediaKind = newMetadata.mediaKind;
-    //contentRating = newMetadata.contentRating;
-    //gapless = newMetadata.gapless;
-    //hdVideo = newMetadata.hdVideo;
+    contentRating = newMetadata.contentRating;
+    gapless = newMetadata.gapless;
+    hdVideo = newMetadata.hdVideo;
 
     isEdited = YES;
     return YES;
