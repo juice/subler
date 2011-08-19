@@ -339,7 +339,7 @@
     if (i != NSNotFound) {
         [NSApp endSheet:[artworkSelectorWindow window]];
         [[artworkSelectorWindow window] orderOut:self];
-        [artworkSelectorWindow release];
+        [artworkSelectorWindow autorelease]; artworkSelectorWindow = nil;
         selectedResult.artworkURL = [selectedResult.artworkFullsizeURLs objectAtIndex:i];
     }
     [self loadArtwork];

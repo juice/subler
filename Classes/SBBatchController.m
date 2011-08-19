@@ -227,7 +227,6 @@ static SBBatchController *sharedController = nil;
     // Search for metadata
     if ([MetadataOption state]) {
         MP42Metadata *metadata = [self searchMetadataForFile:url];
-        [[mp4File metadata] mergeMetadata:metadata];
 
         for (MP42Track *track in mp4File.tracks)
             if ([track isKindOfClass:[MP42VideoTrack class]]) {
@@ -236,6 +235,8 @@ static SBBatchController *sharedController = nil;
                 if ((tw >= 1024) && (th >= 720))
                     [metadata setTag:@"YES" forKey:@"HD Video"];
             }
+
+        [[mp4File metadata] mergeMetadata:metadata];
     }
 
     return [mp4File autorelease];

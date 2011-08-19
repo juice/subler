@@ -714,7 +714,6 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 [self tableViewSelectionDidChange:nil];
                 [self updateChangeCount:NSChangeDone];
             }
-        
     }
 
     [NSApp endSheet:[importWindow window]];

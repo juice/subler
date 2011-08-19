@@ -83,6 +83,11 @@
             [item setTag:0];
             [item setEnabled:YES];
             [[actionCell menu] addItem:item];
+
+            if (isTrackMuxable(track.format))
+                [item setEnabled:YES];
+            else
+                [item setEnabled:NO];
         }
 
         else if ([track isMemberOfClass:[MP42SubtitleTrack class]]) {
