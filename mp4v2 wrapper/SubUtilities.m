@@ -884,15 +884,19 @@ NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *s
     NSRange tagEndRange;
     NSRange startRange = [string rangeOfString: @"<"];
     if (startRange.location != NSNotFound) {
-        unichar tag = [string characterAtIndex:startRange.location + 1];
-        if (tag == 'i') italic++;
-        else if (tag == 'b') bold++;
-        else if (tag == 'u') underlined++;
-        tagEndRange = [string rangeOfString: @">"];
-        startRange.length = tagEndRange.location - startRange.location +1;
-        if (tagEndRange.location == NSNotFound || startRange.location > tagEndRange.location || startRange.length > [string length])
-            startRange.length = 2;
-        string = [string stringByReplacingCharactersInRange:startRange withString:@""];
+        if ((startRange.location + 1) < [string length]) {
+            unichar tag = [string characterAtIndex:startRange.location + 1];
+            if (tag == 'i') italic++;
+            else if (tag == 'b') bold++;
+            else if (tag == 'u') underlined++;
+            tagEndRange = [string rangeOfString: @">"];
+            startRange.length = tagEndRange.location - startRange.location +1;
+            if (tagEndRange.location == NSNotFound || startRange.location > tagEndRange.location || startRange.length > [string length])
+                startRange.length = 2;
+            string = [string stringByReplacingCharactersInRange:startRange withString:@""];
+            }
+        else
+            startRange.location = NSNotFound;
     }
 
     while (startRange.location != NSNotFound) {
