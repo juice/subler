@@ -49,7 +49,7 @@
 #if !__LP64__
     else if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
         self = [[MP42QTImporter alloc] initWithDelegate:del andFile:URL error:outError];
-#else
+#elif __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
     else if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
         self = [[MP42AVFImporter alloc] initWithDelegate:del andFile:URL error:outError];
 #endif

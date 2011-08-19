@@ -8,9 +8,12 @@
 
 #import "MP42File.h"
 #import <QTKit/QTKit.h>
-#import <AVFoundation/AVFoundation.h>
 #import "SubUtilities.h"
 #include "lang.h"
+
+#if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
+#import <AVFoundation/AVFoundation.h>
+#endif
 
 NSString * const MP42Create64BitData = @"64BitData";
 NSString * const MP42Create64BitTime = @"64BitTime";
@@ -411,6 +414,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
         // If we are on 10.7, use the AVFoundation path
         if (NSClassFromString(@"AVAsset")) {
+            #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
             AVAsset *asset = [AVAsset assetWithURL:fileURL];
 
             if ([asset tracksWithMediaCharacteristic:AVMediaCharacteristicVisual]) {
@@ -436,6 +440,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                     CGImageRelease(imgRef);
                 }
             }
+            #endif
         }
         // Else fall back to QTKit
         else {

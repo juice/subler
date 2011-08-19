@@ -6,6 +6,8 @@
 //  Copyright 2010 Damiano Galassi All rights reserved.
 //
 
+#if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
+
 #import "MP42AVFImporter.h"
 #import "MP42File.h"
 #import <AVFoundation/AVFoundation.h>
@@ -482,3 +484,5 @@
 }
 
 @end
+
+#endif

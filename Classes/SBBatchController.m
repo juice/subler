@@ -436,11 +436,19 @@ static SBBatchController *sharedController = nil;
     NSIndexSet *rowIndexes = [aTableView selectedRowIndexes];
     NSUInteger selectedIndex = [rowIndexes lastIndex];
 
-    [aTableView beginUpdates];
-    [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
-    [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
-    [filesArray removeObjectsAtIndexes:rowIndexes];
-    [aTableView endUpdates];
+    if ([NSTableView instancesRespondToSelector:@selector(beginUpdate)]) {
+        #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
+        [aTableView beginUpdates];
+        [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
+        [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
+        [filesArray removeObjectsAtIndexes:rowIndexes];
+        [aTableView endUpdates];
+        #endif
+    }
+    else {
+        [filesArray removeObjectsAtIndexes:rowIndexes];
+        [aTableView reloadData];
+    }
 
     if (status != SBBatchStatusWorking) {
         [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
