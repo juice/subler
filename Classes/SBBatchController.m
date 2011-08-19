@@ -436,7 +436,7 @@ static SBBatchController *sharedController = nil;
     NSIndexSet *rowIndexes = [aTableView selectedRowIndexes];
     NSUInteger selectedIndex = [rowIndexes lastIndex];
 
-    if ([NSTableView instancesRespondToSelector:@selector(beginUpdate)]) {
+    if ([NSTableView instancesRespondToSelector:@selector(beginUpdates)]) {
         #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
         [aTableView beginUpdates];
         [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
