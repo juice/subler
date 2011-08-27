@@ -28,7 +28,8 @@
     [self release];
     self = nil;
     if ([[URL pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
-        [[URL pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame)
+        [[URL pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame ||
+        [[URL pathExtension] caseInsensitiveCompare: @"mks"] == NSOrderedSame)
         self = [[MP42MkvImporter alloc] initWithDelegate:del andFile:URL error:outError];
     else if ([[URL pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
              [[URL pathExtension] caseInsensitiveCompare: @"m4v"] == NSOrderedSame ||
@@ -48,7 +49,7 @@
 
 #if !__LP64__
     else if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
-        self = [[MP42AVFImporter alloc] initWithDelegate:del andFile:URL error:outError];
+        self = [[MP42QTImporter alloc] initWithDelegate:del andFile:URL error:outError];
 #elif __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
     else if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame)
         self = [[MP42AVFImporter alloc] initWithDelegate:del andFile:URL error:outError];
