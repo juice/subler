@@ -27,6 +27,21 @@
 
 @implementation PrefsController
 
++ (void)registerUserDefaults
+{    
+    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                             @"m4v",        @"SBSaveFormat",
+                                                             @"0",          @"defaultSaveFormat",
+                                                             @"YES",        @"SBQueueOptimize",
+                                                             @"1",          @"SBAudioMixdown",
+                                                             @"96",         @"SBAudioBitrate",
+                                                             @"YES",        @"SBAudioConvertAC3",
+                                                             @"m4v",        @"SBSaveFormat",
+                                                             @"NO",         @"mp464bitOffset",
+                                                             @"YES",        @"chaptersPreviewTrack",
+                                                             nil]];
+}
+
 -(id) init
 {
     if ((self = [super initWithWindowNibName:@"Prefs"])) {
@@ -192,15 +207,6 @@
     else
         [removeSet setEnabled:NO];
 }
-
-/*- (void)_deleteSelectionFromTableView:(NSTableView *)tableView {
-    NSLog(@"Hello!");
-}*/
-
-/*- (void)windowDidResignKey:(NSNotification *)notification
-{
-    [self performSelectorOnMainThread:@selector(hideInfoWindow:) withObject:self waitUntilDone:NO];
-}*/
 
 @end
 

@@ -507,10 +507,8 @@ static SBQueueController *sharedController = nil;
     else if (view == [info draggingSource] && operation == NSTableViewDropAbove) { // From self
         return NSDragOperationEvery;
     }
-    else { // From other documents 
-        [view setDropRow: row dropOperation: NSTableViewDropAbove];
-        return NSDragOperationCopy;
-    }
+    else
+        return NSDragOperationNone;
 }
 
 - (BOOL) tableView: (NSTableView *) view

@@ -60,6 +60,8 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 {
     documentController = [[SBDocumentController alloc] init];
 
+    [PrefsController registerUserDefaults];
+
     MP4SetLogCallback(logCallback);
     MP4LogSetLevel(MP4_LOG_ERROR);
 }
