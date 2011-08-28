@@ -12,13 +12,13 @@
 @class MP42File;
 @class SBQueueItem;
 enum {
-    SBBatchStatusUnknown = 0,
-    SBBatchStatusWorking,
-    SBBatchStatusCompleted,
-    SBBatchStatusFailed,
-    SBBatchStatusCancelled,
+    SBQueueStatusUnknown = 0,
+    SBQueueStatusWorking,
+    SBQueueStatusCompleted,
+    SBQueueStatusFailed,
+    SBQueueStatusCancelled,
 };
-typedef NSInteger SBBatchStatus;
+typedef NSInteger SBQueueStatus;
 
 @interface SBQueueController : NSWindowController<NSTableViewDelegate, NSTableViewDataSource, SBTableViewDelegate> {
     IBOutlet NSButton *start;
@@ -37,10 +37,12 @@ typedef NSInteger SBBatchStatus;
     IBOutlet SBTableView    *tableView;
     NSMutableArray *filesArray;
 
-    SBBatchStatus status;
+    SBQueueStatus   status;
+    BOOL            isCancelled;
+    id              currentItem;
 }
 
-@property (readonly) SBBatchStatus status;
+@property (readonly) SBQueueStatus status;
 
 + (SBQueueController*)sharedController;
 

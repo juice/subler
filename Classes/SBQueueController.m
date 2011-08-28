@@ -109,7 +109,7 @@ static SBQueueController *sharedController = nil;
 - (void)updateUI
 {
     [tableView reloadData];
-    if (status != SBBatchStatusWorking) {
+    if (status != SBQueueStatusWorking) {
         [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
         [self updateDockTile];
     }
@@ -261,10 +261,10 @@ static SBQueueController *sharedController = nil;
 
 - (void)start:(id)sender
 {
-    if (status == SBBatchStatusWorking)
+    if (status == SBQueueStatusWorking)
         return;
 
-    status = SBBatchStatusWorking;
+    status = SBQueueStatusWorking;
 
     [start setTitle:@"Stop"];
     [countLabel setStringValue:@"Working."];
@@ -303,6 +303,8 @@ static SBQueueController *sharedController = nil;
                 mp4File = [[self prepareQueueItem:url error:&outError] retain];
             }
 
+            currentItem = mp4File;
+
             // We have an existing mp4 file
             if ([mp4File hasFileRepresentation])
                 success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
@@ -316,7 +318,11 @@ static SBQueueController *sharedController = nil;
                                             error:&outError];
             }
 
-            if (success) {
+            if (isCancelled) {
+                [item setStatus:SBQueueItemStatusCancelled];
+                status = SBQueueStatusCancelled;
+            }
+            else if (success) {
                 if ([OptimizeOption state])
                     [mp4File optimize];
                 [item setStatus:SBQueueItemStatusCompleted];
@@ -334,16 +340,28 @@ static SBQueueController *sharedController = nil;
                 NSInteger itemIndex = [filesArray indexOfObject:item];
                 [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             });
+            
+            if (status == SBQueueStatusCancelled)
+                break;
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [countLabel setStringValue:@"Done."];
+            currentItem = nil;
+
+            if (status == SBQueueStatusCancelled) {
+                [countLabel setStringValue:@"Cancelled."];
+                status = SBQueueStatusCancelled;
+                isCancelled = NO;
+            }
+            else {
+                [countLabel setStringValue:@"Done."];
+                status = SBQueueStatusCompleted;
+            }
+
             [spinningIndicator setHidden:YES];
             [spinningIndicator stopAnimation:self];
             [start setTitle:@"Start"];
             [open setEnabled:YES];
-
-            status = SBBatchStatusCompleted;
 
             [self updateDockTile];
         });
@@ -355,11 +373,13 @@ static SBQueueController *sharedController = nil;
 - (void)stop:(id)sender
 {
 
+    isCancelled = YES;
+    [currentItem cancel];
 }
 
 - (IBAction)toggleStartStop:(id)sender
 {
-    if (status == SBBatchStatusWorking) {
+    if (status == SBQueueStatusWorking) {
         [self stop:sender];
     }
     else {
@@ -460,7 +480,7 @@ static SBQueueController *sharedController = nil;
         [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
     }
 
-    if (status != SBBatchStatusWorking) {
+    if (status != SBQueueStatusWorking) {
         [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
         [self updateDockTile];
     }
@@ -505,14 +525,19 @@ static SBQueueController *sharedController = nil;
         NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
         NSInteger dragRow = [rowIndexes firstIndex];
 
-        id object = [[filesArray objectAtIndex:dragRow] retain];
+        NSArray *objects = [filesArray objectsAtIndexes:rowIndexes];
+        [filesArray removeObjectsAtIndexes:rowIndexes];
 
-        [filesArray removeObjectAtIndex:dragRow];
-        if (row > [filesArray count] || row > dragRow)
-            row--;
-        [filesArray insertObject:object atIndex:row];
-        [object release];
+        for (id object in [objects reverseObjectEnumerator]) {
+            if (row > [filesArray count] || row > dragRow)
+                row--;
+            [filesArray insertObject:object atIndex:row];
+        }
+
+        NSIndexSet *selectionSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(row, [rowIndexes count])];
+
         [view reloadData];
+        [view selectRowIndexes:selectionSet byExtendingSelection:NO];
 
         return YES;
     }
@@ -520,7 +545,7 @@ static SBQueueController *sharedController = nil;
         if ( [[pboard types] containsObject:NSURLPboardType] ) {
             NSArray * items = [pboard readObjectsForClasses:
                                [NSArray arrayWithObject: [NSURL class]] options: nil];
-            for (NSURL * url in items)
+            for (NSURL * url in [items reverseObjectEnumerator])
                 [filesArray insertObject:[SBQueueItem itemWithURL:url] atIndex:row];
 
             [self updateUI];
@@ -530,7 +555,6 @@ static SBQueueController *sharedController = nil;
 
             return YES;
         }
-        
     }
 
     return NO;

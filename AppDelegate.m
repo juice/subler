@@ -71,9 +71,9 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)app
 {
-    SBBatchStatus status= [[SBQueueController sharedController] status];
+    SBQueueStatus status= [[SBQueueController sharedController] status];
     NSInteger result;
-    if (status == SBBatchStatusWorking)
+    if (status == SBQueueStatusWorking)
     {
         result = NSRunCriticalAlertPanel(
                                          NSLocalizedString(@"Are you sure you want to quit Subler?", nil),
@@ -186,6 +186,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
     
     if ([[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
         [[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame ||
+        [[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mks"] == NSOrderedSame ||
         [[[absoluteURL path] pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
         doc = [self openUntitledDocumentAndDisplay:displayDocument error:outError];
         [doc performSelectorOnMainThread:@selector(showImportSheet:) withObject:absoluteURL waitUntilDone:NO];

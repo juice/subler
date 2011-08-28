@@ -867,6 +867,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                      [[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"mks"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"h264"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"264"] == NSOrderedSame)
                 [self showImportSheet:file];
