@@ -18,7 +18,7 @@
 	{
 		delegate = del;
         fileURL = [file retain];
-        
+
         fileImporter = [[MP42FileImporter alloc] initWithDelegate:delegate andFile:file error:outError];
         if (!fileImporter)
             return nil;
@@ -28,7 +28,6 @@
 
 - (void)awakeFromNib
 {
-
     importCheckArray = [[NSMutableArray alloc] initWithCapacity:[[fileImporter tracksArray] count]];
     actionArray = [[NSMutableArray alloc] initWithCapacity:[[fileImporter tracksArray] count]];
 
@@ -39,11 +38,13 @@
             [importCheckArray addObject: [NSNumber numberWithBool:YES]];
         else
             [importCheckArray addObject: [NSNumber numberWithBool:NO]];
-        
+
         if ([track.format isEqualToString:@"AC-3"] &&
             [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
             [actionArray addObject:[NSNumber numberWithInteger:[[[NSUserDefaults standardUserDefaults]
                                                                  valueForKey:@"SBAudioMixdown"] integerValue]]];
+        else if ([track.format isEqualToString:@"VobSub"])
+            [actionArray addObject:[NSNumber numberWithInteger:1]];
         else if (!trackNeedConversion(track.format))
             [actionArray addObject:[NSNumber numberWithInteger:0]];
         else if ([track isMemberOfClass:[MP42AudioTrack class]])
@@ -57,7 +58,7 @@
         [importMetadata setEnabled:YES];
     else
         [importMetadata setEnabled:NO];
-    
+
     [addTracksButton setEnabled:YES];
 }
 
