@@ -372,7 +372,6 @@ static SBQueueController *sharedController = nil;
 
 - (void)stop:(id)sender
 {
-
     isCancelled = YES;
     [currentItem cancel];
 }

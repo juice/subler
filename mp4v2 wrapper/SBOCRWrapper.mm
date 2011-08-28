@@ -10,7 +10,6 @@
 
 // Tesseract OCR
 #include "tesseract/baseapi.h"
-
 #include <iostream>
 #include <string>
 #include <cstdio>
@@ -28,8 +27,10 @@ OCRWrapper(const char* lang) {
     path = [path stringByAppendingString:@"/Contents/Resources/"];
 
     setenv("TESSDATA_PREFIX", [path UTF8String], 1);
-    tess_base_api.Init("/usr/local/share", lang);
-    tess_base_api.SetAccuracyVSpeed(AVS_MOST_ACCURATE);
+
+    path = [path stringByAppendingString:@"tessdata/"];
+
+    tess_base_api.Init([path UTF8String], lang, OEM_DEFAULT);
 }
 char* OCRFrame(const unsigned char *image, int bytes_per_pixel, int bytes_per_line, int width, int height) {
     char* text = tess_base_api.TesseractRect(image,

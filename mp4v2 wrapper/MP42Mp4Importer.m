@@ -90,7 +90,7 @@
 
     const char* trackType = MP4GetTrackType(fileHandle, srcTrackId);
     const char *media_data_name = MP4GetTrackMediaDataName(fileHandle, srcTrackId);
-    
+
     if (MP4_IS_AUDIO_TRACK_TYPE(trackType))
     {
         if (!strcmp(media_data_name, "ac-3")) {
@@ -119,7 +119,7 @@
         }
         return magicCookie;
     }
-    
+
     else if (!strcmp(trackType, MP4_SUBPIC_TRACK_TYPE)) {
         uint8_t *ppConfig; uint32_t pConfigSize;
         MP4GetTrackESConfiguration(fileHandle, srcTrackId, &ppConfig, &pConfigSize);
