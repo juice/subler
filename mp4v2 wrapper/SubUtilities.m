@@ -958,16 +958,19 @@ NSString* createStyleAtomForString(NSString* string, u_int8_t* buffer, size_t *s
 }
 
 NSString* removeNewLines(NSString* string) {
-    NSMutableString *mutableString     = [NSMutableString stringWithString:string];
+    NSMutableString *mutableString = [NSMutableString stringWithString:string];
 
 	[mutableString replaceOccurrencesOfString:@"\r\n" withString:@"\n" options:0 range:NSMakeRange(0,[mutableString length])];
 	[mutableString replaceOccurrencesOfString:@"\r" withString:@"\n" options:0 range:NSMakeRange(0,[mutableString length])];
+
+    while ([mutableString length] && [mutableString characterAtIndex:[mutableString length] - 1] == '\n')
+        [mutableString deleteCharactersInRange:NSMakeRange([mutableString length] -1, 1)];
 
     NSMutableString *mutableString2 = [NSMutableString stringWithString:mutableString];
     NSUInteger       replacedCount  = 0;
 
     replacedCount = [mutableString2 replaceOccurrencesOfString:@"\n" withString:@" " options:0 range:NSMakeRange(0,[mutableString2 length])];
-    if (replacedCount > 2)
+    if (replacedCount >= 2)
         return mutableString2;
     else
         return mutableString;

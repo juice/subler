@@ -224,7 +224,10 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
         if(sampleBuffer->sampleSize < 4)
         {
             MP42SampleBuffer* subSample = copyEmptySubtitleSample(trackId, sampleBuffer->sampleDuration);
-            [outputSamplesBuffer addObject:subSample];    
+            @synchronized(outputSamplesBuffer) {
+                [outputSamplesBuffer addObject:subSample];    
+            }
+
             [subSample release];
 
             [inputSamplesBuffer removeObjectAtIndex:0];
@@ -266,7 +269,9 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
             NSLog(@"Error decoding DVD subtitle %d / %ld", ret, (long)bufferSize);
             
             MP42SampleBuffer* subSample = copyEmptySubtitleSample(trackId, sampleBuffer->sampleDuration);
-            [outputSamplesBuffer addObject:subSample];    
+            @synchronized(outputSamplesBuffer) {
+                [outputSamplesBuffer addObject:subSample];
+            }
             [subSample release];
             
             [inputSamplesBuffer removeObjectAtIndex:0];
@@ -343,11 +348,14 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
 
             //NSBitmapImageRep *bitmapImage = [[NSBitmapImageRep alloc]initWithCGImage:(CGImageRef)cgImage];
             //[[bitmapImage representationUsingType:NSTIFFFileType properties:nil] writeToFile:@"/tmp/foo.tif" atomically:YES];
+            //[bitmapImage release];
 
             NSString *text = [ocr performOCROnCGImage:cgImage];
 
             MP42SampleBuffer* subSample = copySubtitleSample(trackId, text, sampleBuffer->sampleDuration);
-            [outputSamplesBuffer addObject:subSample];
+            @synchronized(outputSamplesBuffer) {
+                [outputSamplesBuffer addObject:subSample];
+            }
             [subSample release];
 
             CGImageRelease(cgImage);
