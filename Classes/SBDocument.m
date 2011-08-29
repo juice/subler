@@ -111,13 +111,13 @@
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
     mp4File = [[MP42File alloc] initWithExistingFile:absoluteURL andDelegate:self];
-    
+
     if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
         
         return NO;
 	}
-    
+
     return YES;
 }
 
@@ -125,11 +125,11 @@
 {
     [mp4File release];
     mp4File = [[MP42File alloc] initWithExistingFile:absoluteURL andDelegate:self];
-    
+
     [fileTracksTable reloadData];
     [self tableViewSelectionDidChange:nil];
     [self updateChangeCount:NSChangeCleared];
-    
+
     if ( outError != NULL && !mp4File ) {
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];   
         

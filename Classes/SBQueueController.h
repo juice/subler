@@ -57,6 +57,8 @@ typedef NSInteger SBQueueStatus;
 
 - (void)addItem:(SBQueueItem*)item;
 
+- (IBAction)removeSelectedItems:(id)sender;
+
 - (IBAction)toggleStartStop:(id)sender;
 - (IBAction)toggleOptions:(id)sender;
 

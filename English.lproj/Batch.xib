@@ -224,6 +224,7 @@
 									<string key="NSFrame">{{543, 1}, {15, 275}}</string>
 									<reference key="NSSuperview" ref="785720780"/>
 									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:1214</string>
 									<reference key="NSTarget" ref="785720780"/>
 									<string key="NSAction">_doScroller:</string>
@@ -415,7 +416,7 @@
 														<object class="NSButton" id="98555484">
 															<reference key="NSNextResponder" ref="841742986"/>
 															<int key="NSvFlags">268</int>
-															<string key="NSFrame">{{238, 83}, {89, 18}}</string>
+															<string key="NSFrame">{{238, 83}, {134, 18}}</string>
 															<reference key="NSSuperview" ref="841742986"/>
 															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="979235387"/>
@@ -424,7 +425,7 @@
 															<object class="NSButtonCell" key="NSCell" id="627983718">
 																<int key="NSCellFlags">-2080244224</int>
 																<int key="NSCellFlags2">0</int>
-																<string key="NSContents">Auto-Start</string>
+																<string key="NSContents">Auto-Start Queue</string>
 																<reference key="NSSupport" ref="30606313"/>
 																<string key="NSCellIdentifier">_NS:239</string>
 																<reference key="NSControlView" ref="98555484"/>
@@ -643,6 +644,19 @@
 				<string key="NSFrameAutosaveName"/>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
+			<object class="NSMenu" id="858775320">
+				<string key="NSTitle"/>
+				<array class="NSMutableArray" key="NSMenuItems">
+					<object class="NSMenuItem" id="738218046">
+						<reference key="NSMenu" ref="858775320"/>
+						<string key="NSTitle">Remove from queue</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="163168862"/>
+						<reference key="NSMixedImage" ref="567944944"/>
+					</object>
+				</array>
+			</object>
 			<object class="NSUserDefaultsController" id="983247719">
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -786,6 +800,14 @@
 					<int key="connectionID">77</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">removeSelectedItems:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="738218046"/>
+					</object>
+					<int key="connectionID">85</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="791590002"/>
@@ -800,6 +822,14 @@
 						<reference key="destination" ref="1001"/>
 					</object>
 					<int key="connectionID">27</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">menu</string>
+						<reference key="source" ref="791590002"/>
+						<reference key="destination" ref="858775320"/>
+					</object>
+					<int key="connectionID">83</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -848,6 +878,14 @@
 						</object>
 					</object>
 					<int key="connectionID">52</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="858775320"/>
+						<reference key="destination" ref="1001"/>
+					</object>
+					<int key="connectionID">84</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1128,6 +1166,19 @@
 						<reference key="object" ref="307659520"/>
 						<reference key="parent" ref="955252375"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">78</int>
+						<reference key="object" ref="858775320"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="738218046"/>
+						</array>
+						<reference key="parent" ref="0"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">79</int>
+						<reference key="object" ref="738218046"/>
+						<reference key="parent" ref="858775320"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -1172,13 +1223,15 @@
 				<string key="72.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="74.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="78.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="79.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="8.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">77</int>
+			<int key="maxID">85</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1189,6 +1242,7 @@
 						<string key="chooseDestination:">id</string>
 						<string key="destination:">id</string>
 						<string key="open:">id</string>
+						<string key="removeSelectedItems:">id</string>
 						<string key="toggleOptions:">id</string>
 						<string key="toggleStartStop:">id</string>
 					</dictionary>
@@ -1203,6 +1257,10 @@
 						</object>
 						<object class="IBActionInfo" key="open:">
 							<string key="name">open:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="removeSelectedItems:">
+							<string key="name">removeSelectedItems:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="toggleOptions:">

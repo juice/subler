@@ -102,8 +102,10 @@ static SBQueueController *sharedController = nil;
     [[destButton menu] insertItem:[NSMenuItem separatorItem] atIndex:0];
     [[destButton menu] insertItem:folderItem atIndex:0];
 
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestinationSelected"] boolValue])
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestinationSelected"] boolValue]) {
         [destButton selectItem:folderItem];
+        customDestination = YES;
+    }
 }
 
 - (IBAction)destination:(id)sender
@@ -368,7 +370,7 @@ static SBQueueController *sharedController = nil;
             currentItem = mp4File;
 
             // We have an existing mp4 file
-            if ([mp4File hasFileRepresentation])
+            if ([mp4File hasFileRepresentation] && !isCancelled)
                 success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
             else if (mp4File) {
                 // Write the file to disk
@@ -555,28 +557,42 @@ static SBQueueController *sharedController = nil;
 
 - (void)_deleteSelectionFromTableView:(NSTableView *)aTableView
 {
-    NSIndexSet *rowIndexes = [aTableView selectedRowIndexes];
-    NSUInteger selectedIndex = [rowIndexes lastIndex];
+    NSMutableIndexSet *rowIndexes = [[aTableView selectedRowIndexes] mutableCopy];
+    NSUInteger selectedIndex = [rowIndexes firstIndex];
 
-    if ([NSTableView instancesRespondToSelector:@selector(beginUpdates)]) {
-        #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
-        [aTableView beginUpdates];
-        [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
-        [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
-        [filesArray removeObjectsAtIndexes:rowIndexes];
-        [aTableView endUpdates];
-        #endif
-    }
-    else {
-        [filesArray removeObjectsAtIndexes:rowIndexes];
-        [aTableView reloadData];
-        [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
-    }
+    NSArray *array = [filesArray objectsAtIndexes:rowIndexes];
 
-    if (status != SBQueueStatusWorking) {
-        [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
-        [self updateDockTile];
+    // A item with a status of SBQueueItemStatusWorking can not be removed
+    for (SBQueueItem *item in array)
+        if ([item status] == SBQueueItemStatusWorking)
+            [rowIndexes removeIndex:[filesArray indexOfObject:item]];
+
+    if ([rowIndexes count]) {
+        if ([NSTableView instancesRespondToSelector:@selector(beginUpdates)]) {
+            #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
+            [aTableView beginUpdates];
+            [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
+            [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
+            [filesArray removeObjectsAtIndexes:rowIndexes];
+            [aTableView endUpdates];
+            #endif
+        }
+        else {
+            [filesArray removeObjectsAtIndexes:rowIndexes];
+            [aTableView reloadData];
+            [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
+        }
+
+        if (status != SBQueueStatusWorking) {
+            [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+            [self updateDockTile];
+        }
     }
+}
+
+- (IBAction)removeSelectedItems:(id)sender
+{
+    [self _deleteSelectionFromTableView:tableView];
 }
 
 #pragma mark Drag & Drop
