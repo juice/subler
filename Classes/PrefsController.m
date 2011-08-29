@@ -36,6 +36,7 @@
                                                              @"1",          @"SBAudioMixdown",
                                                              @"96",         @"SBAudioBitrate",
                                                              @"YES",        @"SBAudioConvertAC3",
+                                                             @"English",        @"SBNativeLanguage",
                                                              @"m4v",        @"SBSaveFormat",
                                                              @"NO",         @"mp464bitOffset",
                                                              @"YES",        @"chaptersPreviewTrack",

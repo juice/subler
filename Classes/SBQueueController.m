@@ -233,19 +233,23 @@ static SBQueueController *sharedController = nil;
 {
     id  currentSearcher = nil;
     MP42Metadata *metadata = nil;
+    NSString *language = [[NSUserDefaults standardUserDefaults] valueForKey:@"SBNativeLanguage"];
+    if (!language)
+        language = @"English";
+
     // Parse FileName and search for metadata
     NSDictionary *parsed = [MetadataSearchController parseFilename:[url lastPathComponent]];
     if ([@"movie" isEqualToString:(NSString *) [parsed valueForKey:@"type"]]) {
         currentSearcher = [[TheMovieDB alloc] init];
         NSArray *results = [((TheMovieDB *) currentSearcher) searchForResults:[parsed valueForKey:@"title"]
-                                            mMovieLanguage:[MetadataSearchController langCodeFor:@"English"]];
+                                            mMovieLanguage:[MetadataSearchController langCodeFor:language]];
         if ([results count])
-            metadata = [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:[results objectAtIndex:0] mMovieLanguage:@"English"];
+            metadata = [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:[results objectAtIndex:0] mMovieLanguage:language];
 
     } else if ([@"tv" isEqualToString:(NSString *) [parsed valueForKey:@"type"]]) {
         currentSearcher = [[TheTVDB alloc] init];
         NSArray *results = [((TheTVDB *) currentSearcher) searchForResults:[parsed valueForKey:@"seriesName"]
-                                         seriesLanguage:[MetadataSearchController langCodeFor:@"English"] 
+                                         seriesLanguage:[MetadataSearchController langCodeFor:language] 
                                               seasonNum:[parsed valueForKey:@"seasonNum"]
                                              episodeNum:[parsed valueForKey:@"episodeNum"]];
         if ([results count])
@@ -490,7 +494,7 @@ static SBQueueController *sharedController = nil;
                 [filesArray addObject:[SBQueueItem itemWithURL:url]];
             }
             [self updateUI];
-            
+
             if ([AutoStartOption state])
                 [self start:self];
         }

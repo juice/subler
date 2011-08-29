@@ -322,13 +322,6 @@
 		A9B8E893123A95BA006A6EB8 /* MP42Sample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42Sample.h; path = "mp4v2 wrapper/MP42Sample.h"; sourceTree = "<group>"; };
 		A9B8E894123A95BA006A6EB8 /* MP42Sample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42Sample.m; path = "mp4v2 wrapper/MP42Sample.m"; sourceTree = "<group>"; };
 		A9B8E923123AA03D006A6EB8 /* MP42Muxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42Muxer.h; path = "mp4v2 wrapper/MP42Muxer.h"; sourceTree = "<group>"; };
-		A9BAD4181405050600F3F4AE /* eng.cube.bigrams */ = {isa = PBXFileReference; lastKnownFileType = text; name = eng.cube.bigrams; path = Tesseract/share/tessdata/eng.cube.bigrams; sourceTree = "<group>"; };
-		A9BAD4191405050600F3F4AE /* eng.cube.fold */ = {isa = PBXFileReference; lastKnownFileType = text; name = eng.cube.fold; path = Tesseract/share/tessdata/eng.cube.fold; sourceTree = "<group>"; };
-		A9BAD41A1405050600F3F4AE /* eng.cube.lm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.lex; name = eng.cube.lm; path = Tesseract/share/tessdata/eng.cube.lm; sourceTree = "<group>"; };
-		A9BAD41B1405050600F3F4AE /* eng.cube.nn */ = {isa = PBXFileReference; lastKnownFileType = file; name = eng.cube.nn; path = Tesseract/share/tessdata/eng.cube.nn; sourceTree = "<group>"; };
-		A9BAD41C1405050600F3F4AE /* eng.cube.params */ = {isa = PBXFileReference; lastKnownFileType = text; name = eng.cube.params; path = Tesseract/share/tessdata/eng.cube.params; sourceTree = "<group>"; };
-		A9BAD41D1405050600F3F4AE /* eng.cube.size */ = {isa = PBXFileReference; lastKnownFileType = text; name = eng.cube.size; path = Tesseract/share/tessdata/eng.cube.size; sourceTree = "<group>"; };
-		A9BAD41E1405050600F3F4AE /* eng.cube.word-freq */ = {isa = PBXFileReference; lastKnownFileType = text; name = "eng.cube.word-freq"; path = "Tesseract/share/tessdata/eng.cube.word-freq"; sourceTree = "<group>"; };
 		A9BAD41F1405050600F3F4AE /* eng.traineddata */ = {isa = PBXFileReference; lastKnownFileType = file; name = eng.traineddata; path = Tesseract/share/tessdata/eng.traineddata; sourceTree = "<group>"; };
 		A9BAD4281405056500F3F4AE /* libtesseract_api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_api.a; path = Tesseract/lib/libtesseract_api.a; sourceTree = "<group>"; };
 		A9BAD4291405056500F3F4AE /* libtesseract_ccstruct.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_ccstruct.a; path = Tesseract/lib/libtesseract_ccstruct.a; sourceTree = "<group>"; };
@@ -576,13 +569,6 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A9BAD4181405050600F3F4AE /* eng.cube.bigrams */,
-				A9BAD4191405050600F3F4AE /* eng.cube.fold */,
-				A9BAD41A1405050600F3F4AE /* eng.cube.lm */,
-				A9BAD41B1405050600F3F4AE /* eng.cube.nn */,
-				A9BAD41C1405050600F3F4AE /* eng.cube.params */,
-				A9BAD41D1405050600F3F4AE /* eng.cube.size */,
-				A9BAD41E1405050600F3F4AE /* eng.cube.word-freq */,
 				A9BAD41F1405050600F3F4AE /* eng.traineddata */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				A984DB730F52DD4B001A20B2 /* dsa_pub.pem */,
