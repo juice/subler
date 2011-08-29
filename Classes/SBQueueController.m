@@ -678,6 +678,12 @@ static SBQueueController *sharedController = nil;
     if (action == @selector(removeCompletedItems:))
         return YES;
 
+    if (action == @selector(chooseDestination:))
+        return YES;
+
+    if (action == @selector(destination:))
+        return YES;
+
     return NO;
 }
 
