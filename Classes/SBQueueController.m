@@ -34,11 +34,33 @@ static SBQueueController *sharedController = nil;
     return [[self sharedController] retain];
 }
 
+- (NSURL*)queueURL
+{
+    NSURL *appSupportURL = nil;
+    
+    NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+                                                            NSUserDomainMask,
+                                                            YES);
+    if ([allPaths count]) {
+        appSupportURL = [NSURL fileURLWithPath:[[allPaths lastObject] stringByAppendingPathComponent:@"Subler"] isDirectory:YES];
+        appSupportURL = [appSupportURL URLByAppendingPathComponent:@"queue.sbqueue" isDirectory:NO];
+        
+        return appSupportURL;
+    }
+    else
+        return nil;
+}
+
 - (id)init
 {
     self = [super initWithWindowNibName:@"Batch"];
     if (self) {
-        filesArray = [[NSMutableArray alloc] init];
+        NSURL* queueURL = [self queueURL];
+
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[queueURL path]])
+            filesArray = [[NSKeyedUnarchiver unarchiveObjectWithFile:[queueURL path]] retain];
+        else
+            filesArray = [[NSMutableArray alloc] init];
     }
 
     return self;
@@ -669,6 +691,12 @@ static SBQueueController *sharedController = nil;
     }
 
     return NO;
+}
+
+- (BOOL)saveQueueToDisk
+{
+    return [NSKeyedArchiver archiveRootObject:filesArray
+                                           toFile:[[self queueURL] path]];
 }
 
 @end

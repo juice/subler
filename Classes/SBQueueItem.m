@@ -99,4 +99,31 @@
     [mp4File release];
 }
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInt:1 forKey:@"SBQueueItemTagEncodeVersion"];
+
+    [coder encodeObject:mp4File forKey:@"SBQueueItemMp4File"];
+    [coder encodeObject:fileURL forKey:@"SBQueueItemFileURL"];
+    [coder encodeObject:attributes forKey:@"SBQueueItemAttributes"];
+
+    [coder encodeInt:status forKey:@"SBQueueItemStatus"];
+    [coder encodeInt:humanEdited forKey:@"SBQueueItemHumanEdited"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super init];
+
+    mp4File = [[decoder decodeObjectForKey:@"SBQueueItemMp4File"] retain];
+
+    fileURL = [[decoder decodeObjectForKey:@"SBQueueItemFileURL"] retain];
+    attributes = [[decoder decodeObjectForKey:@"SBQueueItemAttributes"] retain];
+
+    status = [decoder decodeIntForKey:@"SBQueueItemStatus"];
+    humanEdited = [decoder decodeIntForKey:@"SBQueueItemHumanEdited"];
+
+    return self;
+}
+
 @end

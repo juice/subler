@@ -43,13 +43,17 @@
 
     MP42File *mp4File = [((SBDocument *) delegate) mp4File];
 
+    NSString *language = [[NSUserDefaults standardUserDefaults] valueForKey:@"SBNativeLanguage"];
+    if (!language)
+        language = @"English";
+    
     // construct movie language menu
     [movieLanguage removeAllItems];
     for (NSString *lang in [(SBDocument *) delegate languages]) {
         if ([lang isEqualToString:@"Unknown"]) continue;
         [movieLanguage addItemWithTitle:lang];
     }
-    [movieLanguage selectItemWithTitle:@"English"];
+    [movieLanguage selectItemWithTitle:language];
     for (MP42Track *track in [mp4File tracks]) {
         if (![[track language] isEqualToString:@"Unknown"]) {
             if ([movieLanguage indexOfItemWithTitle:[track language]] >= 0) {
@@ -65,7 +69,7 @@
     for (NSString *lang in tvLanguages) {
         [tvLanguage addItemWithTitle:lang];
     }
-    [tvLanguage selectItemWithTitle:@"English"];
+    [tvLanguage selectItemWithTitle:language];
     for (MP42Track *track in [mp4File tracks]) {
         if (![[track language] isEqualToString:@"Unknown"]) {
             if ([tvLanguage indexOfItemWithTitle:[track language]] >= 0) {

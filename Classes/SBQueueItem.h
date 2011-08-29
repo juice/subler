@@ -21,7 +21,7 @@ enum {
 typedef NSInteger SBQueueItemStatus;
 
 
-@interface SBQueueItem : NSObject {
+@interface SBQueueItem : NSObject <NSCoding> {
     MP42File *mp4File;
     NSURL   *fileURL;
     NSDictionary *attributes;
