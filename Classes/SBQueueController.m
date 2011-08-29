@@ -327,7 +327,6 @@ static SBQueueController *sharedController = nil;
     [countLabel setStringValue:@"Working."];
     [spinningIndicator setHidden:NO];
     [spinningIndicator startAnimation:self];
-    [open setEnabled:NO];
 
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
     if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
@@ -424,7 +423,6 @@ static SBQueueController *sharedController = nil;
             [spinningIndicator setHidden:YES];
             [spinningIndicator stopAnimation:self];
             [start setTitle:@"Start"];
-            [open setEnabled:YES];
 
             [self updateDockTile];
         });
