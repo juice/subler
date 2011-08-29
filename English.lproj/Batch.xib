@@ -655,6 +655,14 @@
 						<reference key="NSOnImage" ref="163168862"/>
 						<reference key="NSMixedImage" ref="567944944"/>
 					</object>
+					<object class="NSMenuItem" id="997664660">
+						<reference key="NSMenu" ref="858775320"/>
+						<string key="NSTitle">Remove completed items</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="163168862"/>
+						<reference key="NSMixedImage" ref="567944944"/>
+					</object>
 				</array>
 			</object>
 			<object class="NSUserDefaultsController" id="983247719">
@@ -806,6 +814,14 @@
 						<reference key="destination" ref="738218046"/>
 					</object>
 					<int key="connectionID">85</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">removeCompletedItems:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="997664660"/>
+					</object>
+					<int key="connectionID">88</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1171,12 +1187,18 @@
 						<reference key="object" ref="858775320"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="738218046"/>
+							<reference ref="997664660"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">79</int>
 						<reference key="object" ref="738218046"/>
+						<reference key="parent" ref="858775320"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">86</int>
+						<reference key="object" ref="997664660"/>
 						<reference key="parent" ref="858775320"/>
 					</object>
 				</array>
@@ -1226,12 +1248,13 @@
 				<string key="78.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="79.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="8.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="86.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">85</int>
+			<int key="maxID">88</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1242,6 +1265,7 @@
 						<string key="chooseDestination:">id</string>
 						<string key="destination:">id</string>
 						<string key="open:">id</string>
+						<string key="removeCompletedItems:">id</string>
 						<string key="removeSelectedItems:">id</string>
 						<string key="toggleOptions:">id</string>
 						<string key="toggleStartStop:">id</string>
@@ -1257,6 +1281,10 @@
 						</object>
 						<object class="IBActionInfo" key="open:">
 							<string key="name">open:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="removeCompletedItems:">
+							<string key="name">removeCompletedItems:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="removeSelectedItems:">

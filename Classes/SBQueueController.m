@@ -17,6 +17,14 @@
 
 static SBQueueController *sharedController = nil;
 
+@interface SBQueueController (Private)
+
+- (void)updateUI;
+- (void)updateDockTile;
+
+@end
+
+
 @implementation SBQueueController
 
 @synthesize status;
@@ -61,6 +69,8 @@ static SBQueueController *sharedController = nil;
             filesArray = [[NSKeyedUnarchiver unarchiveObjectWithFile:[queueURL path]] retain];
         else
             filesArray = [[NSMutableArray alloc] init];
+        
+        [self updateDockTile];
     }
 
     return self;
@@ -163,6 +173,7 @@ static SBQueueController *sharedController = nil;
     [docImg setSize:NSMakeSize(16, 16)];
     
     [self prepareDestPopup];
+    [self updateUI];
 }
 
 - (void)windowDidLoad
@@ -582,7 +593,15 @@ static SBQueueController *sharedController = nil;
 - (void)_deleteSelectionFromTableView:(NSTableView *)aTableView
 {
     NSMutableIndexSet *rowIndexes = [[aTableView selectedRowIndexes] mutableCopy];
-    NSUInteger selectedIndex = [rowIndexes firstIndex];
+    NSUInteger selectedIndex = -1;
+    if ([rowIndexes count])
+         selectedIndex = [rowIndexes firstIndex];
+    NSInteger clickedRow = [aTableView clickedRow];
+
+    if (clickedRow != -1 && ![rowIndexes containsIndex:clickedRow]) {
+        [rowIndexes removeAllIndexes];
+        [rowIndexes addIndex:clickedRow];
+    }
 
     NSArray *array = [filesArray objectsAtIndexes:rowIndexes];
 
@@ -617,6 +636,49 @@ static SBQueueController *sharedController = nil;
 - (IBAction)removeSelectedItems:(id)sender
 {
     [self _deleteSelectionFromTableView:tableView];
+}
+
+- (IBAction)removeCompletedItems:(id)sender
+{
+    NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+
+    for (SBQueueItem *item in filesArray)
+        if ([item status] == SBQueueItemStatusCompleted)
+            [indexes addIndex:[filesArray indexOfObject:item]];
+
+    if ([indexes count]) {
+        if ([NSTableView instancesRespondToSelector:@selector(beginUpdates)]) {
+#if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
+            [tableView beginUpdates];
+            [tableView removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationEffectFade];
+            [filesArray removeObjectsAtIndexes:indexes];
+            [tableView endUpdates];
+#endif
+        }
+        else {
+            [filesArray removeObjectsAtIndexes:indexes];
+            [tableView reloadData];
+        }
+
+        if (status != SBQueueStatusWorking) {
+            [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+            [self updateDockTile];
+        }
+    }
+}
+
+- (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
+{
+    SEL action = [anItem action];
+
+    if (action == @selector(removeSelectedItems:))
+        if ([tableView selectedRow] != -1 || [tableView clickedRow] != -1)
+            return YES;
+
+    if (action == @selector(removeCompletedItems:))
+        return YES;
+
+    return NO;
 }
 
 #pragma mark Drag & Drop

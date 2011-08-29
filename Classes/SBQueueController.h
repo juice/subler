@@ -60,6 +60,7 @@ typedef NSInteger SBQueueStatus;
 - (BOOL)saveQueueToDisk;
 
 - (IBAction)removeSelectedItems:(id)sender;
+- (IBAction)removeCompletedItems:(id)sender;
 
 - (IBAction)toggleStartStop:(id)sender;
 - (IBAction)toggleOptions:(id)sender;
