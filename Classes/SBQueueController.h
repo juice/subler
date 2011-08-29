@@ -23,7 +23,7 @@ typedef NSInteger SBQueueStatus;
 @interface SBQueueController : NSWindowController<NSTableViewDelegate, NSTableViewDataSource, SBTableViewDelegate> {
     IBOutlet NSButton *start;
     IBOutlet NSButton *open;
-
+    
     IBOutlet NSTextField *countLabel;
     IBOutlet NSProgressIndicator *spinningIndicator;
 
@@ -37,6 +37,12 @@ typedef NSInteger SBQueueStatus;
     IBOutlet SBTableView    *tableView;
     NSMutableArray *filesArray;
 
+    NSURL *destination;
+    BOOL customDestination;
+    IBOutlet NSPopUpButton *destButton;
+
+    NSImage *docImg;
+    
     SBQueueStatus   status;
     BOOL            isCancelled;
     id              currentItem;
@@ -55,5 +61,7 @@ typedef NSInteger SBQueueStatus;
 - (IBAction)toggleOptions:(id)sender;
 
 - (IBAction)open:(id)sender;
+- (IBAction)chooseDestination:(id)sender;
+- (IBAction)destination:(id)sender;
 
 @end

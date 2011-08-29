@@ -13,6 +13,7 @@
 #import "MetadataSearchController.h"
 
 #define SublerBatchTableViewDataType @"SublerBatchTableViewDataType"
+#define kOptionsPanelHeight 88
 
 static SBQueueController *sharedController = nil;
 
@@ -68,22 +69,76 @@ static SBQueueController *sharedController = nil;
     return self;
 }
 
+- (NSMenuItem*)prepareDestPopupItem:(NSURL*) dest
+{
+    NSMenuItem *folderItem = [[NSMenuItem alloc] initWithTitle:[dest lastPathComponent] action:@selector(destination:) keyEquivalent:@""];
+    [folderItem setTag:10];
+
+    NSImage* menuItemIcon = [[NSWorkspace sharedWorkspace] iconForFile:[dest path]];
+    [menuItemIcon setSize:NSMakeSize(16, 16)];
+
+    [folderItem setImage:menuItemIcon];
+
+    return [folderItem autorelease];
+}
+
+- (void)prepareDestPopup
+{
+    NSMenuItem *folderItem = nil;
+
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestination"])
+        destination = [[NSURL fileURLWithPath:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestination"]] retain];
+
+    else {
+        NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSMoviesDirectory,
+                                                                NSUserDomainMask,
+                                                                YES);
+        if ([allPaths count])
+            destination = [[NSURL fileURLWithPath:[allPaths lastObject]] retain];;
+    }
+
+    folderItem = [self prepareDestPopupItem:destination];
+
+    [[destButton menu] insertItem:[NSMenuItem separatorItem] atIndex:0];
+    [[destButton menu] insertItem:folderItem atIndex:0];
+
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestinationSelected"] boolValue])
+        [destButton selectItem:folderItem];
+}
+
+- (IBAction)destination:(id)sender
+{
+    if ([sender tag] == 10) {
+        customDestination = YES;
+        [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"SBQueueDestinationSelected"];
+    }
+    else {
+        customDestination = NO;
+        [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"SBQueueDestinationSelected"];
+    }
+}
+
 - (void)awakeFromNib
 {
     [spinningIndicator setHidden:YES];
     [countLabel setStringValue:@"Empty"];
-    
+
     NSRect frame = [[self window] frame];
-    frame.size.height -= 54;
-    frame.origin.y += 54;
-    
+    frame.size.height -= kOptionsPanelHeight;
+    frame.origin.y += kOptionsPanelHeight;
+
     [tableScrollView setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
     [optionsBox setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
-    
+
     [[self window] setFrame:frame display:YES animate:NO];
-    
+
     [tableScrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     [optionsBox setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+
+    docImg = [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode('MOOV')] retain];
+    [docImg setSize:NSMakeSize(16, 16)];
+    
+    [self prepareDestPopup];
 }
 
 - (void)windowDidLoad
@@ -285,6 +340,7 @@ static SBQueueController *sharedController = nil;
                 break;
 
             NSURL * url = [item URL];
+            NSURL * destURL = nil;
             MP42File *mp4File = [[item mp4File] retain];
             [mp4File setDelegate:self];
 
@@ -298,6 +354,12 @@ static SBQueueController *sharedController = nil;
                 [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             });
 
+            if (!mp4File && destination && customDestination) {
+                destURL = [[[destination URLByAppendingPathComponent:[url lastPathComponent]] URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
+            }
+            else
+                destURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
+
             // The file has been added directly to the queue
             if (!mp4File && url) {
                 mp4File = [[self prepareQueueItem:url error:&outError] retain];
@@ -310,10 +372,9 @@ static SBQueueController *sharedController = nil;
                 success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
             else if (mp4File) {
                 // Write the file to disk
-                NSURL *newURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
-                if (newURL)
+                if (destURL)
                     [attributes addEntriesFromDictionary:[item attributes]];
-                    success = [mp4File writeToUrl:newURL
+                    success = [mp4File writeToUrl:destURL
                                    withAttributes:attributes
                                             error:&outError];
             }
@@ -390,11 +451,11 @@ static SBQueueController *sharedController = nil;
 {
     NSInteger value = 0;
     if (optionsStatus) {
-        value = -54;
+        value = -kOptionsPanelHeight;
         optionsStatus = NO;
     }
     else {
-        value = 54;
+        value = kOptionsPanelHeight;
         optionsStatus = YES;
     }
 
@@ -410,6 +471,8 @@ static SBQueueController *sharedController = nil;
     [tableScrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     [optionsBox setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
 }
+
+#pragma mark Open methods
 
 - (IBAction)open:(id)sender
 {
@@ -434,6 +497,37 @@ static SBQueueController *sharedController = nil;
     }];
 }
 
+- (IBAction)chooseDestination:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.allowsMultipleSelection = NO;
+    panel.canChooseFiles = NO;
+    panel.canChooseDirectories = YES;
+    panel.canCreateDirectories = YES;
+
+    [panel setPrompt:@"Select"];
+    [panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton) {
+            destination = [[panel URL] retain];
+
+            NSMenuItem *folderItem = [self prepareDestPopupItem:[panel URL]];
+
+            [[destButton menu] removeItemAtIndex:0];
+            [[destButton menu] insertItem:folderItem atIndex:0];
+
+            [destButton selectItem:folderItem];
+            customDestination = YES;
+
+            [[NSUserDefaults standardUserDefaults] setValue:[[panel URL] path] forKey:@"SBQueueDestination"];
+            [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"SBQueueDestinationSelected"];
+        }
+        else
+            [destButton selectItemAtIndex:2];
+    }];
+}
+
+#pragma mark TableView
+
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
     return [filesArray count];
@@ -453,7 +547,7 @@ static SBQueueController *sharedController = nil;
         else if (batchStatus == SBQueueItemStatusFailed)
             return [NSImage imageNamed:@"EncodeCanceled"];
         else
-            return [NSImage imageNamed:NSImageNameFollowLinkFreestandingTemplate];
+            return docImg;
     }
 
     return nil;
@@ -484,6 +578,8 @@ static SBQueueController *sharedController = nil;
         [self updateDockTile];
     }
 }
+
+#pragma mark Drag & Drop
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
 {
