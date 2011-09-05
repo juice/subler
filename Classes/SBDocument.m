@@ -151,6 +151,8 @@
                   delegate:nil
         didPresentSelector:NULL
                contextInfo:NULL];
+
+        [outError release];
     }
 
     [self reloadFile:self];
@@ -182,6 +184,8 @@
                                        fileModificationDate]];
         if (success && outError)
             outError = nil;
+        else
+            [outError retain];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [self saveDidComplete:outError];
