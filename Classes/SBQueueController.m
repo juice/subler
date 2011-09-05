@@ -21,6 +21,9 @@ static SBQueueController *sharedController = nil;
 
 - (void)updateUI;
 - (void)updateDockTile;
+- (NSURL*)queueURL;
+- (NSMenuItem*)prepareDestPopupItem:(NSURL*) dest;
+- (void)prepareDestPopup;
 
 @end
 
@@ -40,23 +43,6 @@ static SBQueueController *sharedController = nil;
 + (id)allocWithZone:(NSZone *)zone
 {
     return [[self sharedController] retain];
-}
-
-- (NSURL*)queueURL
-{
-    NSURL *appSupportURL = nil;
-    
-    NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
-                                                            NSUserDomainMask,
-                                                            YES);
-    if ([allPaths count]) {
-        appSupportURL = [NSURL fileURLWithPath:[[allPaths lastObject] stringByAppendingPathComponent:@"Subler"] isDirectory:YES];
-        appSupportURL = [appSupportURL URLByAppendingPathComponent:@"queue.sbqueue" isDirectory:NO];
-        
-        return appSupportURL;
-    }
-    else
-        return nil;
 }
 
 - (id)init
@@ -101,6 +87,66 @@ static SBQueueController *sharedController = nil;
     return self;
 }
 
+- (void)awakeFromNib
+{
+    [spinningIndicator setHidden:YES];
+    [countLabel setStringValue:@"Empty"];
+
+    NSRect frame = [[self window] frame];
+    frame.size.height += kOptionsPanelHeight;
+    frame.origin.y -= kOptionsPanelHeight;
+
+    [[self window] setFrame:frame display:NO animate:NO];
+
+    frame = [[self window] frame];
+    frame.size.height -= kOptionsPanelHeight;
+    frame.origin.y += kOptionsPanelHeight;
+
+    [tableScrollView setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
+    [optionsBox setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
+
+    [[self window] setFrame:frame display:YES animate:NO];
+
+    [tableScrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    [optionsBox setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+
+    docImg = [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode('MOOV')] retain];
+    [docImg setSize:NSMakeSize(16, 16)];
+
+    [self prepareDestPopup];
+    [self updateUI];
+}
+
+- (void)windowDidLoad
+{
+    [super windowDidLoad];
+    
+    [tableView registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, SublerBatchTableViewDataType, nil]];
+}
+
+- (NSURL*)queueURL
+{
+    NSURL *appSupportURL = nil;
+
+    NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+                                                            NSUserDomainMask,
+                                                            YES);
+    if ([allPaths count]) {
+        appSupportURL = [NSURL fileURLWithPath:[[allPaths lastObject] stringByAppendingPathComponent:@"Subler"] isDirectory:YES];
+        appSupportURL = [appSupportURL URLByAppendingPathComponent:@"queue.sbqueue" isDirectory:NO];
+        
+        return appSupportURL;
+    }
+    else
+        return nil;
+}
+
+- (BOOL)saveQueueToDisk
+{
+    return [NSKeyedArchiver archiveRootObject:filesArray
+                                       toFile:[[self queueURL] path]];
+}
+
 - (NSMenuItem*)prepareDestPopupItem:(NSURL*) dest
 {
     NSMenuItem *folderItem = [[NSMenuItem alloc] initWithTitle:[dest lastPathComponent] action:@selector(destination:) keyEquivalent:@""];
@@ -118,10 +164,13 @@ static SBQueueController *sharedController = nil;
 {
     NSMenuItem *folderItem = nil;
 
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestination"])
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestination"]) {
         destination = [[NSURL fileURLWithPath:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestination"]] retain];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:[destination path] isDirectory:nil])
+            destination = nil;
+    }
 
-    else {
+    if (!destination) {
         NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSMoviesDirectory,
                                                                 NSUserDomainMask,
                                                                 YES);
@@ -150,37 +199,6 @@ static SBQueueController *sharedController = nil;
         customDestination = NO;
         [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"SBQueueDestinationSelected"];
     }
-}
-
-- (void)awakeFromNib
-{
-    [spinningIndicator setHidden:YES];
-    [countLabel setStringValue:@"Empty"];
-
-    NSRect frame = [[self window] frame];
-    frame.size.height -= kOptionsPanelHeight;
-    frame.origin.y += kOptionsPanelHeight;
-
-    [tableScrollView setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
-    [optionsBox setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
-
-    [[self window] setFrame:frame display:YES animate:NO];
-
-    [tableScrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    [optionsBox setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
-
-    docImg = [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode('MOOV')] retain];
-    [docImg setSize:NSMakeSize(16, 16)];
-    
-    [self prepareDestPopup];
-    [self updateUI];
-}
-
-- (void)windowDidLoad
-{
-    [super windowDidLoad];
-
-    [tableView registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, SublerBatchTableViewDataType, nil]];
 }
 
 - (void)updateDockTile
@@ -759,12 +777,6 @@ static SBQueueController *sharedController = nil;
     }
 
     return NO;
-}
-
-- (BOOL)saveQueueToDisk
-{
-    return [NSKeyedArchiver archiveRootObject:filesArray
-                                           toFile:[[self queueURL] path]];
 }
 
 @end
