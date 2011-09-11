@@ -289,7 +289,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         }
         else {
             supportedBrands[0] = majorBrand;
-            supportedBrands[3] = "isom";
+            supportedBrands[1] = "isom";
             supportedBrandsCount = 2;
         }
 
