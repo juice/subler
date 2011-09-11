@@ -198,7 +198,7 @@
 {
     BOOL success = NO;
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] boolValue])
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
 
 	switch (saveOperation)
