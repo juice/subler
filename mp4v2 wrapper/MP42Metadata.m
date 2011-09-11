@@ -946,7 +946,7 @@ static const genreType_t genreType_strings[] = {
         MP4TagsSetArtistID(tags, NULL);
 
     if ([tagsDict valueForKey:@"playlistID"]) {
-        const uint64_t i = [[tagsDict valueForKey:@"playlistID"] longValue];
+        const uint64_t i = [[tagsDict valueForKey:@"playlistID"] integerValue];
         MP4TagsSetPlaylistID(tags, &i);
     }
     else
