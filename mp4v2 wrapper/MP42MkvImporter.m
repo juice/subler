@@ -284,7 +284,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
         if (!strcmp(track->CodecID, "V_MPEG4/ISO/AVC"))
             return @"H.264";
         else if (!strcmp(track->CodecID, "A_AAC") ||
-                 !strcmp(track->CodecID, "A_AAC/MPEG4/LC"))
+                 !strcmp(track->CodecID, "A_AAC/MPEG4/LC") ||
+                 !strcmp(track->CodecID, "A_AAC/MPEG2/LC"))
             return @"AAC";
         else if (!strcmp(track->CodecID, "A_AC3"))
             return @"AC-3";
@@ -358,6 +359,17 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
 
     TrackInfo *trackInfo = mkv_GetTrackInfo(matroskaFile, [track sourceId]);
 
+    if ((!strcmp(trackInfo->CodecID, "A_AAC/MPEG4/LC") ||
+        !strcmp(trackInfo->CodecID, "A_AAC/MPEG2/LC")) && !trackInfo->CodecPrivateSize) {
+        NSMutableData *magicCookie = [[NSMutableData alloc] init];
+        uint8_t aac[2];
+        aac[0] = 0x11;
+        aac[1] = 0x90;
+
+        [magicCookie appendBytes:aac length:2];
+        return [magicCookie autorelease];
+    }
+    
     if (!strcmp(trackInfo->CodecID, "A_AC3")) {
         mkv_SetTrackMask(matroskaFile, ~(1 << [track sourceId]));
 
