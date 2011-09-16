@@ -331,7 +331,7 @@ static SBQueueController *sharedController = nil;
                                                                               error:outError];
 
         for (MP42Track *track in [fileImporter tracksArray]) {
-            if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
+            if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] boolValue])
                 track.needConversion = YES;
 
             [track setTrackImporterHelper:fileImporter];
