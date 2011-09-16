@@ -25,6 +25,9 @@ static SBQueueController *sharedController = nil;
 - (NSMenuItem*)prepareDestPopupItem:(NSURL*) dest;
 - (void)prepareDestPopup;
 
+- (void)addItems:(NSArray*)items atIndexes:(NSIndexSet*)indexes;
+- (void)removeItems:(NSArray*)items;
+
 @end
 
 
@@ -143,6 +146,7 @@ static SBQueueController *sharedController = nil;
 
 - (BOOL)saveQueueToDisk
 {
+    [self removeCompletedItems:self];
     return [NSKeyedArchiver archiveRootObject:filesArray
                                        toFile:[[self queueURL] path]];
 }
@@ -221,16 +225,6 @@ static SBQueueController *sharedController = nil;
         [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
         [self updateDockTile];
     }
-}
-
-- (void)addItem:(SBQueueItem*)item
-{
-    [filesArray addObject:item];
-
-    [self updateUI];
-
-    if ([AutoStartOption state])
-        [self start:self];
 }
 
 - (NSArray*)loadSubtitles:(NSURL*)url
@@ -541,9 +535,14 @@ static SBQueueController *sharedController = nil;
 
     [panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
         if (result == NSFileHandlingPanelOKButton) {
-            for (NSURL *url in [panel URLs]) {
-                [filesArray addObject:[SBQueueItem itemWithURL:url]];
-            }
+            NSMutableArray *items = [[NSMutableArray alloc] init];
+
+            for (NSURL *url in [panel URLs])
+                [items addObject:[SBQueueItem itemWithURL:url]];
+
+            [self addItems:items atIndexes:nil];
+            [items release];
+
             [self updateUI];
 
             if ([AutoStartOption state])
@@ -622,7 +621,7 @@ static SBQueueController *sharedController = nil;
     }
 
     NSArray *array = [filesArray objectsAtIndexes:rowIndexes];
-
+    
     // A item with a status of SBQueueItemStatusWorking can not be removed
     for (SBQueueItem *item in array)
         if ([item status] == SBQueueItemStatusWorking)
@@ -634,12 +633,12 @@ static SBQueueController *sharedController = nil;
             [aTableView beginUpdates];
             [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
             [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
-            [filesArray removeObjectsAtIndexes:rowIndexes];
+            [self removeItems:array];
             [aTableView endUpdates];
             #endif
         }
         else {
-            [filesArray removeObjectsAtIndexes:rowIndexes];
+            [self removeItems:array];
             [aTableView reloadData];
             [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
         }
@@ -669,12 +668,14 @@ static SBQueueController *sharedController = nil;
 #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
             [tableView beginUpdates];
             [tableView removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationEffectFade];
-            [filesArray removeObjectsAtIndexes:indexes];
+            NSArray* items = [filesArray objectsAtIndexes:indexes];
+            [self removeItems:items];
             [tableView endUpdates];
 #endif
         }
         else {
-            [filesArray removeObjectsAtIndexes:indexes];
+            NSArray* items = [filesArray objectsAtIndexes:indexes];
+            [self removeItems:items];
             [tableView reloadData];
         }
 
@@ -764,9 +765,17 @@ static SBQueueController *sharedController = nil;
         if ( [[pboard types] containsObject:NSURLPboardType] ) {
             NSArray * items = [pboard readObjectsForClasses:
                                [NSArray arrayWithObject: [NSURL class]] options: nil];
-            for (NSURL * url in [items reverseObjectEnumerator])
-                [filesArray insertObject:[SBQueueItem itemWithURL:url] atIndex:row];
+            NSMutableArray *queueItems = [[NSMutableArray alloc] init];
+            NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+            for (NSURL * url in [items reverseObjectEnumerator]) {
+                [queueItems insertObject:[SBQueueItem itemWithURL:url] atIndex:row];
+                [indexes addIndex:row];
+            }
 
+            [self addItems:queueItems atIndexes:indexes];
+
+            [queueItems release];
+            [indexes release];
             [self updateUI];
 
             if ([AutoStartOption state])
@@ -777,6 +786,67 @@ static SBQueueController *sharedController = nil;
     }
 
     return NO;
+}
+
+- (void)addItem:(SBQueueItem*)item
+{
+    [self addItems:[NSArray arrayWithObject:item] atIndexes:nil];
+    
+    [self updateUI];
+    
+    if ([AutoStartOption state])
+        [self start:self];
+}
+
+- (void)addItems:(NSArray*)items atIndexes:(NSIndexSet*)indexes;
+{
+    NSMutableIndexSet *mutableIndexes = [indexes mutableCopy];
+    if ([indexes count] == [items count])
+        for (id item in [items reverseObjectEnumerator]) {
+            [filesArray insertObject:item atIndex:[mutableIndexes firstIndex]];
+            [mutableIndexes removeIndexesInRange:NSMakeRange(0, 1)];
+        }
+    else if ([indexes count] == 1) {
+        for (id item in [items reverseObjectEnumerator]) {
+            [filesArray insertObject:item atIndex:[mutableIndexes firstIndex]];
+        }
+    }
+    else
+        for (id item in [items reverseObjectEnumerator]) {
+            [filesArray addObject:item];
+        }
+
+    NSUndoManager *undo = [[self window] undoManager];
+    [[undo prepareWithInvocationTarget:self] removeItems:items];
+
+    if (![undo isUndoing]) {
+        [undo setActionName:@"Add Queue Item"];
+    }
+    if ([undo isUndoing] || [undo isRedoing])
+        [self updateUI];
+
+    if ([AutoStartOption state])
+        [self start:self];
+}
+
+- (void)removeItems:(NSArray*)items
+{
+    NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+
+    for (id item in items) {
+        [indexes addIndex:[filesArray indexOfObject:item]];
+        [filesArray removeObject:item];
+    }
+
+    NSUndoManager *undo = [[self window] undoManager];
+    [[undo prepareWithInvocationTarget:self] addItems:items atIndexes:indexes];
+
+    if (![undo isUndoing]) {
+        [undo setActionName:@"Delete Queue Item"];
+    }
+    if ([undo isUndoing] || [undo isRedoing])
+        [self updateUI];
+
 }
 
 @end
