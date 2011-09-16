@@ -231,9 +231,9 @@ static bool GetFirstHeader(FILE* inFile)
 	fpos_t curPos;
     
 	/* already read first header */
-	if (firstHeader[0] == 0x0b) {
+	/*if (firstHeader[0] == 0x0b) {
 		return true;
-	}
+	}*/
     
 	/* remember where we are */
 	fgetpos(inFile, &curPos);
