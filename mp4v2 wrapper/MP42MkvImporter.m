@@ -283,7 +283,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
     if (track->CodecID) {
         if (!strcmp(track->CodecID, "V_MPEG4/ISO/AVC"))
             return @"H.264";
-        else if (!strcmp(track->CodecID, "A_AAC"))
+        else if (!strcmp(track->CodecID, "A_AAC") ||
+                 !strcmp(track->CodecID, "A_AAC/MPEG4/LC"))
             return @"AAC";
         else if (!strcmp(track->CodecID, "A_AC3"))
             return @"AC-3";

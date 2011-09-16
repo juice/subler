@@ -19,7 +19,12 @@ NSString * const MP42Create64BitData = @"64BitData";
 NSString * const MP42Create64BitTime = @"64BitTime";
 NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 
+NSString * const MP42FileTypeMP4 = @"mp4";
+NSString * const MP42FileTypeM4V = @"m4v";
+NSString * const MP42FileTypeM4A = @"m4a";
+
 @interface MP42File (Private)
+
 - (void) removeMuxedTrack: (MP42Track *)track;
 - (BOOL) createChaptersPreview;
 
@@ -272,7 +277,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
         if ([[attributes valueForKey:MP42Create64BitTime] boolValue])
             flags += 0x02;
 
-        if ([fileExtension isEqualToString:@"m4v"]) {
+        if ([fileExtension isEqualToString:MP42FileTypeM4V]) {
             majorBrand = "M4V ";
             supportedBrands[0] = majorBrand;
             supportedBrands[1] = "M4A ";
@@ -280,7 +285,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
             supportedBrands[3] = "isom";
             supportedBrandsCount = 4;
         }
-        else if ([fileExtension isEqualToString:@"m4a"]) {
+        else if ([fileExtension isEqualToString:MP42FileTypeM4A]) {
             majorBrand = "M4A ";
             supportedBrands[0] = majorBrand;
             supportedBrands[1] = "mp42";
@@ -425,7 +430,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
                 generator.requestedTimeToleranceAfter  = kCMTimeZero;
 
                 for (SBTextSample * chapter in [chapterTrack chapters]) {
-                    CMTime time = CMTimeMake([chapter timestamp] + 2000, 1000);
+                    CMTime time = CMTimeMake([chapter timestamp] + 1800, 1000);
                     CGImageRef imgRef = [generator copyCGImageAtTime:time actualTime:NULL error:&error];
                     if (imgRef) {
                         NSSize size = NSMakeSize(CGImageGetWidth(imgRef), CGImageGetHeight(imgRef));

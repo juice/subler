@@ -263,16 +263,16 @@
     NSInteger index = [sender indexOfSelectedItem];
     switch (index) {
         case 0:
-            requiredFileType = @"m4v";
+            requiredFileType = MP42FileTypeM4V;
             break;
         case 1:
-            requiredFileType = @"mp4";
+            requiredFileType = MP42FileTypeMP4;
             break;
         case 2:
-            requiredFileType = @"m4a";
+            requiredFileType = MP42FileTypeM4A;
             break;
         default:
-            requiredFileType = @"m4v";
+            requiredFileType = MP42FileTypeM4V;
             break;
     }
 

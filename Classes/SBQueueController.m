@@ -414,7 +414,7 @@ static SBQueueController *sharedController = nil;
                 destURL = [[[destination URLByAppendingPathComponent:[url lastPathComponent]] URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
             }
             else
-                destURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
+                destURL = url;
 
             // The file has been added directly to the queue
             if (!mp4File && url) {

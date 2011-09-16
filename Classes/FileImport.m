@@ -40,7 +40,7 @@
             [importCheckArray addObject: [NSNumber numberWithBool:NO]];
 
         if ([track.format isEqualToString:@"AC-3"] &&
-            [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] integerValue])
+            [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] boolValue])
             [actionArray addObject:[NSNumber numberWithInteger:[[[NSUserDefaults standardUserDefaults]
                                                                  valueForKey:@"SBAudioMixdown"] integerValue]]];
         else if ([track.format isEqualToString:@"VobSub"])
