@@ -13,6 +13,7 @@
 
 @synthesize attributes;
 @synthesize URL = fileURL;
+@synthesize destURL;
 @synthesize mp4File;
 @synthesize status;
 - (id)init
@@ -78,7 +79,7 @@
     if (self = [super init])
     {
         mp4File = [MP4 retain];
-        fileURL = [URL retain];
+        destURL = [URL retain];
         attributes = [dict retain];
 
         status = SBQueueItemStatusReady;
@@ -96,6 +97,7 @@
 {
     [attributes release];
     [fileURL release];
+    [destURL release];
     [mp4File release];
 }
 

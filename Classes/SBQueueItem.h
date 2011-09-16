@@ -24,6 +24,7 @@ typedef NSInteger SBQueueItemStatus;
 @interface SBQueueItem : NSObject <NSCoding> {
     MP42File *mp4File;
     NSURL   *fileURL;
+    NSURL   *destURL;
     NSDictionary *attributes;
 
     SBQueueItemStatus status;
@@ -32,6 +33,7 @@ typedef NSInteger SBQueueItemStatus;
 
 @property (readonly) NSDictionary *attributes;
 @property (readonly) NSURL *URL;
+@property (readonly) NSURL *destURL;
 @property (readonly) MP42File *mp4File;
 @property (readwrite) SBQueueItemStatus status;
 

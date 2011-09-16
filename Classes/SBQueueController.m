@@ -404,11 +404,13 @@ static SBQueueController *sharedController = nil;
                 [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             });
 
-            if (!mp4File && destination && customDestination) {
+            if ([item destURL])
+                destURL = [item destURL];
+            else if (!mp4File && destination && customDestination) {
                 destURL = [[[destination URLByAppendingPathComponent:[url lastPathComponent]] URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
             }
             else
-                destURL = url;
+                destURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
 
             // The file has been added directly to the queue
             if (!mp4File && url) {
