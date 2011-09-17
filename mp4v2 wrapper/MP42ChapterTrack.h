@@ -11,7 +11,7 @@
 
 @class SBTextSample;
 
-@interface MP42ChapterTrack : MP42Track {
+@interface MP42ChapterTrack : MP42Track <NSCoding> {
     NSMutableArray *chapters;
 }
 - (id) initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle;

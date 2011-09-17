@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "MP42Track.h"
 
-@interface MP42AudioTrack : MP42Track {
+@interface MP42AudioTrack : MP42Track <NSCoding> {
     float volume;
     UInt32 channels;
     UInt32 channelLayoutTag;

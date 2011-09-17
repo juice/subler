@@ -162,4 +162,54 @@
 @synthesize newProfile;
 @synthesize newLevel;
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+
+    [coder encodeInt:1 forKey:@"MP42VideoTrackVersion"];
+
+    [coder encodeInt64:width forKey:@"width"];
+    [coder encodeInt64:height forKey:@"height"];
+
+    [coder encodeFloat:trackWidth forKey:@"trackWidth"];
+    [coder encodeFloat:trackHeight forKey:@"trackHeight"];
+
+    [coder encodeInt64:hSpacing forKey:@"hSpacing"];
+    [coder encodeInt64:vSpacing forKey:@"vSpacing"];
+
+    [coder encodeInt32:offsetX forKey:@"offsetX"];
+    [coder encodeInt32:offsetY forKey:@"offsetY"];
+
+    [coder encodeInt:origProfile forKey:@"origProfile"];
+    [coder encodeInt:origLevel forKey:@"origLevel"];
+
+    [coder encodeInt:newProfile forKey:@"newProfile"];
+    [coder encodeInt:newLevel forKey:@"newLevel"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super initWithCoder:decoder];
+
+    width = [decoder decodeInt64ForKey:@"width"];
+    height = [decoder decodeInt64ForKey:@"height"];
+
+    trackWidth = [decoder decodeFloatForKey:@"trackWidth"];
+    trackHeight = [decoder decodeFloatForKey:@"trackHeight"];
+
+    hSpacing = [decoder decodeInt64ForKey:@"hSpacing"];
+    vSpacing = [decoder decodeInt64ForKey:@"vSpacing"];
+
+    offsetX = [decoder decodeInt32ForKey:@"offsetX"];
+    offsetY = [decoder decodeInt32ForKey:@"offsetY"];
+
+    origProfile = [decoder decodeInt32ForKey:@"origProfile"];
+    origLevel = [decoder decodeInt32ForKey:@"origLevel"];
+
+    newProfile = [decoder decodeInt32ForKey:@"newProfile"];
+    newLevel = [decoder decodeInt32ForKey:@"newLevel"];
+
+    return self;
+}
+
 @end

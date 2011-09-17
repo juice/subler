@@ -145,4 +145,36 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
 @synthesize mixdownType;
 @synthesize channelLayoutTag;
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    
+    [coder encodeInt:1 forKey:@"MP42AudioTrackVersion"];
+
+    [coder encodeFloat:volume forKey:@"volume"];
+
+    [coder encodeInt64:channels forKey:@"channels"];
+    [coder encodeInt64:channelLayoutTag forKey:@"channelLayoutTag"];
+    
+    [coder encodeInt64:fallbackTrackId forKey:@"fallbackTrackId"];
+
+    [coder encodeObject:mixdownType forKey:@"mixdownType"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super initWithCoder:decoder];
+
+    volume = [decoder decodeFloatForKey:@"volume"];
+
+    channels = [decoder decodeInt64ForKey:@"channels"];
+    channelLayoutTag = [decoder decodeInt64ForKey:@"channelLayoutTag"];
+
+    fallbackTrackId = [decoder decodeInt64ForKey:@"fallbackTrackId"];
+
+    mixdownType = [[decoder decodeObjectForKey:@"mixdownType"] retain];
+
+    return self;
+}
+
 @end

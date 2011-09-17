@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "MP42Track.h"
 
-@interface MP42VideoTrack : MP42Track {
+@interface MP42VideoTrack : MP42Track <NSCoding> {
     uint64_t width, height;
     float trackWidth, trackHeight;
     uint64_t hSpacing, vSpacing;

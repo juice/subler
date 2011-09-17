@@ -229,4 +229,20 @@
 
 @synthesize chapters;
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+
+    [coder encodeObject:chapters forKey:@"chapters"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super initWithCoder:decoder];
+
+    chapters = [[decoder decodeObjectForKey:@"chapters"] retain];
+
+    return self;
+}
+
 @end
