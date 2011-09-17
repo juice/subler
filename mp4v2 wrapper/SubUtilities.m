@@ -33,6 +33,22 @@
 @synthesize timestamp;
 @synthesize title;
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInt64:timestamp forKey:@"timestamp"];
+    [coder encodeObject:title forKey:@"title"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super init];
+
+    timestamp = [decoder decodeInt64ForKey:@"timestamp"];
+    title = [[decoder decodeObjectForKey:@"title"] retain];
+
+    return self;
+}
+
 @end
 
 @implementation SBSubSerializer
