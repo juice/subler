@@ -1148,6 +1148,8 @@ static const genreType_t genreType_strings[] = {
     [coder encodeInt:hdVideo forKey:@"MP42HDVideo"];
     [coder encodeInt:gapless forKey:@"MP42Gapless"];
     [coder encodeInt:podcast forKey:@"MP42Podcast"];
+
+    [coder encodeBool:isEdited forKey:@"MP42Edited"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -1164,6 +1166,8 @@ static const genreType_t genreType_strings[] = {
     hdVideo = [decoder decodeIntForKey:@"MP42HDVideo"];
     gapless = [decoder decodeIntForKey:@"MP42Gapless"];
     podcast = [decoder decodeIntForKey:@"MP42Podcast"];
+
+    isEdited = [decoder decodeBoolForKey:@"MP42Edited"];
 
     return self;
 }

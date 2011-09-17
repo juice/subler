@@ -26,7 +26,7 @@ extern NSString * const MP42FileTypeMP4;
 extern NSString * const MP42FileTypeM4V;
 extern NSString * const MP42FileTypeM4A;
 
-@interface MP42File : NSObject {
+@interface MP42File : NSObject <NSCoding> {
 @private
     MP4FileHandle  fileHandle;
     NSURL          *fileURL;

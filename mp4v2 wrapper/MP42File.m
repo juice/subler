@@ -606,6 +606,33 @@ NSString * const MP42FileTypeM4A = @"m4a";
 @synthesize metadata;
 @synthesize hasFileRepresentation;
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInt:1 forKey:@"MP42FileVersion"];
+
+    [coder encodeObject:fileURL forKey:@"fileUrl"];
+    [coder encodeObject:tracksToBeDeleted forKey:@"tracksToBeDeleted"];
+    [coder encodeBool:hasFileRepresentation forKey:@"hasFileRepresentation"];
+
+    [coder encodeObject:tracks forKey:@"tracks"];
+    [coder encodeObject:metadata forKey:@"metadata"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super init];
+
+    fileURL = [[decoder decodeObjectForKey:@"fileUrl"] retain];
+    tracksToBeDeleted = [[decoder decodeObjectForKey:@"tracksToBeDeleted"] retain];
+
+    hasFileRepresentation = [decoder decodeBoolForKey:@"hasFileRepresentation"];
+
+    tracks = [[decoder decodeObjectForKey:@"tracks"] retain];
+    metadata = [[decoder decodeObjectForKey:@"metadata"] retain];
+
+    return self;
+}
+
 - (void) dealloc
 {
     [fileURL release];

@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11C48</string>
+		<string key="IBDocument.SystemVersion">11C55</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1923</string>
-		<string key="IBDocument.AppKitVersion">1138.18</string>
+		<string key="IBDocument.AppKitVersion">1138.20</string>
 		<string key="IBDocument.HIToolboxVersion">567.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -224,7 +224,6 @@
 									<string key="NSFrame">{{543, 1}, {15, 275}}</string>
 									<reference key="NSSuperview" ref="785720780"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:1214</string>
 									<reference key="NSTarget" ref="785720780"/>
 									<string key="NSAction">_doScroller:</string>
@@ -442,7 +441,7 @@
 														<object class="NSPopUpButton" id="205639305">
 															<reference key="NSNextResponder" ref="841742986"/>
 															<int key="NSvFlags">268</int>
-															<string key="NSFrame">{{238, 46}, {157, 26}}</string>
+															<string key="NSFrame">{{227, 44}, {180, 26}}</string>
 															<reference key="NSSuperview" ref="841742986"/>
 															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="355138311"/>
@@ -518,7 +517,7 @@
 														<object class="NSTextField" id="979235387">
 															<reference key="NSNextResponder" ref="841742986"/>
 															<int key="NSvFlags">268</int>
-															<string key="NSFrame">{{124, 50}, {109, 17}}</string>
+															<string key="NSFrame">{{113, 50}, {109, 17}}</string>
 															<reference key="NSSuperview" ref="841742986"/>
 															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="205639305"/>

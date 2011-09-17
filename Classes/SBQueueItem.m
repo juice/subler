@@ -79,6 +79,7 @@
     if (self = [super init])
     {
         mp4File = [MP4 retain];
+        fileURL = [URL retain];
         destURL = [URL retain];
         attributes = [dict retain];
 
@@ -107,6 +108,7 @@
 
     [coder encodeObject:mp4File forKey:@"SBQueueItemMp4File"];
     [coder encodeObject:fileURL forKey:@"SBQueueItemFileURL"];
+    [coder encodeObject:destURL forKey:@"SBQueueItemDestURL"];
     [coder encodeObject:attributes forKey:@"SBQueueItemAttributes"];
 
     [coder encodeInt:status forKey:@"SBQueueItemStatus"];
@@ -120,6 +122,7 @@
     mp4File = [[decoder decodeObjectForKey:@"SBQueueItemMp4File"] retain];
 
     fileURL = [[decoder decodeObjectForKey:@"SBQueueItemFileURL"] retain];
+    destURL = [[decoder decodeObjectForKey:@"SBQueueItemDestURL"] retain];
     attributes = [[decoder decodeObjectForKey:@"SBQueueItemAttributes"] retain];
 
     status = [decoder decodeIntForKey:@"SBQueueItemStatus"];

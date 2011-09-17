@@ -188,6 +188,66 @@
     return [[format retain] autorelease];
 }
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInt:1 forKey:@"MP42TrackVersion"];
+
+    [coder encodeInt64:Id forKey:@"Id"];
+    [coder encodeInt64:sourceId forKey:@"sourceId"];
+
+    [coder encodeObject:sourceURL forKey:@"sourceURL"];
+    [coder encodeObject:sourceFormat forKey:@"sourceFormat"];
+    [coder encodeObject:format forKey:@"format"];
+    [coder encodeObject:name forKey:@"name"];
+    [coder encodeObject:language forKey:@"language"];
+
+    [coder encodeBool:enabled forKey:@"enabled"];
+
+    [coder encodeInt64:alternate_group forKey:@"alternate_group"];
+    [coder encodeInt64:startOffset forKey:@"startOffset"];
+
+    [coder encodeBool:isEdited forKey:@"isEdited"];
+    [coder encodeBool:muxed forKey:@"muxed"];
+    [coder encodeBool:needConversion forKey:@"needConversion"];
+
+    [coder encodeInt32:timescale forKey:@"timescale"];
+    [coder encodeInt32:bitrate forKey:@"bitrate"];
+    [coder encodeInt64:duration forKey:@"duration"];
+
+    [coder encodeObject:updatedProperty forKey:@"updatedProperty"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super init];
+    
+    Id = [decoder decodeInt64ForKey:@"Id"];
+    sourceId = [decoder decodeInt64ForKey:@"sourceId"];
+
+    sourceURL = [[decoder decodeObjectForKey:@"sourceURL"] retain];
+    sourceFormat = [[decoder decodeObjectForKey:@"sourceFormat"] retain];
+    format = [[decoder decodeObjectForKey:@"format"] retain];
+    name = [[decoder decodeObjectForKey:@"name"] retain];
+    language = [[decoder decodeObjectForKey:@"language"] retain];
+
+    enabled = [decoder decodeBoolForKey:@"enabled"];
+
+    alternate_group = [decoder decodeInt64ForKey:@"alternate_group"];
+    startOffset = [decoder decodeInt64ForKey:@"startOffset"];
+
+    isEdited = [decoder decodeBoolForKey:@"isEdited"];
+    muxed = [decoder decodeBoolForKey:@"muxed"];
+    needConversion = [decoder decodeBoolForKey:@"needConversion"];
+
+    timescale = [decoder decodeInt32ForKey:@"timescale"];
+    bitrate = [decoder decodeInt32ForKey:@"bitrate"];
+    duration = [decoder decodeInt64ForKey:@"duration"];
+
+    updatedProperty = [decoder decodeObjectForKey:@"updatedProperty"];
+    
+    return self;
+}
+
 @synthesize timescale;
 @synthesize bitrate;
 @synthesize duration;

@@ -54,8 +54,10 @@ static SBQueueController *sharedController = nil;
     if (self) {
         NSURL* queueURL = [self queueURL];
 
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[queueURL path]])
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[queueURL path]]) {
             filesArray = [[NSKeyedUnarchiver unarchiveObjectWithFile:[queueURL path]] retain];
+            NSLog(@"Queue loaded");
+        }
         else
             filesArray = [[NSMutableArray alloc] init];
         
@@ -378,7 +380,7 @@ static SBQueueController *sharedController = nil;
     [spinningIndicator startAnimation:self];
 
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] integerValue])
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] boolValue])
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
 
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -650,6 +652,7 @@ static SBQueueController *sharedController = nil;
             [self updateDockTile];
         }
     }
+    [rowIndexes release];
 }
 
 - (IBAction)removeSelectedItems:(id)sender
@@ -686,6 +689,8 @@ static SBQueueController *sharedController = nil;
             [self updateDockTile];
         }
     }
+    
+    [indexes release];
 }
 
 - (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
@@ -829,6 +834,8 @@ static SBQueueController *sharedController = nil;
 
     if ([AutoStartOption state])
         [self start:self];
+    
+    [mutableIndexes release];
 }
 
 - (void)removeItems:(NSArray*)items
@@ -849,6 +856,7 @@ static SBQueueController *sharedController = nil;
     if ([undo isUndoing] || [undo isRedoing])
         [self updateUI];
 
+    [indexes release];
 }
 
 @end

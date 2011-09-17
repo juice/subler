@@ -10,7 +10,7 @@
 #import "mp4v2.h"
 @class MP42FileImporter;
 
-@interface MP42Track : NSObject {
+@interface MP42Track : NSObject <NSCoding> {
     MP4TrackId  Id;
     MP4TrackId  sourceId;
     id          sourceFileHandle;
