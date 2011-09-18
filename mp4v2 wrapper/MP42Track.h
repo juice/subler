@@ -37,7 +37,6 @@
     MP42FileImporter * trackImporterHelper;
     id trackDemuxerHelper;
     id trackConverterHelper;
-
 }
 
 @property(readwrite) MP4TrackId Id;

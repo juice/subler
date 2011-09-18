@@ -220,7 +220,7 @@
 - (id)initWithCoder:(NSCoder *)decoder
 {
     self = [super init];
-    
+
     Id = [decoder decodeInt64ForKey:@"Id"];
     sourceId = [decoder decodeInt64ForKey:@"sourceId"];
 
@@ -243,8 +243,8 @@
     bitrate = [decoder decodeInt32ForKey:@"bitrate"];
     duration = [decoder decodeInt64ForKey:@"duration"];
 
-    updatedProperty = [decoder decodeObjectForKey:@"updatedProperty"];
-    
+    updatedProperty = [[decoder decodeObjectForKey:@"updatedProperty"] retain];
+
     return self;
 }
 

@@ -15,6 +15,8 @@
 #import <AVFoundation/AVFoundation.h>
 #endif
 
+#import "MP42FileImporter.h"
+
 NSString * const MP42Create64BitData = @"64BitData";
 NSString * const MP42Create64BitTime = @"64BitTime";
 NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
@@ -318,6 +320,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
     BOOL success = YES;
     MP42Track *track;
 
+    // Open the mp4 file
     fileHandle = MP4Modify([[fileURL path] UTF8String], 0);
     if (fileHandle == MP4_INVALID_FILE_HANDLE) {
         if ( outError != NULL)
@@ -328,14 +331,35 @@ NSString * const MP42FileTypeM4A = @"m4a";
         return NO;
     }
 
+    // Delete tracks
     for (track in tracksToBeDeleted)
         [self removeMuxedTrack:track];
 
+    // Init the muxer and prepare the work
+    NSMutableDictionary *fileImporters = [[NSMutableDictionary alloc] init];
     muxer = [[MP42Muxer alloc] initWithDelegate:self];
     for (track in tracks)
         if (!(track.muxed) && !isCancelled) {
+            // Reopen the file importer is they are not already open, this happens when the object has been unarchived from a file
+            if (![track trackImporterHelper]) {
+                MP42FileImporter *fileImporter = nil;
+                NSURL *sourceURL = [track sourceURL];
+                if ((fileImporter = [fileImporters valueForKey:[[track sourceURL] path]])) {
+                    [track setTrackImporterHelper:fileImporter];
+                }
+                else if (sourceURL) {
+                    fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil andFile:[track sourceURL] error:outError];
+                    if (fileImporter) {
+                        [track setTrackImporterHelper:fileImporter];
+                        [fileImporters setObject:fileImporter forKey:[[track sourceURL] path]];
+                        [fileImporter release];
+                    }
+                }
+            }
             [muxer addTrack:track];
     }
+
+    [fileImporters release];
 
     success = [muxer prepareWork:fileHandle error:outError];
     if ( !success && outError != NULL) {
@@ -350,6 +374,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
     [muxer release];
     muxer = nil;
 
+    // Update modified tracks properties
     for (track in tracks)
         if (track.isEdited) {
             success = [track writeToFile:fileHandle error:outError];
@@ -357,11 +382,14 @@ NSString * const MP42FileTypeM4A = @"m4a";
                 break;
         }
 
+    // Update metadata 
     if (metadata.isEdited)
         [metadata writeMetadataWithFileHandle:fileHandle];
 
+    // Close the mp4 file handle
     MP4Close(fileHandle);
 
+    // Generate previews images for chapters
     if ([[attributes valueForKey:@"ChaptersPreview"] boolValue])
         [self createChaptersPreview];
 
@@ -629,6 +657,9 @@ NSString * const MP42FileTypeM4A = @"m4a";
 
     tracks = [[decoder decodeObjectForKey:@"tracks"] retain];
     metadata = [[decoder decodeObjectForKey:@"metadata"] retain];
+
+    for (MP42Track *track in tracks)
+        NSLog(@"Track Source URL: %@", [[track sourceURL] absoluteString]);
 
     return self;
 }

@@ -30,7 +30,7 @@
         workingTracks = [[NSMutableArray alloc] init];
         delegate = del;
     }
-    
+
     return self;
 }
 
@@ -254,7 +254,6 @@
             MP4SetTrackESConfiguration( fileHandle, dstTrackId,
                                              (uint8_t*)palette, 16 * 4 );
 
-
             [[track trackImporterHelper] setActiveTrack:track];
         }
 
@@ -268,7 +267,7 @@
                     videoSize.height = [track trackHeight];
                     break;
                 }
-            
+
             if (!videoSize.width) {
                 MP4TrackId videoTrack = findFirstVideoTrack(fileHandle);
                 if (videoTrack) {
@@ -282,7 +281,7 @@
             }
 
             dstTrackId = MP4AddCCTrack(fileHandle, timeScale, videoSize.width, videoSize.height);
-            
+
             [[track trackImporterHelper] setActiveTrack:track];
         }
         else {
@@ -291,11 +290,11 @@
 
         MP4SetTrackDurationPerChunk(fileHandle, dstTrackId, timeScale / 8);
         track.Id = dstTrackId;
-        
+
         if (track.trackConverterHelper)
             [track.trackConverterHelper setOutputTrack:track.Id];
     }
-    
+
     return noErr;
 }
 
