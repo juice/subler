@@ -408,6 +408,8 @@
                         sample->sampleTimestamp = sampleTimingInfo.presentationTimeStamp.value;
                         sample->sampleIsSync = sync;
                         sample->sampleTrackId = track.Id;
+                        if(track.needConversion)
+                            sample->sampleSourceTrack = track;
 
                         @synchronized(samplesBuffer) {
                             [samplesBuffer addObject:sample];

@@ -560,6 +560,8 @@ bail:
             sample->sampleTimestamp = trackHelper->currentTime;
             sample->sampleIsSync = !(sampleFlags & mediaSampleNotSync);
             sample->sampleTrackId = track.Id;
+            if(track.needConversion)
+                sample->sampleSourceTrack = track;
 
             @synchronized(samplesBuffer) {
                 [samplesBuffer addObject:sample];
