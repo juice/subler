@@ -199,6 +199,7 @@
             }
 
             newTrack.format = [self formatForTrack:track];
+            newTrack.sourceFormat = newTrack.format;
             newTrack.Id = [track trackID];
             newTrack.sourceURL = fileURL;
             newTrack.sourceFileHandle = localAsset;

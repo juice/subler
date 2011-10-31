@@ -215,6 +215,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
 
         if (newTrack) {
             newTrack.format = [self formatForTrack:track];
+            newTrack.sourceFormat = newTrack.format;
             newTrack.Id = i++;
             newTrack.sourceURL = fileURL;
             newTrack.sourceFileHandle = sourceFile;

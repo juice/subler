@@ -45,6 +45,7 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
 NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId videoTrack);
 NSString* getFilenameLanguage(CFStringRef filename);
 
+uint8_t *CreateEsdsFromSetupData(uint8_t *codecPrivate, size_t vosLen, size_t *esdsLen, int trackID, bool audio, bool write_version);
 ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int versionFlags);
 CFDataRef createDescExt_XiphVorbis(UInt32 codecPrivateSize, const void * codecPrivate);
 CFDataRef createDescExt_XiphFLAC(UInt32 codecPrivateSize, const void * codecPrivate);

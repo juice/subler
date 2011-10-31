@@ -134,7 +134,7 @@
             [[actionCell menu] addItem:item];
         }
         cell = actionCell;
-        
+
         return [cell autorelease];
     }
 

@@ -338,6 +338,26 @@ NSString* getFilenameLanguage(CFStringRef filename)
 	return lang;
 }
 
+/* write the data to the target adress & then return a pointer which points after the written data */
+uint8_t *write_data(uint8_t *target, uint8_t* data, int32_t data_size)
+{
+	if(data_size > 0)
+		memcpy(target, data, data_size);
+	return (target + data_size);
+} /* write_data() */
+
+/* write the int32_t data to target & then return a pointer which points after that data */
+uint8_t *write_int32(uint8_t *target, int32_t data)
+{
+	return write_data(target, (uint8_t*)&data, sizeof(data));
+} /* write_int32() */
+
+/* write the int16_t data to target & then return a pointer which points after that data */
+uint8_t *write_int16(uint8_t *target, int16_t data)
+{
+	return write_data(target, (uint8_t*)&data, sizeof(data));
+} /* write_int16() */
+
 #define MP4ESDescrTag                   0x03
 #define MP4DecConfigDescrTag            0x04
 #define MP4DecSpecificDescrTag          0x05
@@ -398,6 +418,96 @@ ComponentResult ReadESDSDescExt(void* descExt, UInt8 **buffer, int *size, int ve
 
 	return noErr;
 }
+
+// the esds atom creation is based off of the routines for it in ffmpeg's movenc.c
+static unsigned int descrLength(unsigned int len)
+{
+    int i;
+    for(i=1; len>>(7*i); i++);
+    return len + 1 + i;
+}
+
+static uint8_t* putDescr(uint8_t *buffer, int tag, unsigned int size)
+{
+    int i= descrLength(size) - size - 2;
+    *buffer++ = tag;
+    for(; i>0; i--)
+        *buffer++ = (size>>(7*i)) | 0x80;
+    *buffer++ = size & 0x7F;
+	return buffer;
+}
+
+// ESDS layout:
+//  + version             (4 bytes)
+//  + ES descriptor 
+//   + Track ID            (2 bytes)
+//   + Flags               (1 byte)
+//   + DecoderConfig descriptor
+//    + Object Type         (1 byte)
+//    + Stream Type         (1 byte)
+//    + Buffersize DB       (3 bytes)
+//    + Max bitrate         (4 bytes)
+//    + VBR/Avg bitrate     (4 bytes)
+//    + DecoderSpecific info descriptor
+//     + codecPrivate        (codecPrivate->GetSize())
+//   + SL descriptor
+//    + dunno               (1 byte)
+
+uint8_t *CreateEsdsFromSetupData(uint8_t *codecPrivate, size_t vosLen, size_t *esdsLen, int trackID, bool audio, bool write_version)
+{
+	int decoderSpecificInfoLen = vosLen ? descrLength(vosLen) : 0;
+	int versionLen = write_version ? 4 : 0;
+	
+	*esdsLen = versionLen + descrLength(3 + descrLength(13 + decoderSpecificInfoLen) + descrLength(1));
+	uint8_t *esds = (uint8_t*)malloc(*esdsLen);
+	UInt8 *pos = (UInt8 *) esds;
+	
+	// esds atom version (only needed for ImageDescription extension)
+	if (write_version)
+		pos = write_int32(pos, 0);
+	
+	// ES Descriptor
+	pos = putDescr(pos, 0x03, 3 + descrLength(13 + decoderSpecificInfoLen) + descrLength(1));
+	pos = write_int16(pos, EndianS16_NtoB(trackID));
+	*pos++ = 0;		// no flags
+	
+	// DecoderConfig descriptor
+	pos = putDescr(pos, 0x04, 13 + decoderSpecificInfoLen);
+	
+	// Object type indication, see http://gpac.sourceforge.net/tutorial/mediatypes.htm
+	if (audio)
+		*pos++ = 0x40;		// aac
+	else
+		*pos++ = 0x20;		// mpeg4 part 2
+	
+	// streamtype
+	if (audio)
+		*pos++ = 0x15;
+	else
+		*pos++ = 0x11;
+	
+	// 3 bytes: buffersize DB (not sure how to get easily)
+	*pos++ = 0;
+	pos = write_int16(pos, 0);
+	
+	// max bitrate, not sure how to get easily
+	pos = write_int32(pos, 0);
+	
+	// vbr
+	pos = write_int32(pos, 0);
+	
+	if (vosLen) {
+		pos = putDescr(pos, 0x05, vosLen);
+		pos = write_data(pos, codecPrivate, vosLen);
+	}
+	
+	// SL descriptor
+	pos = putDescr(pos, 0x06, 1);
+	*pos++ = 0x02;
+	
+	return esds;
+}
+
 enum {
 	// these are atoms/extension types defined by XiphQT for their codecs
 	kCookieTypeOggSerialNo = 'oCtN',

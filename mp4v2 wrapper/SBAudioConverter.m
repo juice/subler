@@ -622,7 +622,12 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             if ([track.sourceFormat isEqualToString:@"AAC"]) {
                 inputFormat.mFormatID = kAudioFormatMPEG4AAC;
 
-                magicCookie = (CFDataRef) srcMagicCookie;
+                size_t cookieSize;
+                uint8_t * cookie = CreateEsdsFromSetupData((uint8_t *)[srcMagicCookie bytes], [srcMagicCookie length], &cookieSize, 1, true, false);
+                magicCookie = (CFDataRef) [[NSData dataWithBytes:cookie length:cookieSize] retain];
+            }
+            if ([track.sourceFormat isEqualToString:@"ALAC"]) {
+                inputFormat.mFormatID = kAudioFormatAppleLossless;
             }
             if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
                 inputFormat.mFormatID = 'XiVs';
