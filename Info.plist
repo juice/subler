@@ -87,6 +87,7 @@
 			<array>
 				<string>mkv</string>
 				<string>mka</string>
+				<string>mks</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Matroska video</string>
