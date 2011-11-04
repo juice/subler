@@ -628,6 +628,8 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             }
             if ([track.sourceFormat isEqualToString:@"ALAC"]) {
                 inputFormat.mFormatID = kAudioFormatAppleLossless;
+                
+                magicCookie = (CFDataRef) [srcMagicCookie retain];
             }
             if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
                 inputFormat.mFormatID = 'XiVs';

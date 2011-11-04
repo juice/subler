@@ -112,7 +112,15 @@
 
             return [ac3Info autorelease];
             
-        } else {
+        } else if (!strcmp(media_data_name, "alac")) {
+            if (MP4HaveTrackAtom(fileHandle, srcTrackId, "mdia.minf.stbl.stsd.alac.alac")) {
+                uint8_t*     ppValue;
+                uint32_t     pValueSize;
+                MP4GetTrackBytesProperty(fileHandle, srcTrackId, "mdia.minf.stbl.stsd.alac.alac.AppleLosslessMagicCookie", &ppValue, &pValueSize);
+                magicCookie = [NSData dataWithBytes:ppValue length:pValueSize];
+            }
+        }
+        else {
             uint8_t *ppConfig; uint32_t pConfigSize;
             MP4GetTrackESConfiguration(fileHandle, srcTrackId, &ppConfig, &pConfigSize);
             magicCookie = [NSData dataWithBytes:ppConfig length:pConfigSize];
@@ -375,7 +383,7 @@
         [dataReader release];
 
     if (fileHandle)
-        MP4Close(fileHandle);
+        MP4Close(fileHandle, 0);
 
     if (activeTracks)
         [activeTracks release];

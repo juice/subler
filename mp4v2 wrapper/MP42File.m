@@ -66,7 +66,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
         MP4GetStringProperty(fileHandle, "ftyp.majorBrand", &brand);
         if (brand != NULL) {
             if (!strcmp(brand, "qt  ")) {
-                MP4Close(fileHandle);
+                MP4Close(fileHandle, 0);
                 [self release];
                 return nil;
             }
@@ -115,7 +115,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
 
         tracksToBeDeleted = [[NSMutableArray alloc] init];
         metadata = [[MP42Metadata alloc] initWithSourceURL:fileURL fileHandle:fileHandle];
-        MP4Close(fileHandle);
+        MP4Close(fileHandle, 0);
 	}
 
 	return self;
@@ -306,7 +306,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
                                  supportedBrands, supportedBrandsCount);
         if (fileHandle) {
             MP4SetTimeScale(fileHandle, 600);
-            MP4Close(fileHandle);
+            MP4Close(fileHandle, 0);
 
             success = [self updateMP4FileWithAttributes:attributes error:outError];
         }
@@ -387,7 +387,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
         [metadata writeMetadataWithFileHandle:fileHandle];
 
     // Close the mp4 file handle
-    MP4Close(fileHandle);
+    MP4Close(fileHandle, 0);
 
     // Generate previews images for chapters
     if ([[attributes valueForKey:@"ChaptersPreview"] boolValue])
@@ -603,7 +603,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
         MP4AddTrackReference(fileHandle, "tref.chap", jpegTrack, refTrack);
         copyTrackEditLists(fileHandle, [chapterTrack Id], jpegTrack);
 
-        MP4Close(fileHandle);
+        MP4Close(fileHandle, 0);
 
         [pool release];
         return YES;
@@ -622,7 +622,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
         MP4AddTrackReference(fileHandle, "tref.chap", [chapterTrack Id], refTrack);
         MP4AddTrackReference(fileHandle, "tref.chap", jpegTrack, refTrack);
         disableTrack(fileHandle, jpegTrack);
-        MP4Close(fileHandle);
+        MP4Close(fileHandle, 0);
     }
 
     return NO;

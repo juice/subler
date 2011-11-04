@@ -171,6 +171,13 @@
             [[track trackImporterHelper] setActiveTrack:track];
         }
 
+        // ALAC audio track
+        else if ([track isMemberOfClass:[MP42AudioTrack class]] && [track.format isEqualToString:@"ALAC"]) {
+            dstTrackId = MP4AddAudioTrack(fileHandle,
+                                          timeScale,
+                                          1024, MP4_MPEG4_AUDIO_TYPE);
+        }
+
         // 3GPP text track
         else if ([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"3GPP Text"]) {
             NSSize subSize = [[track trackImporterHelper] sizeForTrack:track];
@@ -322,7 +329,7 @@
     for (id importerHelper in trackImportersArray) {
         MP42SampleBuffer * sampleBuffer;
 
-        while ((sampleBuffer = [importerHelper copyNextSample]) != nil && !isCancelled) {                
+        while ((sampleBuffer = [importerHelper copyNextSample]) != nil && !isCancelled) {
             // The sample need additional conversion
             if (sampleBuffer->sampleSourceTrack) {
                 MP42SampleBuffer *convertedSample;
