@@ -405,8 +405,11 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
                                           kQTPropertyClass_SoundDescription,
                                           kQTSoundDescriptionPropertyID_MagicCookie,
                                           cookieSize, cookie, &cookieSize);
-            if (cookieSize >= 48)
+            if (cookieSize > 48)
+                // Remove unneeded parts of the cookie, as describred in ALACMagicCookieDescription.txt
                 magicCookie = [NSData dataWithBytes:cookie + 24 length:cookieSize - 32];
+            else
+                magicCookie = [NSData dataWithBytes:cookie length:cookieSize];
 
             free(cookie);            
             return magicCookie;

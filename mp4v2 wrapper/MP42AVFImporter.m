@@ -265,11 +265,13 @@
                 return [NSData dataWithBytes:buffer length:size];
             }
             else if (code == kAudioFormatAppleLossless) {
-                if (cookieSizeOut >= 48) {
+                if (cookieSizeOut > 48) {
+                    // Remove unneeded parts of the cookie, as describred in ALACMagicCookieDescription.txt
                     magicCookie += 24;
                     cookieSizeOut = cookieSizeOut - 24 - 8;
-                    return [NSData dataWithBytes:magicCookie length:cookieSizeOut];
                 }
+
+                return [NSData dataWithBytes:magicCookie length:cookieSizeOut];
             }
         }
     }
