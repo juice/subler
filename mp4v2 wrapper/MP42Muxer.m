@@ -173,9 +173,11 @@
 
         // ALAC audio track
         else if ([track isMemberOfClass:[MP42AudioTrack class]] && [track.format isEqualToString:@"ALAC"]) {
-            dstTrackId = MP4AddAudioTrack(fileHandle,
-                                          timeScale,
-                                          1024, MP4_MPEG4_AUDIO_TYPE);
+            dstTrackId = MP4AddALACAudioTrack(fileHandle,
+                                          timeScale);
+            MP4SetTrackBytesProperty(fileHandle, dstTrackId, "mdia.minf.stbl.stsd.alac.alac.AppleLosslessMagicCookie", [magicCookie bytes], [magicCookie length]);
+
+            [[track trackImporterHelper] setActiveTrack:track];
         }
 
         // 3GPP text track

@@ -667,7 +667,7 @@ int readAC3Config(uint64_t acmod, uint64_t lfeon, UInt32 *channelsCount, UInt32 
 
 BOOL isTrackMuxable(NSString * formatName)
 {
-    NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"MPEG-4 Visual", @"AAC", @"AC-3", @"3GPP Text", @"Text",
+    NSArray* supportedFormats = [NSArray arrayWithObjects:@"H.264", @"MPEG-4 Visual", @"AAC", @"ALAC", @"AC-3", @"3GPP Text", @"Text",
                                  @"CEA-608", /*@"Photo - JPEG",*/ @"VobSub", nil];
 
     for (NSString* type in supportedFormats)
