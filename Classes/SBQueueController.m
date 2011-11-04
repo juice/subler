@@ -798,9 +798,9 @@ static SBQueueController *sharedController = nil;
 - (void)addItem:(SBQueueItem*)item
 {
     [self addItems:[NSArray arrayWithObject:item] atIndexes:nil];
-    
+
     [self updateUI];
-    
+
     if ([AutoStartOption state])
         [self start:self];
 }
@@ -834,7 +834,7 @@ static SBQueueController *sharedController = nil;
 
     if ([AutoStartOption state])
         [self start:self];
-    
+
     [mutableIndexes release];
 }
 
