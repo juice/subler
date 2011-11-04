@@ -256,6 +256,9 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         case kAudioFormatAMR:
             result = @"AMR Narrow Band";
             break;
+        case kAudioFormatAppleLossless:
+            result = @"ALAC";
+            break;
         case TextMediaType:
             result = @"Text";
             break;
@@ -386,6 +389,26 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             free(cookie);
             free(buffer);
 
+            return magicCookie;
+
+        }
+        else if(asbd.mFormatID == kAudioFormatAppleLossless) {
+            // Get the magic cookie
+            UInt32 cookieSize;
+            void* cookie;
+            QTSoundDescriptionGetPropertyInfo(sndDesc,
+                                              kQTPropertyClass_SoundDescription,
+                                              kQTSoundDescriptionPropertyID_MagicCookie,
+                                              NULL, &cookieSize, NULL);
+            cookie = malloc(cookieSize);
+            QTSoundDescriptionGetProperty(sndDesc,
+                                          kQTPropertyClass_SoundDescription,
+                                          kQTSoundDescriptionPropertyID_MagicCookie,
+                                          cookieSize, cookie, &cookieSize);
+            if (cookieSize >= 48)
+                magicCookie = [NSData dataWithBytes:cookie + 24 length:cookieSize - 32];
+
+            free(cookie);            
             return magicCookie;
 
         }

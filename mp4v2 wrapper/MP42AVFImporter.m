@@ -81,7 +81,7 @@
                 result = @"PCM";
                 break;
             case kAudioFormatAppleLossless:
-                result = @"Apple Lossless";
+                result = @"ALAC";
                 break;
             case kAudioFormatAC3:
             case 'ms \0':
@@ -252,15 +252,25 @@
             }
         }
         else if ([[assetTrack mediaType] isEqualToString:AVMediaTypeAudio]) {
+
             size_t cookieSizeOut;
             const void *magicCookie = CMAudioFormatDescriptionGetMagicCookie(formatDescription, &cookieSizeOut);
 
-            // Extract DecoderSpecific info
-            UInt8* buffer;
-            int size;
-            ReadESDSDescExt((void*)magicCookie, &buffer, &size, 0);
+            if (code == kAudioFormatMPEG4AAC || code == kAudioFormatMPEG4AAC_HE || code == kAudioFormatMPEG4AAC_HE_V2) {
+                // Extract DecoderSpecific info
+                UInt8* buffer;
+                int size;
+                ReadESDSDescExt((void*)magicCookie, &buffer, &size, 0);
 
-            return [NSData dataWithBytes:buffer length:size];
+                return [NSData dataWithBytes:buffer length:size];
+            }
+            else if (code == kAudioFormatAppleLossless) {
+                if (cookieSizeOut >= 48) {
+                    magicCookie += 24;
+                    cookieSizeOut = cookieSizeOut - 24 - 8;
+                    return [NSData dataWithBytes:magicCookie length:cookieSizeOut];
+                }
+            }
         }
     }
     return nil;
