@@ -85,7 +85,7 @@
     if (!fileHandle)
         fileHandle = MP4Read([[fileURL path] UTF8String]);
 
-    NSData *magicCookie;
+    NSData *magicCookie = nil;
     MP4TrackId srcTrackId = [track sourceId];
 
     const char* trackType = MP4GetTrackType(fileHandle, srcTrackId);
