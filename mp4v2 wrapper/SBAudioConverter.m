@@ -626,17 +626,17 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                 uint8_t * cookie = CreateEsdsFromSetupData((uint8_t *)[srcMagicCookie bytes], [srcMagicCookie length], &cookieSize, 1, true, false);
                 magicCookie = (CFDataRef) [[NSData dataWithBytes:cookie length:cookieSize] retain];
             }
-            if ([track.sourceFormat isEqualToString:@"ALAC"]) {
+            else if ([track.sourceFormat isEqualToString:@"ALAC"]) {
                 inputFormat.mFormatID = kAudioFormatAppleLossless;
                 
                 magicCookie = (CFDataRef) [srcMagicCookie retain];
             }
-            if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
+            else if ([track.sourceFormat isEqualToString:@"Vorbis"]) {
                 inputFormat.mFormatID = 'XiVs';
 
                 magicCookie = createDescExt_XiphVorbis([srcMagicCookie length], [srcMagicCookie bytes]);
             }
-            if ([track.sourceFormat isEqualToString:@"Flac"]) {
+            else if ([track.sourceFormat isEqualToString:@"Flac"]) {
                 inputFormat.mFormatID = 'XiFL';
 
                 magicCookie = createDescExt_XiphFLAC([srcMagicCookie length], [srcMagicCookie bytes]);
@@ -654,6 +654,9 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             }
             else if ([track.sourceFormat isEqualToString:@"True HD"]) {
                 inputFormat.mFormatID = 'trhd';
+            }
+            else if ([track.sourceFormat isEqualToString:@"PCM"]) {
+                inputFormat.mFormatID = kAudioFormatLinearPCM;
             }
         }
 
@@ -674,6 +677,8 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                 *outError = MP42Error(@"Audio Converter Error.",
                                       @"The Audio Converter can not be initialized",
                                       130);
+            if (magicCookie)
+                CFRelease(magicCookie);
             [self release];
             return nil;
         }
