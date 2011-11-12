@@ -48,6 +48,11 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
                 }
             }
         }
+        if (audioType == 0xA9) {
+            uint64_t channels_count = 0;
+            MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.mp4a.channels", &channels_count);
+            channels = channels_count;
+        }
         else if (MP4HaveTrackAtom(fileHandle, Id, "mdia.minf.stbl.stsd.ac-3.dac3")) {
             uint64_t acmod, lfeon;
 

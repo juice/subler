@@ -243,8 +243,15 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
     if (dataName) {
         if (!strcmp(dataName, "avc1"))
             return @"H.264";
-        else if (!strcmp(dataName, "mp4a"))
-            return @"AAC";
+        else if (!strcmp(dataName, "mp4a")) {
+            uint8_t audiotype = MP4GetTrackEsdsObjectTypeId(fileHandle, Id);
+            if (audiotype == MP4_MPEG4_AUDIO_TYPE)
+                return @"AAC";
+            else if (audiotype == MP4_MPEG2_AUDIO_TYPE)
+                return @"MP3";
+            else if (audiotype == 0xA9)
+                return @"DTS";
+        }
         else if (!strcmp(dataName, "alac"))
             return @"ALAC";
         else if (!strcmp(dataName, "ac-3"))
@@ -277,10 +284,8 @@ NSString* getHumanReadableTrackMediaDataName(MP4FileHandle fileHandle, MP4TrackI
         else
             return [NSString stringWithUTF8String:dataName];
     }
-    else {
-        return @"Unknown";
-    }
 
+    return @"Unknown";
 }
 
 NSString* getHumanReadableTrackLanguage(MP4FileHandle fileHandle, MP4TrackId Id)

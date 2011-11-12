@@ -180,6 +180,15 @@
             [[track trackImporterHelper] setActiveTrack:track];
         }
 
+        // DTS audio track
+        else if ([track isMemberOfClass:[MP42AudioTrack class]] && [track.format isEqualToString:@"DTS"]) {
+            dstTrackId = MP4AddAudioTrack(fileHandle,
+                                          timeScale,
+                                          512, 0xA9);
+
+            [[track trackImporterHelper] setActiveTrack:track];
+        }
+
         // 3GPP text track
         else if ([track isMemberOfClass:[MP42SubtitleTrack class]] && [track.format isEqualToString:@"3GPP Text"]) {
             NSSize subSize = [[track trackImporterHelper] sizeForTrack:track];

@@ -246,8 +246,24 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
         case kMPEG4VisualCodecType:
             result = @"MPEG-4 Visual";
             break;
-        case 'mp4a':
+        case 'ap4h':
+        case 'apch':
+        case 'apcn':
+        case 'apcs':
+        case 'apco':
+            result = @"ProRes";
+            break;
+        case kAudioFormatMPEG4AAC:
             result = @"AAC";
+            break;
+        case kAudioFormatMPEG4AAC_HE:
+            result = @"HE-AAC";
+            break;
+        case kAudioFormatLinearPCM:
+            result = @"PCM";
+            break;
+        case kAudioFormatAppleLossless:
+            result = @"ALAC";
             break;
         case kAudioFormatAC3:
         case 'ms \0':
@@ -255,9 +271,6 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             break;
         case kAudioFormatAMR:
             result = @"AMR Narrow Band";
-            break;
-        case kAudioFormatAppleLossless:
-            result = @"ALAC";
             break;
         case TextMediaType:
             result = @"Text";
