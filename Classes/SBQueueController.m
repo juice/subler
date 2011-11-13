@@ -57,8 +57,8 @@ static SBQueueController *sharedController = nil;
         if ([[NSFileManager defaultManager] fileExistsAtPath:[queueURL path]]) {
             filesArray = [[NSKeyedUnarchiver unarchiveObjectWithFile:[queueURL path]] retain];
             for (SBQueueItem *item in filesArray)
-                if ([item status] == SBQueueStatusWorking)
-                    [item setStatus:SBQueueStatusFailed];
+                if ([item status] == SBQueueItemStatusWorking)
+                    [item setStatus:SBQueueItemStatusFailed];
 
             NSLog(@"Queue loaded");
         }
@@ -366,7 +366,7 @@ static SBQueueController *sharedController = nil;
 - (SBQueueItem*)firstItemInQueue
 {
     for (SBQueueItem *item in filesArray)
-        if ([item status] != SBQueueItemStatusCompleted)
+        if (([item status] != SBQueueItemStatusCompleted) && ([item status] != SBQueueItemStatusFailed))
             return item;
     return nil;
 }
