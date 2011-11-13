@@ -572,15 +572,19 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         // Check if xiphqt is installed
         if ([track.sourceFormat isEqualToString:@"Flac"]) {
             InstallStatus installStatus = [self installStatusForComponent:@"XiphQT.component" type:ComponentTypeQuickTime version:@"0.1.9"];
-            
-            if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
-                if (outError)
-                    *outError = MP42Error(@"XiphQT is not installed.",
-                                          @"XiphQT is necessary for Flac audio conversion in Subler. You can download it from http://xiph.org/quicktime/",
-                                          130);
 
-                [self release];
-                return nil;
+            if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
+                installStatus = [self installStatusForComponent:@"XiphQT (decoders).component" type:ComponentTypeQuickTime version:@"0.1.9"];
+
+                if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
+                    if (outError)
+                        *outError = MP42Error(@"XiphQT is not installed.",
+                                              @"XiphQT is necessary for Flac audio conversion in Subler. You can download it from http://xiph.org/quicktime/",
+                                              130);
+
+                    [self release];
+                    return nil;
+                }
             }
         }
 
