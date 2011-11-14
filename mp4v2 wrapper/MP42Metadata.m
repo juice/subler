@@ -895,7 +895,9 @@ static const genreType_t genreType_strings[] = {
     MP4TagsSetEncodingTool(tags, [[tagsDict valueForKey:@"Encoding Tool"] UTF8String]);
 
     MP4TagsSetEncodedBy(tags, [[tagsDict valueForKey:@"Encoded By"] UTF8String]);
-    
+
+    MP4TagsSetPurchaseDate(tags, [[tagsDict valueForKey:@"Purchase Date"] UTF8String]);
+
     MP4TagsSetITunesAccount(tags, [[tagsDict valueForKey:@"iTunes Account"] UTF8String]);
 
     if (mediaKind != 0)
