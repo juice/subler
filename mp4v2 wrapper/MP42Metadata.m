@@ -1036,66 +1036,99 @@ static const genreType_t genreType_strings[] = {
         }
     }
 
-    if ([tagsDict valueForKey:@"Cast"] || [tagsDict valueForKey:@"Director"] ||
-        [tagsDict valueForKey:@"Codirector"] || [tagsDict valueForKey:@"Producers"] ||
-        [tagsDict valueForKey:@"Screenwriters"] || [tagsDict valueForKey:@"Studio"]) {
-        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-        if ([tagsDict valueForKey:@"Cast"]) {
-            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Cast"]] forKey:@"cast"];
-        }
-        if ([tagsDict valueForKey:@"Director"]) {
-            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Director"]] forKey:@"directors"];
-        }
-        if ([tagsDict valueForKey:@"Codirector"]) {
-            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Codirector"]] forKey:@"codirectors"];
-        }
-        if ([tagsDict valueForKey:@"Producers"]) {
-            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Producers"]] forKey:@"producers"];
-        }
-        if ([tagsDict valueForKey:@"Screenwriters"]) {
-            [dict setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Screenwriters"]] forKey:@"screenwriters"];
-        }
-        if ([tagsDict valueForKey:@"Studio"]) {
-            [dict setObject:[tagsDict valueForKey:@"Studio"] forKey:@"studio"];
-        }
-        NSData *serializedPlist = [NSPropertyListSerialization
-                                        dataFromPropertyList:dict
-                                        format:NSPropertyListXMLFormat_v1_0
-                                        errorDescription:nil];
-		[dict release];
-
-        MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunMOVI");
-        if (list) {
-            uint32_t i;
-            for (i = 0; i < list->size; i++) {
-                MP4ItmfItem* item = &list->elements[i];
-                MP4ItmfRemoveItem(fileHandle, item);
+    MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunMOVI");
+    NSMutableDictionary *iTunMovi = [[NSMutableDictionary alloc] init];;
+    if (list) {
+        uint32_t i;
+        for (i = 0; i < list->size; i++) {
+            MP4ItmfItem* item = &list->elements[i];
+            uint32_t j;
+            for(j = 0; j < item->dataList.size; j++) {
+                MP4ItmfData* data = &item->dataList.elements[j];
+                NSData *xmlData = [NSData dataWithBytes:data->value length:data->valueSize];
+                NSDictionary *dma = (NSDictionary *)[NSPropertyListSerialization
+                                                     propertyListFromData:xmlData
+                                                     mutabilityOption:NSPropertyListMutableContainersAndLeaves
+                                                     format:nil
+                                                     errorDescription:nil];
+                [iTunMovi release];
+                iTunMovi = [dma mutableCopy];
             }
         }
         MP4ItmfItemListFree(list);
-
-        MP4ItmfItem* newItem = MP4ItmfItemAlloc( "----", 1 );
-        newItem->mean = strdup( "com.apple.iTunes" );
-        newItem->name = strdup( "iTunMOVI" );
-
-        MP4ItmfData* data = &newItem->dataList.elements[0];
-        data->typeCode = MP4_ITMF_BT_UTF8;
-        data->valueSize = [serializedPlist length];
-        data->value = (uint8_t*)malloc( data->valueSize );
-        memcpy( data->value, [serializedPlist bytes], data->valueSize );
-
-        MP4ItmfAddItem(fileHandle, newItem);
     }
-    else {
-        MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunMOVI");
-        if (list) {
-            uint32_t i;
-            for (i = 0; i < list->size; i++) {
-                MP4ItmfItem* item = &list->elements[i];
-                MP4ItmfRemoveItem(fileHandle, item);
+
+    if (iTunMovi) {
+        if ([tagsDict valueForKey:@"Cast"])
+            [iTunMovi setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Cast"]] forKey:@"cast"];
+        else
+            [iTunMovi removeObjectForKey:@"cast"];
+
+        if ([tagsDict valueForKey:@"Director"])
+            [iTunMovi setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Director"]] forKey:@"directors"];
+        else
+            [iTunMovi removeObjectForKey:@"directors"];
+
+        if ([tagsDict valueForKey:@"Codirector"])
+            [iTunMovi setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Codirector"]] forKey:@"codirectors"];
+        else
+            [iTunMovi removeObjectForKey:@"codirectors"];
+
+        if ([tagsDict valueForKey:@"Producers"])
+            [iTunMovi setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Producers"]] forKey:@"producers"];
+        else
+            [iTunMovi removeObjectForKey:@"producers"];
+
+        if ([tagsDict valueForKey:@"Screenwriters"])
+            [iTunMovi setObject:[self dictArrayFromString:[tagsDict valueForKey:@"Screenwriters"]] forKey:@"screenwriters"];
+        else
+            [iTunMovi removeObjectForKey:@"screenwriters"];
+
+        if ([tagsDict valueForKey:@"Studio"])
+            [iTunMovi setObject:[tagsDict valueForKey:@"Studio"] forKey:@"studio"];
+        else
+            [iTunMovi removeObjectForKey:@"studio"];
+
+        NSData *serializedPlist = [NSPropertyListSerialization
+                                        dataFromPropertyList:iTunMovi
+                                        format:NSPropertyListXMLFormat_v1_0
+                                        errorDescription:nil];
+        if ([iTunMovi count]) {
+            MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunMOVI");
+            if (list) {
+                uint32_t i;
+                for (i = 0; i < list->size; i++) {
+                    MP4ItmfItem* item = &list->elements[i];
+                    MP4ItmfRemoveItem(fileHandle, item);
+                }
+            }
+            MP4ItmfItemListFree(list);
+
+            MP4ItmfItem* newItem = MP4ItmfItemAlloc( "----", 1 );
+            newItem->mean = strdup( "com.apple.iTunes" );
+            newItem->name = strdup( "iTunMOVI" );
+
+            MP4ItmfData* data = &newItem->dataList.elements[0];
+            data->typeCode = MP4_ITMF_BT_UTF8;
+            data->valueSize = [serializedPlist length];
+            data->value = (uint8_t*)malloc( data->valueSize );
+            memcpy( data->value, [serializedPlist bytes], data->valueSize );
+
+            MP4ItmfAddItem(fileHandle, newItem);
+        }
+        else {
+            MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunMOVI");
+            if (list) {
+                uint32_t i;
+                for (i = 0; i < list->size; i++) {
+                    MP4ItmfItem* item = &list->elements[i];
+                    MP4ItmfRemoveItem(fileHandle, item);
+                }
             }
         }
     }
+
+    [iTunMovi release];
 
     return YES;
 }
