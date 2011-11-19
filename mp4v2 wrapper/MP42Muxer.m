@@ -186,6 +186,7 @@
                                           timeScale,
                                           512, 0xA9);
 
+            MP4SetTrackIntegerProperty(fileHandle, dstTrackId, "mdia.minf.stbl.stsd.*.channels", [(MP42AudioTrack*)track channels]);
             [[track trackImporterHelper] setActiveTrack:track];
         }
 

@@ -43,6 +43,8 @@
             [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] boolValue])
             [actionArray addObject:[NSNumber numberWithInteger:[[[NSUserDefaults standardUserDefaults]
                                                                  valueForKey:@"SBAudioMixdown"] integerValue]]];
+        else if ([track.format isEqualToString:@"DTS"])
+            [actionArray addObject:[NSNumber numberWithInteger:1]];
         else if ([track.format isEqualToString:@"VobSub"])
             [actionArray addObject:[NSNumber numberWithInteger:1]];
         else if (!trackNeedConversion(track.format))

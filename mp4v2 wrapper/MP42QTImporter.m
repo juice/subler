@@ -257,6 +257,7 @@ extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)
             result = @"AAC";
             break;
         case kAudioFormatMPEG4AAC_HE:
+        case kAudioFormatMPEG4AAC_HE_V2:
             result = @"HE-AAC";
             break;
         case kAudioFormatLinearPCM:
