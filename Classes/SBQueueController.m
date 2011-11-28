@@ -778,8 +778,9 @@ static SBQueueController *sharedController = nil;
                                [NSArray arrayWithObject: [NSURL class]] options: nil];
             NSMutableArray *queueItems = [[NSMutableArray alloc] init];
             NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
-            for (NSURL * url in [items reverseObjectEnumerator]) {
-                [queueItems insertObject:[SBQueueItem itemWithURL:url] atIndex:row];
+
+            for (NSURL * url in items) {
+                [queueItems addObject:[SBQueueItem itemWithURL:url]];
                 [indexes addIndex:row];
             }
 
