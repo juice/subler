@@ -6,41 +6,55 @@
 void print_help()
 {
     printf("usage:\n");
-    printf("\t\t-o set output file\n");
-    printf("\t\t-i set input file\n");
-    printf("\t\t-c set chapter input file\n");
-    printf("\t\t-p create chapters preview images\n");
-    printf("\t\t-d set delay in ms\n");
-    printf("\t\t-a set height in pixel\n");
-    printf("\t\t-l set track language (i.e. English)\n");
-    printf("\t\t-n set track name\n");
-    printf("\t\t-r remove existing subtitles\n");
-    printf("\t\t-O optimize\n");
-    printf("\t\t-h print this help information\n");
-    printf("\t\t-v print version\n");
-    printf("\t\t-t set tags {Tag Name:Tag Value}*\n");
-    printf("\t\t-m downmix audio (mono, stereo, dolby, pl2)\n");
+    printf("\t\t -dest <destination file> \n");
+    printf("\t\t -source <source file> \n");
+    printf("\t\t -chapters <chapters file> \n");
+    printf("\t\t -chapterspreview Create chapters preview images \n");
+    printf("\t\t -delay Delay in ms \n");
+    printf("\t\t -height Height in pixel \n");
+    printf("\t\t -language Track language (i.e. English) \n");
+    printf("\t\t -remove Remove existing subtitles \n");
+    printf("\t\t -optimize Pptimize \n");
+    printf("\t\t -help Print this help information \n");
+    printf("\t\t -version Print version \n");
+    printf("\t\t -metadata set tags {Tag Name:Tag Value}* \n");
+    printf("\t\t -downmix Downmix audio (mono, stereo, dolby, pl2) \n");
+    printf("\n");
+    printf("\t\t -listtracks  For source file only, lists the tracks in the source movie. \n");
+
 }
+
 void print_version()
 {
     printf("\t\tversion 0.15\n");
 }
 
+// ---------------------------------------------------------------------------
+//		printArgs
+// ---------------------------------------------------------------------------
+static void printArgs(int argc, const char **argv)
+{
+	int i;
+	for( i = 0; i < argc; i++ )
+		printf("%s ", argv[i]);
+	printf("\n");
+}
+
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-    char* output_file = NULL;
-    char* input_file = NULL;
-    char* input_chap = NULL;
-    const char* name = NULL;
-    const char* language = NULL;
+    NSString *destinationPath = nil;
+    NSString *sourcePath = nil;
+    NSString *chaptersPath = nil;
+    NSString *metadata = nil;
+
+    NSString *language = NULL;
     int delay = 0;
     unsigned int height = 0;
     BOOL removeExisting = false;
     BOOL chapterPreview = false;
     BOOL modified = false;
     BOOL optimize = false;
-    char* tags = NULL;
 
     BOOL downmixAudio = NO;
     NSString *downmixType = nil;
@@ -50,79 +64,102 @@ int main (int argc, const char * argv[]) {
         exit(-1);
     }
 
-    char opt_char=0;
-    while ((opt_char = getopt(argc, (char * const*)argv, "o:i:c:d:a:l:n:t:prvhOm")) != -1) {
-        switch(opt_char) {
-            case 'h':
-                print_help();
-                exit(-1);
-                break;
-            case 'v':
-                print_version();
-                exit(-1);
-                break;
-            case 'o':
-                output_file = optarg;
-                break;
-            case 'i':
-                input_file = optarg;
-                break;
-            case 'c':
-                input_chap = optarg;
-                break;
-            case 'd':
-                delay = atoi(optarg);
-                break ;
-            case 'a':
-                height = atoi(optarg);
-                break ;
-            case 'l':
-                language = optarg;
-                break ;
-            case 'n':
-                name = optarg;
-                break ;
-            case 't':
-                tags = optarg;
-                break ;            
-            case 'r':
-                removeExisting = YES;
-                break ;
-            case 'O':
-                optimize = YES;
-                break ;
-            case 'p':
-                chapterPreview = YES;
-                break;
-            case 'm':
-                downmixAudio = YES;
-                if (strcasecmp( optarg, "mono" ) == 0) downmixType = SBMonoMixdown;
-                else if (strcasecmp( optarg, "stereo" ) == 0) downmixType = SBStereoMixdown;
-                else if (strcasecmp( optarg, "dolby" ) == 0) downmixType = SBDolbyMixdown;
-                else if (strcasecmp( optarg, "pl2" ) == 0) downmixType = SBDolbyPlIIMixdown;
-                else {
-                    printf( "Error: unsupported downmix type '%s'\n", optarg );
-                    printf( "Valid downmix types are: 'mono', 'stereo', 'dolby' and 'pl2'\n" );
-                    exit( -1 );
-                }
-                break;                
-            default:
-                print_help();
-                exit(-1);
-                break;
-        }
-    }
+    printArgs(argc,argv);
+    
+    argc--;
+	while ( argc > 0 && **argv == '-' )
+	{
+		const char*	args = &(*argv)[1];
+		
+		argc--;
+		argv++;
+		
+		if ( ! strcmp ( args, "source" ) )
+		{
+            sourcePath = [NSString stringWithUTF8String: *argv++];
+			argc--;
+		}
+		else if (( ! strcmp ( args, "dest" )) || ( ! strcmp ( args, "destination" )) )
+		{
+			sourcePath = [NSString stringWithUTF8String: *argv++];
+			argc--;
+		}
+        else if ( ! strcmp ( args, "chapters" ) )
+		{
+			chaptersPath = [NSString stringWithUTF8String: *argv++];
+			argc--;
+		}
+        else if ( ! strcmp ( args, "chapterspreview" ) )
+		{
+			chapterPreview = YES;
+		}
+        else if ( ! strcmp ( args, "metadata" ) )
+		{
+			metadata = [NSString stringWithUTF8String: *argv++];
+            argc--;
+		}
+        else if ( ! strcmp ( args, "optimize" ) )
+		{
+			optimize = YES;
+		}
+        else if ( ! strcmp ( args, "downmix" ) )
+		{
+            downmixAudio = YES;
+            if (strcasecmp( optarg, "mono" ) == 0) downmixType = SBMonoMixdown;
+            else if (strcasecmp( optarg, "stereo" ) == 0) downmixType = SBStereoMixdown;
+            else if (strcasecmp( optarg, "dolby" ) == 0) downmixType = SBDolbyMixdown;
+            else if (strcasecmp( optarg, "pl2" ) == 0) downmixType = SBDolbyPlIIMixdown;
+            else {
+                printf( "Error: unsupported downmix type '%s'\n", optarg );
+                printf( "Valid downmix types are: 'mono', 'stereo', 'dolby' and 'pl2'\n" );
+                exit( -1 );
+            }
+            argc--;
+		}
+        else if ( ! strcmp ( args, "delay" ) )
+		{
+			delay = atoi(*argv++);
+            argc--;
+		}
+        else if ( ! strcmp ( args, "height" ) )
+		{
+            height = atoi(*argv++);
+            argc--;
+		}
+        if ( ! strcmp ( args, "language" ) )
+		{
+            language = [NSString stringWithUTF8String: *argv++];
+			argc--;
+		}
+        if ( ! strcmp ( args, "remove" ) )
+		{
+            removeExisting = YES;
+		}
+		else if (( ! strcmp ( args, "version" )) || ( ! strcmp ( args, "v" )) )
+		{
+			print_version();
+		}
+		else if ( ! strcmp ( args, "help" ) )
+		{
+			print_help();
+		}
+		else {
+			printf("Invalid input parameter: %s\n", args );
+			print_help();
+			return nil;
+		}
+	}
 
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
     if (chapterPreview)
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
 
-    if (input_file || input_chap || removeExisting || tags || chapterPreview)
+    if (sourcePath || chaptersPath || removeExisting || metadata || chapterPreview)
     {
         NSError *outError;
         MP42File *mp4File;
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]])
-            mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]
+        if ([[NSFileManager defaultManager] fileExistsAtPath:sourcePath])
+            mp4File = [[MP42File alloc] initWithExistingFile:[NSURL fileURLWithPath:sourcePath]
                                                  andDelegate:nil];
         else
             mp4File = [[MP42File alloc] initWithDelegate:nil];
@@ -144,15 +181,14 @@ int main (int argc, const char * argv[]) {
           [subtitleTrackIndexes release];
         }
 
-        if (input_file) {
+        if (sourcePath) {
             MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
-                                                                                andFile:[NSString stringWithCString:input_file
-                                                                                                           encoding:NSUTF8StringEncoding]
+                                                                                andFile:[NSURL fileURLWithPath:sourcePath]
                                                                                 error:&outError];
 
             for (MP42Track * track in [fileImporter tracksArray]) {
                 if (language)
-                    [track setLanguage:[NSString stringWithCString:language encoding:NSUTF8StringEncoding]];
+                    [track setLanguage:language];
                 if (delay)
                     [track setStartOffset:delay];
                 if (height && [track isMemberOfClass:[MP42SubtitleTrack class]])
@@ -164,8 +200,8 @@ int main (int argc, const char * argv[]) {
 
             modified = YES;
         }
-      
-        if (input_chap) {
+
+        if (chaptersPath) {
             MP42Track *oldChapterTrack = NULL;
             MP42ChapterTrack *newChapterTrack = NULL;
             
@@ -181,7 +217,7 @@ int main (int argc, const char * argv[]) {
             modified = YES;
           }
           
-          newChapterTrack = [MP42ChapterTrack chapterTrackFromFile:[NSString stringWithCString:input_chap encoding:NSUTF8StringEncoding]];
+          newChapterTrack = [MP42ChapterTrack chapterTrackFromFile:[NSURL fileURLWithPath:chaptersPath]];
           
           if([newChapterTrack chapterCount] > 0) {
             [mp4File addTrack:newChapterTrack];            
@@ -200,8 +236,8 @@ int main (int argc, const char * argv[]) {
             }
         }
 
-        if (tags) {
-            NSString *searchString = [NSString stringWithCString:tags encoding:NSUTF8StringEncoding];
+        if (metadata) {
+            NSString *searchString = metadata;
             NSString *regexCheck = @"(\\{[^:]*:[^\\}]*\\})*";
 
             // escaping the {, } and : charachters 
@@ -256,7 +292,7 @@ int main (int argc, const char * argv[]) {
             success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
 
         else if (modified && ![mp4File hasFileRepresentation])
-            success = [mp4File writeToUrl:[NSURL fileURLWithPath:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]]
+            success = [mp4File writeToUrl:[NSURL fileURLWithPath:destinationPath]
                            withAttributes:attributes
                                     error:&outError];
 
@@ -269,7 +305,7 @@ int main (int argc, const char * argv[]) {
     }
     if (optimize) {
         MP42File *mp4File;
-        mp4File = [[MP42File alloc] initWithExistingFile:[NSString stringWithCString:output_file encoding:NSUTF8StringEncoding]
+        mp4File = [[MP42File alloc] initWithExistingFile:[NSURL fileURLWithPath:destinationPath]
                                              andDelegate:nil];
         if (!mp4File) {
             printf("Error: %s\n", "the mp4 file couln't be open.");

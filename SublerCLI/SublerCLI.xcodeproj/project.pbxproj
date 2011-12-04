@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,9 +11,29 @@
 		8DD76F9F0486AA7600D96B5E /* SublerCLI.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* SublerCLI.1 */; };
 		A905AF1A12CC9842004F9C3E /* downmix.c in Sources */ = {isa = PBXBuildFile; fileRef = A905AF1812CC9842004F9C3E /* downmix.c */; };
 		A90C277110AF32AF00991030 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A90C277010AF32AF00991030 /* libz.dylib */; };
+		A91CBA4014039F8F00B53F5A /* MP42AVFImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A91CBA3F14039F8F00B53F5A /* MP42AVFImporter.m */; };
+		A91CBA441403A05200B53F5A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91CBA431403A05200B53F5A /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A91CBA461403A05C00B53F5A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91CBA451403A05C00B53F5A /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A91CBA481403A12300B53F5A /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91CBA471403A12300B53F5A /* CoreVideo.framework */; };
 		A91F634A0FB0C70100B96B33 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A91F63490FB0C70100B96B33 /* libicucore.dylib */; };
 		A94871D20F7914D2008DBC94 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D10F7914D2008DBC94 /* QTKit.framework */; };
 		A94871D70F7914E7008DBC94 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94871D60F7914E7008DBC94 /* QuickTime.framework */; };
+		A95F07B2148BA07600D663E5 /* libtesseract_api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CE813892BE300D4B7F0 /* libtesseract_api.a */; };
+		A95F07B3148BA07600D663E5 /* libtesseract_ccstruct.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CE913892BE300D4B7F0 /* libtesseract_ccstruct.a */; };
+		A95F07B4148BA07600D663E5 /* libtesseract_ccutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEA13892BE300D4B7F0 /* libtesseract_ccutil.a */; };
+		A95F07B5148BA07600D663E5 /* libtesseract_classify.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEB13892BE300D4B7F0 /* libtesseract_classify.a */; };
+		A95F07B6148BA07600D663E5 /* libtesseract_cutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEC13892BE300D4B7F0 /* libtesseract_cutil.a */; };
+		A95F07B7148BA07600D663E5 /* libtesseract_dict.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CED13892BE300D4B7F0 /* libtesseract_dict.a */; };
+		A95F07B8148BA07600D663E5 /* libtesseract_image.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEE13892BE300D4B7F0 /* libtesseract_image.a */; };
+		A95F07B9148BA07600D663E5 /* libtesseract_main.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEF13892BE300D4B7F0 /* libtesseract_main.a */; };
+		A95F07BA148BA07600D663E5 /* libtesseract_textord.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF013892BE300D4B7F0 /* libtesseract_textord.a */; };
+		A95F07BB148BA07600D663E5 /* libtesseract_training.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF113892BE300D4B7F0 /* libtesseract_training.a */; };
+		A95F07BC148BA07600D663E5 /* libtesseract_viewer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CE713892BE300D4B7F0 /* libtesseract_viewer.a */; };
+		A95F07BD148BA07600D663E5 /* libtesseract_wordrec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF213892BE300D4B7F0 /* libtesseract_wordrec.a */; };
+		A95F07C2148BA07600D663E5 /* liblept.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95F07BE148BA07600D663E5 /* liblept.a */; };
+		A95F07C3148BA07600D663E5 /* libtesseract_cube.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95F07BF148BA07600D663E5 /* libtesseract_cube.a */; };
+		A95F07C4148BA07600D663E5 /* libtesseract_neural.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95F07C0148BA07600D663E5 /* libtesseract_neural.a */; };
+		A95F07C5148BA07600D663E5 /* libtesseract_tessopt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A95F07C1148BA07600D663E5 /* libtesseract_tessopt.a */; };
 		A9726A270F7B89F0008A828C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9726A260F7B89F0008A828C /* AudioToolbox.framework */; };
 		A98ED3330F59E08D00885A49 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3240F59E08D00885A49 /* libmp4v2.a */; };
 		A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98ED3550F59E17A00885A49 /* libuniversaldetector.a */; };
@@ -46,18 +66,6 @@
 		A9B46B1C12B79EC60040517A /* SBAudioConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AFE12B79EC60040517A /* SBAudioConverter.m */; };
 		A9B46B1D12B79EC60040517A /* sfifo.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AFF12B79EC60040517A /* sfifo.c */; };
 		A9B46B1E12B79EC60040517A /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46B0212B79EC60040517A /* SubUtilities.m */; };
-		A9E96CF813892BE300D4B7F0 /* libtesseract_viewer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CE713892BE300D4B7F0 /* libtesseract_viewer.a */; };
-		A9E96CF913892BE400D4B7F0 /* libtesseract_api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CE813892BE300D4B7F0 /* libtesseract_api.a */; };
-		A9E96CFA13892BE400D4B7F0 /* libtesseract_ccstruct.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CE913892BE300D4B7F0 /* libtesseract_ccstruct.a */; };
-		A9E96CFB13892BE400D4B7F0 /* libtesseract_ccutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEA13892BE300D4B7F0 /* libtesseract_ccutil.a */; };
-		A9E96CFC13892BE400D4B7F0 /* libtesseract_classify.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEB13892BE300D4B7F0 /* libtesseract_classify.a */; };
-		A9E96CFD13892BE400D4B7F0 /* libtesseract_cutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEC13892BE300D4B7F0 /* libtesseract_cutil.a */; };
-		A9E96CFE13892BE400D4B7F0 /* libtesseract_dict.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CED13892BE300D4B7F0 /* libtesseract_dict.a */; };
-		A9E96CFF13892BE400D4B7F0 /* libtesseract_image.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEE13892BE300D4B7F0 /* libtesseract_image.a */; };
-		A9E96D0013892BE400D4B7F0 /* libtesseract_main.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CEF13892BE300D4B7F0 /* libtesseract_main.a */; };
-		A9E96D0113892BE400D4B7F0 /* libtesseract_textord.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF013892BE300D4B7F0 /* libtesseract_textord.a */; };
-		A9E96D0213892BE400D4B7F0 /* libtesseract_training.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF113892BE300D4B7F0 /* libtesseract_training.a */; };
-		A9E96D0313892BE400D4B7F0 /* libtesseract_wordrec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF213892BE300D4B7F0 /* libtesseract_wordrec.a */; };
 		A9E96D0413892BE400D4B7F0 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF313892BE300D4B7F0 /* libavcodec.a */; };
 		A9E96D0513892BE400D4B7F0 /* libavcore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF413892BE300D4B7F0 /* libavcore.a */; };
 		A9E96D0613892BE400D4B7F0 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF513892BE300D4B7F0 /* libavdevice.a */; };
@@ -118,9 +126,18 @@
 		A905AF1812CC9842004F9C3E /* downmix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = downmix.c; sourceTree = "<group>"; };
 		A905AF1912CC9842004F9C3E /* downmix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = downmix.h; sourceTree = "<group>"; };
 		A90C277010AF32AF00991030 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		A91CBA3E14039F8F00B53F5A /* MP42AVFImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AVFImporter.h; path = ../MP42AVFImporter.h; sourceTree = "<group>"; };
+		A91CBA3F14039F8F00B53F5A /* MP42AVFImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42AVFImporter.m; path = ../MP42AVFImporter.m; sourceTree = "<group>"; };
+		A91CBA431403A05200B53F5A /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = SDKs/MacOSX10.7.sdk/System/Library/Frameworks/CoreMedia.framework; sourceTree = DEVELOPER_DIR; };
+		A91CBA451403A05C00B53F5A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = SDKs/MacOSX10.7.sdk/System/Library/Frameworks/AVFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		A91CBA471403A12300B53F5A /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = SDKs/MacOSX10.7.sdk/System/Library/Frameworks/CoreVideo.framework; sourceTree = DEVELOPER_DIR; };
 		A91F63490FB0C70100B96B33 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = /usr/lib/libicucore.dylib; sourceTree = "<absolute>"; };
 		A94871D10F7914D2008DBC94 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		A94871D60F7914E7008DBC94 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		A95F07BE148BA07600D663E5 /* liblept.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblept.a; path = ../Tesseract/lib/liblept.a; sourceTree = "<group>"; };
+		A95F07BF148BA07600D663E5 /* libtesseract_cube.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_cube.a; path = ../Tesseract/lib/libtesseract_cube.a; sourceTree = "<group>"; };
+		A95F07C0148BA07600D663E5 /* libtesseract_neural.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_neural.a; path = ../Tesseract/lib/libtesseract_neural.a; sourceTree = "<group>"; };
+		A95F07C1148BA07600D663E5 /* libtesseract_tessopt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_tessopt.a; path = ../Tesseract/lib/libtesseract_tessopt.a; sourceTree = "<group>"; };
 		A9726A260F7B89F0008A828C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		A98ED3240F59E08D00885A49 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp4v2.a; sourceTree = "<group>"; };
 		A98ED3320F59E08D00885A49 /* mp4v2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mp4v2.h; sourceTree = "<group>"; };
@@ -215,6 +232,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A95F07C2148BA07600D663E5 /* liblept.a in Frameworks */,
+				A95F07C3148BA07600D663E5 /* libtesseract_cube.a in Frameworks */,
+				A95F07C4148BA07600D663E5 /* libtesseract_neural.a in Frameworks */,
+				A95F07C5148BA07600D663E5 /* libtesseract_tessopt.a in Frameworks */,
+				A95F07B2148BA07600D663E5 /* libtesseract_api.a in Frameworks */,
+				A95F07B3148BA07600D663E5 /* libtesseract_ccstruct.a in Frameworks */,
+				A95F07B4148BA07600D663E5 /* libtesseract_ccutil.a in Frameworks */,
+				A95F07B5148BA07600D663E5 /* libtesseract_classify.a in Frameworks */,
+				A95F07B6148BA07600D663E5 /* libtesseract_cutil.a in Frameworks */,
+				A95F07B7148BA07600D663E5 /* libtesseract_dict.a in Frameworks */,
+				A95F07B8148BA07600D663E5 /* libtesseract_image.a in Frameworks */,
+				A95F07B9148BA07600D663E5 /* libtesseract_main.a in Frameworks */,
+				A95F07BA148BA07600D663E5 /* libtesseract_textord.a in Frameworks */,
+				A95F07BB148BA07600D663E5 /* libtesseract_training.a in Frameworks */,
+				A95F07BC148BA07600D663E5 /* libtesseract_viewer.a in Frameworks */,
+				A95F07BD148BA07600D663E5 /* libtesseract_wordrec.a in Frameworks */,
+				A91CBA481403A12300B53F5A /* CoreVideo.framework in Frameworks */,
+				A91CBA461403A05C00B53F5A /* AVFoundation.framework in Frameworks */,
+				A91CBA441403A05200B53F5A /* CoreMedia.framework in Frameworks */,
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
 				A98ED3330F59E08D00885A49 /* libmp4v2.a in Frameworks */,
 				A98ED3FC0F59E24A00885A49 /* libuniversaldetector.a in Frameworks */,
@@ -224,18 +260,6 @@
 				A9726A270F7B89F0008A828C /* AudioToolbox.framework in Frameworks */,
 				A91F634A0FB0C70100B96B33 /* libicucore.dylib in Frameworks */,
 				A90C277110AF32AF00991030 /* libz.dylib in Frameworks */,
-				A9E96CF813892BE300D4B7F0 /* libtesseract_viewer.a in Frameworks */,
-				A9E96CF913892BE400D4B7F0 /* libtesseract_api.a in Frameworks */,
-				A9E96CFA13892BE400D4B7F0 /* libtesseract_ccstruct.a in Frameworks */,
-				A9E96CFB13892BE400D4B7F0 /* libtesseract_ccutil.a in Frameworks */,
-				A9E96CFC13892BE400D4B7F0 /* libtesseract_classify.a in Frameworks */,
-				A9E96CFD13892BE400D4B7F0 /* libtesseract_cutil.a in Frameworks */,
-				A9E96CFE13892BE400D4B7F0 /* libtesseract_dict.a in Frameworks */,
-				A9E96CFF13892BE400D4B7F0 /* libtesseract_image.a in Frameworks */,
-				A9E96D0013892BE400D4B7F0 /* libtesseract_main.a in Frameworks */,
-				A9E96D0113892BE400D4B7F0 /* libtesseract_textord.a in Frameworks */,
-				A9E96D0213892BE400D4B7F0 /* libtesseract_training.a in Frameworks */,
-				A9E96D0313892BE400D4B7F0 /* libtesseract_wordrec.a in Frameworks */,
 				A9E96D0413892BE400D4B7F0 /* libavcodec.a in Frameworks */,
 				A9E96D0513892BE400D4B7F0 /* libavcore.a in Frameworks */,
 				A9E96D0613892BE400D4B7F0 /* libavdevice.a in Frameworks */,
@@ -272,6 +296,9 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A91CBA471403A12300B53F5A /* CoreVideo.framework */,
+				A91CBA451403A05C00B53F5A /* AVFoundation.framework */,
+				A91CBA431403A05200B53F5A /* CoreMedia.framework */,
 				A91F63490FB0C70100B96B33 /* libicucore.dylib */,
 				A9726A260F7B89F0008A828C /* AudioToolbox.framework */,
 				A94871D60F7914E7008DBC94 /* QuickTime.framework */,
@@ -293,6 +320,10 @@
 				A9E96CF013892BE300D4B7F0 /* libtesseract_textord.a */,
 				A9E96CF113892BE300D4B7F0 /* libtesseract_training.a */,
 				A9E96CF213892BE300D4B7F0 /* libtesseract_wordrec.a */,
+				A95F07BE148BA07600D663E5 /* liblept.a */,
+				A95F07BF148BA07600D663E5 /* libtesseract_cube.a */,
+				A95F07C0148BA07600D663E5 /* libtesseract_neural.a */,
+				A95F07C1148BA07600D663E5 /* libtesseract_tessopt.a */,
 				A9E96CF313892BE300D4B7F0 /* libavcodec.a */,
 				A9E96CF413892BE300D4B7F0 /* libavcore.a */,
 				A9E96CF513892BE300D4B7F0 /* libavdevice.a */,
@@ -380,6 +411,8 @@
 			children = (
 				A9B46AD712B79EC60040517A /* MP42FileImporter.h */,
 				A9B46AD812B79EC60040517A /* MP42FileImporter.m */,
+				A91CBA3E14039F8F00B53F5A /* MP42AVFImporter.h */,
+				A91CBA3F14039F8F00B53F5A /* MP42AVFImporter.m */,
 				A9B46AC912B79EC60040517A /* MP42AACImporter.h */,
 				A9B46ACA12B79EC60040517A /* MP42AACImporter.mm */,
 				A9B46ACB12B79EC60040517A /* MP42AC3Importer.h */,
@@ -452,8 +485,11 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "SublerCLI" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -506,6 +542,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9B46B0A12B79EC60040517A /* MP42FileImporter.m in Sources */,
 				A9B46B0312B79EC60040517A /* MP42AACImporter.mm in Sources */,
 				A9B46B0412B79EC60040517A /* MP42AC3Importer.m in Sources */,
 				A9B46B0512B79EC60040517A /* MP42AudioTrack.m in Sources */,
@@ -513,7 +550,6 @@
 				A9B46B0712B79EC60040517A /* MP42ChapterTrack.m in Sources */,
 				A9B46B0812B79EC60040517A /* MP42ClosedCaptionTrack.m in Sources */,
 				A9B46B0912B79EC60040517A /* MP42File.m in Sources */,
-				A9B46B0A12B79EC60040517A /* MP42FileImporter.m in Sources */,
 				A9B46B0B12B79EC60040517A /* MP42H264Importer.mm in Sources */,
 				A9B46B0C12B79EC60040517A /* MP42Metadata.m in Sources */,
 				A9B46B0D12B79EC60040517A /* MP42MkvImporter.m in Sources */,
@@ -538,6 +574,7 @@
 				A991318A13F0044B00DCAA12 /* SBOCRWrapper.mm in Sources */,
 				A991318B13F0044B00DCAA12 /* SBVobSubConverter.m in Sources */,
 				A9A9551513F11365002CDC85 /* MP42QTImporter.m in Sources */,
+				A91CBA4014039F8F00B53F5A /* MP42AVFImporter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,8 +595,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SublerCLI_Prefix.pch;
@@ -575,8 +610,9 @@
 					"\"$(SRCROOT)/../Tesseract/lib\"",
 					"\"$(SRCROOT)/../ffmpeg/lib\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = SublerCLI;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../mp4v2\"/** \"$(SRCROOT)/../Tesseract\"/** \"$(SRCROOT)/../ffmpeg\"/**";
 			};
 			name = Debug;
@@ -586,7 +622,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SublerCLI_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
@@ -601,8 +636,9 @@
 					"\"$(SRCROOT)/../Tesseract/lib\"",
 					"\"$(SRCROOT)/../ffmpeg/lib\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = SublerCLI;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../mp4v2\"/** \"$(SRCROOT)/../Tesseract\"/** \"$(SRCROOT)/../ffmpeg\"/**";
 			};
 			name = Release;
@@ -626,8 +662,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../mp4v2\"/**";
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../mp4v2\"/** \"$(SRCROOT)/Tesseract\"/** \"$(SRCROOT)/ffmpeg\"/**";
 				VALID_ARCHS = "i386 x86_64";
 			};
@@ -647,8 +682,7 @@
 					"\"$(SRCROOT)/ffmpeg\"/**",
 				);
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../mp4v2\"/**";
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../mp4v2\"/** \"$(SRCROOT)/Tesseract\"/** \"$(SRCROOT)/ffmpeg\"/**";
 				VALID_ARCHS = "i386 x86_64";
 			};
