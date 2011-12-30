@@ -614,7 +614,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             outputChannelCount = 2;
         }
 
-        if (([track.sourceFormat isEqualToString:@"True HD"] || [track.sourceFormat isEqualToString:@"AC-3"]) ) {
+        if (([track.sourceFormat isEqualToString:@"True HD"] || [track.sourceFormat isEqualToString:@"AC-3"]) && inputChannelsCount == 6 ) {
             ichanmap = &hb_smpte_chan_map;
             layout = HB_INPUT_CH_LAYOUT_3F2R | HB_INPUT_CH_LAYOUT_HAS_LFE;
         }

@@ -817,7 +817,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
     MP42ChapterTrack * chapterTrack = [mp4File chapters];
     NSInteger minutes = [sender tag] * 60 * 1000;
-    NSInteger i, y;
+    NSInteger i, y = 1;
 
     if (!chapterTrack) {
         chapterTrack = [[MP42ChapterTrack alloc] init];

@@ -121,6 +121,23 @@
             case kCMVideoCodecType_JPEG:
                 result = @"Photo - JPEG";
                 break;
+            case kCMVideoCodecType_DVCNTSC:
+            case kCMVideoCodecType_DVCPAL:
+                result = @"DV";
+                break;
+            case kCMVideoCodecType_DVCProPAL:
+            case kCMVideoCodecType_DVCPro50NTSC:
+            case kCMVideoCodecType_DVCPro50PAL:
+                result = @"DVCPro";
+                break;
+            case kCMVideoCodecType_DVCPROHD720p60:
+            case kCMVideoCodecType_DVCPROHD720p50:
+            case kCMVideoCodecType_DVCPROHD1080i60:
+            case kCMVideoCodecType_DVCPROHD1080i50:
+            case kCMVideoCodecType_DVCPROHD1080p30:
+            case kCMVideoCodecType_DVCPROHD1080p25:
+                result = @"DVCProHD";
+                break;
             default:
                 result = @"Unknown";
                 break;
