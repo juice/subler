@@ -12,8 +12,6 @@
 #import "MP42FileImporter.h"
 #import "MP42Utilities.h"
 
-#include "downmix.h"
-
 #define FIFO_DURATION (0.5f)
 
 NSString * const SBMonoMixdown = @"SBMonoMixdown";
@@ -178,7 +176,7 @@ OSStatus EncoderDataProc(AudioConverterRef              inAudioConverter,
 	ioData->mBuffers[0].mData = afio->srcBuffer;
 	ioData->mBuffers[0].mDataByteSize = outNumBytes;
 	ioData->mBuffers[0].mNumberChannels = afio->srcFormat.mChannelsPerFrame;
-    
+
     *ioNumberDataPackets = ioData->mBuffers[0].mDataByteSize / afio->srcSizePerPacket;
 
     afio->pos += *ioNumberDataPackets;
@@ -388,10 +386,10 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 {
     OSStatus err = noErr;
     struct AudioFileIO * afio = inUserData;
-    
+
     if (afio->sample)
         [afio->sample release];
-    
+
     // figure out how much to read
 	if (*ioNumberDataPackets > afio->numPacketsPerRead) *ioNumberDataPackets = afio->numPacketsPerRead;
     
@@ -513,6 +511,12 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
 			break;
 		}
 
+        
+        if( ichanmap != &hb_qt_chan_map )  { 
+            hb_layout_remap( ichanmap, &hb_qt_chan_map, layout, 
+                            (float*)outputBuffer, 
+                            ioOutputDataPackets ); 
+        } 
         // Dowmnix the audio if needed
         if (downmix) {
             size_t samplesBufferSize = ioOutputDataPackets * outputChannelCount * sizeof(float);
@@ -610,6 +614,14 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
             outputChannelCount = 2;
         }
 
+        if (([track.sourceFormat isEqualToString:@"True HD"] || [track.sourceFormat isEqualToString:@"AC-3"]) ) {
+            ichanmap = &hb_smpte_chan_map;
+            layout = HB_INPUT_CH_LAYOUT_3F2R | HB_INPUT_CH_LAYOUT_HAS_LFE;
+        }
+        else {
+            ichanmap = &hb_qt_chan_map;
+        }
+
         outputSamplesBuffer = [[NSMutableArray alloc] init];
         inputSamplesBuffer = [[NSMutableArray alloc] init];
 
@@ -697,7 +709,7 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         }
 
         // Try to set the input channel layout 
-        UInt32 propertySize = 0;
+        /*UInt32 propertySize = 0;
         AudioChannelLayout * layout = NULL;
         err = AudioConverterGetPropertyInfo(decoderData.converter, kAudioConverterInputChannelLayout, &propertySize, NULL);
 
@@ -717,7 +729,13 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
                 free(newLayout);
             }
             free(layout);
-        }
+        }*/
+
+        /*if (([track.sourceFormat isEqualToString:@"True HD"] || [track.sourceFormat isEqualToString:@"AC-3"]) && inputChannelsCount == 6 ) {
+            SInt32 channelMap[6] = { 2, 0, 1, 4, 5, 3 };
+            AudioConverterSetProperty( decoderData.converter, kAudioConverterChannelMap,
+                                      sizeof( channelMap ), channelMap );
+        }*/
 
         // Read the complete inputStreamDescription from the audio converter.
         UInt32 size = sizeof(inputFormat);

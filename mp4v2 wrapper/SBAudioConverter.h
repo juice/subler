@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #include "sfifo.h"
+#include "downmix.h"
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <CoreAudio/CoreAudio.h>
@@ -60,6 +61,8 @@ struct AudioFileIO
     NSUInteger  inputChannelsCount;
     NSUInteger  outputChannelCount;
     NSUInteger  downmixType;
+    NSUInteger  layout;
+    hb_chan_map_t *ichanmap;
 
     NSMutableArray * inputSamplesBuffer;
     NSMutableArray * outputSamplesBuffer;
