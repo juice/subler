@@ -449,8 +449,10 @@ static const genreType_t genreType_strings[] = {
     iTMF_rating_t *ratingList;
     NSInteger k = 0;
     for ( ratingList = (iTMF_rating_t*) rating_strings; ratingList->english_name; ratingList++, k++ ) {
-        if ([ratingString isEqualToString:[NSString stringWithUTF8String:ratingList->english_name]])
+        if ([ratingString isEqualToString:[NSString stringWithUTF8String:ratingList->english_name]]) {
             ratingIndex = k;
+            break;
+        }
     }
     return ratingIndex;
 }
