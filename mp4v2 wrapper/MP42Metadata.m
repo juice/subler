@@ -133,7 +133,7 @@ static const iTMF_rating_t rating_strings[] = {
     {"ca-tv|TV-18+|350|", "TV-18+"},
     {"ca-tv|TV-21+|500|", "TV-21+"},
     {"--", ""},
-    {"--", "Unknown"},                      // 85
+    {"--", "Unknown"},                      // 86
     {NULL, NULL},
 };
 
@@ -408,9 +408,12 @@ static const genreType_t genreType_strings[] = {
 - (NSArray *) availableRatings
 {
     NSMutableArray *ratingsArray = [[NSMutableArray alloc] init];
-    iTMF_rating_t *rating;
-    for ( rating = (iTMF_rating_t*) rating_strings; rating->english_name; rating++ )
-        [ratingsArray addObject:[NSString stringWithUTF8String:rating->english_name]];
+    iTMF_rating_t *_rating;
+    for ( _rating = (iTMF_rating_t*) rating_strings; _rating->english_name; _rating++ )
+        [ratingsArray addObject:[NSString stringWithUTF8String:_rating->english_name]];
+
+    if (rating)
+        [ratingsArray replaceObjectAtIndex:[ratingsArray count]-1 withObject:[NSString stringWithFormat:@"Unknown (%@)",rating]];
 
     return [ratingsArray autorelease];
 }
@@ -436,9 +439,9 @@ static const genreType_t genreType_strings[] = {
 }
 
 - (NSString *) ratingFromIndex: (NSInteger)index {
-    iTMF_rating_t *rating = (iTMF_rating_t*) rating_strings;
-    rating += index;
-    return [NSString stringWithUTF8String:rating->english_name];    
+    iTMF_rating_t *_rating = (iTMF_rating_t*) rating_strings;
+    _rating += index;
+    return [NSString stringWithUTF8String:_rating->english_name];    
 }
 
 - (NSInteger) ratingIndexFromString: (NSString *)ratingString{
@@ -740,9 +743,9 @@ static const genreType_t genreType_strings[] = {
             uint32_t j;
             for (j = 0; j < item->dataList.size; j++) {
                 MP4ItmfData* data = &item->dataList.elements[j];
-                NSString *rating = [[NSString alloc] initWithBytes:data->value length: data->valueSize encoding:NSUTF8StringEncoding];
+                NSString *ratingString = [[NSString alloc] initWithBytes:data->value length: data->valueSize encoding:NSUTF8StringEncoding];
                 NSString *splitElements  = @"\\|";
-                NSArray *ratingItems = [rating componentsSeparatedByRegex:splitElements];
+                NSArray *ratingItems = [ratingString componentsSeparatedByRegex:splitElements];
                 NSInteger ratingIndex = R_UNKNOWN;
                 if ([ratingItems count] >= 3) {
                     NSString *ratingCompareString = [NSString stringWithFormat:@"%@|%@|%@|", 
@@ -760,7 +763,8 @@ static const genreType_t genreType_strings[] = {
                 if ([ratingItems count] >= 4)
                     [tagsDict setObject:[ratingItems objectAtIndex:3] forKey:@"Rating Annotation"];
                 
-                [rating release];
+                rating = [ratingString retain];
+                [ratingString release];
             }
         }
         MP4ItmfItemListFree(list);
@@ -1000,7 +1004,16 @@ static const genreType_t genreType_strings[] = {
 
     /* Rewrite extended metadata using the generic iTMF api */
 
+    NSString * ratingString = nil;
+
     if ([tagsDict valueForKey:@"Rating"] && ([[tagsDict valueForKey:@"Rating"] integerValue] != R_UNKNOWN) ) {
+        ratingString = [NSString stringWithUTF8String:
+                        rating_strings[[[tagsDict valueForKey:@"Rating"] integerValue]].rating];
+    }
+    else if (([[tagsDict valueForKey:@"Rating"] integerValue] == R_UNKNOWN) && rating) {
+        ratingString = rating;
+    }
+    if (ratingString) {
         MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunEXTC");
         if (list) {
             uint32_t i;
@@ -1014,17 +1027,16 @@ static const genreType_t genreType_strings[] = {
         MP4ItmfItem* newItem = MP4ItmfItemAlloc( "----", 1 );
         newItem->mean = strdup( "com.apple.iTunes" );
         newItem->name = strdup( "iTunEXTC" );
-        
+
         MP4ItmfData* data = &newItem->dataList.elements[0];
-        NSString * ratingString = [NSString stringWithUTF8String:
-                                   rating_strings[[[tagsDict valueForKey:@"Rating"] integerValue]].rating];
+
         if ([[tagsDict valueForKey:@"Rating Annotation"] length] && [ratingString length])
             ratingString = [ratingString stringByAppendingString:[tagsDict valueForKey:@"Rating Annotation"]];
         data->typeCode = MP4_ITMF_BT_UTF8;
         data->valueSize = strlen([ratingString UTF8String]);
         data->value = (uint8_t*)malloc( data->valueSize );
         memcpy( data->value, [ratingString UTF8String], data->valueSize );
-        
+
         MP4ItmfAddItem(fileHandle, newItem);
     }
     else {
@@ -1232,6 +1244,9 @@ static const genreType_t genreType_strings[] = {
     [artworkURL release];
     [artworkThumbURLs release];
     [artworkFullsizeURLs release];
+
+    [rating release];
+
     [tagsDict release];
     [super dealloc];
 }

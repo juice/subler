@@ -64,17 +64,36 @@ enum rating_type {
     FR_TV_12,
     FR_TV_16,
     FR_TV_18,
-    R_UNKNOWN   = 64,
+    FR_TV_UNRATED,
+    CA_MOVIE_G = 70,
+    CA_MOVIE_PG,
+    CA_MOVIE_14A,
+    CA_MOVIE_18A,
+    CA_MOVIE_R,
+    CA_MOVIE_A,
+    CA_TV_E = 77,
+    CA_TV_C,     
+    CA_TV_C8,
+    CA_TV_G,
+    CA_TV_PG,
+    CA_TV_14,
+    CA_TV_18,
+    CA_TV_21,
+
+    R_UNKNOWN   = 86,
 };
 
 @interface MP42Metadata : NSObject <NSCoding, NSCopying> {
     NSString                *presetName;
     NSURL                   *sourceURL;
     NSMutableDictionary     *tagsDict;
+
     NSImage                 *artwork;
     NSURL                   *artworkURL;
     NSArray                 *artworkThumbURLs;
     NSArray                 *artworkFullsizeURLs;
+
+    NSString *rating;
 
     uint8_t mediaKind;
     uint8_t contentRating;
