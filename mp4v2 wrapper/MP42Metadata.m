@@ -132,8 +132,17 @@ static const iTMF_rating_t rating_strings[] = {
     {"ca-tv|TV-14+|300|", "TV-14+"},
     {"ca-tv|TV-18+|350|", "TV-18+"},
     {"ca-tv|TV-21+|500|", "TV-21+"},
+    {"--", "-- Switzerland"},
+    {"ch-movie|0|50|", "0"},     // 86
+    {"ch-movie|6|75|", "6"},
+    {"ch-movie|7|125|", "7"},
+    {"ch-movie|10|150|", "10"},
+    {"ch-movie|12|200|", "12"},
+    {"ch-movie|14|400|", "14"},
+    {"ch-movie|16|500|", "16"},
+    {"ch-movie|18|600|", "18"},
     {"--", ""},
-    {"--", "Unknown"},                      // 86
+    {"--", "Unknown"},                      // 95
     {NULL, NULL},
 };
 

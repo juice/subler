@@ -79,8 +79,16 @@ enum rating_type {
     CA_TV_14,
     CA_TV_18,
     CA_TV_21,
+    CH_MOVIE_0 = 86,
+    CH_MOVIE_6,     
+    CH_MOVIE_7,
+    CH_MOVIE_10,
+    CH_MOVIE_12,
+    CH_MOVIE_14,
+    CH_MOVIE_16,
+    CH_MOVIE_18,
 
-    R_UNKNOWN   = 86,
+    R_UNKNOWN   = 95,
 };
 
 @interface MP42Metadata : NSObject <NSCoding, NSCopying> {
