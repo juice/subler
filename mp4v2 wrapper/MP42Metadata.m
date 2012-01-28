@@ -138,9 +138,9 @@ static const iTMF_rating_t rating_strings[] = {
     {"ch-movie|7|125|", "7"},
     {"ch-movie|10|150|", "10"},
     {"ch-movie|12|200|", "12"},
-    {"ch-movie|14|400|", "14"},
-    {"ch-movie|16|500|", "16"},
-    {"ch-movie|18|600|", "18"},
+    {"ch-movie|14|325|", "14"},
+    {"ch-movie|16|375|", "16"},
+    {"ch-movie|18|400|", "18"},
     {"--", ""},
     {"--", "Unknown"},                      // 95
     {NULL, NULL},
