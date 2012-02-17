@@ -86,7 +86,8 @@
     NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:plistFilename];
     // construct result
     NSArray *results = [self metadataForResults:plist];
-    [[NSFileManager defaultManager] removeItemAtPath:plistFilename error:NULL];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:plistFilename])
+        [[NSFileManager defaultManager] removeItemAtPath:plistFilename error:NULL];
     // return results
 
     [args release];
