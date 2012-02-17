@@ -100,6 +100,8 @@
     [fileURL release];
     [destURL release];
     [mp4File release];
+    
+    [super dealloc];
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
