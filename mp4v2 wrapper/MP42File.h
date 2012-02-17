@@ -33,6 +33,7 @@ extern NSString * const MP42FileTypeM4A;
     id delegate;
 
     NSMutableArray  *tracksToBeDeleted;
+    NSMutableArray  *fileImporters;
     BOOL             hasFileRepresentation;
     BOOL             isCancelled;
 

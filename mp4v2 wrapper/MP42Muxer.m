@@ -424,9 +424,6 @@
     }
 
     for (MP42Track * track in workingTracks) {
-        if (track.trackImporterHelper) 
-            track.trackImporterHelper = nil;
-
         if (track.trackConverterHelper) 
             track.trackConverterHelper = nil;
     }

@@ -42,6 +42,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
         tracksToBeDeleted = [[NSMutableArray alloc] init];
 
         metadata = [[MP42Metadata alloc] init];
+        fileImporters = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -115,6 +116,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
 
         tracksToBeDeleted = [[NSMutableArray alloc] init];
         metadata = [[MP42Metadata alloc] initWithSourceURL:fileURL fileHandle:fileHandle];
+        fileImporters = [[NSMutableArray alloc] init];
         MP4Close(fileHandle, 0);
 	}
 
@@ -187,6 +189,9 @@ NSString * const MP42FileTypeM4A = @"m4a";
     if (trackNeedConversion(track.format)) {
         track.needConversion = YES;
     }
+
+    if (track.trackImporterHelper)
+        [fileImporters addObject:track.trackImporterHelper];
 
     [tracks addObject:track];
 }
@@ -336,7 +341,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
         [self removeMuxedTrack:track];
 
     // Init the muxer and prepare the work
-    NSMutableDictionary *fileImporters = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *_fileImporters = [[NSMutableDictionary alloc] init];
     muxer = [[MP42Muxer alloc] initWithDelegate:self];
     for (track in tracks)
         if (!(track.muxed) && !isCancelled) {
@@ -344,14 +349,14 @@ NSString * const MP42FileTypeM4A = @"m4a";
             if (![track trackImporterHelper]) {
                 MP42FileImporter *fileImporter = nil;
                 NSURL *sourceURL = [track sourceURL];
-                if ((fileImporter = [fileImporters valueForKey:[[track sourceURL] path]])) {
+                if ((fileImporter = [_fileImporters valueForKey:[[track sourceURL] path]])) {
                     [track setTrackImporterHelper:fileImporter];
                 }
                 else if (sourceURL) {
                     fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil andFile:[track sourceURL] error:outError];
                     if (fileImporter) {
                         [track setTrackImporterHelper:fileImporter];
-                        [fileImporters setObject:fileImporter forKey:[[track sourceURL] path]];
+                        [_fileImporters setObject:fileImporter forKey:[[track sourceURL] path]];
                         [fileImporter release];
                     }
                 }
@@ -359,7 +364,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
             [muxer addTrack:track];
     }
 
-    [fileImporters release];
+    [_fileImporters release];
 
     success = [muxer prepareWork:fileHandle error:outError];
     if ( !success && outError != NULL) {
@@ -668,6 +673,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
 {
     [fileURL release];
     [tracks release];
+    [fileImporters release];
     [tracksToBeDeleted release];
     [metadata release];
     [super dealloc];

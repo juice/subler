@@ -61,7 +61,7 @@
 @property(readwrite) BOOL muxed;
 @property(readwrite) BOOL needConversion;
 
-@property(readwrite, retain) MP42FileImporter * trackImporterHelper;
+@property(readwrite, assign) MP42FileImporter * trackImporterHelper;
 @property(readwrite, retain) id trackDemuxerHelper;
 @property(readwrite, retain) id trackConverterHelper;
 
