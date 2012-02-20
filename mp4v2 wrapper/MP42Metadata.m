@@ -352,7 +352,7 @@ static const genreType_t genreType_strings[] = {
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
             @"Studio", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"Keywords", @"Category", @"contentID", @"artistID", @"playlistID", @"genreID", @"composerID",
-            @"XID", @"iTunes Account", @"Sort Name", @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
+            @"XID", @"iTunes Account", @"iTunes Country", @"Sort Name", @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
 }
 
 - (NSArray *) writableMetadata
@@ -362,7 +362,7 @@ static const genreType_t genreType_strings[] = {
 			@"TV Network", @"TV Episode ID", @"TV Season", @"Cast", @"Director", @"Codirector", @"Producers", @"Screenwriters",
             @"Studio", @"Description", @"Long Description", @"Rating", @"Rating Annotation",
 			@"Lyrics", @"Copyright", @"Encoding Tool", @"Encoded By", @"Keywords", @"Category", @"contentID", @"artistID", @"playlistID", @"genreID", @"composerID",
-            @"XID", @"iTunes Account", @"Sort Name",
+            @"XID", @"iTunes Account", @"iTunes Country", @"Sort Name",
             @"Sort Artist", @"Sort Album Artist", @"Sort Album", @"Sort Composer", @"Sort TV Show", nil];
 }
 
@@ -675,6 +675,10 @@ static const genreType_t genreType_strings[] = {
         [tagsDict setObject:[self stringFromMetadata:tags->iTunesAccount]
                      forKey:@"iTunes Account"];
 
+    if (tags->iTunesCountry)
+        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->iTunesCountry]
+                     forKey:@"iTunes Country"];
+
     if (tags->contentID)
         [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->contentID]
                      forKey:@"contentID"];
@@ -940,6 +944,13 @@ static const genreType_t genreType_strings[] = {
     MP4TagsSetCategory(tags, [[tagsDict valueForKey:@"Category"] UTF8String]);
 
     MP4TagsSetContentRating(tags, &contentRating);
+
+    if ([tagsDict valueForKey:@"iTunes Country"]) {
+        const uint32_t i = [[tagsDict valueForKey:@"iTunes Country"] integerValue];
+        MP4TagsSetITunesCountry(tags, &i);
+    }
+    else
+        MP4TagsSetITunesCountry(tags, NULL);    
 
     if ([tagsDict valueForKey:@"contentID"]) {
         const uint32_t i = [[tagsDict valueForKey:@"contentID"] integerValue];
