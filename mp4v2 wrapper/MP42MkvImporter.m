@@ -452,7 +452,9 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
         [ac3Info appendBytes:&acmod length:sizeof(uint64_t)];
         [ac3Info appendBytes:&lfeon length:sizeof(uint64_t)];
         [ac3Info appendBytes:&frmsizecod length:sizeof(uint64_t)];
-        
+
+        free(frame);
+
         return [ac3Info autorelease];
     }
     else if (!strcmp(trackInfo->CodecID, "S_VOBSUB")) {
