@@ -24,6 +24,7 @@ NSString * const MP42CreateChaptersPreviewTrack = @"ChaptersPreview";
 NSString * const MP42FileTypeMP4 = @"mp4";
 NSString * const MP42FileTypeM4V = @"m4v";
 NSString * const MP42FileTypeM4A = @"m4a";
+NSString * const MP42FileTypeM4B = @"m4b";
 
 @interface MP42File (Private)
 
@@ -292,7 +293,7 @@ NSString * const MP42FileTypeM4A = @"m4a";
             supportedBrands[3] = "isom";
             supportedBrandsCount = 4;
         }
-        else if ([fileExtension isEqualToString:MP42FileTypeM4A]) {
+        else if ([fileExtension isEqualToString:MP42FileTypeM4A] || [fileExtension isEqualToString:MP42FileTypeM4A]) {
             majorBrand = "M4A ";
             supportedBrands[0] = majorBrand;
             supportedBrands[1] = "mp42";

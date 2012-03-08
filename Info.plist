@@ -85,6 +85,23 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>m4b</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/x-m4b</string>
+				<string>audio/x-m4v</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Audiobook-MPEG4</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>SBDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>mkv</string>
 				<string>mka</string>
 				<string>mks</string>
