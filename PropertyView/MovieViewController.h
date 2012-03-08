@@ -21,7 +21,7 @@
     IBOutlet NSImageView    *imageView;
     IBOutlet NSPopUpButton  *mediaKind;
     IBOutlet NSPopUpButton  *contentRating;
-    IBOutlet NSButton       *hdVideo;
+    IBOutlet NSPopUpButton  *hdVideo;
     IBOutlet NSButton       *gapless;
     IBOutlet NSButton       *podcast;
 

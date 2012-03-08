@@ -94,7 +94,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
 
     [mediaKind selectItemWithTag:metadata.mediaKind];
     [contentRating selectItemWithTag:metadata.contentRating];
-    [hdVideo setState:metadata.hdVideo];
+    [hdVideo selectItemWithTag:metadata.hdVideo];
     [gapless setState:metadata.gapless];
     [podcast setState:metadata.podcast];
 
@@ -267,7 +267,7 @@ static NSInteger sortFunction (id ldict, id rdict, void *context)
     [mediaKind selectItemWithTag:metadata.mediaKind];
 
     metadata.hdVideo = newTags.hdVideo;
-    [hdVideo setState:metadata.hdVideo];
+    [hdVideo selectItemWithTag:metadata.hdVideo];
 
     metadata.gapless = newTags.gapless;
     [gapless setState:metadata.gapless];
@@ -595,24 +595,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (IBAction) changehdVideo: (id) sender
 {
-    uint8_t newValue;
-    if (sender == hdVideo)
-        newValue = [sender state];
-    else {
-        newValue = ![hdVideo state];
-        [hdVideo setState:newValue];
-    }
-
-    if (metadata.hdVideo != newValue) {
-        metadata.hdVideo = newValue;
+    uint8_t tagName = [[sender selectedItem] tag];
+    
+    if (metadata.hdVideo != tagName) {
+        metadata.hdVideo = tagName;
         metadata.isEdited = YES;
-    }
-
-    NSUndoManager *undo = [[self view] undoManager];
-    [[undo prepareWithInvocationTarget:self] changehdVideo: self];
-
-    if (![undo isUndoing]) {
-        [undo setActionName:@"Check HD Video"];
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }
 }
 
