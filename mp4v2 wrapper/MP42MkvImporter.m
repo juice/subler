@@ -85,6 +85,7 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
     - (MP42Metadata*) readMatroskaMetadata;
     - (NSString*) matroskaCodecIDToHumanReadableName:(TrackInfo *)track;
     - (NSString*) matroskaTrackName:(TrackInfo *)track;
+    - (uint64_t) matroskaTrackStartTime:(TrackInfo *)track Id:(MP4TrackId)Id;
 @end
 
 @implementation MP42MkvImporter
@@ -165,6 +166,8 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
                 newTrack.sourceFormat = [self matroskaCodecIDToHumanReadableName:mkvTrack];
                 newTrack.Id = i;
                 newTrack.sourceURL = fileURL;
+                if (mkvTrack->Type == TT_AUDIO)
+                    newTrack.startOffset = [self matroskaTrackStartTime:mkvTrack Id:i];
 
                 if ([newTrack.format isEqualToString:@"H.264"]) {
                     uint8_t* avcCAtom = (uint8_t *)malloc(mkvTrack->CodecPrivateSize); // mkv stores h.264 avcC in CodecPrivate
@@ -327,6 +330,22 @@ u_int32_t MP4AV_Ac3GetSamplingRate(u_int8_t* pHdr);
         return [NSString stringWithUTF8String:track->Name];
     else
         return nil;
+}
+
+- (uint64_t) matroskaTrackStartTime:(TrackInfo *)track Id:(MP4TrackId)Id
+{
+    uint64_t        StartTime, EndTime, FilePos;
+    uint32_t        Track, FrameSize, FrameFlags;
+
+    /* mask other tracks because we don't need them */
+    unsigned int TrackMask = ~0;
+    TrackMask &= ~(1 << Id);
+
+    mkv_SetTrackMask(matroskaFile, TrackMask);
+    mkv_ReadFrame(matroskaFile, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags);
+    mkv_Seek(matroskaFile, 0, 0);
+
+    return StartTime / 1000000;
 }
 
 - (NSUInteger)timescaleForTrack:(MP42Track *)track
