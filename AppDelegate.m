@@ -184,7 +184,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 - (IBAction) linkDonate:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL: [NSURL
-                                             URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YKZHVC6HG6AFQ&lc=EN&item_name=Subler&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"]];
+                                             URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YKZHVC6HG6AFQ&lc=GB&item_name=Subler&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"]];
 }
 
 @end
