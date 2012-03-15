@@ -1176,8 +1176,8 @@ static const genreType_t genreType_strings[] = {
             if((tagValue = [newMetadata.tagsDict valueForKey:key]))
                 [tagsDict setObject:tagValue forKey:key];
 
-    if (!artwork) {
-        artwork = [newMetadata.artwork retain];
+    if ([newMetadata artwork]) {
+        artwork = [[newMetadata artwork] retain];
         isArtworkEdited = YES;
     }
 
