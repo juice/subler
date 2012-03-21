@@ -43,6 +43,7 @@ typedef NSInteger SBQueueStatus;
 
     NSImage *docImg;
     
+    dispatch_queue_t queue;
     SBQueueStatus   status;
     BOOL            isCancelled;
     id              currentItem;

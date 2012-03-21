@@ -52,6 +52,9 @@ static SBQueueController *sharedController = nil;
 {
     self = [super initWithWindowNibName:@"Batch"];
     if (self) {
+        
+        queue = dispatch_queue_create("org.subler.Queue", NULL);
+
         NSURL* queueURL = [self queueURL];
 
         if ([[NSFileManager defaultManager] fileExistsAtPath:[queueURL path]]) {
@@ -64,7 +67,7 @@ static SBQueueController *sharedController = nil;
         }
         else
             filesArray = [[NSMutableArray alloc] init];
-        
+
         [self updateDockTile];
     }
 
@@ -387,7 +390,7 @@ static SBQueueController *sharedController = nil;
     if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] boolValue])
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
 
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    dispatch_async(queue, ^{
         NSError *outError = nil;
         BOOL success = NO;
         for (;;) {
