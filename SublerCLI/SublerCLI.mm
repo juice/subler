@@ -14,7 +14,7 @@ void print_help()
     printf("\t\t -height Height in pixel \n");
     printf("\t\t -language Track language (i.e. English) \n");
     printf("\t\t -remove Remove existing subtitles \n");
-    printf("\t\t -optimize Pptimize \n");
+    printf("\t\t -optimize Optimize \n");
     printf("\t\t -help Print this help information \n");
     printf("\t\t -version Print version \n");
     printf("\t\t -metadata set tags {Tag Name:Tag Value}* \n");
@@ -65,8 +65,10 @@ int main (int argc, const char * argv[]) {
     }
 
     printArgs(argc,argv);
-    
+
+    argv += 1;
     argc--;
+
 	while ( argc > 0 && **argv == '-' )
 	{
 		const char*	args = &(*argv)[1];
@@ -126,12 +128,12 @@ int main (int argc, const char * argv[]) {
             height = atoi(*argv++);
             argc--;
 		}
-        if ( ! strcmp ( args, "language" ) )
+        else if ( ! strcmp ( args, "language" ) )
 		{
             language = [NSString stringWithUTF8String: *argv++];
 			argc--;
 		}
-        if ( ! strcmp ( args, "remove" ) )
+        else if ( ! strcmp ( args, "remove" ) )
 		{
             removeExisting = YES;
 		}
@@ -165,7 +167,7 @@ int main (int argc, const char * argv[]) {
             mp4File = [[MP42File alloc] initWithDelegate:nil];
 
         if (!mp4File) {
-            printf("Error: %s\n", "the mp4 file couln't be open.");
+            printf("Error: %s\n", "the mp4 file couln't be opened.");
             return -1;
         }
         if (removeExisting) {
@@ -308,7 +310,7 @@ int main (int argc, const char * argv[]) {
         mp4File = [[MP42File alloc] initWithExistingFile:[NSURL fileURLWithPath:destinationPath]
                                              andDelegate:nil];
         if (!mp4File) {
-            printf("Error: %s\n", "the mp4 file couln't be open.");
+            printf("Error: %s\n", "the mp4 file couln't be opened.");
             return -1;
         }
         printf("Optimizing...\n");
