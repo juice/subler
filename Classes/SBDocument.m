@@ -361,7 +361,8 @@
         return YES;
 
 	if (action == @selector(export:) && [fileTracksTable selectedRow] != -1)
-		if ([[mp4File trackAtIndex:[fileTracksTable selectedRow]] respondsToSelector:@selector(exportToURL:error:)])
+		if ([[mp4File trackAtIndex:[fileTracksTable selectedRow]] respondsToSelector:@selector(exportToURL:error:)] &&
+            [[mp4File trackAtIndex:[fileTracksTable selectedRow]] muxed])
 			return YES;
 
     return NO;
