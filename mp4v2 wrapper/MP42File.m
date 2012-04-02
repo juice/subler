@@ -436,6 +436,7 @@ NSString * const MP42FileTypeM4B = @"m4b";
 
 - (BOOL) createChaptersPreview {
     NSError *error;
+    NSInteger decodable = 1;
     MP42ChapterTrack * chapterTrack = nil;
     MP4TrackId jpegTrack = 0;
 
@@ -447,7 +448,12 @@ NSString * const MP42FileTypeM4B = @"m4b";
         if ([track.format isEqualToString:@"Photo - JPEG"])
             jpegTrack = track.Id;
 
-    if (chapterTrack && !jpegTrack) {
+    for (MP42VideoTrack * track in tracks)
+        if ([track.format isEqualToString:@"H.264"])
+            if ((track.origProfile) == 110)
+                decodable = 0;
+
+    if (chapterTrack && !jpegTrack && decodable) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         NSMutableArray * previewImages = [NSMutableArray arrayWithCapacity:[chapterTrack chapterCount]];
 
