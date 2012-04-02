@@ -481,11 +481,11 @@ static const genreType_t genreType_strings[] = {
 
 - (BOOL) setTag:(id)value forKey:(NSString *)key;
 {
-    NSString *regexPositive = @"YES|Yes|yes|1";
+    NSString *regexPositive = @"YES|Yes|yes|1|2";
 
     if ([key isEqualToString:@"HD Video"]) {
         if( value != nil && [value length] > 0 && [value isMatchedByRegex:regexPositive]) {
-            hdVideo = 1;
+            hdVideo = [value integerValue];
             isEdited = YES;
         }
         else {
@@ -1172,6 +1172,9 @@ static const genreType_t genreType_strings[] = {
 - (BOOL) mergeMetadata: (MP42Metadata *) newMetadata
 {
     NSString * tagValue;
+
+    [newMetadata retain];
+
     for (NSString * key in [self writableMetadata])
             if((tagValue = [newMetadata.tagsDict valueForKey:key]))
                 [tagsDict setObject:tagValue forKey:key];
@@ -1187,6 +1190,9 @@ static const genreType_t genreType_strings[] = {
     hdVideo = newMetadata.hdVideo;
 
     isEdited = YES;
+
+    [newMetadata release];
+
     return YES;
 }
 

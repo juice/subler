@@ -413,7 +413,7 @@
         }
     }
     if ([delegate respondsToSelector:@selector(metadataImportDone:)]) {
-        [delegate performSelector:@selector(metadataImportDone:) withObject:selectedResult];
+        [delegate performSelectorOnMainThread:@selector(metadataImportDone:) withObject:selectedResult waitUntilDone:NO];
     }
 }
 
