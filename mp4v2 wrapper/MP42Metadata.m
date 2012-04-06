@@ -520,10 +520,12 @@ static const genreType_t genreType_strings[] = {
     else if ([key isEqualToString:@"Rating"] && ![[tagsDict valueForKey:key] isEqualTo:value]) {
         if ([value isKindOfClass:[NSNumber class]])
             [tagsDict setValue:value forKey:key];
-        else {
+        else if ([value length]) {
             NSString *rating_index = [[NSNumber numberWithInt:[self ratingIndexFromString:value]] stringValue];
             [tagsDict setValue:rating_index forKey:key];
         }
+        else
+            [tagsDict setValue:nil forKey:key];
 
         isEdited = YES;
         return YES;

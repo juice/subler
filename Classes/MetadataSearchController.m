@@ -364,30 +364,29 @@
         [searchButton setEnabled:NO];
         [resultsTable setEnabled:NO];
         [metadataTable setEnabled:NO];
-        [NSThread detachNewThreadSelector:@selector(runLoadArtworkThread:) toTarget:self withObject:nil];
-    } else {
+
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            artworkData = [[NSData dataWithContentsOfURL:selectedResult.artworkURL] retain];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (artworkData && [artworkData length]) {
+
+                    NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:artworkData];
+                    if (imageRep != nil) {
+                        NSImage *artwork = [[NSImage alloc] initWithSize:[imageRep size]];
+                        [artwork addRepresentation:imageRep];
+                        selectedResult.artwork = artwork;
+                        [artworkData release];
+                        [artwork release];
+                    }
+                }
+                [self addMetadata];
+            });
+        });
+    }
+    else {
         [self addMetadata];
     }
-}
-
-- (void) runLoadArtworkThread:(id)param {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    artworkData = [NSData dataWithContentsOfURL:selectedResult.artworkURL];
-    [self loadArtworkDone];
-    [pool release];
-}
-
-- (void) loadArtworkDone {
-    if (artworkData && [artworkData length]) {
-        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:artworkData];
-        if (imageRep != nil) {
-            NSImage *artwork = [[NSImage alloc] initWithSize:[imageRep size]];
-            [artwork addRepresentation:imageRep];
-            selectedResult.artwork = artwork;
-            [artwork release];
-        }
-    }
-    [self addMetadata];
 }
 
 #pragma mark Finishing up
@@ -413,7 +412,7 @@
         }
     }
     if ([delegate respondsToSelector:@selector(metadataImportDone:)]) {
-        [delegate performSelectorOnMainThread:@selector(metadataImportDone:) withObject:selectedResult waitUntilDone:NO];
+        [delegate performSelector:@selector(metadataImportDone:) withObject:selectedResult];
     }
 }
 
