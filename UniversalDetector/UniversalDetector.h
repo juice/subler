@@ -1,4 +1,6 @@
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
+
+#define UniversalDetector SubUniversalDetector
 
 @interface UniversalDetector:NSObject
 {
@@ -18,6 +20,8 @@
 -(NSString *)MIMECharset;
 -(NSStringEncoding)encoding;
 -(float)confidence;
+
+-(void)debugDump;
 
 +(UniversalDetector *)detector;
 

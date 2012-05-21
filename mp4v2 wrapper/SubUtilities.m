@@ -267,24 +267,24 @@ NSMutableString *STStandardizeStringNewlines(NSString *str)
 }
 
 static const short frequencies[] = {
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 1026, 29, -1258, 539, -930, -652, -815, -487, -2526, -2161, 146, -956, -914, 1149, -102, 
-293, -2675, -923, -597, 339, 110, 247, 9, 0, 1024, 1239, 0, 0, 0, 0, 0, 
-0, 1980, 1472, 1733, -304, -4086, 273, 582, 333, 2479, 1193, 5014, -1039, 1964, -2025, 1083, 
--154, -5000, -1725, -4843, -366, -1850, -191, 1356, -2262, 1648, 1475, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, -458, 0, 0, 0, 0, 300, 0, 0, 300, 601, 0, 
-0, 0, -2247, 0, 0, 0, 0, 0, 0, 0, 3667, 0, 0, 3491, 3567, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1993, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 1472, 0, 0, 0, 5000, 0, 601, 0, 1993, 0, 
-0, 1083, 0, 672, -458, 0, 0, -458, 1409, 0, 0, 0, 0, 0, 1645, 425, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 601, -1123, 
--1912, 4259, 2573, 8866, 55, 0, 0, -2247, -831, -3788, -3043, 0, 0, 3412, 2921, 1251, 
-0, 0, 1377, 520, 1344, 0, -1123, 0, 0, -1213, 2208, -458, -794, 2636, 3824, 0};
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 1026, 29, -1258, 539, -930, -652, -815, -487, -2526, -2161, 146, -956, -914, 1149, -102, 
+	293, -2675, -923, -597, 339, 110, 247, 9, 0, 1024, 1239, 0, 0, 0, 0, 0, 
+	0, 1980, 1472, 1733, -304, -4086, 273, 582, 333, 2479, 1193, 5014, -1039, 1964, -2025, 1083, 
+	-154, -5000, -1725, -4843, -366, -1850, -191, 1356, -2262, 1648, 1475, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, -458, 0, 0, 0, 0, 300, 0, 0, 300, 601, 0, 
+	0, 0, -2247, 0, 0, 0, 0, 0, 0, 0, 3667, 0, 0, 3491, 3567, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1993, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 1472, 0, 0, 0, 5000, 0, 601, 0, 1993, 0, 
+	0, 1083, 0, 672, -458, 0, 0, -458, 1409, 0, 0, 0, 0, 0, 1645, 425, 
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 601, -1123, 
+	-1912, 4259, 2573, 8866, 55, 0, 0, -2247, -831, -3788, -3043, 0, 0, 3412, 2921, 1251, 
+	0, 0, 1377, 520, 1344, 0, -1123, 0, 0, -1213, 2208, -458, -794, 2636, 3824, 0};
 
-static BOOL DifferentiateLatin12(const unsigned char *data, int length)
+BOOL SubDifferentiateLatin12(const unsigned char *data, int length)
 {
 	// generated from french/german (latin1) and hungarian/romanian (latin2)
 	
@@ -297,9 +297,11 @@ static BOOL DifferentiateLatin12(const unsigned char *data, int length)
 	return frcount <= 0;
 }
 
+
 extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 {
 	NSData *data = [NSData dataWithContentsOfMappedFile:path];
+
     if (!data)
         return nil;
 
@@ -318,13 +320,13 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 	latin2 = enc == NSWindowsCP1250StringEncoding;
 
 	if (latin2) {
-		if (DifferentiateLatin12([data bytes], [data length])) { // seems to actually be latin1
+		if (SubDifferentiateLatin12([data bytes], [data length])) { // seems to actually be latin1
 			enc = NSWindowsCP1252StringEncoding;
 			enc_str = @"windows-1252";
 		}
 	}
 
-	if (conf < .6 || latin2) {
+	if ((conf < .6 || latin2) && enc != NSASCIIStringEncoding) {
 		NSLog(@"Guessed encoding \"%s\" for \"%s\", but not sure (confidence %f%%).\n",[enc_str UTF8String],[path UTF8String],conf*100.);
 	}
 
@@ -335,9 +337,8 @@ extern NSString *STLoadFileWithUnknownEncoding(NSString *path)
 			NSLog(@"Encoding %s failed, retrying.\n",[enc_str UTF8String]);
 			enc = (enc == NSWindowsCP1252StringEncoding) ? NSWindowsCP1250StringEncoding : NSWindowsCP1252StringEncoding;
 			res = [[[NSString alloc] initWithData:data encoding:enc] autorelease];
-			if (!res) NSLog(@"Both of latin1/2 failed.");
-		}
-        else {
+			if (!res) NSLog(@"Both of latin1/2 failed.\n");
+		} else {
             res = [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
             if (!res) NSLog(@"ASCII failed."), NSLog(@"Failed to load file as guessed encoding %@.",enc_str);
         }
