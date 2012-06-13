@@ -131,7 +131,7 @@
         [results setValue:@"tv" forKey:@"type"];
         [results setValue:seriesName forKey:@"seriesName"];
         [results setValue:@"1" forKey:@"seasonNum"];
-        [results setValue:[NSString stringWithFormat:@"%ld", episodeNumber] forKey:@"episodeNum"];
+        [results setValue:[NSString stringWithFormat:@"%d", episodeNumber] forKey:@"episodeNum"];
 
         return [results autorelease];
     }

@@ -690,7 +690,7 @@ static const genreType_t genreType_strings[] = {
                      forKey:@"artistID"];
 
     if (tags->playlistID)
-        [tagsDict setObject:[NSString stringWithFormat:@"%d", *tags->playlistID]
+        [tagsDict setObject:[NSString stringWithFormat:@"%lld", *tags->playlistID]
                      forKey:@"playlistID"];
 
     if (tags->genreID)

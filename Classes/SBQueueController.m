@@ -222,7 +222,7 @@ static SBQueueController *sharedController = nil;
             count++;
 
     if (count)
-        [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%ld", count]];
+        [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", count]];
     else
         [[NSApp dockTile] setBadgeLabel:nil];
 }
@@ -231,7 +231,7 @@ static SBQueueController *sharedController = nil;
 {
     [tableView reloadData];
     if (status != SBQueueStatusWorking) {
-        [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+        [countLabel setStringValue:[NSString stringWithFormat:@"%d files in queue.", [filesArray count]]];
         [self updateDockTile];
     }
 }
@@ -408,8 +408,8 @@ static SBQueueController *sharedController = nil;
             // Update the UI
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSInteger itemIndex = [filesArray indexOfObject:item];
-                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %ld of %ld.",itemIndex + 1, [filesArray count]]];
-                [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%ld", [filesArray count] - itemIndex]];
+                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %d of %d.",itemIndex + 1, [filesArray count]]];
+                [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", [filesArray count] - itemIndex]];
                 [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             });
 
@@ -655,7 +655,7 @@ static SBQueueController *sharedController = nil;
         }
 
         if (status != SBQueueStatusWorking) {
-            [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+            [countLabel setStringValue:[NSString stringWithFormat:@"%d files in queue.", [filesArray count]]];
             [self updateDockTile];
         }
     }
@@ -692,7 +692,7 @@ static SBQueueController *sharedController = nil;
         }
 
         if (status != SBQueueStatusWorking) {
-            [countLabel setStringValue:[NSString stringWithFormat:@"%ld files in queue.", [filesArray count]]];
+            [countLabel setStringValue:[NSString stringWithFormat:@"%d files in queue.", [filesArray count]]];
             [self updateDockTile];
         }
     }

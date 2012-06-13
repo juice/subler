@@ -615,7 +615,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
 - (IBAction) showTrackOffsetSheet: (id) sender
 {
-    [offset setStringValue:[NSString stringWithFormat:@"%d",
+    [offset setStringValue:[NSString stringWithFormat:@"%lld",
                             [[[mp4File tracks] objectAtIndex:[fileTracksTable selectedRow]] startOffset]]];
 
     [NSApp beginSheet:offsetWindow modalForWindow:documentWindow
@@ -835,7 +835,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                             duration:i];
         }
     else
-        [chapterTrack addChapter:[NSString stringWithFormat:@"Chapter 1", y]
+        [chapterTrack addChapter:@"Chapter 1"
                         duration:[mp4File movieDuration]];
 
     [fileTracksTable reloadData];

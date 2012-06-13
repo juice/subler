@@ -58,14 +58,14 @@ static NSString *getLevelName(uint8_t level) {
 
 - (void) awakeFromNib
 {
-    [sampleWidth setStringValue: [NSString stringWithFormat:@"%d", track.width]];
-    [sampleHeight setStringValue: [NSString stringWithFormat:@"%d", track.height]];
+    [sampleWidth setStringValue: [NSString stringWithFormat:@"%lld", track.width]];
+    [sampleHeight setStringValue: [NSString stringWithFormat:@"%lld", track.height]];
     
     [trackWidth setStringValue: [NSString stringWithFormat:@"%d", (uint16_t)track.trackWidth]];
     [trackHeight setStringValue: [NSString stringWithFormat:@"%d", (uint16_t)track.trackHeight]];
 
-    [hSpacing setStringValue: [NSString stringWithFormat:@"%d", track.hSpacing]];
-    [vSpacing setStringValue: [NSString stringWithFormat:@"%d", track.vSpacing]];
+    [hSpacing setStringValue: [NSString stringWithFormat:@"%lld", track.hSpacing]];
+    [vSpacing setStringValue: [NSString stringWithFormat:@"%lld", track.vSpacing]];
 
     [offsetX setStringValue: [NSString stringWithFormat:@"%d", track.offsetX]];
     [offsetY setStringValue: [NSString stringWithFormat:@"%d", track.offsetY]];

@@ -72,8 +72,6 @@
 
 #pragma mark Load artwork
 - (void) loadArtwork;
-- (void) runLoadArtworkThread:(id)param;
-- (void) loadArtworkDone;
 
 #pragma mark Finishing up
 - (void) addMetadata;
