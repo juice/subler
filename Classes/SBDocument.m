@@ -82,8 +82,9 @@
 
 - (id)initWithType:(NSString *)typeName error:(NSError **)outError
 {
-    mp4File = [[MP42File alloc] initWithDelegate:self];
-    return [super initWithType:typeName error:outError];
+    if (self = [super initWithType:typeName error:outError])
+        mp4File = [[MP42File alloc] initWithDelegate:self];
+    return self;
 }
 
 + (BOOL)canConcurrentlyReadDocumentsOfType:(NSString *)type
@@ -785,7 +786,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 
     if (row != -1 && [[mp4File trackAtIndex:row] isKindOfClass:[MP42SubtitleTrack class]]) {
         [panel setAllowedFileTypes:[NSArray arrayWithObject: @"srt"]];
-        filename = [filename stringByAppendingString:@" - Subtitles"];
+        filename = [filename stringByAppendingFormat:@".%@", [[mp4File trackAtIndex:row] language]];
     }
 	else if (row != -1 ) {
         filename = [filename stringByAppendingString:@" - Chapters"];
@@ -876,6 +877,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                      [[file pathExtension] caseInsensitiveCompare: @"mp4"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"mts"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mks"] == NSOrderedSame ||
