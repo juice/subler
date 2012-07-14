@@ -18,6 +18,8 @@
 		A90B023B10F3290A000416F3 /* Prefs.xib in Resources */ = {isa = PBXBuildFile; fileRef = A90B023910F3290A000416F3 /* Prefs.xib */; };
 		A91103E40F321DBA0013D1E0 /* libuniversaldetector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A91103930F321CF60013D1E0 /* libuniversaldetector.a */; };
 		A911064B0F323D450013D1E0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A911064A0F323D450013D1E0 /* AppDelegate.m */; };
+		A91D3FA015B15D2100627DD0 /* tvdb_cache.py in Resources */ = {isa = PBXBuildFile; fileRef = A91D3F9F15B15D2100627DD0 /* tvdb_cache.py */; };
+		A91D3FA115B15D3400627DD0 /* tvdb_cache.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = A91D3F9F15B15D2100627DD0 /* tvdb_cache.py */; };
 		A91E7DEA0F8A2E6800AF387E /* SoundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A91E7DE90F8A2E6800AF387E /* SoundViewController.m */; };
 		A91E7DEE0F8A2F3D00AF387E /* SoundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A91E7DEC0F8A2F3D00AF387E /* SoundView.xib */; };
 		A91F622D0FB0A56F00B96B33 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A91F622C0FB0A56F00B96B33 /* libicucore.dylib */; };
@@ -127,7 +129,6 @@
 		CD71FEA312F1B5AF00F0A98D /* MetadataSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD71FEA212F1B5AF00F0A98D /* MetadataSearchController.m */; };
 		CD71FEA612F1B62600F0A98D /* MetadataSearch.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD71FEA412F1B62600F0A98D /* MetadataSearch.xib */; };
 		CD71FF1D12F1C4A900F0A98D /* TheTVDB.m in Sources */ = {isa = PBXBuildFile; fileRef = CD71FF1C12F1C4A900F0A98D /* TheTVDB.m */; };
-		CD89360C12F34F9D0085C2B5 /* cache.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360012F34F500085C2B5 /* cache.py */; };
 		CD89360E12F34F9D0085C2B5 /* setup.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360212F34F500085C2B5 /* setup.py */; };
 		CD89360F12F34F9D0085C2B5 /* tvdb_api.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360312F34F500085C2B5 /* tvdb_api.py */; };
 		CD89361112F34F9D0085C2B5 /* tvdb_exceptions.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD89360512F34F500085C2B5 /* tvdb_exceptions.py */; };
@@ -193,8 +194,8 @@
 			dstPath = tvdb_py;
 			dstSubfolderSpec = 7;
 			files = (
-				CD89360C12F34F9D0085C2B5 /* cache.py in CopyFiles */,
 				CD89360E12F34F9D0085C2B5 /* setup.py in CopyFiles */,
+				A91D3FA115B15D3400627DD0 /* tvdb_cache.py in CopyFiles */,
 				CD89360F12F34F9D0085C2B5 /* tvdb_api.py in CopyFiles */,
 				CD89361112F34F9D0085C2B5 /* tvdb_exceptions.py in CopyFiles */,
 				CD89361312F34F9D0085C2B5 /* tvdb_main.py in CopyFiles */,
@@ -226,6 +227,7 @@
 		A911049C0F321DFC0013D1E0 /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = UniversalDetector/UniversalDetector.h; sourceTree = "<group>"; };
 		A91106490F323D450013D1E0 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A911064A0F323D450013D1E0 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A91D3F9F15B15D2100627DD0 /* tvdb_cache.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tvdb_cache.py; sourceTree = "<group>"; };
 		A91E7DE80F8A2E6800AF387E /* SoundViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundViewController.h; path = PropertyView/SoundViewController.h; sourceTree = "<group>"; };
 		A91E7DE90F8A2E6800AF387E /* SoundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SoundViewController.m; path = PropertyView/SoundViewController.m; sourceTree = "<group>"; };
 		A91E7DED0F8A2F3D00AF387E /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/SoundView.xib; sourceTree = "<group>"; };
@@ -393,7 +395,6 @@
 		CD71FEA512F1B62600F0A98D /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MetadataSearch.xib; sourceTree = "<group>"; };
 		CD71FF1B12F1C4A900F0A98D /* TheTVDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheTVDB.h; path = Classes/MetadataImporters/TheTVDB.h; sourceTree = "<group>"; };
 		CD71FF1C12F1C4A900F0A98D /* TheTVDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TheTVDB.m; path = Classes/MetadataImporters/TheTVDB.m; sourceTree = "<group>"; };
-		CD89360012F34F500085C2B5 /* cache.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cache.py; sourceTree = "<group>"; };
 		CD89360212F34F500085C2B5 /* setup.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
 		CD89360312F34F500085C2B5 /* tvdb_api.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tvdb_api.py; sourceTree = "<group>"; };
 		CD89360512F34F500085C2B5 /* tvdb_exceptions.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tvdb_exceptions.py; sourceTree = "<group>"; };
@@ -808,8 +809,8 @@
 		CD8935FF12F34F500085C2B5 /* tvdb_py */ = {
 			isa = PBXGroup;
 			children = (
-				CD89360012F34F500085C2B5 /* cache.py */,
 				CD89360212F34F500085C2B5 /* setup.py */,
+				A91D3F9F15B15D2100627DD0 /* tvdb_cache.py */,
 				CD89360312F34F500085C2B5 /* tvdb_api.py */,
 				CD89360512F34F500085C2B5 /* tvdb_exceptions.py */,
 				CD89360712F34F500085C2B5 /* tvdb_main.py */,
@@ -938,6 +939,7 @@
 				A9C9E34213FBC1EB00CA3B4E /* EncodeCanceled.png in Resources */,
 				A9C9E34313FBC1EB00CA3B4E /* EncodeComplete.png in Resources */,
 				A9C9E34413FBC1EB00CA3B4E /* EncodeWorking.png in Resources */,
+				A91D3FA015B15D2100627DD0 /* tvdb_cache.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
