@@ -771,6 +771,7 @@ static bool GetFirstHeader(FILE* inFile)
                         break;
                     case 3:
                         //*outError = MP42Error(@"The audio could not be opened.", @"Data in file doesn't appear to be valid audio.", 100);
+                        [newTrack release];
                         return nil;
                     default:
                         break;

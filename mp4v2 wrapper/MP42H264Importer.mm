@@ -901,11 +901,14 @@ extern "C" const char *h264_get_frame_type (h264_decode_t *dec)
     }
     else {
         if (H264_TYPE_IS_P(dec->slice_type)) return "P";
-        if (H264_TYPE_IS_B(dec->slice_type)) 
-            if (dec->nal_ref_idc)
+        if (H264_TYPE_IS_B(dec->slice_type)) {
+            if (dec->nal_ref_idc) {
                 return "BREF";
-            else
+            }
+            else {
                 return "B";
+            }
+        }
         if (H264_TYPE_IS_I(dec->slice_type)) return "I";
         if (H264_TYPE_IS_SI(dec->slice_type)) return "SI";
         if (H264_TYPE_IS_SP(dec->slice_type)) return "SP";
@@ -1258,7 +1261,10 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
     FILE *inFile;
     
     inFile = fopen(filePath, "r");
-    if (inFile == NULL) return 0;
+    if (inFile == NULL) {
+        [avcCData release];
+        return 0;
+    }
     
     memset(&nal, 0, sizeof(nal));
     nal.ifile = inFile;
@@ -1267,6 +1273,7 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
         if (LoadNal(&nal) == false) {
             // fprintf(stderr, "%s: Could not find sequence header\n", ProgName);
             fclose(inFile);
+            [avcCData release];
             return 0;
         }
         uint32_t header_size = nal.buffer[2] == 1 ? 3 : 4;
@@ -1593,6 +1600,7 @@ NSData* H264Info(const char *filePath, uint32_t *pic_width, uint32_t *pic_height
 
     DpbFlush(&h264_dpb);
 
+    free(nal_buffer);
     [pool release];
     readerStatus = 1;
 }
