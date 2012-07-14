@@ -71,6 +71,12 @@
             case kCMVideoCodecType_AppleProRes4444:
                 result = @"Apple ProRes";
                 break;
+            case kCMVideoCodecType_SorensonVideo3:
+                result = @"Soreson 3";
+                break;
+            case 'png ':
+                result = @"PNG";
+                break;
             case kAudioFormatMPEG4AAC:
                 result = @"AAC";
                 break;
@@ -87,6 +93,11 @@
             case kAudioFormatAC3:
             case 'ms \0':
                 result = @"AC-3";
+                break;
+            case kAudioFormatMPEGLayer1:
+            case kAudioFormatMPEGLayer2:
+            case kAudioFormatMPEGLayer3:
+                result = @"MP3";
                 break;
             case kAudioFormatAMR:
                 result = @"AMR Narrow Band";
@@ -238,6 +249,19 @@
 - (NSUInteger)timescaleForTrack:(MP42Track *)track
 {
     AVAssetTrack *assetTrack = [localAsset trackWithTrackID:[track sourceId]];
+    
+    CMFormatDescriptionRef formatDescription = NULL;
+    NSArray *formatDescriptions = assetTrack.formatDescriptions;
+    if ([formatDescriptions count] > 0)
+        formatDescription = (CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
+        if ([[assetTrack mediaType] isEqualToString:AVMediaTypeAudio]) {
+            const AudioStreamBasicDescription* const asbd =
+            CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription);
+
+            double sampleRate = asbd->mSampleRate;
+
+            return (NSUInteger)sampleRate;
+    }
 
     return [assetTrack naturalTimeScale];
 }
@@ -291,6 +315,8 @@
 
                 return [NSData dataWithBytes:magicCookie length:cookieSizeOut];
             }
+            else if (cookieSizeOut)
+                return [NSData dataWithBytes:magicCookie length:cookieSizeOut];
         }
     }
     return nil;
@@ -393,7 +419,7 @@
                     if (err)
                         continue;
 
-                    size_t *sizeArrayOut = malloc(sizeof(CMSampleTimingInfo) * sizeArrayEntriesNeededOut);
+                    size_t *sizeArrayOut = malloc(sizeof(size_t) * sizeArrayEntriesNeededOut);
                     sizeArrayEntries = sizeArrayEntriesNeededOut;
                     err = CMSampleBufferGetSampleSizeArray(sampleBuffer, sizeArrayEntries, sizeArrayOut, &sizeArrayEntriesNeededOut);
                     if (err)
@@ -516,7 +542,34 @@
 }
 
 - (BOOL)cleanUp:(MP4FileHandle) fileHandle
-{    
+{
+    for (MP42Track * track in activeTracks) {
+        AVAssetTrack *assetTrack = [localAsset trackWithTrackID:track.sourceId];
+        NSLog(@"Track ID: %d", [assetTrack trackID]);
+        for (AVAssetTrackSegment *segment in assetTrack.segments) {
+            bool empty = NO;
+            CMTimeMapping timeMapping = segment.timeMapping;
+
+            NSLog(@"---------------------");
+
+            NSLog(@"Start: %lld", timeMapping.source.start.value);
+            NSLog(@"Duration: %lld", timeMapping.source.duration.value);
+            NSLog(@"Start %lld", timeMapping.target.start.value);
+            NSLog(@"Duration: %lld", timeMapping.source.duration.value);
+
+            if (segment.empty) {
+                NSLog(@"Empty segment");
+                empty = YES;
+            }
+
+            if (empty)
+                MP4AddTrackEdit(fileHandle, [track Id], MP4_INVALID_EDIT_ID, -1,
+                                timeMapping.target.duration.value, 0);
+            else
+                MP4AddTrackEdit(fileHandle, [track Id], MP4_INVALID_EDIT_ID, timeMapping.target.start.value,
+                                timeMapping.target.duration.value, 0);
+        }
+    }
     return YES;
 }
 
