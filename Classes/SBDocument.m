@@ -670,7 +670,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     panel.canChooseDirectories = NO;
     [panel setAllowedFileTypes:[NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
                                 @"aac", @"h264", @"264", @"ac3",
-                                @"txt", @"srt", @"smi", @"scc", @"mkv", nil]];
+                                @"txt", @"srt", @"smi", @"scc", @"mkv", @"mts", @"m2ts", nil]];
 
     [panel beginSheetModalForWindow:documentWindow completionHandler:^(NSInteger result) {
         if (result == NSFileHandlingPanelOKButton) {
@@ -878,6 +878,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                      [[file pathExtension] caseInsensitiveCompare: @"m4a"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mts"] == NSOrderedSame ||
+                     [[file pathExtension] caseInsensitiveCompare: @"m2ts"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mkv"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mka"] == NSOrderedSame ||
                      [[file pathExtension] caseInsensitiveCompare: @"mks"] == NSOrderedSame ||

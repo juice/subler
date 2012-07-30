@@ -55,13 +55,13 @@
 		A984DB740F52DD4B001A20B2 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = A984DB730F52DD4B001A20B2 /* dsa_pub.pem */; };
 		A98739FE13FBB09B00B795A7 /* ToolbarActionTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = A98739FD13FBB09B00B795A7 /* ToolbarActionTemplate.png */; };
 		A9891D5E124502C000427CF9 /* MP42SrtImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9891D5D124502C000427CF9 /* MP42SrtImporter.m */; };
-		A991319813F060C600DCAA12 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A991319713F060C600DCAA12 /* Quartz.framework */; };
 		A991319A13F0615700DCAA12 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A991319913F0615700DCAA12 /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		A991319C13F0668300DCAA12 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A991319B13F0668300DCAA12 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		A99EAC7C1115BED200D89903 /* MP42FileImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EAC7B1115BED200D89903 /* MP42FileImporter.m */; };
 		A99EACA31115C18000D89903 /* MP42MkvImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A99EACA21115C18000D89903 /* MP42MkvImporter.m */; };
 		A99EEA3F12B801AE002367D3 /* SBDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9B46AC012B79E230040517A /* SBDocument.xib */; };
 		A99F4D270F6D5825003BA2B9 /* MP42AudioTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A99F4D260F6D5825003BA2B9 /* MP42AudioTrack.m */; };
+		A9A7C02E15C67D2F0022921C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A7C02D15C67D2F0022921C /* Quartz.framework */; };
 		A9B46A8C12B79B240040517A /* FileImport.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A7F12B79B240040517A /* FileImport.m */; };
 		A9B46A8E12B79B240040517A /* PrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8312B79B240040517A /* PrefsController.m */; };
 		A9B46A8F12B79B240040517A /* SBTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8512B79B240040517A /* SBTableView.m */; };
@@ -290,6 +290,7 @@
 		A99EACA21115C18000D89903 /* MP42MkvImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42MkvImporter.m; path = "mp4v2 wrapper/MP42MkvImporter.m"; sourceTree = "<group>"; };
 		A99F4D250F6D5825003BA2B9 /* MP42AudioTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42AudioTrack.h; path = "mp4v2 wrapper/MP42AudioTrack.h"; sourceTree = "<group>"; };
 		A99F4D260F6D5825003BA2B9 /* MP42AudioTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42AudioTrack.m; path = "mp4v2 wrapper/MP42AudioTrack.m"; sourceTree = "<group>"; };
+		A9A7C02D15C67D2F0022921C /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Quartz.framework; sourceTree = DEVELOPER_DIR; };
 		A9B46A7E12B79B240040517A /* FileImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileImport.h; path = Classes/FileImport.h; sourceTree = "<group>"; };
 		A9B46A7F12B79B240040517A /* FileImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileImport.m; path = Classes/FileImport.m; sourceTree = "<group>"; };
 		A9B46A8212B79B240040517A /* PrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PrefsController.h; path = Classes/PrefsController.h; sourceTree = "<group>"; };
@@ -409,7 +410,7 @@
 			files = (
 				A991319C13F0668300DCAA12 /* CoreMedia.framework in Frameworks */,
 				A991319A13F0615700DCAA12 /* AVFoundation.framework in Frameworks */,
-				A991319813F060C600DCAA12 /* Quartz.framework in Frameworks */,
+				A9A7C02E15C67D2F0022921C /* Quartz.framework in Frameworks */,
 				A91103E40F321DBA0013D1E0 /* libuniversaldetector.a in Frameworks */,
 				A9C1E8560F31F395003A08F3 /* libmp4v2.a in Frameworks */,
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
@@ -508,6 +509,7 @@
 		2A37F4AAFDCFA73011CA2CEA /* MP4Sub */ = {
 			isa = PBXGroup;
 			children = (
+				A9A7C02D15C67D2F0022921C /* Quartz.framework */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				A961475E13F5676E0068F161 /* NIBs */,
@@ -1186,7 +1188,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = Subler;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -1216,7 +1218,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = Subler;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};

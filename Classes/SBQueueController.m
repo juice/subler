@@ -63,7 +63,7 @@ static SBQueueController *sharedController = nil;
                 if ([item status] == SBQueueItemStatusWorking)
                     [item setStatus:SBQueueItemStatusFailed];
 
-            NSLog(@"Queue loaded");
+            //NSLog(@"Queue loaded");
         }
         else
             filesArray = [[NSMutableArray alloc] init];
@@ -144,8 +144,8 @@ static SBQueueController *sharedController = nil;
                                                             NSUserDomainMask,
                                                             YES);
     if ([allPaths count]) {
-        appSupportURL = [NSURL fileURLWithPath:[[allPaths lastObject] stringByAppendingPathComponent:@"Subler"] isDirectory:YES];
-        appSupportURL = [appSupportURL URLByAppendingPathComponent:@"queue.sbqueue" isDirectory:NO];
+        appSupportURL = [NSURL fileURLWithPath:[[[allPaths lastObject] stringByAppendingPathComponent:@"Subler"] stringByAppendingPathComponent:@"queue.sbqueue"] isDirectory:YES];
+        //appSupportURL = [appSupportURL URLByAppendingPathComponent:@"queue.sbqueue" isDirectory:NO];
         
         return appSupportURL;
     }

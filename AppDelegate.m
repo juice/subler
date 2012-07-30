@@ -49,9 +49,9 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
             break;
     }
 
-    printf("%s: ", level);
+    /*printf("%s: ", level);
     vprintf(fmt, ap);
-    printf("\n");
+    printf("\n");*/
 }
 
 @implementation AppDelegate
