@@ -26,7 +26,7 @@ void print_help()
 
 void print_version()
 {
-    printf("\t\tversion 0.15\n");
+    printf("\t\tversion 0.16\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -55,6 +55,8 @@ int main (int argc, const char * argv[]) {
     BOOL chapterPreview = false;
     BOOL modified = false;
     BOOL optimize = false;
+    
+    BOOL listtracks = false;
 
     BOOL downmixAudio = NO;
     NSString *downmixType = nil;
@@ -145,6 +147,10 @@ int main (int argc, const char * argv[]) {
 		{
 			print_help();
 		}
+        else if ( ! strcmp ( args, "listtracks" ) )
+		{
+			listtracks = YES;
+		}
 		else {
 			printf("Invalid input parameter: %s\n", args );
 			print_help();
@@ -152,6 +158,27 @@ int main (int argc, const char * argv[]) {
 		}
 	}
 
+    if (listtracks && sourcePath) {
+        MP42File *mp4File;
+
+        if ([[NSFileManager defaultManager] fileExistsAtPath:sourcePath])
+            mp4File = [[MP42File alloc] initWithExistingFile:[NSURL fileURLWithPath:sourcePath]
+                                                 andDelegate:nil];
+        
+        if (!mp4File) {
+            printf("Error: %s\n", "the mp4 file couln't be opened.");
+            return -1;
+        }
+
+        if (mp4File) {
+            for (MP42Track* track in mp4File.tracks) {
+                printf("%s\n", [[track description] UTF8String]);
+            }
+        }
+
+        return 0;
+    }
+    
     NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
     if (chapterPreview)
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
