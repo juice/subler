@@ -212,4 +212,8 @@
     return self;
 }
 
+- (NSString *)description {
+    return [[super description] stringByAppendingFormat:@", %lld x %lld", width, height];
+}
+
 @end

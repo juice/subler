@@ -246,6 +246,10 @@
     return self;
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"Track: %d, %@, %@, %@", [self Id], [self name], [self timeString], [self format]];
+}
+
 @synthesize timescale;
 @synthesize bitrate;
 @synthesize duration;
