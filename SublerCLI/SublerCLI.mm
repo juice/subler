@@ -20,7 +20,7 @@ void print_help()
     printf("\t\t -metadata set tags {Tag Name:Tag Value}* \n");
     printf("\t\t -downmix Downmix audio (mono, stereo, dolby, pl2) \n");
     printf("\n");
-    printf("\t\t -listtracks  For source file only, lists the tracks in the source movie. \n");
+    printf("\t\t -listtracks For source file only, lists the tracks in the source movie. \n");
 
 }
 
@@ -83,7 +83,7 @@ int main (int argc, const char * argv[]) {
 		}
 		else if (( ! strcmp ( args, "dest" )) || ( ! strcmp ( args, "destination" )) )
 		{
-			sourcePath = [NSString stringWithUTF8String: *argv++];
+			destinationPath = [NSString stringWithUTF8String: *argv++];
 			argc--;
 		}
         else if ( ! strcmp ( args, "chapters" ) )
@@ -160,8 +160,8 @@ int main (int argc, const char * argv[]) {
     {
         NSError *outError;
         MP42File *mp4File;
-        if ([[NSFileManager defaultManager] fileExistsAtPath:sourcePath])
-            mp4File = [[MP42File alloc] initWithExistingFile:[NSURL fileURLWithPath:sourcePath]
+        if ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath])
+            mp4File = [[MP42File alloc] initWithExistingFile:[NSURL fileURLWithPath:destinationPath]
                                                  andDelegate:nil];
         else
             mp4File = [[MP42File alloc] initWithDelegate:nil];
