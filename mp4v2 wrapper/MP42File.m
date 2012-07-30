@@ -64,6 +64,11 @@ NSString * const MP42FileTypeM4B = @"m4b";
         delegate = del;
 		fileHandle = MP4Read([[URL path] UTF8String]);
 
+        if (!fileHandle) {
+            [self release];
+			return nil;
+        }
+
         const char* brand = NULL;
         MP4GetStringProperty(fileHandle, "ftyp.majorBrand", &brand);
         if (brand != NULL) {
@@ -76,11 +81,6 @@ NSString * const MP42FileTypeM4B = @"m4b";
 
         fileURL = [URL retain];
         hasFileRepresentation = YES;
-
-		if (!fileHandle) {
-            [self release];
-			return nil;
-        }
 
         tracks = [[NSMutableArray alloc] init];
         int i, tracksCount = MP4GetNumberOfTracks(fileHandle, 0, 0);
@@ -670,8 +670,8 @@ NSString * const MP42FileTypeM4B = @"m4b";
     tracks = [[decoder decodeObjectForKey:@"tracks"] retain];
     metadata = [[decoder decodeObjectForKey:@"metadata"] retain];
 
-    for (MP42Track *track in tracks)
-        NSLog(@"Track Source URL: %@", [[track sourceURL] absoluteString]);
+    /*for (MP42Track *track in tracks)
+        NSLog(@"Track Source URL: %@", [[track sourceURL] absoluteString]);*/
 
     return self;
 }
