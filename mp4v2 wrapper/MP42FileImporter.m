@@ -51,6 +51,7 @@
     // If we are on 10.7, use the AVFoundation path
     if (NSClassFromString(@"AVAsset")) {
         if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame ||
+            [[URL pathExtension] caseInsensitiveCompare: @"m2ts"] == NSOrderedSame ||
             [[URL pathExtension] caseInsensitiveCompare: @"mts"] == NSOrderedSame ) {
             self = [[MP42AVFImporter alloc] initWithDelegate:del andFile:URL error:outError];
         }
