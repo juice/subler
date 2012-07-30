@@ -21,6 +21,7 @@ void print_help()
     printf("\t\t -downmix Downmix audio (mono, stereo, dolby, pl2) \n");
     printf("\n");
     printf("\t\t -listtracks For source file only, lists the tracks in the source movie. \n");
+    printf("\t\t -listmetadata For source file only, lists the metadata in the source movie. \n");
 
 }
 
@@ -57,6 +58,7 @@ int main (int argc, const char * argv[]) {
     BOOL optimize = false;
     
     BOOL listtracks = false;
+    BOOL listmetadata = false;
 
     BOOL downmixAudio = NO;
     NSString *downmixType = nil;
@@ -151,6 +153,10 @@ int main (int argc, const char * argv[]) {
 		{
 			listtracks = YES;
 		}
+        else if ( ! strcmp ( args, "listmetadata" ) )
+		{
+			listmetadata = YES;
+		}
 		else {
 			printf("Invalid input parameter: %s\n", args );
 			print_help();
@@ -158,21 +164,51 @@ int main (int argc, const char * argv[]) {
 		}
 	}
 
-    if (listtracks && sourcePath) {
+    if (sourcePath && (listtracks || listmetadata)) {
         MP42File *mp4File;
 
         if ([[NSFileManager defaultManager] fileExistsAtPath:sourcePath])
             mp4File = [[MP42File alloc] initWithExistingFile:[NSURL fileURLWithPath:sourcePath]
                                                  andDelegate:nil];
-        
+
         if (!mp4File) {
             printf("Error: %s\n", "the mp4 file couln't be opened.");
             return -1;
         }
 
-        if (mp4File) {
+        if (listtracks) {
             for (MP42Track* track in mp4File.tracks) {
                 printf("%s\n", [[track description] UTF8String]);
+            }
+        }
+
+        if (listmetadata) {
+            NSArray * availableMetadata = [[mp4File metadata] availableMetadata];
+            NSDictionary * tagsDict = [[mp4File metadata] tagsDict];
+
+            for (NSString* key in availableMetadata) {
+                NSString* tag = [tagsDict valueForKey:key];
+                if ([tag isKindOfClass:[NSString class]])
+                    printf("%s: %s\n", [key UTF8String], [tag UTF8String]);
+                else if ([key isEqualToString:@"Rating"]){
+                    printf("%s: %s\n", [key UTF8String], [[[mp4File metadata] ratingFromIndex:[tag integerValue]] UTF8String]);
+                }
+            }
+
+            if ([[mp4File metadata] hdVideo]) {
+                printf("HD Video: %d\n", [[mp4File metadata] hdVideo]);
+            }
+            if ([[mp4File metadata] gapless]) {
+                printf("Gapless: %d\n", [[mp4File metadata] gapless]);
+            }
+            if ([[mp4File metadata] contentRating]) {
+                printf("Content Rating: %d\n", [[mp4File metadata] contentRating]);
+            }
+            if ([[mp4File metadata] podcast]) {
+                printf("Podcast: %d\n", [[mp4File metadata] podcast]);
+            }
+            if ([[mp4File metadata] mediaKind]) {
+                printf("Media Kind: %d\n", [[mp4File metadata] mediaKind]);
             }
         }
 
