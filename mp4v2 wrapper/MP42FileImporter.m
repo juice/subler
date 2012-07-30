@@ -57,11 +57,11 @@
         }
     }
 //#endif
-//#if !__LP64__
+#if !__LP64__
         if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
             self = [[MP42QTImporter alloc] initWithDelegate:del andFile:URL error:outError];
         }
-//#endif
+#endif
 
     return self;
 }
