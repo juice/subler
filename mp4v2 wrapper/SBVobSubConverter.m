@@ -118,7 +118,7 @@ int ExtractVobSubPacket(UInt8 *dest, UInt8 *framedSrc, int srcSize, int *usedSrc
 	return copiedBytes;
 }
 
-static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], PacketControlData *controlDataOut) {
+static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], PacketControlData *controlDataOut,BOOL *forced) {
 	// to set whether the key sequences 0x03 - 0x06 have been seen
 	UInt16 controlSeqSeen = 0;
 	int i = 0;
@@ -132,6 +132,7 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
 		switch (controlSeq[i]) {
 			case 0x00:
 				// subpicture identifier, we don't care
+                *forced = YES;
 				i++;
 				break;
 				
@@ -219,7 +220,7 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
 
         if(sampleBuffer->sampleSize < 4)
         {
-            MP42SampleBuffer* subSample = copyEmptySubtitleSample(trackId, sampleBuffer->sampleDuration);
+            MP42SampleBuffer* subSample = copyEmptySubtitleSample(trackId, sampleBuffer->sampleDuration, NO);
             @synchronized(outputSamplesBuffer) {
                 [outputSamplesBuffer addObject:subSample];    
             }
@@ -264,7 +265,7 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
         if (ret < 0 || !got_sub) {
             NSLog(@"Error decoding DVD subtitle %d / %ld", ret, (long)bufferSize);
             
-            MP42SampleBuffer* subSample = copyEmptySubtitleSample(trackId, sampleBuffer->sampleDuration);
+            MP42SampleBuffer* subSample = copyEmptySubtitleSample(trackId, sampleBuffer->sampleDuration, NO);
             @synchronized(outputSamplesBuffer) {
                 [outputSamplesBuffer addObject:subSample];
             }
@@ -286,7 +287,8 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
         for ( ii = 0; ii <16; ii++ )
             paletteG[ii] = EndianU32_LtoN(paletteG[ii]);
 
-        err = ReadPacketControls(codecData, paletteG, &controlData);
+        BOOL forced = NO;
+        err = ReadPacketControls(codecData, paletteG, &controlData, &forced);
         int usePalette = 0;
 
         if (err == noErr)
@@ -348,7 +350,7 @@ static ComponentResult ReadPacketControls(UInt8 *packet, UInt32 palette[16], Pac
 
             NSString *text = [ocr performOCROnCGImage:cgImage];
 
-            MP42SampleBuffer* subSample = copySubtitleSample(trackId, text, sampleBuffer->sampleDuration);
+            MP42SampleBuffer* subSample = copySubtitleSample(trackId, text, sampleBuffer->sampleDuration, forced);
             @synchronized(outputSamplesBuffer) {
                 [outputSamplesBuffer addObject:subSample];
             }

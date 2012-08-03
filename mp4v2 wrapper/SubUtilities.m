@@ -993,11 +993,23 @@ NSString* removeNewLines(NSString* string) {
         return mutableString;
 }
 
-MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration)
+void createForcedAtom(u_int8_t* buffer) {
+    buffer[0] = 0;
+    buffer[1] = 0;
+    buffer[2] = 0;
+    buffer[3] = 8;
+    buffer[4] = 'f';
+    buffer[5] = 'r';
+    buffer[6] = 'c';
+    buffer[7] = 'd';
+}
+
+MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* string, MP4Duration duration, BOOL forced)
 {
     uint8_t *sampleData = NULL;
     u_int8_t styleAtom[2048];
     size_t styleSize = 0;
+    size_t sampleSize = 0;
 
     string = removeNewLines(string);
     string = createStyleAtomForString(string, styleAtom, &styleSize);
@@ -1011,15 +1023,24 @@ MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* strin
 
     memcpy(buffer+2, [string UTF8String], stringLength);
     memcpy(buffer+2+stringLength, styleAtom, styleSize);
+    sampleSize = 2 + stringLength + styleSize;
+    if (forced) {
+        u_int8_t forcedAtom[8];
+        createForcedAtom(forcedAtom);
+
+        memcpy(buffer + sampleSize, forcedAtom, 8);
+        sampleSize += 8;
+    }
+
     buffer[0] = (stringLength >> 8) & 0xff;
     buffer[1] = stringLength & 0xff;
 
-    sampleData = malloc(stringLength + styleSize + 2);
-    memcpy(sampleData, buffer, stringLength + styleSize + 2);
+    sampleData = malloc(sampleSize);
+    memcpy(sampleData, buffer, sampleSize);
 
     MP42SampleBuffer *sample = [[MP42SampleBuffer alloc] init];
     sample->sampleData = sampleData;
-    sample->sampleSize = stringLength + styleSize + 2;
+    sample->sampleSize = sampleSize;
     sample->sampleDuration = duration;
     sample->sampleOffset = 0;
     sample->sampleTimestamp = duration;
@@ -1029,7 +1050,7 @@ MP42SampleBuffer* copySubtitleSample(MP4TrackId subtitleTrackId, NSString* strin
     return sample;
 }
 
-MP42SampleBuffer* copyEmptySubtitleSample(MP4TrackId subtitleTrackId, MP4Duration duration)
+MP42SampleBuffer* copyEmptySubtitleSample(MP4TrackId subtitleTrackId, MP4Duration duration, BOOL forced)
 {
     uint8_t *sampleData = NULL;
     u_int8_t empty[2] = {0,0};

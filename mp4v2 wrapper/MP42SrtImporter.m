@@ -91,10 +91,10 @@
         SBSubLine *sl = [ss getSerializedPacket];
         
         if ([sl->line isEqualToString:@"\n"]) {
-            if ((sample = copyEmptySubtitleSample(dstTrackId, sl->end_time - sl->begin_time))) 
+            if ((sample = copyEmptySubtitleSample(dstTrackId, sl->end_time - sl->begin_time, NO)))
                 return sample;
         }
-        if ((sample = copySubtitleSample(dstTrackId, sl->line, sl->end_time - sl->begin_time)))
+        if ((sample = copySubtitleSample(dstTrackId, sl->line, sl->end_time - sl->begin_time, NO)))
             return sample;
     }
 
