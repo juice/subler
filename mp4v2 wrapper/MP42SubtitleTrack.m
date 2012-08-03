@@ -12,6 +12,10 @@
 
 @implementation MP42SubtitleTrack
 
+@synthesize verticalPlacement;
+@synthesize someSamplesAreForced;
+@synthesize allSamplesAreForced;
+
 - (id) initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP4FileHandle)fileHandle
 {
     if ((self = [super initWithSourceURL:URL trackID:trackID fileHandle:fileHandle]))

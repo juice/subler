@@ -32,7 +32,6 @@
         newTrack.sourceFormat = @"Srt";
         newTrack.sourceURL = fileURL;
         newTrack.alternate_group = 2;
-        newTrack.trackHeight = 80;
         newTrack.language = getFilenameLanguage((CFStringRef)[fileURL path]);
 
         ss = [[SBSubSerializer alloc] init];
