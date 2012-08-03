@@ -133,7 +133,7 @@
     if ([tag count]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Description"];
     if ([tag count]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Long Description"];
     tag = [node nodesForXPath:@"./certification" error:&err];
-    if ([tag count]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Rating"];
+    if ([tag count] && [[[tag objectAtIndex:0] stringValue] length]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"Rating"];
     tag = [node nodesForXPath:@"./id" error:&err];
     if ([tag count]) [metadata setTag:[[tag objectAtIndex:0] stringValue] forKey:@"TMDb ID"];
     // additional fields from detailed movie info

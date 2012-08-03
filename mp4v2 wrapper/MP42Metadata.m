@@ -521,11 +521,14 @@ static const genreType_t genreType_strings[] = {
         if ([value isKindOfClass:[NSNumber class]])
             [tagsDict setValue:value forKey:key];
         else if ([value length]) {
-            NSString *rating_index = [[NSNumber numberWithInt:[self ratingIndexFromString:value]] stringValue];
-            [tagsDict setValue:rating_index forKey:key];
+            NSInteger rating_index = [self ratingIndexFromString:value];
+            if (rating_index)
+                [tagsDict setValue:[NSNumber numberWithInt:rating_index] forKey:key];
+            else
+                [tagsDict setValue:[NSNumber numberWithInt:MPAA_UNRATED] forKey:key];
         }
         else
-            [tagsDict setValue:nil forKey:key];
+            [tagsDict setValue:[NSNumber numberWithInt:MPAA_UNRATED] forKey:key];
 
         isEdited = YES;
         return YES;
