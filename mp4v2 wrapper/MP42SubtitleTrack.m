@@ -23,6 +23,18 @@
         if (![format isEqualToString:@"VobSub"]) {
             MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", &height);
             MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", &width);
+
+            uint64_t displayFlags = 0;
+            MP4GetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.displayFlags", &displayFlags);
+
+            if (displayFlags) {
+                if ((displayFlags & 0x20000000) == 0x20000000)
+                    verticalPlacement = YES;
+                if ((displayFlags & 0x40000000) == 0x40000000)
+                    someSamplesAreForced = YES;
+                if ((displayFlags & 0x80000000) == 0x80000000)
+                    allSamplesAreForced = YES;
+            }
         }
     }
 
@@ -78,6 +90,16 @@
     else {
         MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxBottom", trackHeight);
         MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.defTextBoxRight", trackWidth);
+
+        uint32_t displayFlags = 0;
+        if (verticalPlacement)
+            displayFlags = 0x20000000;
+        if (someSamplesAreForced)
+            displayFlags |= 0x40000000;
+        if (allSamplesAreForced)
+            displayFlags |= 0x80000000;
+
+        MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.displayFlags", displayFlags);
     }
 
     return YES;

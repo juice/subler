@@ -27,19 +27,15 @@ void FFInitFFmpeg()
      * the libavformat only once or we get an endlos loop when registering the same
      * element twice!! */
 	static Boolean inited = FALSE;
-	//int unlock = PerianInitEnter(&inited);
 	
 	/* Register the Parser of ffmpeg, needed because we do no proper setup of the libraries */
 	if(!inited) {
 		inited = TRUE;
 		avcodec_init();
-		//av_lockmgr_register(PerianLockMgrCallback);
 		
 		REGISTER_DECODER(dvdsub);
 		
 	}
-
-	//PerianInitExit(unlock);
 }
 
 typedef struct {

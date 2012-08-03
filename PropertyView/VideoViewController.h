@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "MP42VideoTrack.h"
+#import "MP42SubtitleTrack.h"
 
 
 @interface VideoViewController : NSViewController {
@@ -26,7 +27,13 @@
     IBOutlet NSTextField *offsetY;
 
     IBOutlet NSPopUpButton *alternateGroup;
+
     IBOutlet NSPopUpButton *videoProfile;
+    IBOutlet NSTextField *videoProfileLabel;
+    IBOutlet NSTextField *videoProfileDescription;
+
+    IBOutlet NSPopUpButton *forcedSubs;
+    IBOutlet NSTextField *forcedSubsLabel;
 
     IBOutlet NSButton *preserveAspectRatio;
     
@@ -38,5 +45,6 @@
 - (IBAction) setPixelAspect: (id) sender;
 - (IBAction) setAltenateGroup: (id) sender;
 - (IBAction) setProfileLevel: (id) sender;
+- (IBAction) setForcedSubtitles: (id) sender;
 
 @end

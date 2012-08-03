@@ -24,6 +24,7 @@
 @synthesize  sampleTrackId;
 @synthesize  sampleIsSync;
 @synthesize  sampleIsCompressed;
+@synthesize  sampleIsForced;
 @synthesize  sampleSourceTrack;
 
 @end

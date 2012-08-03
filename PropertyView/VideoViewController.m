@@ -90,8 +90,31 @@ static NSString *getLevelName(uint8_t level) {
         }
     } else {
         [videoProfile setEnabled:NO];
+        [videoProfile setHidden:YES];
+        [videoProfileLabel setHidden:YES];
+        [videoProfileDescription setHidden:YES];
     }
     
+    if ([track isKindOfClass:[MP42SubtitleTrack class]]) {
+        [forcedSubs setEnabled:YES];
+        [forcedSubs setHidden:NO];
+        [forcedSubsLabel setHidden:NO];
+
+        MP42SubtitleTrack * subTrack = (MP42SubtitleTrack*)track;
+
+        if (!subTrack.someSamplesAreForced && !subTrack.allSamplesAreForced) {
+            [forcedSubs selectItemWithTag:0];
+        } else if (subTrack.someSamplesAreForced && !subTrack.allSamplesAreForced) {
+            [forcedSubs selectItemWithTag:1];
+        } else if (subTrack.allSamplesAreForced) {
+            [forcedSubs selectItemWithTag:2];
+        }
+    }
+    else {
+        [forcedSubs setEnabled:NO];
+        [forcedSubs setHidden:YES];
+        [forcedSubsLabel setHidden:YES];
+    }
 }
 
 - (void) setTrack:(MP42VideoTrack *) videoTrack
@@ -213,6 +236,34 @@ static NSString *getLevelName(uint8_t level) {
     [track.updatedProperty setValue:@"True" forKey:@"profile"];
     [track.updatedProperty setValue:@"True" forKey:@"level"];
     track.isEdited = YES;
+}
+
+- (IBAction) setForcedSubtitles: (id) sender
+{
+    if ([track isKindOfClass:[MP42SubtitleTrack class]]) {
+        MP42SubtitleTrack * subTrack = (MP42SubtitleTrack*)track;
+        NSInteger tagName = [[sender selectedItem] tag];
+
+        switch (tagName) {
+            case 0:
+                subTrack.someSamplesAreForced = FALSE;
+                subTrack.allSamplesAreForced = FALSE;
+                break;
+            case 1:
+                subTrack.someSamplesAreForced = TRUE;
+                subTrack.allSamplesAreForced = FALSE;
+                break;
+            case 2:
+                subTrack.someSamplesAreForced = TRUE;
+                subTrack.allSamplesAreForced = TRUE;
+                break;
+            default:
+                return;
+        }
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+        [track.updatedProperty setValue:@"True" forKey:@"forcedSubtitles"];
+        track.isEdited = YES;
+    }
 }
 
 @end
