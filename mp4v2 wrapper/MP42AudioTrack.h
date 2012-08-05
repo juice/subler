@@ -15,6 +15,7 @@
     UInt32 channelLayoutTag;
 
     MP4TrackId  fallbackTrackId;
+    MP4TrackId  followsTrackId;
 
     NSString * mixdownType;
 }
@@ -24,6 +25,7 @@
 @property UInt32 channelLayoutTag;
 
 @property MP4TrackId fallbackTrackId;
+@property MP4TrackId followsTrackId;
 
 @property(readwrite, retain) NSString *mixdownType;
 

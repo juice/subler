@@ -7,12 +7,14 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "MP42VideoTrack.h"
-#import "MP42SubtitleTrack.h"
 
+@class MP42File;
+@class MP42VideoTrack;
+@class MP42SubtitleTrack;
 
 @interface VideoViewController : NSViewController {
     MP42VideoTrack *track;
+    MP42File       *mp4file;
 
     IBOutlet NSTextField *sampleWidth;
     IBOutlet NSTextField *sampleHeight;
@@ -35,16 +37,24 @@
     IBOutlet NSPopUpButton *forcedSubs;
     IBOutlet NSTextField *forcedSubsLabel;
 
+    IBOutlet NSPopUpButton *forced;
+    IBOutlet NSTextField *forcedLabel;
+
     IBOutlet NSButton *preserveAspectRatio;
     
     IBOutlet NSMenuItem *profileLevelUnchanged;
 }
 
 - (void) setTrack:(MP42VideoTrack *) videoTrack;
+- (void) setFile:(MP42File *) mp4;
+
 - (IBAction) setSize: (id) sender;
 - (IBAction) setPixelAspect: (id) sender;
 - (IBAction) setAltenateGroup: (id) sender;
+
 - (IBAction) setProfileLevel: (id) sender;
+
 - (IBAction) setForcedSubtitles: (id) sender;
+- (IBAction) setForcedTrack: (id) sender;
 
 @end

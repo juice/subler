@@ -72,6 +72,13 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
             MP4GetTrackIntegerProperty(fileHandle, Id, "tref.fall.entries.trackId", &fallbackId);
             fallbackTrackId = (MP4TrackId) fallbackId;
         }
+        
+        if (MP4HaveTrackAtom(fileHandle, Id, "tref.folw")) {
+            uint64_t followsId = 0;
+            MP4GetTrackIntegerProperty(fileHandle, Id, "tref.folw.entries.trackId", &followsId);
+            followsTrackId = (MP4TrackId) followsId;
+        }
+
     }
 
     return self;
@@ -100,6 +107,7 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
 
     if ([updatedProperty valueForKey:@"volume"])
         MP4SetTrackFloatProperty(fileHandle, Id, "tkhd.volume", volume);
+
     if ([updatedProperty valueForKey:@"fallback"]) {
         if (MP4HaveTrackAtom(fileHandle, Id, "tref.fall") && (fallbackTrackId == 0)) {
             MP4RemoveAllTrackReferences(fileHandle, "tref.fall", Id);
@@ -109,6 +117,17 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
         }
         else if (fallbackTrackId)
             MP4AddTrackReference(fileHandle, "tref.fall", fallbackTrackId, Id);
+    }
+    
+    if ([updatedProperty valueForKey:@"follows"]) {
+        if (MP4HaveTrackAtom(fileHandle, Id, "tref.folw") && (followsTrackId == 0)) {
+            MP4RemoveAllTrackReferences(fileHandle, "tref.folw", Id);
+        }
+        else if (MP4HaveTrackAtom(fileHandle, Id, "tref.folw") && (followsTrackId)) {
+            MP4SetTrackIntegerProperty(fileHandle, Id, "tref.folw.entries.trackId", followsTrackId);
+        }
+        else if (followsTrackId)
+            MP4AddTrackReference(fileHandle, "tref.folw", followsTrackId, Id);
     }
 
     return Id;
@@ -141,6 +160,18 @@ extern u_int8_t MP4AV_AacConfigGetChannels(u_int8_t* pConfig);
 - (MP4TrackId) fallbackTrackId
 {
     return fallbackTrackId;
+}
+
+- (void) setFollowsTrackId: (MP4TrackId) newFollowsTrackId
+{
+    followsTrackId = newFollowsTrackId;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"follows"];
+}
+
+- (MP4TrackId) followsTrackId
+{
+    return followsTrackId;
 }
 
 - (NSString *)formatSummary

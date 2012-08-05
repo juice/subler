@@ -35,6 +35,12 @@
                 if ((displayFlags & 0x80000000) == 0x80000000)
                     allSamplesAreForced = YES;
             }
+
+            if (MP4HaveTrackAtom(fileHandle, Id, "tref.forc")) {
+                uint64_t forcedId = 0;
+                MP4GetTrackIntegerProperty(fileHandle, Id, "tref.forc.entries.trackId", &forcedId);
+                forcedTrackId = (MP4TrackId) forcedId;
+            }
         }
     }
 
@@ -100,6 +106,18 @@
             displayFlags |= 0x80000000;
 
         MP4SetTrackIntegerProperty(fileHandle, Id, "mdia.minf.stbl.stsd.tx3g.displayFlags", displayFlags);
+
+        if ([updatedProperty valueForKey:@"forced"]) {
+            if (MP4HaveTrackAtom(fileHandle, Id, "tref.forc") && (forcedTrackId == 0)) {
+                MP4RemoveAllTrackReferences(fileHandle, "tref.forc", Id);
+            }
+            else if (MP4HaveTrackAtom(fileHandle, Id, "tref.forc") && (forcedTrackId)) {
+                MP4SetTrackIntegerProperty(fileHandle, Id, "tref.forc.entries.trackId", forcedTrackId);
+            }
+            else if (forcedTrackId)
+                MP4AddTrackReference(fileHandle, "tref.forc", forcedTrackId, Id);
+        }
+
     }
 
     return YES;
@@ -233,6 +251,18 @@ struct style_record {
     }
 
     return [srtFile writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:error];
+}
+
+- (void) setForcedTrackId: (MP4TrackId) newForcedTrackId
+{
+    forcedTrackId = newForcedTrackId;
+    isEdited = YES;
+    [updatedProperty setValue:@"True" forKey:@"forced"];
+}
+
+- (MP4TrackId) forcedTrackId
+{
+    return forcedTrackId;
 }
 
 - (void) dealloc

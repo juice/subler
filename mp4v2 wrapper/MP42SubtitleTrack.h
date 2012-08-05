@@ -13,6 +13,8 @@
     BOOL verticalPlacement;
     BOOL someSamplesAreForced;
     BOOL allSamplesAreForced;
+
+    MP4TrackId  forcedTrackId;
 }
 
 - (BOOL)exportToURL:(NSURL *)url error:(NSError **)error;
@@ -20,5 +22,7 @@
 @property(readwrite) BOOL verticalPlacement;
 @property(readwrite) BOOL someSamplesAreForced;
 @property(readwrite) BOOL allSamplesAreForced;
+
+@property MP4TrackId forcedTrackId;
 
 @end

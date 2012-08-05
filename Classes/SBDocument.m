@@ -487,6 +487,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     {
         VideoViewController *controller = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
         [controller setTrack:[mp4File trackAtIndex:row]];
+        [controller setFile:mp4File];
         if (controller !=nil)
             propertyView = controller;
     }

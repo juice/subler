@@ -18,6 +18,7 @@
     IBOutlet NSSlider *volume;
     IBOutlet NSPopUpButton *alternateGroup;
     IBOutlet NSPopUpButton *fallback;
+    IBOutlet NSPopUpButton *follows;
 }
 
 - (void) setTrack:(MP42AudioTrack *) soundTrack;
@@ -26,5 +27,6 @@
 - (IBAction) setTrackVolume: (id) sender;
 - (IBAction) setAltenateGroup: (id) sender;
 - (IBAction) setFallbackTrack: (id) sender;
+- (IBAction) setFollowsTrack: (id) sender;
 
 @end

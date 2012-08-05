@@ -32,6 +32,19 @@
     else {
         [fallback setEnabled:NO];
     }
+    
+    for (id fileTrack in [mp4file tracks]) {
+        if ([fileTrack isMemberOfClass:[MP42SubtitleTrack class]]) {
+            NSMenuItem *newItem = [[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Track %d", [fileTrack Id]]
+                                                              action:@selector(setFollowsTrack:)
+                                                       keyEquivalent:@""] autorelease];
+            [newItem setTarget:self];
+            [newItem setTag: [fileTrack Id]];
+            [[follows menu] addItem:newItem];
+        }
+    }
+
+    [follows selectItemWithTag:track.followsTrackId];
 
     [volume setFloatValue:track.volume * 100];
 }
@@ -40,6 +53,7 @@
 {
     mp4file = mp4;
 }
+
 - (void) setTrack:(MP42AudioTrack *) soundTrack
 {
     track = soundTrack;
@@ -62,6 +76,16 @@
         track.fallbackTrackId = tagName;
         [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
     }    
+}
+
+- (IBAction) setFollowsTrack: (id) sender
+{
+    uint8_t tagName = [sender tag];
+    
+    if (track.followsTrackId != tagName) {
+        track.followsTrackId = tagName;
+        [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+    }
 }
 
 - (IBAction) setAltenateGroup: (id) sender

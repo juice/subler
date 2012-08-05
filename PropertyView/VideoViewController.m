@@ -7,7 +7,7 @@
 //
 
 #import "VideoViewController.h"
-
+#import "MP42File.h"
 
 @implementation VideoViewController
 
@@ -99,6 +99,9 @@ static NSString *getLevelName(uint8_t level) {
         [forcedSubs setEnabled:YES];
         [forcedSubs setHidden:NO];
         [forcedSubsLabel setHidden:NO];
+        
+        [forced setHidden:NO];
+        [forcedLabel setHidden:NO];
 
         MP42SubtitleTrack * subTrack = (MP42SubtitleTrack*)track;
 
@@ -109,6 +112,20 @@ static NSString *getLevelName(uint8_t level) {
         } else if (subTrack.allSamplesAreForced) {
             [forcedSubs selectItemWithTag:2];
         }
+        
+        for (id fileTrack in [mp4file tracks]) {
+            if ([fileTrack isMemberOfClass:[MP42SubtitleTrack class]]) {
+                NSMenuItem *newItem = [[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Track %d", [fileTrack Id]]
+                                                                  action:@selector(setForcedTrack:)
+                                                           keyEquivalent:@""] autorelease];
+                [newItem setTarget:self];
+                [newItem setTag: [fileTrack Id]];
+                [[forced menu] addItem:newItem];
+            }
+        }
+    
+        [forced selectItemWithTag:[(MP42SubtitleTrack*)track forcedTrackId]];
+
     }
     else {
         [forcedSubs setEnabled:NO];
@@ -120,6 +137,11 @@ static NSString *getLevelName(uint8_t level) {
 - (void) setTrack:(MP42VideoTrack *) videoTrack
 {
     track = videoTrack;
+}
+
+- (void) setFile:(MP42File *) mp4
+{
+    mp4file = mp4;
 }
 
 - (IBAction) setSize: (id) sender
@@ -265,5 +287,20 @@ static NSString *getLevelName(uint8_t level) {
         track.isEdited = YES;
     }
 }
+
+- (IBAction) setForcedTrack: (id) sender
+{
+    if ([track isKindOfClass:[MP42SubtitleTrack class]]) {
+        MP42SubtitleTrack * subTrack = (MP42SubtitleTrack*)track;
+
+        uint8_t tagName = [sender tag];
+    
+        if (subTrack.forcedTrackId != tagName) {
+            subTrack.forcedTrackId = tagName;
+            [[[[[self view]window] windowController] document] updateChangeCount:NSChangeDone];
+        }
+    }
+}
+
 
 @end
