@@ -15,13 +15,16 @@ void print_help()
     printf("\t\t -language Track language (i.e. English) \n");
     printf("\t\t -remove Remove existing subtitles \n");
     printf("\t\t -optimize Optimize \n");
-    printf("\t\t -help Print this help information \n");
-    printf("\t\t -version Print version \n");
     printf("\t\t -metadata set tags {Tag Name:Tag Value}* \n");
+    printf("\t\t -removemetadata remove all the tags \n");
     printf("\t\t -downmix Downmix audio (mono, stereo, dolby, pl2) \n");
     printf("\n");
     printf("\t\t -listtracks For source file only, lists the tracks in the source movie. \n");
     printf("\t\t -listmetadata For source file only, lists the metadata in the source movie. \n");
+    printf("\n");
+    printf("\t\t -help Print this help information \n");
+    printf("\t\t -version Print version \n");
+
 
 }
 
@@ -59,6 +62,7 @@ int main (int argc, const char * argv[]) {
     
     BOOL listtracks = false;
     BOOL listmetadata = false;
+    BOOL removemetadata = false;
 
     BOOL downmixAudio = NO;
     NSString *downmixType = nil;
@@ -157,6 +161,10 @@ int main (int argc, const char * argv[]) {
 		{
 			listmetadata = YES;
 		}
+        else if ( ! strcmp ( args, "removemetadata" ) )
+		{
+			removemetadata = YES;
+		}
 		else {
 			printf("Invalid input parameter: %s\n", args );
 			print_help();
@@ -219,7 +227,7 @@ int main (int argc, const char * argv[]) {
     if (chapterPreview)
         [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
 
-    if (sourcePath || chaptersPath || removeExisting || metadata || chapterPreview)
+    if (sourcePath || chaptersPath || removeExisting || metadata || chapterPreview || removemetadata)
     {
         NSError *outError;
         MP42File *mp4File;
@@ -233,6 +241,29 @@ int main (int argc, const char * argv[]) {
             printf("Error: %s\n", "the mp4 file couln't be opened.");
             return -1;
         }
+
+        if (removemetadata) {
+            for (NSString* key in mp4File.metadata.writableMetadata) {
+                [mp4File.metadata removeTagForKey:key];
+            }
+            
+            if ([[mp4File metadata] hdVideo]) {
+                mp4File.metadata.hdVideo = 0;
+            }
+            if ([[mp4File metadata] gapless]) {
+                mp4File.metadata.gapless = 0;
+            }
+            if ([[mp4File metadata] contentRating]) {
+                mp4File.metadata.contentRating = 0;
+            }
+            if ([[mp4File metadata] podcast]) {
+                mp4File.metadata.podcast = 0;
+            }
+            if ([[mp4File metadata] mediaKind]) {
+                mp4File.metadata.mediaKind = 0;
+            }
+        }
+
         if (removeExisting) {
           NSMutableIndexSet *subtitleTrackIndexes = [[NSMutableIndexSet alloc] init];
           MP42Track *track;
