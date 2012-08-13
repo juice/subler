@@ -66,13 +66,13 @@
 		A9B46B1C12B79EC60040517A /* SBAudioConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AFE12B79EC60040517A /* SBAudioConverter.m */; };
 		A9B46B1D12B79EC60040517A /* sfifo.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AFF12B79EC60040517A /* sfifo.c */; };
 		A9B46B1E12B79EC60040517A /* SubUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46B0212B79EC60040517A /* SubUtilities.m */; };
+		A9BAABD315D930D400A59EAB /* SBLanguages.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BAABD215D930AD00A59EAB /* SBLanguages.m */; };
 		A9E96D0413892BE400D4B7F0 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF313892BE300D4B7F0 /* libavcodec.a */; };
 		A9E96D0513892BE400D4B7F0 /* libavcore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF413892BE300D4B7F0 /* libavcore.a */; };
 		A9E96D0613892BE400D4B7F0 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF513892BE300D4B7F0 /* libavdevice.a */; };
 		A9E96D0713892BE400D4B7F0 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF613892BE300D4B7F0 /* libavformat.a */; };
 		A9E96D0813892BE400D4B7F0 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E96CF713892BE300D4B7F0 /* libavutil.a */; };
 		CBE9463B12FC5350007E656A /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE9463A12FC5350007E656A /* RegexKitLite.m */; };
-		CBE9466412FC543C007E656A /* lang.c in Sources */ = {isa = PBXBuildFile; fileRef = CBE9466312FC543C007E656A /* lang.c */; };
 		CBE9467C12FC5510007E656A /* SublerCLI.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE9467B12FC5510007E656A /* SublerCLI.mm */; };
 /* End PBXBuildFile section */
 
@@ -201,6 +201,8 @@
 		A9B46B0012B79EC60040517A /* sfifo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sfifo.h; sourceTree = "<group>"; };
 		A9B46B0112B79EC60040517A /* SubUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubUtilities.h; sourceTree = "<group>"; };
 		A9B46B0212B79EC60040517A /* SubUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubUtilities.m; sourceTree = "<group>"; };
+		A9BAABD115D930AD00A59EAB /* SBLanguages.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SBLanguages.h; path = ../Classes/SBLanguages.h; sourceTree = "<group>"; };
+		A9BAABD215D930AD00A59EAB /* SBLanguages.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SBLanguages.m; path = ../Classes/SBLanguages.m; sourceTree = "<group>"; };
 		A9E96CE713892BE300D4B7F0 /* libtesseract_viewer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_viewer.a; path = ../Tesseract/lib/libtesseract_viewer.a; sourceTree = SOURCE_ROOT; };
 		A9E96CE813892BE300D4B7F0 /* libtesseract_api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_api.a; path = ../Tesseract/lib/libtesseract_api.a; sourceTree = SOURCE_ROOT; };
 		A9E96CE913892BE300D4B7F0 /* libtesseract_ccstruct.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_ccstruct.a; path = ../Tesseract/lib/libtesseract_ccstruct.a; sourceTree = SOURCE_ROOT; };
@@ -222,8 +224,6 @@
 		CBE9463A12FC5350007E656A /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegexKitLite.m; path = ../Others/RegexKitLite.m; sourceTree = "<group>"; };
 		CBE9463C12FC535B007E656A /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = ../Others/RegexKitLite.h; sourceTree = "<group>"; };
 		CBE9465612FC53FF007E656A /* UniversalDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniversalDetector.h; path = ../UniversalDetector/UniversalDetector.h; sourceTree = "<group>"; };
-		CBE9466212FC5434007E656A /* lang.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lang.h; path = ../Others/lang.h; sourceTree = "<group>"; };
-		CBE9466312FC543C007E656A /* lang.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lang.c; path = ../Others/lang.c; sourceTree = "<group>"; };
 		CBE9467B12FC5510007E656A /* SublerCLI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SublerCLI.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -364,8 +364,8 @@
 		A9975E6C12B8CD6B00A3EFB6 /* Others */ = {
 			isa = PBXGroup;
 			children = (
-				CBE9466312FC543C007E656A /* lang.c */,
-				CBE9466212FC5434007E656A /* lang.h */,
+				A9BAABD115D930AD00A59EAB /* SBLanguages.h */,
+				A9BAABD215D930AD00A59EAB /* SBLanguages.m */,
 				CBE9465612FC53FF007E656A /* UniversalDetector.h */,
 				CBE9463C12FC535B007E656A /* RegexKitLite.h */,
 				CBE9463A12FC5350007E656A /* RegexKitLite.m */,
@@ -542,6 +542,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9BAABD315D930D400A59EAB /* SBLanguages.m in Sources */,
 				A9B46B0A12B79EC60040517A /* MP42FileImporter.m in Sources */,
 				A9B46B0312B79EC60040517A /* MP42AACImporter.mm in Sources */,
 				A9B46B0412B79EC60040517A /* MP42AC3Importer.m in Sources */,
@@ -569,7 +570,6 @@
 				A9B46B1E12B79EC60040517A /* SubUtilities.m in Sources */,
 				A905AF1A12CC9842004F9C3E /* downmix.c in Sources */,
 				CBE9463B12FC5350007E656A /* RegexKitLite.m in Sources */,
-				CBE9466412FC543C007E656A /* lang.c in Sources */,
 				CBE9467C12FC5510007E656A /* SublerCLI.mm in Sources */,
 				A991318A13F0044B00DCAA12 /* SBOCRWrapper.mm in Sources */,
 				A991318B13F0044B00DCAA12 /* SBVobSubConverter.m in Sources */,
