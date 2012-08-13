@@ -7,7 +7,7 @@
 //
 
 #import "MP42Mp4Importer.h"
-#import "lang.h"
+#import "SBLanguages.h"
 #import "MP42File.h"
 #import "MP42Sample.h"
 

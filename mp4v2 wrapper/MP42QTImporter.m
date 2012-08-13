@@ -11,7 +11,7 @@
 #import "MP42File.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <QuickTime/QuickTime.h>
-#include "lang.h"
+#import "SBLanguages.h"
 #include "avcodec.h"
 
 extern NSString * const QTTrackLanguageAttribute;	// NSNumber (long)

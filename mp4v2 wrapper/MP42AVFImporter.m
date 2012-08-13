@@ -9,11 +9,10 @@
 #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
 
 #import "MP42AVFImporter.h"
+#import "SBLanguages.h"
 #import "MP42File.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
-
-#include "lang.h"
 
 @interface AVFTrackHelper : NSObject {
 @public

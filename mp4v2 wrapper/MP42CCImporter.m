@@ -8,7 +8,7 @@
 
 #import "MP42CCImporter.h"
 #import "SubUtilities.h"
-#import "lang.h"
+#import "SBLanguages.h"
 #import "MP42File.h"
 #import "RegexKitLite.h"
 

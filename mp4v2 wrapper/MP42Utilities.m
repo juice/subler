@@ -12,7 +12,7 @@
 #import <CoreAudio/CoreAudio.h>
 #include <zlib.h>
 
-#include "lang.h"
+#import "SBLanguages.h"
 #include "intreadwrite.h"
 #include "avcodec.h"
 

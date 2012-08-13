@@ -8,7 +8,7 @@
 
 #import "MP42SubtitleTrack.h"
 #import "MP42Utilities.h"
-#import "lang.h"
+#import "SBLanguages.h"
 
 @implementation MP42SubtitleTrack
 

@@ -11,7 +11,7 @@
 #import "SBDocument.h"
 #import "ArtworkSelector.h"
 #import "RegexKitLite.h"
-#import "lang.h"
+#import "SBLanguages.h"
 
 @implementation MetadataSearchController
 

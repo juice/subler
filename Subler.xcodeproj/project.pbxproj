@@ -69,7 +69,6 @@
 		A9B46A9012B79B240040517A /* SBView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8712B79B240040517A /* SBView.m */; };
 		A9B46A9212B79B240040517A /* VideoFramerate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A8B12B79B240040517A /* VideoFramerate.m */; };
 		A9B46A9E12B79B990040517A /* ButtonToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A9412B79B990040517A /* ButtonToolbarItem.m */; };
-		A9B46A9F12B79B990040517A /* lang.c in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A9612B79B990040517A /* lang.c */; };
 		A9B46AA212B79B990040517A /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46A9D12B79B990040517A /* RegexKitLite.m */; };
 		A9B46AA412B79BB10040517A /* Subler.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9B46AA312B79BB10040517A /* Subler.icns */; };
 		A9B46AA912B79BD00040517A /* SBAudioConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B46AA612B79BD00040517A /* SBAudioConverter.m */; };
@@ -305,8 +304,6 @@
 		A9B46A8B12B79B240040517A /* VideoFramerate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoFramerate.m; path = Classes/VideoFramerate.m; sourceTree = "<group>"; };
 		A9B46A9312B79B990040517A /* ButtonToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ButtonToolbarItem.h; path = Others/ButtonToolbarItem.h; sourceTree = "<group>"; };
 		A9B46A9412B79B990040517A /* ButtonToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ButtonToolbarItem.m; path = Others/ButtonToolbarItem.m; sourceTree = "<group>"; };
-		A9B46A9612B79B990040517A /* lang.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lang.c; path = Others/lang.c; sourceTree = "<group>"; };
-		A9B46A9712B79B990040517A /* lang.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lang.h; path = Others/lang.h; sourceTree = "<group>"; };
 		A9B46A9C12B79B990040517A /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = Others/RegexKitLite.h; sourceTree = "<group>"; };
 		A9B46A9D12B79B990040517A /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegexKitLite.m; path = Others/RegexKitLite.m; sourceTree = "<group>"; };
 		A9B46AA312B79BB10040517A /* Subler.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Subler.icns; path = images/Subler.icns; sourceTree = "<group>"; };
@@ -561,8 +558,6 @@
 				A9B46A9412B79B990040517A /* ButtonToolbarItem.m */,
 				A936E03C130BE10200CA5527 /* MAAttachedWindow.h */,
 				A936E03D130BE10200CA5527 /* MAAttachedWindow.m */,
-				A9B46A9712B79B990040517A /* lang.h */,
-				A9B46A9612B79B990040517A /* lang.c */,
 				A9B46A9C12B79B990040517A /* RegexKitLite.h */,
 				A9B46A9D12B79B990040517A /* RegexKitLite.m */,
 				A911049C0F321DFC0013D1E0 /* UniversalDetector.h */,
@@ -1006,7 +1001,6 @@
 				A9B46A9012B79B240040517A /* SBView.m in Sources */,
 				A9B46A9212B79B240040517A /* VideoFramerate.m in Sources */,
 				A9B46A9E12B79B990040517A /* ButtonToolbarItem.m in Sources */,
-				A9B46A9F12B79B990040517A /* lang.c in Sources */,
 				A9B46AA212B79B990040517A /* RegexKitLite.m in Sources */,
 				A9B46AA912B79BD00040517A /* SBAudioConverter.m in Sources */,
 				A9B46AAA12B79BD00040517A /* SubUtilities.m in Sources */,

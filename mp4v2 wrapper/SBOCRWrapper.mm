@@ -14,7 +14,7 @@
 #include <string>
 #include <cstdio>
 
-#include "lang.h"
+#import "SBLanguages.h"
 
 NSLock *ocrLock;
 

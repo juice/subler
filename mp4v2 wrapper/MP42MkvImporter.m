@@ -10,7 +10,7 @@
 #import "MatroskaParser.h"
 #import "MatroskaFile.h"
 #import "SubUtilities.h"
-#import "lang.h"
+#import "SBLanguages.h"
 #import "MP42File.h"
 
 #include "avcodec.h"

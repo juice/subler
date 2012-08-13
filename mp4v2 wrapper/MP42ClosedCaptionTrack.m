@@ -7,7 +7,7 @@
 //
 
 #import "MP42ClosedCaptionTrack.h"
-#import "lang.h"
+#import "SBLanguages.h"
 
 @implementation MP42ClosedCaptionTrack
 

@@ -9,7 +9,7 @@
 #import "MP42File.h"
 #import <QTKit/QTKit.h>
 #import "SubUtilities.h"
-#include "lang.h"
+#import "SBLanguages.h"
 
 #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
 #import <AVFoundation/AVFoundation.h>

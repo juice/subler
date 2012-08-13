@@ -13,17 +13,6 @@
 
 static SBLanguages *defaultManager = nil;
 
-typedef struct iso639_lang_t
-{
-    char * eng_name;        /* Description in English */
-    char * native_name;     /* Description in native language */
-    char * iso639_1;        /* ISO-639-1 (2 characters) code */
-    char * iso639_2;        /* ISO-639-2/t (3 character) code */
-    char * iso639_2b;       /* ISO-639-2/b code (if different from above) */
-    short  qtLang;          /* QT Lang Code */
-    
-} iso639_lang_t;
-
 static const iso639_lang_t languages[] =
 { { "Unknown", "", "", "und", "", 32767 },
     { "Abkhazian", "Аҧсуа", "ab", "abk", "", -1 },
@@ -509,6 +498,90 @@ static const iso639_lang_t languages[] =
     { "Zuni", "Shiwi", "", "zun", "", -1 },
     { NULL, NULL, NULL, NULL, NULL, -1 } };
 
+iso639_lang_t * lang_for_code( int code )
+{
+    char code_string[2];
+    iso639_lang_t * lang;
+    
+    code_string[0] = tolower( ( code >> 8 ) & 0xFF );
+    code_string[1] = tolower( code & 0xFF );
+    
+    for( lang = (iso639_lang_t*) languages; lang->eng_name; lang++ )
+    {
+        if( !strncmp( lang->iso639_1, code_string, 2 ) )
+        {
+            return lang;
+        }
+    }
+    
+    return (iso639_lang_t*) languages;
+}
+
+iso639_lang_t * lang_for_code2( const char *code )
+{
+    char code_string[4];
+    iso639_lang_t * lang;
+    
+    code_string[0] = tolower( code[0] );
+    code_string[1] = tolower( code[1] );
+    code_string[2] = tolower( code[2] );
+    code_string[3] = 0;
+    
+    for( lang = (iso639_lang_t*) languages; lang->eng_name; lang++ )
+    {
+        if( !strcmp( lang->iso639_2, code_string ) )
+        {
+            return lang;
+        }
+        if( lang->iso639_2b && !strcmp( lang->iso639_2b, code_string ) )
+        {
+            return lang;
+        }
+    }
+    
+    return (iso639_lang_t*) languages;
+}
+
+iso639_lang_t * lang_for_qtcode( short code )
+{
+    iso639_lang_t * lang;
+    
+    for( lang = (iso639_lang_t*) languages; lang->eng_name; lang++ )
+    {
+        if( lang->qtLang == code )
+        {
+            return lang;
+        }
+    }
+    
+    return (iso639_lang_t*) languages;
+}
+
+int lang_to_code(const iso639_lang_t *lang)
+{
+    int code = 0;
+    
+    if (lang)
+        code = (lang->iso639_1[0] << 8) | lang->iso639_1[1];
+    
+    return code;
+}
+
+iso639_lang_t * lang_for_english( const char * english )
+{
+    iso639_lang_t * lang;
+    
+    for( lang = (iso639_lang_t*) languages; lang->eng_name; lang++ )
+    {
+        if( !strcmp( lang->eng_name, english ) )
+        {
+            return lang;
+        }
+    }
+    
+    return (iso639_lang_t*) languages;
+}
+
 @implementation SBLanguages
 
 + (SBLanguages*)defaultManager
@@ -570,6 +643,5 @@ static const iso639_lang_t languages[] =
 
     return [languagesArray autorelease];
 }
-
 
 @end
