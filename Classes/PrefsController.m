@@ -127,6 +127,8 @@
 
 - (IBAction) deletePreset:(id) sender
 {
+    [self hideInfoWindow:self];
+
     NSInteger rowIndex = [tableView selectedRow];
     SBPresetManager *presetManager = [SBPresetManager sharedManager];
     [presetManager removePresetAtIndex:rowIndex];
@@ -165,7 +167,7 @@
         [controller setMetadata:[[presetManager presets] objectAtIndex:row]];
 
         attachedWindow = [[MAAttachedWindow alloc] initWithView:[controller view] 
-                                                attachedToPoint:windowPoint 
+                                                attachedToPoint:windowPoint
                                                        inWindow:[self window] 
                                                          onSide:MAPositionRightBottom 
                                                      atDistance:11
