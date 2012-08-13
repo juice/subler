@@ -553,48 +553,45 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
     return;
 }
 
-- (void) errorMessageForFormat:(NSString*)format error:(NSError **)outError
+- (BOOL) errorMessageForFormat:(NSString*)format error:(NSError **)outError
 {
     // Check if perian is installed
-    /*InstallStatus installStatus = [self installStatusForComponent:@"Perian.component" type:ComponentTypeQuickTime version:@"1.2"];
-     
-     if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
-     if (outError)
-     *outError = MP42Error(@"Perian is not installed.",
-     @"Perian is necessary for audio conversion in Subler. You can download it from http://perian.org/",
-     130);
-     
-     [self release];
-     return nil;
-     }
-     
-     // Check if xiphqt is installed
-     if ([track.sourceFormat isEqualToString:@"Flac"]) {
-     InstallStatus installStatus = [self installStatusForComponent:@"XiphQT.component" type:ComponentTypeQuickTime version:@"0.1.9"];
-     
-     if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
-     installStatus = [self installStatusForComponent:@"XiphQT (decoders).component" type:ComponentTypeQuickTime version:@"0.1.9"];
-     
-     if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
-     if (outError)
-     *outError = MP42Error(@"XiphQT is not installed.",
-     @"XiphQT is necessary for Flac audio conversion in Subler. You can download it from http://xiph.org/quicktime/",
-     130);
-     
-     [self release];
-     return nil;
-     }
-     }
-     }*/
+    InstallStatus installStatus = [self installStatusForComponent:@"Perian.component" type:ComponentTypeQuickTime version:@"1.2"];
 
+    if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
+        if (outError)
+            *outError = MP42Error(@"Perian is not installed.",
+                                  @"Perian is necessary for audio conversion in Subler. You can download it from http://perian.org/",
+                                  130);
+        
+        return YES;
+    }
+
+    // Check if xiphqt is installed
+    if ([format isEqualToString:@"Flac"]) {
+        InstallStatus installStatus = [self installStatusForComponent:@"XiphQT.component" type:ComponentTypeQuickTime version:@"0.1.9"];
+
+        if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
+            installStatus = [self installStatusForComponent:@"XiphQT (decoders).component" type:ComponentTypeQuickTime version:@"0.1.9"];
+            
+            if(currentInstallStatus(installStatus) == InstallStatusNotInstalled) {
+                if (outError)
+                    *outError = MP42Error(@"XiphQT is not installed.",
+                                          @"XiphQT is necessary for Flac audio conversion in Subler. You can download it from http://xiph.org/quicktime/",
+                                          130);
+                
+                return YES;
+            }
+        }
+    }
     
+    return NO;
 }
 
 - (id) initWithTrack: (MP42AudioTrack*) track andMixdownType: (NSString*) mixdownType error:(NSError **)outError
 {
 
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         OSStatus err;
 
         // Set the right mixdown to use
@@ -695,9 +692,11 @@ OSStatus DecoderDataProc(AudioConverterRef              inAudioConverter,
         err = AudioConverterNew( &inputFormat, &outputFormat, &decoderData.converter );
         if ( err != noErr) {
             if (outError)
+                if (![self errorMessageForFormat:track.sourceFileHandle error:outError]) {
                 *outError = MP42Error(@"Audio Converter Error.",
                                       @"The Audio Converter can not be initialized",
                                       130);
+                }
             if (magicCookie)
                 CFRelease(magicCookie);
             [self release];
