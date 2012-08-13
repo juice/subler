@@ -11,6 +11,7 @@
 
 @class MP42File;
 @class SBQueueItem;
+
 enum {
     SBQueueStatusUnknown = 0,
     SBQueueStatusWorking,
@@ -23,7 +24,7 @@ typedef NSInteger SBQueueStatus;
 @interface SBQueueController : NSWindowController<NSTableViewDelegate, NSTableViewDataSource, SBTableViewDelegate> {
     IBOutlet NSButton *start;
     IBOutlet NSButton *open;
-    
+
     IBOutlet NSTextField *countLabel;
     IBOutlet NSProgressIndicator *spinningIndicator;
 
@@ -42,7 +43,7 @@ typedef NSInteger SBQueueStatus;
     IBOutlet NSPopUpButton *destButton;
 
     NSImage *docImg;
-    
+
     dispatch_queue_t queue;
     SBQueueStatus   status;
     BOOL            isCancelled;

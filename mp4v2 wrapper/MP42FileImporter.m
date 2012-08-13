@@ -49,7 +49,7 @@
 
 //#if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
     // If we are on 10.7, use the AVFoundation path
-    if (NSClassFromString(@"AVAsset")) {
+    else if (NSClassFromString(@"AVAsset")) {
         if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame ||
             [[URL pathExtension] caseInsensitiveCompare: @"m2ts"] == NSOrderedSame ||
             [[URL pathExtension] caseInsensitiveCompare: @"mts"] == NSOrderedSame ) {
@@ -58,9 +58,9 @@
     }
 //#endif
 #if !__LP64__
-        if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
-            self = [[MP42QTImporter alloc] initWithDelegate:del andFile:URL error:outError];
-        }
+    else if ([[URL pathExtension] caseInsensitiveCompare: @"mov"] == NSOrderedSame) {
+        self = [[MP42QTImporter alloc] initWithDelegate:del andFile:URL error:outError];
+    }
 #endif
 
     return self;

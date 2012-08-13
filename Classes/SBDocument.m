@@ -9,6 +9,7 @@
 #import "SBDocument.h"
 #import "SBQueueController.h"
 #import "SBQueueItem.h"
+#import "SBLanguages.h"
 #import "MP42File.h"
 #import "EmptyViewController.h"
 #import "MovieViewController.h"
@@ -55,12 +56,7 @@
 {
     [super windowControllerDidLoadNib:aController];
 
-    languages = [[NSArray arrayWithObjects:  @"Unknown", @"English", @"French", @"German" , @"Italian", @"Dutch",
-				  @"Swedish" , @"Spanish" , @"Danish" , @"Portuguese", @"Norwegian", @"Hebrew",
-				  @"Japanese", @"Arabic", @"Finnish", @"Greek, Modern", @"Icelandic", @"Maltese", @"Turkish",
-				  @"Croatian", @"Chinese", @"Urdu", @"Hindi", @"Thai", @"Korean", @"Lithuanian", @"Polish", 
-				  @"Hungarian", @"Estonian", @"Latvian", @"Northern Sami", @"Faroese", @"Persian", @"Romanian", @"Russian", 
-				  @"Irish", @"Serbian", @"Albanian", @"Bulgarian", @"Czech", @"Slovak", @"Slovenian", nil] retain];
+    languages = [[[SBLanguages defaultManager] languages] copy];
 
     MovieViewController *controller = [[MovieViewController alloc] initWithNibName:@"MovieView" bundle:nil];
     [controller setFile:mp4File];

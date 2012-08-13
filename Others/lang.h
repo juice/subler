@@ -4,9 +4,6 @@
    Homepage: <http://handbrake.fr/>.
    It may be used under the terms of the GNU General Public License. */
 
-#ifndef HB_LANG_H
-#define HB_LANG_H
-
 typedef struct iso639_lang_t
 {
     char * eng_name;        /* Description in English */
@@ -36,5 +33,4 @@ int lang_to_code(const iso639_lang_t *lang);
 iso639_lang_t * lang_for_english( const char * english );
 #ifdef __cplusplus
 }
-#endif
 #endif

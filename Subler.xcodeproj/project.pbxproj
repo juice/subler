@@ -45,6 +45,7 @@
 		A9629C920F56F7B6001D6A75 /* MP42Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629C8C0F56F7B6001D6A75 /* MP42Utilities.m */; };
 		A9629D070F56FB2A001D6A75 /* VideoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9629D050F56FB2A001D6A75 /* VideoView.xib */; };
 		A9629D0A0F56FB36001D6A75 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9629D080F56FB36001D6A75 /* VideoViewController.m */; };
+		A968AB3A15D8F9A1005C82CF /* SBLanguages.m in Sources */ = {isa = PBXBuildFile; fileRef = A968AB3915D8F9A1005C82CF /* SBLanguages.m */; };
 		A975644D132A325C0051ED08 /* info.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A975644A132A325C0051ED08 /* info.pdf */; };
 		A975644E132A325C0051ED08 /* info-over.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A975644B132A325C0051ED08 /* info-over.pdf */; };
 		A975644F132A325C0051ED08 /* info-pressed.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A975644C132A325C0051ED08 /* info-pressed.pdf */; };
@@ -270,6 +271,8 @@
 		A9629D060F56FB2A001D6A75 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = PropertyView/English.lproj/VideoView.xib; sourceTree = "<group>"; };
 		A9629D080F56FB36001D6A75 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoViewController.m; path = PropertyView/VideoViewController.m; sourceTree = "<group>"; };
 		A9629D090F56FB36001D6A75 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoViewController.h; path = PropertyView/VideoViewController.h; sourceTree = "<group>"; };
+		A968AB3815D8F9A1005C82CF /* SBLanguages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBLanguages.h; sourceTree = "<group>"; };
+		A968AB3915D8F9A1005C82CF /* SBLanguages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBLanguages.m; sourceTree = "<group>"; };
 		A975644A132A325C0051ED08 /* info.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = info.pdf; path = images/info.pdf; sourceTree = "<group>"; };
 		A975644B132A325C0051ED08 /* info-over.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = "info-over.pdf"; path = "images/info-over.pdf"; sourceTree = "<group>"; };
 		A975644C132A325C0051ED08 /* info-pressed.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = "info-pressed.pdf"; path = "images/info-pressed.pdf"; sourceTree = "<group>"; };
@@ -281,7 +284,6 @@
 		A98739FD13FBB09B00B795A7 /* ToolbarActionTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToolbarActionTemplate.png; path = images/ToolbarActionTemplate.png; sourceTree = "<group>"; };
 		A9891D5C124502C000427CF9 /* MP42SrtImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42SrtImporter.h; path = "mp4v2 wrapper/MP42SrtImporter.h"; sourceTree = "<group>"; };
 		A9891D5D124502C000427CF9 /* MP42SrtImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP42SrtImporter.m; path = "mp4v2 wrapper/MP42SrtImporter.m"; sourceTree = "<group>"; };
-		A991319713F060C600DCAA12 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Quartz.framework; sourceTree = DEVELOPER_DIR; };
 		A991319913F0615700DCAA12 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A991319B13F0668300DCAA12 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		A99EAC7A1115BED200D89903 /* MP42FileImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP42FileImporter.h; path = "mp4v2 wrapper/MP42FileImporter.h"; sourceTree = "<group>"; };
@@ -450,9 +452,9 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A9A7C02D15C67D2F0022921C /* Quartz.framework */,
 				A991319B13F0668300DCAA12 /* CoreMedia.framework */,
 				A991319913F0615700DCAA12 /* AVFoundation.framework */,
-				A991319713F060C600DCAA12 /* Quartz.framework */,
 				CD56966E12FAAFA90029FADB /* Quartz.framework */,
 				A91F622C0FB0A56F00B96B33 /* libicucore.dylib */,
 				A9C0957F0F7B6C8C00170CAF /* AudioToolbox.framework */,
@@ -509,7 +511,6 @@
 		2A37F4AAFDCFA73011CA2CEA /* MP4Sub */ = {
 			isa = PBXGroup;
 			children = (
-				A9A7C02D15C67D2F0022921C /* Quartz.framework */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				A961475E13F5676E0068F161 /* NIBs */,
@@ -525,6 +526,8 @@
 			children = (
 				A9B46ABD12B79D1C0040517A /* SBDocument.h */,
 				A9B46ABE12B79D1C0040517A /* SBDocument.m */,
+				A968AB3815D8F9A1005C82CF /* SBLanguages.h */,
+				A968AB3915D8F9A1005C82CF /* SBLanguages.m */,
 				A961475F13F567E10068F161 /* SBQueueController.h */,
 				A961476013F567E10068F161 /* SBQueueController.m */,
 				A982D0BE140AB66400B92357 /* SBQueueItem.h */,
@@ -558,8 +561,8 @@
 				A9B46A9412B79B990040517A /* ButtonToolbarItem.m */,
 				A936E03C130BE10200CA5527 /* MAAttachedWindow.h */,
 				A936E03D130BE10200CA5527 /* MAAttachedWindow.m */,
-				A9B46A9612B79B990040517A /* lang.c */,
 				A9B46A9712B79B990040517A /* lang.h */,
+				A9B46A9612B79B990040517A /* lang.c */,
 				A9B46A9C12B79B990040517A /* RegexKitLite.h */,
 				A9B46A9D12B79B990040517A /* RegexKitLite.m */,
 				A911049C0F321DFC0013D1E0 /* UniversalDetector.h */,
@@ -1023,6 +1026,7 @@
 				A961476313F567E10068F161 /* SBQueueController.m in Sources */,
 				A961476413F567E10068F161 /* SBPresetManager.m in Sources */,
 				A982D0C0140AB66400B92357 /* SBQueueItem.m in Sources */,
+				A968AB3A15D8F9A1005C82CF /* SBLanguages.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

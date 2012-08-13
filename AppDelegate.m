@@ -18,7 +18,7 @@
 
 void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
 {
-    const char* level;
+    /*const char* level;
     switch (loglevel) {
         case 0:
             level = "None";
@@ -49,7 +49,7 @@ void logCallback(MP4LogLevel loglevel, const char* fmt, va_list ap)
             break;
     }
 
-    /*printf("%s: ", level);
+    printf("%s: ", level);
     vprintf(fmt, ap);
     printf("\n");*/
 }
