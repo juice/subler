@@ -22,9 +22,12 @@ using namespace tesseract;
 
 class OCRWrapper {
 public:
-OCRWrapper(const char* lang) {
-    NSString * path = [[NSBundle mainBundle] bundlePath];
-    path = [path stringByAppendingString:@"/Contents/Resources/"];
+OCRWrapper(const char* lang, const char* base_path) {
+    NSString *path = nil;
+    if (base_path)
+        path = [[NSString stringWithUTF8String:base_path] stringByAppendingString:@"/"];
+    else
+        path = [[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources/"];
 
     setenv("TESSDATA_PREFIX", [path UTF8String], 1);
 
@@ -47,6 +50,43 @@ protected:
 
 @implementation SBOCRWrapper
 
+- (NSURL*) appSupportUrl
+{
+    NSURL *URL = nil;
+
+    NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+                                                            NSUserDomainMask,
+                                                            YES);
+    if ([allPaths count]) {
+        NSString* path = [[allPaths lastObject] stringByAppendingPathComponent:@"Subler"];
+        URL = [NSURL fileURLWithPath:path];
+
+        if (URL) {
+            return URL;
+        }
+    }
+
+    return nil;
+
+}
+
+- (BOOL)tessdataAvailableForLanguage:(NSString*) language
+{
+    NSURL *URL = [self appSupportUrl];
+
+    if (URL) {
+        NSString* path = [[[URL path] stringByAppendingPathComponent:@"tessdata"] stringByAppendingFormat:@"/%@.traineddata", language];
+        URL = [NSURL fileURLWithPath:path];
+
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[URL path]]) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+
 - (id)init
 {
     if ((self = [super init]))
@@ -54,7 +94,7 @@ protected:
         if (ocrLock == nil)
             ocrLock = [[NSLock alloc] init];
 
-        tess_base = (void *)new OCRWrapper(lang_for_english([_language UTF8String])->iso639_2);
+        tess_base = (void *)new OCRWrapper(lang_for_english([_language UTF8String])->iso639_2, NULL);
     }
     return self;
 }
@@ -67,14 +107,14 @@ protected:
         if (ocrLock == nil)
             ocrLock = [[NSLock alloc] init];
 
-        NSString * lang = [NSString stringWithUTF8String:lang_for_english([_language UTF8String])->iso639_2];        
-        NSString * path = [[NSBundle mainBundle] resourcePath];
-        path = [path stringByAppendingFormat:@"/tessdata/%@.traineddata", lang];
-        
-        if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+        NSString * lang = [NSString stringWithUTF8String:lang_for_english([_language UTF8String])->iso639_2];
+        NSURL *dataURL = [self appSupportUrl];
+        if (![self tessdataAvailableForLanguage:lang]) {
             lang = @"eng";
+            dataURL = nil;
+        }
 
-        tess_base = (void *)new OCRWrapper([lang UTF8String]);
+        tess_base = (void *)new OCRWrapper([lang UTF8String], [[dataURL path] UTF8String]);
     }
     return self;
 }
