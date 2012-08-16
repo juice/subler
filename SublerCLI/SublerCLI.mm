@@ -30,7 +30,7 @@ void print_help()
 
 void print_version()
 {
-    printf("\t\tversion 0.16\n");
+    printf("\t\tversion 0.17\n");
 }
 
 // ---------------------------------------------------------------------------
