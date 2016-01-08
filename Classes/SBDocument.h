@@ -8,11 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class MP42File;
 
-@interface SBDocument : NSDocument <NSTableViewDelegate>
-{
-    MP42File  *mp4File;
+@interface SBDocument : NSDocument {
+@private
+    MP42File  *_mp4File;
     IBOutlet NSWindow       *documentWindow;
 
     IBOutlet NSTableView    *fileTracksTable;
@@ -29,13 +31,14 @@
     IBOutlet NSToolbarItem  *addTracks;
     IBOutlet NSToolbarItem  *deleteTrack;
     IBOutlet NSToolbarItem  *searchMetadata;
+    IBOutlet NSToolbarItem  *searchChapters;
     IBOutlet NSToolbarItem  *sendToQueue;
 
-    NSMutableArray          *languages;
+    NSArray<NSString *> *languages;
 
     NSViewController        *propertyView;
     IBOutlet NSView         *targetView;
-    id                      importWindow;
+    NSWindowController      *_sheet;
 
     IBOutlet NSWindow       *offsetWindow;
     IBOutlet NSTextField    *offset;
@@ -46,30 +49,31 @@
     BOOL _optimize;
 }
 
-@property (readonly) NSMutableArray *languages;
+- (instancetype)initWithMP4:(MP42File *)mp4File error:(NSError **)outError;
 
-- (IBAction) selectFile: (id) sender;
-- (IBAction) deleteTrack: (id) sender;
-- (IBAction) sendToQueue:(id)sender;
-- (IBAction) searchMetadata: (id) sender;
+- (IBAction)selectFile:(id)sender;
+- (IBAction)deleteTrack:(id)sender;
+- (IBAction)sendToQueue:(id)sender;
+- (IBAction)searchMetadata:(id)sender;
 
-- (IBAction) showTrackOffsetSheet: (id) sender;
-- (IBAction) setTrackOffset: (id) sender;
-- (IBAction) closeOffsetSheet: (id) sender;
+- (IBAction)showTrackOffsetSheet:(id)sender;
+- (IBAction)setTrackOffset:(id)sender;
+- (IBAction)closeOffsetSheet:(id)sender;
 
-- (IBAction) setSaveFormat: (id) sender;
-- (IBAction) cancelSaveOperation: (id) sender;
-- (IBAction) sendToExternalApp: (id) sender;
+- (IBAction)setSaveFormat:(NSPopUpButton *)sender;
+- (IBAction)cancelSaveOperation:(id)sender;
+- (IBAction)sendToExternalApp:(id)sender;
 
-- (IBAction) saveAndOptimize: (id)sender;
+- (IBAction)saveAndOptimize:(id)sender;
 
-- (IBAction) selectMetadataFile: (id) sender;
-- (IBAction) addChaptersEvery: (id) sender;
+- (IBAction)selectMetadataFile:(id)sender;
+- (IBAction)addChaptersEvery:(id)sender;
+- (IBAction)iTunesFriendlyTrackGroups:(id)sender;
 
-- (IBAction) export: (id) sender;
+- (IBAction)export:(id)sender;
 
-- (void) showImportSheet: (NSURL *) fileURL;
-
-- (MP42File *) mp4File;
+- (void)showImportSheet:(NSArray *)fileURLs;
 
 @end
+
+NS_ASSUME_NONNULL_END

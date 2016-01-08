@@ -7,829 +7,319 @@
 //
 
 #import "SBQueueController.h"
+#import "SBQueuePreferences.h"
 #import "SBQueueItem.h"
-#import "MP42File.h"
-#import "MP42FileImporter.h"
-#import "MetadataSearchController.h"
+
+#import "SBOptionsViewController.h"
+#import "SBItemViewController.h"
+
+#import "SBDocument.h"
+#import "SBTableView.h"
+
+#import <MP42Foundation/MP42FileImporter.h>
+
+static void *SBQueueContex = &SBQueueContex;
 
 #define SublerBatchTableViewDataType @"SublerBatchTableViewDataType"
-#define kOptionsPanelHeight 88
 
-static SBQueueController *sharedController = nil;
+@interface SBQueueController () <NSPopoverDelegate, NSWindowDelegate, NSTableViewDelegate, NSTableViewDataSource, SBTableViewDelegate, SBItemViewDelegate>
 
-@interface SBQueueController (Private)
+@property (nonatomic, readonly) SBQueue *queue;
+@property (nonatomic, retain) NSPopover *popover;
+@property (nonatomic, retain) NSPopover *itemPopover;
+@property (nonatomic, retain) SBOptionsViewController *windowController;
 
-- (void)updateUI;
-- (void)updateDockTile;
-- (NSURL*)queueURL;
-- (NSMenuItem*)prepareDestPopupItem:(NSURL*) dest;
-- (void)prepareDestPopup;
+@property (nonatomic, readonly) NSMutableDictionary *options;
+@property (nonatomic, readonly) SBQueuePreferences *prefs;
 
-- (void)addItems:(NSArray*)items atIndexes:(NSIndexSet*)indexes;
-- (void)removeItems:(NSArray*)items;
+- (IBAction)removeSelectedItems:(id)sender;
+- (IBAction)removeCompletedItems:(id)sender;
+
+- (IBAction)edit:(id)sender;
+- (IBAction)showInFinder:(id)sender;
+
+- (IBAction)toggleStartStop:(id)sender;
+- (IBAction)toggleOptions:(id)sender;
+- (IBAction)toggleItemsOptions:(id)sender;
+
+- (IBAction)open:(id)sender;
 
 @end
 
 
 @implementation SBQueueController
 
-@synthesize status;
+@synthesize queue = _queue;
+@synthesize popover = _popover;
+@synthesize itemPopover = _itemPopover;
+@synthesize windowController = _windowController;
+@synthesize options = _options;
+@synthesize prefs = _prefs;
 
-+ (SBQueueController*)sharedController
-{
-    if (sharedController == nil) {
-        sharedController = [[super allocWithZone:NULL] init];
-    }
-    return sharedController;
++ (SBQueueController *)sharedManager {
+    static dispatch_once_t pred;
+    static SBQueueController *sharedManager = nil;
+
+    dispatch_once(&pred, ^{ sharedManager = [[self alloc] init]; });
+    return sharedManager;
 }
 
-+ (id)allocWithZone:(NSZone *)zone
-{
-    return [[self sharedController] retain];
-}
+- (instancetype)init {
+    if (self = [super initWithWindowNibName:@"Queue"]) {
+        [SBQueuePreferences registerUserDefaults];
+        _prefs = [[SBQueuePreferences alloc] init];
+        _options = _prefs.options;
 
-- (id)init
-{
-    self = [super initWithWindowNibName:@"Batch"];
-    if (self) {
-        
-        queue = dispatch_queue_create("org.subler.Queue", NULL);
+        _queue = [[SBQueue alloc] initWithURL:_prefs.queueURL];
 
-        NSURL* queueURL = [self queueURL];
-
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[queueURL path]]) {
-            filesArray = [[NSKeyedUnarchiver unarchiveObjectWithFile:[queueURL path]] retain];
-            for (SBQueueItem *item in filesArray)
-                if ([item status] == SBQueueItemStatusWorking)
-                    [item setStatus:SBQueueItemStatusFailed];
-
-            //NSLog(@"Queue loaded");
-        }
-        else
-            filesArray = [[NSMutableArray alloc] init];
-
+        [self removeCompletedItems:self];
         [self updateDockTile];
     }
 
     return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone
-{
-    return self;
-}
+- (void)windowDidLoad {
+    [super windowDidLoad];
 
-- (id)retain
-{
-    return self;
-}
+    [_progressIndicator setHidden:YES];
 
-- (NSUInteger)retainCount
-{
-    return NSUIntegerMax;  //denotes an object that cannot be released
-}
+    // Load a generic movie icon to display in the table view
+    _docImg = [[[NSWorkspace sharedWorkspace] iconForFileType:@"public.movie"] retain];
+    [_docImg setSize:NSMakeSize(16, 16)];
 
-- (oneway void)release
-{
-    //do nothing
-}
+    [_tableView registerForDraggedTypes:@[NSFilenamesPboardType, SublerBatchTableViewDataType]];
 
-- (id)autorelease
-{
-    return self;
-}
 
-- (void)awakeFromNib
-{
-    [spinningIndicator setHidden:YES];
-    [countLabel setStringValue:@"Empty"];
+    // Observe the changes to SBQueueOptimize
+    [self addObserver:self forKeyPath:@"options.SBQueueOptimize" options:NSKeyValueObservingOptionInitial context:SBQueueContex];
 
-    NSRect frame = [[self window] frame];
-    frame.size.height += kOptionsPanelHeight;
-    frame.origin.y -= kOptionsPanelHeight;
+    // Register to the queue notifications
+    NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
 
-    [[self window] setFrame:frame display:NO animate:NO];
+    [[NSNotificationCenter defaultCenter] addObserverForName:SBQueueWorkingNotification object:self.queue queue:mainQueue usingBlock:^(NSNotification *note) {
+        NSDictionary *info = [note userInfo];
+        [_countLabel setStringValue:[info valueForKey:@"ProgressString"]];
+        [_progressIndicator setIndeterminate:NO];
+        [_progressIndicator setDoubleValue:[[info valueForKey:@"Progress"] doubleValue]];
 
-    frame = [[self window] frame];
-    frame.size.height -= kOptionsPanelHeight;
-    frame.origin.y += kOptionsPanelHeight;
+        if ([[info valueForKey:@"ItemIndex"] integerValue] != -1) {
+            [self updateUI];
+        }
+    }];
 
-    [tableScrollView setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
-    [optionsBox setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
+    [[NSNotificationCenter defaultCenter] addObserverForName:SBQueueCompletedNotification object:self.queue queue:mainQueue usingBlock:^(NSNotification *note) {
+        [_progressIndicator setHidden:YES];
+        [_progressIndicator stopAnimation:self];
+        [_progressIndicator setDoubleValue:0];
+        [_progressIndicator setIndeterminate:YES];
+        [_startItem setImage:[NSImage imageNamed:@"playBackTemplate"]];
+        [_countLabel setStringValue:@"Done"];
 
-    [[self window] setFrame:frame display:YES animate:NO];
+        [self updateUI];
+    }];
 
-    [tableScrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    [optionsBox setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+    [[NSNotificationCenter defaultCenter] addObserverForName:SBQueueFailedNotification object:self.queue queue:mainQueue usingBlock:^(NSNotification *note) {
+        NSDictionary *info = [note userInfo];
+        if ([[info valueForKey:@"Error"] isMemberOfClass:[NSError class]]) {
+            [NSApp presentError:[info valueForKey:@"Error"]];
+        }
+    }];
 
-    docImg = [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode('MOOV')] retain];
-    [docImg setSize:NSMakeSize(16, 16)];
-
-    [self prepareDestPopup];
+    // Update the UI the first time
     [self updateUI];
 }
 
-- (void)windowDidLoad
-{
-    [super windowDidLoad];
-    
-    [tableView registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, SublerBatchTableViewDataType, nil]];
-}
+#pragma mark - User Interface Validation
 
-- (NSURL*)queueURL
-{
-    NSURL *appSupportURL = nil;
-
-    NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
-                                                            NSUserDomainMask,
-                                                            YES);
-    if ([allPaths count]) {
-        appSupportURL = [NSURL fileURLWithPath:[[[allPaths lastObject] stringByAppendingPathComponent:@"Subler"] stringByAppendingPathComponent:@"queue.sbqueue"] isDirectory:YES];
-        //appSupportURL = [appSupportURL URLByAppendingPathComponent:@"queue.sbqueue" isDirectory:NO];
-        
-        return appSupportURL;
-    }
-    else
-        return nil;
-}
-
-- (BOOL)saveQueueToDisk
-{
-    [self removeCompletedItems:self];
-    return [NSKeyedArchiver archiveRootObject:filesArray
-                                       toFile:[[self queueURL] path]];
-}
-
-- (NSMenuItem*)prepareDestPopupItem:(NSURL*) dest
-{
-    NSMenuItem *folderItem = [[NSMenuItem alloc] initWithTitle:[dest lastPathComponent] action:@selector(destination:) keyEquivalent:@""];
-    [folderItem setTag:10];
-
-    NSImage* menuItemIcon = [[NSWorkspace sharedWorkspace] iconForFile:[dest path]];
-    [menuItemIcon setSize:NSMakeSize(16, 16)];
-
-    [folderItem setImage:menuItemIcon];
-
-    return [folderItem autorelease];
-}
-
-- (void)prepareDestPopup
-{
-    NSMenuItem *folderItem = nil;
-
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestination"]) {
-        destination = [[NSURL fileURLWithPath:[[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestination"]] retain];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:[destination path] isDirectory:nil])
-            destination = nil;
-    }
-
-    if (!destination) {
-        NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSMoviesDirectory,
-                                                                NSUserDomainMask,
-                                                                YES);
-        if ([allPaths count])
-            destination = [[NSURL fileURLWithPath:[allPaths lastObject]] retain];;
-    }
-
-    folderItem = [self prepareDestPopupItem:destination];
-
-    [[destButton menu] insertItem:[NSMenuItem separatorItem] atIndex:0];
-    [[destButton menu] insertItem:folderItem atIndex:0];
-
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"SBQueueDestinationSelected"] boolValue]) {
-        [destButton selectItem:folderItem];
-        customDestination = YES;
-    }
-}
-
-- (IBAction)destination:(id)sender
-{
-    if ([sender tag] == 10) {
-        customDestination = YES;
-        [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"SBQueueDestinationSelected"];
-    }
-    else {
-        customDestination = NO;
-        [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"SBQueueDestinationSelected"];
-    }
-}
-
-- (void)updateDockTile
-{
-    NSInteger count = 0;
-    for (SBQueueItem *item in filesArray)
-        if ([item status] != SBQueueItemStatusCompleted)
-            count++;
-
-    if (count)
-        [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", count]];
-    else
-        [[NSApp dockTile] setBadgeLabel:nil];
-}
-
-- (void)updateUI
-{
-    [tableView reloadData];
-    if (status != SBQueueStatusWorking) {
-        [countLabel setStringValue:[NSString stringWithFormat:@"%d files in queue.", [filesArray count]]];
-        [self updateDockTile];
-    }
-}
-
-- (NSArray*)loadSubtitles:(NSURL*)url
-{
-    NSError *outError;
-    NSMutableArray *tracksArray = [[NSMutableArray alloc] init];
-    NSArray *directory = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[url URLByDeletingLastPathComponent] includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsSubdirectoryDescendants | NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants error:nil];
-
-    for (NSURL *dirUrl in directory) {
-        if ([[dirUrl pathExtension] isEqualToString:@"srt"]) {
-            NSComparisonResult result;
-            NSString *movieFilename = [[url URLByDeletingPathExtension] lastPathComponent];
-            NSString *subtitleFilename = [[dirUrl URLByDeletingPathExtension] lastPathComponent];
-            NSRange range = { 0, [movieFilename length] };
-
-            result = [subtitleFilename compare:movieFilename options:kCFCompareCaseInsensitive range:range];
-
-            if (result == NSOrderedSame) {
-                MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
-                                                                                    andFile:dirUrl
-                                                                                      error:&outError];
-
-                for (MP42Track *track in [fileImporter tracksArray]) {
-                    [track setTrackImporterHelper:fileImporter];
-                    [tracksArray addObject:track];                    
-                }
-                [fileImporter release];
-            }
-        }
-    }
-
-    return [tracksArray autorelease];
-}
-
-- (NSImage*)loadArtwork:(NSURL*)url
-{
-    NSData *artworkData = [NSData dataWithContentsOfURL:url];
-    if (artworkData && [artworkData length]) {
-        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:artworkData];
-        if (imageRep != nil) {
-            NSImage *artwork = [[NSImage alloc] initWithSize:[imageRep size]];
-            [artwork addRepresentation:imageRep];
-            return [artwork autorelease];
-        }
-    }
-
-    return nil;
-}
-
-- (MP42Metadata *)searchMetadataForFile:(NSURL*) url
-{
-    id  currentSearcher = nil;
-    MP42Metadata *metadata = nil;
-    NSString *language = [[NSUserDefaults standardUserDefaults] valueForKey:@"SBNativeLanguage"];
-    if (!language)
-        language = @"English";
-
-    // Parse FileName and search for metadata
-    NSDictionary *parsed = [MetadataSearchController parseFilename:[url lastPathComponent]];
-    if ([@"movie" isEqualToString:(NSString *) [parsed valueForKey:@"type"]]) {
-        currentSearcher = [[TheMovieDB alloc] init];
-        NSArray *results = [((TheMovieDB *) currentSearcher) searchForResults:[parsed valueForKey:@"title"]
-                                            mMovieLanguage:[MetadataSearchController langCodeFor:language]];
-        if ([results count])
-            metadata = [((TheMovieDB *) currentSearcher) loadAdditionalMetadata:[results objectAtIndex:0] mMovieLanguage:language];
-
-    } else if ([@"tv" isEqualToString:(NSString *) [parsed valueForKey:@"type"]]) {
-        currentSearcher = [[TheTVDB alloc] init];
-        NSArray *results = [((TheTVDB *) currentSearcher) searchForResults:[parsed valueForKey:@"seriesName"]
-                                         seriesLanguage:[MetadataSearchController langCodeFor:language] 
-                                              seasonNum:[parsed valueForKey:@"seasonNum"]
-                                             episodeNum:[parsed valueForKey:@"episodeNum"]];
-        if ([results count])
-            metadata = [results objectAtIndex:0];
-    }
-
-    if (metadata.artworkThumbURLs && [metadata.artworkThumbURLs count]) {
-        [metadata setArtwork:[self loadArtwork:[metadata.artworkFullsizeURLs lastObject]]];
-    }
-
-    [currentSearcher release];
-    return metadata;
-}
-
-- (MP42File*)prepareQueueItem:(NSURL*)url error:(NSError**)outError {
-    NSString *type;
-    MP42File *mp4File = nil;
-
-    [url getResourceValue:&type forKey:NSURLTypeIdentifierKey error:outError];
-
-    if ([type isEqualToString:@"com.apple.m4a-audio"] || [type isEqualToString:@"com.apple.m4v-video"] || [type isEqualToString:@"public.mpeg-4"]) {
-        mp4File = [[MP42File alloc] initWithExistingFile:url andDelegate:self];
-    }
-    else {
-        mp4File = [[MP42File alloc] initWithDelegate:self];
-        MP42FileImporter *fileImporter = [[MP42FileImporter alloc] initWithDelegate:nil
-                                                                            andFile:url
-                                                                              error:outError];
-
-        for (MP42Track *track in [fileImporter tracksArray]) {
-            if ([track.format isEqualToString:@"AC-3"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"SBAudioConvertAC3"] boolValue])
-                track.needConversion = YES;
-
-            [track setTrackImporterHelper:fileImporter];
-            [mp4File addTrack:track];
-        }
-        [fileImporter release];
-    }
-
-    // Search for external subtitles files
-    NSArray *subtitles = [self loadSubtitles:url];
-    for (MP42SubtitleTrack *subTrack in subtitles)
-        [mp4File addTrack:subTrack];
-
-    // Search for metadata
-    if ([MetadataOption state]) {
-        MP42Metadata *metadata = [self searchMetadataForFile:url];
-
-        for (MP42Track *track in mp4File.tracks)
-            if ([track isKindOfClass:[MP42VideoTrack class]]) {
-                uint64_t tw = (uint64_t) [((MP42VideoTrack *) track) trackWidth];
-                uint64_t th = (uint64_t) [((MP42VideoTrack *) track) trackHeight];
-                if ((tw >= 1024) && (th >= 720))
-                    [metadata setTag:@"YES" forKey:@"HD Video"];
-            }
-
-        [[mp4File metadata] mergeMetadata:metadata];
-    }
-
-    return [mp4File autorelease];
-}
-
-- (SBQueueItem*)firstItemInQueue
-{
-    for (SBQueueItem *item in filesArray)
-        if (([item status] != SBQueueItemStatusCompleted) && ([item status] != SBQueueItemStatusFailed))
-            return item;
-    return nil;
-}
-
-- (void)start:(id)sender
-{
-    if (status == SBQueueStatusWorking)
-        return;
-
-    status = SBQueueStatusWorking;
-
-    [start setTitle:@"Stop"];
-    [countLabel setStringValue:@"Working."];
-    [spinningIndicator setHidden:NO];
-    [spinningIndicator startAnimation:self];
-
-    NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"chaptersPreviewTrack"] boolValue])
-        [attributes setObject:[NSNumber numberWithBool:YES] forKey:MP42CreateChaptersPreviewTrack];
-
-    dispatch_async(queue, ^{
-        NSError *outError = nil;
-        BOOL success = NO;
-        for (;;) {
-            SBQueueItem *item = [self firstItemInQueue];
-            if (item == nil)
-                break;
-
-            NSURL * url = [item URL];
-            NSURL * destURL = nil;
-            MP42File *mp4File = [[item mp4File] retain];
-            [mp4File setDelegate:self];
-
-            [item setStatus:SBQueueItemStatusWorking];
-
-            // Update the UI
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSInteger itemIndex = [filesArray indexOfObject:item];
-                [countLabel setStringValue:[NSString stringWithFormat:@"Processing file %d of %d.",itemIndex + 1, [filesArray count]]];
-                [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", [filesArray count] - itemIndex]];
-                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-            });
-
-            if ([item destURL])
-                destURL = [item destURL];
-            else if (!mp4File && destination && customDestination) {
-                destURL = [[[destination URLByAppendingPathComponent:[url lastPathComponent]] URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
-            }
-            else
-                destURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"mp4"];
-
-            // The file has been added directly to the queue
-            if (!mp4File && url) {
-                mp4File = [[self prepareQueueItem:url error:&outError] retain];
-            }
-
-            currentItem = mp4File;
-
-            // We have an existing mp4 file
-            if ([mp4File hasFileRepresentation] && !isCancelled)
-                success = [mp4File updateMP4FileWithAttributes:attributes error:&outError];
-            else if (mp4File) {
-                // Write the file to disk
-                if (destURL)
-                    [attributes addEntriesFromDictionary:[item attributes]];
-                    success = [mp4File writeToUrl:destURL
-                                   withAttributes:attributes
-                                            error:&outError];
-            }
-
-            if (isCancelled) {
-                [item setStatus:SBQueueItemStatusCancelled];
-                status = SBQueueStatusCancelled;
-            }
-            else if (success) {
-                if ([OptimizeOption state])
-                    [mp4File optimize];
-                [item setStatus:SBQueueItemStatusCompleted];
-            }
-            else {
-                [item setStatus:SBQueueItemStatusFailed];
-                if (outError)
-                    NSLog(@"Error: %@", [outError localizedDescription]);
-            }
-
-            [mp4File release];
-
-            // Update the UI
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSInteger itemIndex = [filesArray indexOfObject:item];
-                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-            });
-            
-            if (status == SBQueueStatusCancelled)
-                break;
-        }
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            currentItem = nil;
-
-            if (status == SBQueueStatusCancelled) {
-                [countLabel setStringValue:@"Cancelled."];
-                status = SBQueueStatusCancelled;
-                isCancelled = NO;
-            }
-            else {
-                [countLabel setStringValue:@"Done."];
-                status = SBQueueStatusCompleted;
-            }
-
-            [spinningIndicator setHidden:YES];
-            [spinningIndicator stopAnimation:self];
-            [start setTitle:@"Start"];
-
-            [self updateDockTile];
-        });
-    });
-
-    [attributes release];
-}
-
-- (void)stop:(id)sender
-{
-    isCancelled = YES;
-    [currentItem cancel];
-}
-
-- (IBAction)toggleStartStop:(id)sender
-{
-    if (status == SBQueueStatusWorking) {
-        [self stop:sender];
-    }
-    else {
-        [self start:sender];
-    }
-}
-
-- (IBAction)toggleOptions:(id)sender
-{
-    NSInteger value = 0;
-    if (optionsStatus) {
-        value = -kOptionsPanelHeight;
-        optionsStatus = NO;
-    }
-    else {
-        value = kOptionsPanelHeight;
-        optionsStatus = YES;
-    }
-
-    NSRect frame = [[self window] frame];
-    frame.size.height += value;
-    frame.origin.y -= value;
-
-    [tableScrollView setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
-    [optionsBox setAutoresizingMask:NSViewNotSizable | NSViewMinYMargin];
-
-    [[self window] setFrame:frame display:YES animate:YES];
-
-    [tableScrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    [optionsBox setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
-}
-
-#pragma mark Open methods
-
-- (IBAction)open:(id)sender
-{
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
-    panel.allowsMultipleSelection = YES;
-    panel.canChooseFiles = YES;
-    panel.canChooseDirectories = YES;
-    [panel setAllowedFileTypes:[NSArray arrayWithObjects:@"mp4", @"m4v", @"m4a", @"mov",
-                                @"aac", @"h264", @"264", @"ac3",
-                                @"txt", @"srt", @"smi", @"scc", @"mkv", nil]];
-
-    [panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
-        if (result == NSFileHandlingPanelOKButton) {
-            NSMutableArray *items = [[NSMutableArray alloc] init];
-
-            for (NSURL *url in [panel URLs])
-                [items addObject:[SBQueueItem itemWithURL:url]];
-
-            [self addItems:items atIndexes:nil];
-            [items release];
-
-            [self updateUI];
-
-            if ([AutoStartOption state])
-                [self start:self];
-        }
-    }];
-}
-
-- (IBAction)chooseDestination:(id)sender
-{
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
-    panel.allowsMultipleSelection = NO;
-    panel.canChooseFiles = NO;
-    panel.canChooseDirectories = YES;
-    panel.canCreateDirectories = YES;
-
-    [panel setPrompt:@"Select"];
-    [panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
-        if (result == NSFileHandlingPanelOKButton) {
-            destination = [[panel URL] retain];
-
-            NSMenuItem *folderItem = [self prepareDestPopupItem:[panel URL]];
-
-            [[destButton menu] removeItemAtIndex:0];
-            [[destButton menu] insertItem:folderItem atIndex:0];
-
-            [destButton selectItem:folderItem];
-            customDestination = YES;
-
-            [[NSUserDefaults standardUserDefaults] setValue:[[panel URL] path] forKey:@"SBQueueDestination"];
-            [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"SBQueueDestinationSelected"];
-        }
-        else
-            [destButton selectItemAtIndex:2];
-    }];
-}
-
-#pragma mark TableView
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
-{
-    return [filesArray count];
-}
-
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
-{
-    if ([aTableColumn.identifier isEqualToString:@"nameColumn"])
-        return [[[filesArray objectAtIndex:rowIndex] URL] lastPathComponent];
-
-    if ([aTableColumn.identifier isEqualToString:@"statusColumn"]) {
-        SBQueueItemStatus batchStatus = [[filesArray objectAtIndex:rowIndex] status];
-        if (batchStatus == SBQueueItemStatusCompleted)
-            return [NSImage imageNamed:@"EncodeComplete"];
-        else if (batchStatus == SBQueueItemStatusWorking)
-            return [NSImage imageNamed:@"EncodeWorking"];
-        else if (batchStatus == SBQueueItemStatusFailed)
-            return [NSImage imageNamed:@"EncodeCanceled"];
-        else
-            return docImg;
-    }
-
-    return nil;
-}
-
-- (void)_deleteSelectionFromTableView:(NSTableView *)aTableView
-{
-    NSMutableIndexSet *rowIndexes = [[aTableView selectedRowIndexes] mutableCopy];
-    NSUInteger selectedIndex = -1;
-    if ([rowIndexes count])
-         selectedIndex = [rowIndexes firstIndex];
-    NSInteger clickedRow = [aTableView clickedRow];
-
-    if (clickedRow != -1 && ![rowIndexes containsIndex:clickedRow]) {
-        [rowIndexes removeAllIndexes];
-        [rowIndexes addIndex:clickedRow];
-    }
-
-    NSArray *array = [filesArray objectsAtIndexes:rowIndexes];
-    
-    // A item with a status of SBQueueItemStatusWorking can not be removed
-    for (SBQueueItem *item in array)
-        if ([item status] == SBQueueItemStatusWorking)
-            [rowIndexes removeIndex:[filesArray indexOfObject:item]];
-
-    if ([rowIndexes count]) {
-        if ([NSTableView instancesRespondToSelector:@selector(beginUpdates)]) {
-            #if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
-            [aTableView beginUpdates];
-            [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
-            [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
-            [self removeItems:array];
-            [aTableView endUpdates];
-            #endif
-        }
-        else {
-            [self removeItems:array];
-            [aTableView reloadData];
-            [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
-        }
-
-        if (status != SBQueueStatusWorking) {
-            [countLabel setStringValue:[NSString stringWithFormat:@"%d files in queue.", [filesArray count]]];
-            [self updateDockTile];
-        }
-    }
-    [rowIndexes release];
-}
-
-- (IBAction)removeSelectedItems:(id)sender
-{
-    [self _deleteSelectionFromTableView:tableView];
-}
-
-- (IBAction)removeCompletedItems:(id)sender
-{
-    NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
-
-    for (SBQueueItem *item in filesArray)
-        if ([item status] == SBQueueItemStatusCompleted)
-            [indexes addIndex:[filesArray indexOfObject:item]];
-
-    if ([indexes count]) {
-        if ([NSTableView instancesRespondToSelector:@selector(beginUpdates)]) {
-#if __MAC_OS_X_VERSION_MAX_ALLOWED > 1060
-            [tableView beginUpdates];
-            [tableView removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationEffectFade];
-            NSArray* items = [filesArray objectsAtIndexes:indexes];
-            [self removeItems:items];
-            [tableView endUpdates];
-#endif
-        }
-        else {
-            NSArray* items = [filesArray objectsAtIndexes:indexes];
-            [self removeItems:items];
-            [tableView reloadData];
-        }
-
-        if (status != SBQueueStatusWorking) {
-            [countLabel setStringValue:[NSString stringWithFormat:@"%d files in queue.", [filesArray count]]];
-            [self updateDockTile];
-        }
-    }
-    
-    [indexes release];
-}
-
-- (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
-{
+- (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem {
     SEL action = [anItem action];
 
-    if (action == @selector(removeSelectedItems:))
-        if ([tableView selectedRow] != -1 || [tableView clickedRow] != -1)
-            return YES;
+    if (action == @selector(removeSelectedItems:)) {
+        if ([_tableView selectedRow] != -1) {
+            SBQueueItem *item = [self.queue itemAtIndex:[_tableView selectedRow]];
+            if ([item status] != SBQueueItemStatusWorking)
+                return YES;
+        } else if ([_tableView clickedRow] != -1) {
+            SBQueueItem *item = [self.queue itemAtIndex:[_tableView clickedRow]];
+            if ([item status] != SBQueueItemStatusWorking)
+                return YES;
+        }
+    }
+
+    if (action == @selector(showInFinder:)) {
+        if ([_tableView clickedRow] != -1) {
+            SBQueueItem *item = [self.queue itemAtIndex:[_tableView clickedRow]];
+            if ([item status] == SBQueueItemStatusCompleted)
+                return YES;
+        }
+    }
+
+    if (action == @selector(edit:)) {
+        if ([_tableView clickedRow] != -1) {
+            SBQueueItem *item = [self.queue itemAtIndex:[_tableView clickedRow]];
+            if (item.status == SBQueueItemStatusReady)
+                return YES;
+        }
+    }
 
     if (action == @selector(removeCompletedItems:))
         return YES;
 
-    if (action == @selector(chooseDestination:))
-        return YES;
-
-    if (action == @selector(destination:))
-        return YES;
-
     return NO;
 }
 
-#pragma mark Drag & Drop
-
-- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
-{
-    // Copy the row numbers to the pasteboard.    
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes];
-    [pboard declareTypes:[NSArray arrayWithObject:SublerBatchTableViewDataType] owner:self];
-    [pboard setData:data forType:SublerBatchTableViewDataType];
+- (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
     return YES;
 }
 
-- (NSDragOperation) tableView: (NSTableView *) view
-                 validateDrop: (id <NSDraggingInfo>) info
-                  proposedRow: (NSInteger) row
-        proposedDropOperation: (NSTableViewDropOperation) operation
-{
-    if (nil == [info draggingSource]) { // From other application
-        [view setDropRow: row dropOperation: NSTableViewDropAbove];
-        return NSDragOperationCopy;
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == SBQueueContex) {
+        if ([keyPath isEqualToString:@"options.SBQueueOptimize"]) {
+            self.queue.optimize = [[self.options objectForKey:SBQueueOptimize] boolValue];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-    else if (view == [info draggingSource] && operation == NSTableViewDropAbove) { // From self
-        return NSDragOperationEvery;
-    }
-    else
-        return NSDragOperationNone;
 }
 
-- (BOOL) tableView: (NSTableView *) view
-        acceptDrop: (id <NSDraggingInfo>) info
-               row: (NSInteger) row
-     dropOperation: (NSTableViewDropOperation) operation
-{
-    NSPasteboard *pboard = [info draggingPasteboard];
+#pragma mark - Queue methods
 
-    if (tableView == [info draggingSource]) { // From self
-        NSData* rowData = [pboard dataForType:SublerBatchTableViewDataType];
-        NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
-        NSInteger dragRow = [rowIndexes firstIndex];
-
-        NSArray *objects = [filesArray objectsAtIndexes:rowIndexes];
-        [filesArray removeObjectsAtIndexes:rowIndexes];
-
-        for (id object in [objects reverseObjectEnumerator]) {
-            if (row > [filesArray count] || row > dragRow)
-                row--;
-            [filesArray insertObject:object atIndex:row];
-        }
-
-        NSIndexSet *selectionSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(row, [rowIndexes count])];
-
-        [view reloadData];
-        [view selectRowIndexes:selectionSet byExtendingSelection:NO];
-
-        return YES;
-    }
-    else { // From other documents
-        if ( [[pboard types] containsObject:NSURLPboardType] ) {
-            NSArray * items = [pboard readObjectsForClasses:
-                               [NSArray arrayWithObject: [NSURL class]] options: nil];
-            NSMutableArray *queueItems = [[NSMutableArray alloc] init];
-            NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
-
-            for (NSURL * url in items) {
-                [queueItems addObject:[SBQueueItem itemWithURL:url]];
-                [indexes addIndex:row];
-            }
-
-            [self addItems:queueItems atIndexes:indexes];
-
-            [queueItems release];
-            [indexes release];
-            [self updateUI];
-
-            if ([AutoStartOption state])
-                [self start:self];
-
-            return YES;
-        }
-    }
-
-    return NO;
+/**
+ * The queue status
+ */
+- (SBQueueStatus)status {
+    return self.queue.status;
 }
 
-- (void)addItem:(SBQueueItem*)item
-{
-    [self addItems:[NSArray arrayWithObject:item] atIndexes:nil];
+/**
+ * Saves the queue and the user defaults.
+ */
+- (BOOL)saveQueueToDisk {
+    [self.prefs saveUserDefaults];
+    return [self.queue saveQueueToDisk];
+}
 
+/**
+ * Opens a SBQueueItem in a new document window
+ * and removes it from the queue.
+ */
+- (void)editItem:(SBQueueItem *)item {
+    item.status = SBQueueItemStatusWorking;
     [self updateUI];
 
-    if ([AutoStartOption state])
-        [self start:self];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        __block NSError *error;
+        BOOL result = NO;
+
+        if (!item.mp4File) {
+            result = [item prepare:&error];
+            if (result == NO) {
+                NSLog(@"%@", error);
+            }
+
+        }
+
+        MP42File *mp4 = item.mp4File;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            SBDocument *doc = [[SBDocument alloc] initWithMP4:mp4 error:&error];
+
+            if (doc) {
+                [[NSDocumentController sharedDocumentController] addDocument:doc];
+                [doc makeWindowControllers];
+                [doc showWindows];
+                [doc release];
+
+                [self.itemPopover close];
+
+                [self removeItems:@[item]];
+                [self updateUI];
+            } else {
+                NSLog(@"%@", error);
+            }
+        });
+    });
 }
 
-- (void)addItems:(NSArray*)items atIndexes:(NSIndexSet*)indexes;
-{
+#pragma mark - Queue items creation
+
+/**
+ *  Creates a new SBQueueItem from an NSURL,
+ *  and adds the current actions to it.
+ */
+- (SBQueueItem *)createItemWithURL:(NSURL *)url {
+    SBQueueItem *item = [SBQueueItem itemWithURL:url];
+
+    if ([[self.options objectForKey:SBQueueMetadata] boolValue]) {
+        [item addAction:[[[SBQueueMetadataAction alloc] initWithMovieLanguage:[self.options objectForKey:SBQueueMovieProviderLanguage]
+                                                               tvShowLanguage:[self.options objectForKey:SBQueueTVShowProviderLanguage]
+                                                           movieProvider:[self.options objectForKey:SBQueueMovieProvider]
+                                                          tvShowProvider:[self.options objectForKey:SBQueueTVShowProvider]] autorelease]];
+    }
+
+    if ([[self.options objectForKey:SBQueueSubtitles] boolValue]) {
+        [item addAction:[[[SBQueueSubtitlesAction alloc] init] autorelease]];
+    }
+
+    if ([[self.options objectForKey:SBQueueOrganize] boolValue]) {
+        [item addAction:[[[SBQueueOrganizeGroupsAction alloc] init] autorelease]];
+    }
+
+    if ([[self.options objectForKey:SBQueueFixFallbacks] boolValue]) {
+        [item addAction:[[[SBQueueFixFallbacksAction alloc] init] autorelease]];
+    }
+
+    if ([self.options objectForKey:SBQueueSet]) {
+        [item addAction:[[[SBQueueSetAction alloc] initWithSet:[self.options objectForKey:SBQueueSet]] autorelease]];
+    }
+
+    id type;
+    [url getResourceValue:&type forKey:NSURLTypeIdentifierKey error:NULL];
+
+    NSURL *destination = [self.options objectForKey:SBQueueDestination];
+    if (destination) {
+        destination = [[[destination URLByAppendingPathComponent:[url lastPathComponent]] URLByDeletingPathExtension]
+                       URLByAppendingPathExtension:[self.options objectForKey:SBQueueFileType]];
+    } else  if (UTTypeConformsTo((__bridge CFStringRef)type, (__bridge CFStringRef)@"public.mpeg-4")) {
+        destination = [[url copy] autorelease];
+    } else {
+        destination = [[url URLByDeletingPathExtension]
+                       URLByAppendingPathExtension:[self.options objectForKey:SBQueueFileType]];
+    }
+
+    item.destURL = destination;
+
+    return item;
+}
+
+/**
+ *  Adds a SBQueueItem to the queue
+ */
+- (void)addItem:(SBQueueItem *)item {
+    [self addItems:@[item] atIndexes:nil];
+    [self updateUI];
+}
+
+/**
+ *  Adds an array of SBQueueItem to the queue.
+ *  Implements the undo manager.
+ */
+- (void)addItems:(NSArray<SBQueueItem *> *)items atIndexes:(NSIndexSet *)indexes; {
     NSMutableIndexSet *mutableIndexes = [indexes mutableCopy];
-    if ([indexes count] == [items count])
+    if ([indexes count] == [items count]) {
         for (id item in [items reverseObjectEnumerator]) {
-            [filesArray insertObject:item atIndex:[mutableIndexes firstIndex]];
+            [self.queue insertItem:item atIndex:[mutableIndexes firstIndex]];
             [mutableIndexes removeIndexesInRange:NSMakeRange(0, 1)];
         }
-    else if ([indexes count] == 1) {
+    } else if ([indexes count] == 1) {
         for (id item in [items reverseObjectEnumerator]) {
-            [filesArray insertObject:item atIndex:[mutableIndexes firstIndex]];
+            [self.queue insertItem:item atIndex:[mutableIndexes firstIndex]];
+        }
+    } else {
+        for (id item in [items reverseObjectEnumerator]) {
+            [self.queue addItem:item];
         }
     }
-    else
-        for (id item in [items reverseObjectEnumerator]) {
-            [filesArray addObject:item];
-        }
 
     NSUndoManager *undo = [[self window] undoManager];
     [[undo prepareWithInvocationTarget:self] removeItems:items];
@@ -840,19 +330,22 @@ static SBQueueController *sharedController = nil;
     if ([undo isUndoing] || [undo isRedoing])
         [self updateUI];
 
-    if ([AutoStartOption state])
+    if ([[self.options objectForKey:SBQueueAutoStart] boolValue])
         [self start:self];
 
     [mutableIndexes release];
 }
 
-- (void)removeItems:(NSArray*)items
-{
+/**
+ *  Removes an array of SBQueueItemfromto the queue.
+ *  Implements the undo manager.
+ */
+- (void)removeItems:(NSArray<SBQueueItem *> *)items {
     NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
 
     for (id item in items) {
-        [indexes addIndex:[filesArray indexOfObject:item]];
-        [filesArray removeObject:item];
+        [indexes addIndex:[self.queue indexOfItem:item]];
+        [self.queue removeItem:item];
     }
 
     NSUndoManager *undo = [[self window] undoManager];
@@ -865,6 +358,367 @@ static SBQueueController *sharedController = nil;
         [self updateUI];
 
     [indexes release];
+}
+
+#pragma mark - NSPopover delegate
+
+/**
+ *  Creates a popover with the queue options.
+ */
+- (void)createOptionsPopover {
+    if (self.popover == nil) {
+        // create and setup our popover
+        _popover = [[NSPopover alloc] init];
+
+        // the popover retains us and we retain the popover,
+        // we drop the popover whenever it is closed to avoid a cycle
+        self.popover.contentViewController = [[[SBOptionsViewController alloc] initWithOptions:self.options] autorelease];
+        self.popover.appearance = NSPopoverAppearanceMinimal;
+        self.popover.animates = YES;
+
+        // AppKit will close the popover when the user interacts with a user interface element outside the popover.
+        // note that interacting with menus or panels that become key only when needed will not cause a transient popover to close.
+        self.popover.behavior = NSPopoverBehaviorSemitransient;
+
+        // so we can be notified when the popover appears or closes
+        self.popover.delegate = self;
+    }
+}
+
+-(NSWindow *)createOptionsWindow {
+    if (!self.windowController) {
+        self.windowController = [[[SBOptionsViewController alloc] initWithOptions:self.options] autorelease];
+    }
+    _detachedWindow.contentView = self.windowController.view;
+    _detachedWindow.delegate = self;
+
+    return _detachedWindow;
+}
+
+/**
+ *  Creates a popover with a SBQueueItem
+ */
+- (void)createItemPopover:(SBQueueItem *)item {
+    self.itemPopover = [[[NSPopover alloc] init] autorelease];
+
+    // the popover retains us and we retain the popover,
+    // we drop the popover whenever it is closed to avoid a cycle
+    SBItemViewController *view = [[[SBItemViewController alloc] initWithItem:item] autorelease];
+    view.delegate = self;
+    self.itemPopover.contentViewController = view;
+    self.itemPopover.appearance = NSPopoverAppearanceMinimal;
+    self.itemPopover.animates = YES;
+
+    // AppKit will close the popover when the user interacts with a user interface element outside the popover.
+    // note that interacting with menus or panels that become key only when needed will not cause a transient popover to close.
+    self.itemPopover.behavior = NSPopoverBehaviorSemitransient;
+
+    // so we can be notified when the popover appears or closes
+    self.itemPopover.delegate = self;
+
+}
+
+- (void)setPopoverSize:(NSSize)size {
+    self.itemPopover.contentSize = size;
+}
+
+- (BOOL)popoverShouldDetach:(NSPopover *)popover
+{
+    if (popover == self.popover) {
+        return YES;
+    }
+
+    return NO;
+}
+
+- (NSWindow *)detachableWindowForPopover:(NSPopover *)popover {
+    if (NSAppKitVersionNumber <= 1343) {
+        if (popover == self.popover) {
+            return [self createOptionsWindow];
+        }
+    }
+
+    return nil;
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    self.windowController = nil;
+}
+
+- (void)popoverDidClose:(NSNotification *)notification {
+    NSPopover *closedPopover = [notification object];
+    if (self.popover == closedPopover) {
+        self.popover = nil;
+    }
+    if (self.itemPopover == closedPopover) {
+        self.itemPopover = nil;
+    }
+}
+
+#pragma mark - UI methods
+
+/**
+ *  Updates the count on the app dock icon.
+ */
+- (void)updateDockTile {
+    NSUInteger count = [self.queue readyCount] + ((self.queue.status == SBQueueStatusWorking) ? 1 : 0);
+
+    if (count) {
+        [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%lu", (unsigned long)count]];
+    }
+    else {
+        [[NSApp dockTile] setBadgeLabel:nil];
+    }
+}
+
+- (void)updateUI {
+    [_tableView reloadData];
+    [self updateDockTile];
+
+    if (self.queue.status != SBQueueStatusWorking) {
+        [_countLabel setStringValue:[NSString stringWithFormat:@"%lu files in queue.", (unsigned long)[self.queue count]]];
+    }
+}
+
+- (void)start:(id)sender {
+    if (self.queue.status == SBQueueStatusWorking)
+        return;
+
+    [_startItem setImage:[NSImage imageNamed:@"stopTemplate"]];
+    [_countLabel setStringValue:@"Working."];
+    [_progressIndicator setHidden:NO];
+    [_progressIndicator startAnimation:self];
+
+    [self.queue start];
+}
+
+- (void)stop:(id)sender {
+    [self.queue stop];
+}
+
+- (IBAction)toggleStartStop:(id)sender {
+    if (self.queue.status == SBQueueStatusWorking) {
+        [self stop:sender];
+    } else {
+        [self start:sender];
+    }
+}
+
+- (IBAction)toggleOptions:(id)sender {
+    [self createOptionsPopover];
+
+    if (!self.popover.isShown) {
+        NSButton *targetButton = (NSButton *)sender;
+        [self.popover showRelativeToRect:[targetButton bounds] ofView:sender preferredEdge:NSMaxYEdge];
+    } else {
+        [self.popover close];
+        self.popover = nil;
+    }
+}
+
+- (IBAction)toggleItemsOptions:(id)sender {
+    NSInteger clickedRow = [sender clickedRow];
+    SBQueueItem *item = [self.queue itemAtIndex:clickedRow];
+
+    if (self.itemPopover.isShown && [(SBItemViewController *)self.itemPopover.contentViewController item] == item) {
+        [self.itemPopover close];
+        self.itemPopover = nil;
+    } else {
+        [self createItemPopover:[self.queue itemAtIndex:clickedRow]];
+        [self.itemPopover showRelativeToRect:[sender frameOfCellAtColumn:2 row:clickedRow] ofView:sender preferredEdge:NSMaxXEdge];
+    }
+}
+
+#pragma mark Open methods
+
+- (IBAction)open:(id)sender {
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.allowsMultipleSelection = YES;
+    panel.canChooseFiles = YES;
+    panel.canChooseDirectories = YES;
+    panel.allowedFileTypes = [MP42FileImporter supportedFileFormats];
+
+    [panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton) {
+            NSMutableArray<SBQueueItem *> *items = [[NSMutableArray alloc] init];
+
+            for (NSURL *url in [panel URLs]) {
+                SBQueueItem *item = [self createItemWithURL:url];
+                [items addObject:item];
+            }
+
+            [self addItems:items atIndexes:nil];
+            [items release];
+
+            [self updateUI];
+        }
+    }];
+}
+
+#pragma mark TableView
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
+    return [self.queue count];
+}
+
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    if ([aTableColumn.identifier isEqualToString:@"nameColumn"]) {
+        return [[[self.queue itemAtIndex:rowIndex] URL] lastPathComponent];
+    } else if ([aTableColumn.identifier isEqualToString:@"statusColumn"]) {
+        SBQueueItemStatus batchStatus = [[self.queue itemAtIndex:rowIndex] status];
+        if (batchStatus == SBQueueItemStatusCompleted)
+            return [NSImage imageNamed:@"EncodeComplete"];
+        else if (batchStatus == SBQueueItemStatusWorking || batchStatus == SBQueueItemStatusEditing)
+            return [NSImage imageNamed:@"EncodeWorking"];
+        else if (batchStatus == SBQueueItemStatusFailed || batchStatus == SBQueueItemStatusCancelled)
+            return [NSImage imageNamed:@"EncodeCanceled"];
+        else
+            return _docImg;
+    }
+
+    return nil;
+}
+
+- (void)_deleteSelectionFromTableView:(NSTableView *)aTableView {
+    NSMutableIndexSet *rowIndexes = [[aTableView selectedRowIndexes] mutableCopy];
+    NSInteger clickedRow = [aTableView clickedRow];
+    NSUInteger selectedIndex = -1;
+    if ([rowIndexes count])
+         selectedIndex = [rowIndexes firstIndex];
+
+    if (clickedRow != -1 && ![rowIndexes containsIndex:clickedRow]) {
+        [rowIndexes removeAllIndexes];
+        [rowIndexes addIndex:clickedRow];
+    }
+
+    NSArray<SBQueueItem *> *array = [self.queue itemsAtIndexes:rowIndexes];
+
+    // A item with a status of SBQueueItemStatusWorking can not be removed
+    for (SBQueueItem *item in array)
+        if ([item status] == SBQueueItemStatusWorking)
+            [rowIndexes removeIndex:[self.queue indexOfItem:item]];
+
+    if ([rowIndexes count]) {
+            [aTableView beginUpdates];
+            [aTableView removeRowsAtIndexes:rowIndexes withAnimation:NSTableViewAnimationEffectFade];
+            [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:selectedIndex] byExtendingSelection:NO];
+            [self removeItems:array];
+            [aTableView endUpdates];
+
+        if (self.queue.status != SBQueueStatusWorking) {
+            [_countLabel setStringValue:[NSString stringWithFormat:@"%lu files in queue.", (unsigned long)[self.queue count]]];
+            [self updateDockTile];
+        }
+    }
+    [rowIndexes release];
+}
+
+- (IBAction)edit:(id)sender {
+    SBQueueItem *item = [[self.queue itemAtIndex:[_tableView clickedRow]] retain];
+    [self editItem:item];
+    [item release];
+}
+
+- (IBAction)showInFinder:(id)sender {
+    SBQueueItem *item = [self.queue itemAtIndex:[_tableView clickedRow]];
+    [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[item.destURL]];
+}
+
+- (IBAction)removeSelectedItems:(id)sender {
+    [self _deleteSelectionFromTableView:_tableView];
+}
+
+- (IBAction)removeCompletedItems:(id)sender {
+    NSIndexSet *indexes = [self.queue indexesOfItemsWithStatus:SBQueueItemStatusCompleted];
+
+    if ([indexes count]) {
+            [_tableView beginUpdates];
+            [_tableView removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationEffectFade];
+            [_tableView endUpdates];
+            [self.queue removeItemsAtIndexes:indexes];
+
+        if (self.queue.status != SBQueueStatusWorking) {
+            [_countLabel setStringValue:[NSString stringWithFormat:@"%lu files in queue.", (unsigned long)[self.queue count]]];
+            [self updateDockTile];
+        }
+    }
+}
+
+#pragma mark Drag & Drop
+
+- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
+    // Copy the row numbers to the pasteboard.    
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes];
+    [pboard declareTypes:@[SublerBatchTableViewDataType] owner:self];
+    [pboard setData:data forType:SublerBatchTableViewDataType];
+    return YES;
+}
+
+- (NSDragOperation)tableView:(NSTableView *)view
+                validateDrop:(id <NSDraggingInfo>)info
+                 proposedRow:(NSInteger)row
+       proposedDropOperation:(NSTableViewDropOperation)operation
+{
+    if (nil == [info draggingSource]) { // From other application
+        [view setDropRow: row dropOperation: NSTableViewDropAbove];
+        return NSDragOperationCopy;
+    } else if (view == [info draggingSource] && operation == NSTableViewDropAbove) { // From self
+        return NSDragOperationEvery;
+    } else {
+        return NSDragOperationNone;
+    }
+}
+
+- (BOOL)tableView:(NSTableView *)view
+       acceptDrop:(id <NSDraggingInfo>)info
+              row:(NSInteger)row
+        dropOperation:(NSTableViewDropOperation)operation
+{
+    NSPasteboard *pboard = [info draggingPasteboard];
+
+    if (_tableView == [info draggingSource]) { // From self
+        NSData *rowData = [pboard dataForType:SublerBatchTableViewDataType];
+        NSIndexSet *rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+        NSUInteger i = [rowIndexes countOfIndexesInRange:NSMakeRange(0, row)];
+        row -= i;
+
+        NSArray<SBQueueItem *> *objects = [self.queue itemsAtIndexes:rowIndexes];
+        [self.queue removeItemsAtIndexes:rowIndexes];
+
+        for (id object in [objects reverseObjectEnumerator])
+            [self.queue insertItem:object atIndex:row];
+
+        NSIndexSet *selectionSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(row, [rowIndexes count])];
+
+        [view reloadData];
+        [view selectRowIndexes:selectionSet byExtendingSelection:NO];
+
+        return YES;
+    } else { // From other documents
+        if ([[pboard types] containsObject:NSURLPboardType] ) {
+            NSArray *items = [pboard readObjectsForClasses:@[[NSURL class]] options: nil];
+            NSMutableArray *queueItems = [[NSMutableArray alloc] init];
+            NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+            NSArray<NSString *> *supportedFileFormats = [MP42FileImporter supportedFileFormats];
+
+            for (NSURL *url in items) {
+                if ([supportedFileFormats containsObject:url.pathExtension.lowercaseString]) {
+                    [queueItems addObject:[self createItemWithURL:url]];
+                    [indexes addIndex:row];
+                }
+            }
+
+            [self addItems:queueItems atIndexes:indexes];
+
+            [queueItems release];
+            [indexes release];
+            [self updateUI];
+
+            return YES;
+        }
+    }
+
+    return NO;
 }
 
 @end

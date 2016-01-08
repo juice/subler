@@ -265,6 +265,12 @@ sub new {
 	$file = &_allroman2int($file, $prefix, $end);
 	$file = &_allnum2int($file, $prefix, $end);
 
+	# Strip out any irrelevant numbers which screw up parsing
+	$file =~ s/480p//;
+	$file =~ s/720p//;
+	$file =~ s/1080p//;
+	$file =~ s/x264//;
+
 	# Run pre-processed filename through list of patterns
 	for my $pat (@filePatterns) {
 		if ($] >= 5.010000) {

@@ -7,43 +7,64 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SBQueueAction.h"
 
 @class MP42File;
 
-enum {
-    SBQueueItemtatusUnknown = 0,
+NS_ASSUME_NONNULL_BEGIN
+
+typedef enum SBQueueItemStatus : NSInteger {
+    SBQueueItemStatusUnknown = 0,
     SBQueueItemStatusReady,
+    SBQueueItemStatusEditing,
     SBQueueItemStatusWorking,
     SBQueueItemStatusCompleted,
     SBQueueItemStatusFailed,
     SBQueueItemStatusCancelled,
-};
-typedef NSInteger SBQueueItemStatus;
-
+} SBQueueItemStatus;
 
 @interface SBQueueItem : NSObject <NSCoding> {
-    MP42File *mp4File;
-    NSURL   *fileURL;
-    NSURL   *destURL;
-    NSDictionary *attributes;
+@private
+    MP42File *_mp4File;
+    NSURL    *_fileURL;
+    NSURL    *_destURL;
 
-    SBQueueItemStatus status;
-    BOOL humanEdited;
+    NSDictionary<NSString *, id> *_attributes;
+    NSMutableArray<id<SBQueueActionProtocol>> *_actions;
+
+    BOOL _cancelled;
+
+    id _delegate;
+
+    SBQueueItemStatus _status;
+    NSString *_localizedWorkingDescription;
 }
 
-@property (readonly) NSDictionary *attributes;
-@property (readonly) NSURL *URL;
-@property (readonly) NSURL *destURL;
-@property (readonly) MP42File *mp4File;
-@property (readwrite) SBQueueItemStatus status;
+@property (nonatomic, readwrite) SBQueueItemStatus status;
+@property (nonatomic, readonly, nullable) NSString *localizedWorkingDescription;
 
-- (id)initWithURL:(NSURL*)URL;
-+ (id)itemWithURL:(NSURL*)URL;
+@property (nonatomic, readonly, nullable) MP42File *mp4File;
 
-- (id)initWithMP4:(MP42File*)MP4;
-- (id)initWithMP4:(MP42File*)MP4 url:(NSURL*)URL attributes:(NSDictionary*)dict;
+@property (nonatomic, readonly) NSURL *URL;
+@property (nonatomic, copy) NSURL *destURL;
 
-+ (id)itemWithMP4:(MP42File*)MP4;
-+ (id)itemWithMP4:(MP42File*)MP4 url:(NSURL*)URL attributes:(NSDictionary*)dict;
+@property (nonatomic, readonly) NSArray<id<SBQueueActionProtocol>> *actions;
+@property (nonatomic, readonly) NSDictionary<NSString *, id> *attributes;
+
+@property (nonatomic, assign, nullable) id delegate;
+
++ (instancetype)itemWithURL:(NSURL *)URL;
+
++ (instancetype)itemWithMP4:(MP42File *)MP4;
++ (instancetype)itemWithMP4:(MP42File *)MP4 destinationURL:(NSURL *)destURL attributes:(NSDictionary *)dict;
+
+- (void)addAction:(id<SBQueueActionProtocol>)action;
+- (void)removeAction:(id<SBQueueActionProtocol>)action;
+
+- (BOOL)prepare:(NSError **)outError;
+- (BOOL)processWithOptions:(BOOL)optimize error:(NSError **)outError;
+- (void)cancel;
 
 @end
+
+NS_ASSUME_NONNULL_END

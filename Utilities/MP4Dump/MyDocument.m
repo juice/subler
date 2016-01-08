@@ -50,7 +50,7 @@ extern NSString *libraryPath;
 
     MP4Dump(fileHandle, 0);
 
-    MP4Close(fileHandle);
+    MP4Close(fileHandle, 0);
     result = [NSString stringWithContentsOfFile:libraryPath encoding:NSASCIIStringEncoding error:outError];
 
     if([[NSFileManager defaultManager] isDeletableFileAtPath:libraryPath])

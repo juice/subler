@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="15A282a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="SBQueueController">
+            <connections>
+                <outlet property="_countLabel" destination="12" id="BMB-K6-Foo"/>
+                <outlet property="_detachedWindow" destination="zHc-NF-Zeh" id="Cr1-ha-Wmx"/>
+                <outlet property="_progressIndicator" destination="91" id="Kds-4b-YzV"/>
+                <outlet property="_startItem" destination="xBN-FT-Sv0" id="Pyh-8B-bce"/>
+                <outlet property="_tableView" destination="7" id="N5e-Ro-a6f"/>
+                <outlet property="window" destination="1" id="25"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Queue" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="SBQueuePosition" animationBehavior="default" id="1">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="233" y="759" width="378" height="332"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <value key="minSize" type="size" width="378" height="200"/>
+            <view key="contentView" id="2">
+                <rect key="frame" x="0.0" y="0.0" width="378" height="332"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <scrollView autohidesScrollers="YES" horizontalLineScroll="21" horizontalPageScroll="10" verticalLineScroll="21" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="3">
+                        <rect key="frame" x="-1" y="46" width="380" height="287"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" id="ix7-yM-0F6">
+                            <rect key="frame" x="1" y="1" width="378" height="285"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" id="7" customClass="SBTableView">
+                                    <rect key="frame" x="0.0" y="0.0" width="378" height="21"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                    <size key="intercellSpacing" width="3" height="4"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                    <tableColumns>
+                                        <tableColumn identifier="statusColumn" width="24" minWidth="24" maxWidth="24" id="30">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="statusColumn">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                            </tableHeaderCell>
+                                            <imageCell key="dataCell" lineBreakMode="charWrapping" refusesFirstResponder="YES" alignment="left" imageAlignment="right" imageScaling="proportionallyDown" image="NSFollowLinkFreestandingTemplate" id="32">
+                                                <font key="font" metaFont="system"/>
+                                            </imageCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        </tableColumn>
+                                        <tableColumn identifier="nameColumn" editable="NO" width="321" minWidth="40" maxWidth="3000" id="8">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="nameColumn">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                            </tableHeaderCell>
+                                            <textFieldCell key="dataCell" lineBreakMode="charWrapping" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="11">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
+                                        </tableColumn>
+                                        <tableColumn identifier="actionColumn" width="24" minWidth="24" maxWidth="24" id="AOY-6b-kkZ">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="actionColumn">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                            </tableHeaderCell>
+                                            <buttonCell key="dataCell" type="recessed" bezelStyle="recessed" image="info" imagePosition="left" alignment="left" alternateImage="info-over" lineBreakMode="charWrapping" imageScaling="proportionallyUpOrDown" inset="2" id="N2p-Ol-NaN">
+                                                <behavior key="behavior" lightByContents="YES"/>
+                                                <font key="font" metaFont="systemBold" size="12"/>
+                                                <connections>
+                                                    <action selector="toggleItemsOptions:" target="-2" id="Ab6-c1-OBN"/>
+                                                </connections>
+                                            </buttonCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        </tableColumn>
+                                    </tableColumns>
+                                    <connections>
+                                        <outlet property="dataSource" destination="-2" id="26"/>
+                                        <outlet property="delegate" destination="-2" id="27"/>
+                                        <outlet property="menu" destination="78" id="83"/>
+                                    </connections>
+                                </tableView>
+                            </subviews>
+                            <animations/>
+                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </clipView>
+                        <animations/>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="6">
+                            <rect key="frame" x="1" y="270" width="378" height="16"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <animations/>
+                        </scroller>
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="4">
+                            <rect key="frame" x="543" y="1" width="15" height="275"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <animations/>
+                        </scroller>
+                    </scrollView>
+                    <textField verticalHuggingPriority="750" id="12">
+                        <rect key="frame" x="8" y="15" width="214" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <animations/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Queue items" id="13">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <progressIndicator wantsLayer="YES" maxValue="100" indeterminate="YES" style="bar" id="91">
+                        <rect key="frame" x="228" y="13" width="140" height="20"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                        <animations/>
+                    </progressIndicator>
+                </subviews>
+                <animations/>
+            </view>
+            <toolbar key="toolbar" implicitIdentifier="7CCC4E53-430A-4EDF-8C9B-E7533A5972A1" autosavesConfiguration="NO" displayMode="iconOnly" sizeMode="regular" id="DiU-kc-8B9">
+                <allowedToolbarItems>
+                    <toolbarItem implicitItemIdentifier="F1DC4F94-9258-4B59-BF72-12DFD3EAD22C" label="Add Item" paletteLabel="Add Item" toolTip="Add an item to the queue" image="NSAddTemplate" id="IS0-Xx-A4a" customClass="ButtonToolbarItem">
+                        <size key="minSize" width="34" height="25"/>
+                        <size key="maxSize" width="34" height="25"/>
+                        <button key="view" verticalHuggingPriority="750" id="Ki3-3j-eme">
+                            <rect key="frame" x="11" y="14" width="34" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <animations/>
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSAddTemplate" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="yNX-m3-ctU">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </button>
+                        <connections>
+                            <action selector="open:" target="-2" id="DgV-4h-anl"/>
+                        </connections>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="3A0E823A-894C-494B-9554-6425D7D7B736" label="Settings" paletteLabel="Settings" toolTip="Show the settings window" image="NSActionTemplate" id="5Tt-V1-Lwx" customClass="ButtonToolbarItem">
+                        <size key="minSize" width="34" height="25"/>
+                        <size key="maxSize" width="34" height="25"/>
+                        <button key="view" verticalHuggingPriority="750" id="Eam-QC-F1x">
+                            <rect key="frame" x="8" y="14" width="34" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <animations/>
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSActionTemplate" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="evW-R0-8UU">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </button>
+                        <connections>
+                            <action selector="toggleOptions:" target="-2" id="Rvh-ys-fiO"/>
+                        </connections>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="261B6090-DD1C-42D3-B0D8-2308962EE7D9" label="Start" paletteLabel="Start" toolTip="Start/Stop the queue" image="playBackTemplate" id="xBN-FT-Sv0" customClass="ButtonToolbarItem">
+                        <size key="minSize" width="34" height="25"/>
+                        <size key="maxSize" width="34" height="25"/>
+                        <button key="view" verticalHuggingPriority="750" id="cSb-W5-RNU">
+                            <rect key="frame" x="0.0" y="14" width="34" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <animations/>
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="playBackTemplate" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="oYX-z0-L7h">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </button>
+                        <connections>
+                            <action selector="toggleStartStop:" target="-2" id="ota-oz-smy"/>
+                        </connections>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="4Tn-KL-e86"/>
+                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="Iau-lm-QMb"/>
+                </allowedToolbarItems>
+                <defaultToolbarItems>
+                    <toolbarItem reference="IS0-Xx-A4a"/>
+                    <toolbarItem reference="5Tt-V1-Lwx"/>
+                    <toolbarItem reference="Iau-lm-QMb"/>
+                    <toolbarItem reference="xBN-FT-Sv0"/>
+                </defaultToolbarItems>
+            </toolbar>
+            <point key="canvasLocation" x="169" y="177"/>
+        </window>
+        <menu id="78">
+            <items>
+                <menuItem title="Reveal in Finder" id="8gi-57-i6u">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showInFinder:" target="-2" id="sto-w3-Igj"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="U9H-ZG-j7u"/>
+                <menuItem title="Edit…" id="qHz-Zh-l5L">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="edit:" target="-2" id="4Pr-Wx-RXw"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="NnU-9u-KGQ"/>
+                <menuItem title="Remove from queue" id="79">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="removeSelectedItems:" target="-2" id="85"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Remove completed items" id="86">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="removeCompletedItems:" target="-2" id="88"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <connections>
+                <outlet property="delegate" destination="-2" id="84"/>
+            </connections>
+        </menu>
+        <window title="Queue Options" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="SBQueueOptionsWindow" animationBehavior="default" id="zHc-NF-Zeh" userLabel="Window - Detached Options" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="187" y="1037" width="334" height="282"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <view key="contentView" id="hhb-jZ-DWa">
+                <rect key="frame" x="0.0" y="0.0" width="334" height="282"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <animations/>
+            </view>
+        </window>
+    </objects>
+    <resources>
+        <image name="NSActionTemplate" width="14" height="14"/>
+        <image name="NSAddTemplate" width="11" height="11"/>
+        <image name="NSFollowLinkFreestandingTemplate" width="14" height="14"/>
+        <image name="info" width="16" height="16"/>
+        <image name="info-over" width="16" height="16"/>
+        <image name="playBackTemplate" width="19" height="18"/>
+    </resources>
+</document>

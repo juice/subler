@@ -2,236 +2,261 @@
 //  TheTVDB.m
 //  Subler
 //
-//  Created by Douglas Stebila on 2011/01/27.
-//  Copyright 2011 Douglas Stebila. All rights reserved.
+//  Created by Douglas Stebila on 2013-06-06.
+//
 //
 
-#import "TheTVDB.h"
-#import "MetadataSearchController.h"
-#import "MP42File.h"
+#import <MP42Foundation/MP42Metadata.h>
+#import <MP42Foundation/MP42Ratings.h>
+#import <MP42Foundation/MP42Languages.h>
 
-@interface TheTVDB (Private)
-#pragma mark Parse metadata
-- (NSString *) cleanPeopleList:(NSString *)s;
-- (NSArray *) metadataForResults:(NSDictionary *)results;
-@end
+#import "TheTVDB.h"
+
+#import "iTunesStore.h"
+#import "XMLReader.h"
+
+#define API_KEY @"3498815BE9484A62"
+
+static NSArray *TVDBlanguages;
 
 @implementation TheTVDB
 
-#pragma mark Search for TV series name
++ (void)initialize {
+    if (self == [TheTVDB class]) {
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://thetvdb.com/api/%@/languages.xml", API_KEY]];
+        NSData *languagesXML = [SBMetadataHelper downloadDataFromURL:url withCachePolicy:SBReturnCacheElseLoad];
+        NSDictionary *languages = [XMLReader dictionaryForXMLData:languagesXML error:NULL];
 
-- (NSArray*) searchForTVSeriesName:(NSString *)_seriesName {
-    seriesName = _seriesName;
+        if (languages) {
+            NSArray *languagesArray = [languages retrieveArrayForPath:@"Languages.Language"];
+            NSMutableArray<NSString *> *languagesResult = [NSMutableArray array];
 
-    NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:3];
-    NSURL *u = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://www.thetvdb.com/api/GetSeries.php?seriesname=%@", [MetadataSearchController urlEncoded:seriesName]]];
-    if (u != nil) {
-        NSXMLDocument *x = [[NSXMLDocument alloc] initWithContentsOfURL:u options:0 error:NULL];
-        if (x != nil) {
-            NSArray *nodes = [x nodesForXPath:@"./Data/Series" error:NULL];
-            for (NSXMLElement *element in nodes) {
-                NSArray *node = [element nodesForXPath:@"./SeriesName" error:NULL];
-                if ([node count]) [results addObject:[[node objectAtIndex:0] stringValue]];
+            if ([languagesArray isKindOfClass:[NSArray class]] && languagesArray.count) {
+                for (NSDictionary *language in languagesArray) {
+                    NSString *lang = [language valueForKeyPath:@"abbreviation.text"];
+                    if (lang && [lang isKindOfClass:[NSString class]]) {
+                        iso639_lang_t *isoLanguage = lang_for_code_s([lang UTF8String]);
+                        [languagesResult addObject:[NSString stringWithUTF8String:isoLanguage->eng_name]];
+                    }
+                }
+            }
+
+            TVDBlanguages = [languagesResult copy];
+        }
+    }
+}
+
+- (NSArray *) languages {
+    return TVDBlanguages;
+}
+
+- (NSArray *) searchTVSeries:(NSString *)aSeriesName language:(NSString *)aLanguage {
+	NSURL *url;
+	// search for series
+	url = [NSURL URLWithString:[NSString stringWithFormat:@"http://thetvdb.com/api/GetSeries.php?seriesname=%@&language=all", [SBMetadataHelper urlEncoded:aSeriesName]]];
+	NSData *seriesXML = [SBMetadataHelper downloadDataFromURL:url withCachePolicy:SBDefaultPolicy];
+	NSDictionary *series = [XMLReader dictionaryForXMLData:seriesXML error:NULL];
+	if (!series) return nil;
+	NSArray *seriesArray = [series retrieveArrayForPath:@"Data.Series"];
+	NSMutableSet *results = [[NSMutableSet alloc] initWithCapacity:[seriesArray count]];
+	for (NSDictionary *s in seriesArray) {
+		[results addObject:[s retrieveForPath:@"SeriesName.text"]];
+	}
+	return [[results autorelease] allObjects];
+}
+
+- (NSArray *) searchTVSeries:(NSString *)aSeriesName language:(NSString *)aLanguage seasonNum:(NSString *)aSeasonNum episodeNum:(NSString *)aEpisodeNum {
+	NSString *lang = [MP42Languages iso6391CodeFor:aLanguage];
+	if (!lang) lang = @"en";
+	NSURL *url;
+
+	// search for series
+	url = [NSURL URLWithString:[NSString stringWithFormat:@"http://thetvdb.com/api/GetSeries.php?seriesname=%@&language=all", [SBMetadataHelper urlEncoded:aSeriesName]]];
+	NSData *seriesXML = [SBMetadataHelper downloadDataFromURL:url withCachePolicy:SBDefaultPolicy];
+	NSDictionary *series = [XMLReader dictionaryForXMLData:seriesXML error:NULL];
+
+	if (!series) return nil;
+
+	NSArray *seriesObject = [series retrieveForPath:@"Data.Series"];
+	NSMutableSet *seriesIDs = [[NSMutableSet alloc] init];;
+	if ([seriesObject isKindOfClass:[NSArray class]]) {
+        for (NSDictionary *s in seriesObject) {
+            if ([aSeriesName isEqualToString:[s retrieveForPath:@"SeriesName.text"]]) {
+                [seriesIDs addObject:[s retrieveForPath:@"seriesid.text"]];
             }
         }
-        [x release];
+
+        if (![seriesIDs count])
+            [seriesIDs addObject:[series retrieveForPath:@"Data.Series.0.seriesid.text"]];
+	} else {
+        NSString *seriesID = [series retrieveForPath:@"Data.Series.seriesid.text"];
+        if (seriesID)
+            [seriesIDs addObject:seriesID];
+	}
+
+    NSMutableArray *results = [[NSMutableArray alloc] init];
+
+    if ([seriesIDs count]) {
+        for (NSString *seriesID in seriesIDs) {
+            if (!seriesID || [seriesID isEqualToString:@""])
+                continue;
+
+            url = [NSURL URLWithString:[NSString stringWithFormat:@"http://thetvdb.com/api/%@/series/%@/all/%@.xml", API_KEY, seriesID, lang]];
+            NSData *episodesXML = [SBMetadataHelper downloadDataFromURL:url withCachePolicy:SBDefaultPolicy];
+            NSDictionary *episodes = [XMLReader dictionaryForXMLData:episodesXML error:NULL];
+
+            if (!episodes)
+                continue;
+
+            NSArray *episodesArray = [episodes retrieveArrayForPath:@"Data.Episode"];
+            NSDictionary *thisSeries = [episodes retrieveForPath:@"Data.Series"];
+
+            for (NSDictionary *episode in episodesArray) {
+                if (aSeasonNum && ![aSeasonNum isEqualToString:@""]) {
+                    if ([[episode retrieveForPath:@"SeasonNumber.text"] isEqualToString:aSeasonNum]) {
+                        if (aEpisodeNum && ![aEpisodeNum isEqualToString:@""]) {
+                            if ([[episode retrieveForPath:@"EpisodeNumber.text"] isEqualToString:aEpisodeNum]) {
+                                [results addObject:[TheTVDB metadataForEpisode:episode series:thisSeries]];
+                            }
+                        } else {
+                            [results addObject:[TheTVDB metadataForEpisode:episode series:thisSeries]];
+                        }
+                    }
+                } else {
+                    [results addObject:[TheTVDB metadataForEpisode:episode series:thisSeries]];
+                }
+            }
+        }
     }
 
-    [u release];
+    [seriesIDs release];
 
-    return [results autorelease];
+	return [results autorelease];
 }
 
-- (void) searchForTVSeriesName:(NSString *)_seriesName callback:(MetadataSearchController *)_callback {
-    callback = _callback;
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSArray *results = [self searchForTVSeriesName:_seriesName];
+- (MP42Metadata*) loadTVMetadata:(MP42Metadata *)aMetadata language:(NSString *)aLanguage {
+	// add iTunes artwork
+	MP42Metadata *iTunesMetadata = [iTunesStore quickiTunesSearchTV:[[aMetadata tagsDict] valueForKey:@"TV Show"] episodeTitle:[[aMetadata tagsDict] valueForKey:@"Name"]];
+	NSMutableArray * newArtworkThumbURLs = [[[NSMutableArray alloc] init] autorelease];
+	NSMutableArray * newArtworkFullsizeURLs = [[[NSMutableArray alloc] init] autorelease];
+	NSMutableArray * newArtworkProviderNames = [[[NSMutableArray alloc] init] autorelease];
+	if (iTunesMetadata && [iTunesMetadata artworkThumbURLs] && [iTunesMetadata artworkFullsizeURLs] && ([[iTunesMetadata artworkThumbURLs] count] == [[iTunesMetadata artworkFullsizeURLs] count])) {
+		[newArtworkThumbURLs addObjectsFromArray:[iTunesMetadata artworkThumbURLs]];
+		[newArtworkFullsizeURLs addObjectsFromArray:[iTunesMetadata artworkFullsizeURLs]];
+		[newArtworkProviderNames addObjectsFromArray:[iTunesMetadata artworkProviderNames]];
+	}
+	[newArtworkThumbURLs addObjectsFromArray:[aMetadata artworkThumbURLs]];
+	[newArtworkFullsizeURLs addObjectsFromArray:[aMetadata artworkFullsizeURLs]];
+	[newArtworkProviderNames addObjectsFromArray:[aMetadata artworkProviderNames]];
 
-        if (!isCancelled)
-            [callback performSelectorOnMainThread:@selector(searchForTVSeriesNameDone:) withObject:results waitUntilDone:YES];
-
-        [pool release];
-    });
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://thetvdb.com/api/%@/series/%@/banners.xml", API_KEY, [[aMetadata tagsDict] valueForKey:@"TheTVDB Series ID"]]];
+	NSData *bannersXML = [SBMetadataHelper downloadDataFromURL:url withCachePolicy:SBDefaultPolicy];
+	NSDictionary *banners = [XMLReader dictionaryForXMLData:bannersXML error:NULL];
+	if (!banners) return nil;
+	NSArray *bannersArray = [banners retrieveArrayForPath:@"Banners.Banner"];
+	NSURL *u;
+	for (NSDictionary *banner in bannersArray) {
+		if ([[banner retrieveForPath:@"BannerType.text"] isEqualToString:@"season"] && [[banner retrieveForPath:@"BannerType2.text"] isEqualToString:@"season"] && [[banner retrieveForPath:@"Season.text"] isEqualToString:[[aMetadata tagsDict] valueForKey:@"TV Season"]]) {
+			u = [NSURL URLWithString:[NSString stringWithFormat:@"http://thetvdb.com/banners/%@", [banner retrieveForPath:@"BannerPath.text"]]];
+			[newArtworkThumbURLs addObject:u];
+			[newArtworkFullsizeURLs addObject:u];
+			[newArtworkProviderNames addObject:[NSString stringWithFormat:@"TheTVDB|season %@", [[aMetadata tagsDict] valueForKey:@"TV Season"]]];
+		}
+	}
+	for (NSDictionary *banner in bannersArray) {
+		if ([[banner retrieveForPath:@"BannerType.text"] isEqualToString:@"poster"]) {
+			u = [NSURL URLWithString:[NSString stringWithFormat:@"http://thetvdb.com/banners/%@", [banner retrieveForPath:@"BannerPath.text"]]];
+			[newArtworkThumbURLs addObject:u];
+			[newArtworkFullsizeURLs addObject:u];
+			[newArtworkProviderNames addObject:@"TheTVDB|poster"];
+		}
+	}
+	[aMetadata setArtworkThumbURLs:newArtworkThumbURLs];
+	[aMetadata setArtworkFullsizeURLs:newArtworkFullsizeURLs];
+	[aMetadata setArtworkProviderNames:newArtworkProviderNames];
+	return aMetadata;
 }
 
-#pragma mark Search for episode metadata
-
-- (NSArray*) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum
-{
-    seriesName = _seriesName;
-    seasonNum = _seasonNum;
-    episodeNum = _episodeNum;
-	seriesLanguage = _seriesLanguage;
-
-    // load data from tvdb via python on command line
-    NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:4];
-    [args addObject:@"tvdb_main.py"];
-    [args addObject:seriesName];
-	[args addObject:seriesLanguage];
-    if ([seasonNum length]) [args addObject:seasonNum];
-    if ([episodeNum length]) [args addObject:episodeNum];
-    NSPipe *outputPipe = [NSPipe pipe];
-    NSTask *cmd = [[NSTask alloc] init];
-    [cmd setArguments:args];
-    [cmd setCurrentDirectoryPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"tvdb_py" ofType:@""]];
-    [cmd setLaunchPath:@"/usr/bin/python"];
-    [cmd setStandardOutput:outputPipe];
-    [cmd launch];
-    [cmd waitUntilExit];
-    // read output into dictionary
-    NSFileHandle *outputFile = [outputPipe fileHandleForReading];
-    NSData *outputData = [outputFile readDataToEndOfFile];
-    NSString *plistFilename = [[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:plistFilename];
-    // construct result
-    NSArray *results = [self metadataForResults:plist];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:plistFilename])
-        [[NSFileManager defaultManager] removeItemAtPath:plistFilename error:NULL];
-    // return results
-
-    [args release];
-    [cmd release];
-
-    return results;
-}
-
-- (void) searchForResults:(NSString *)_seriesName seriesLanguage:(NSString *)_seriesLanguage seasonNum:(NSString *)_seasonNum episodeNum:(NSString *)_episodeNum callback:(MetadataSearchController *) _callback
-{
-    callback = _callback;
-
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSArray *results = [self searchForResults:_seriesName seriesLanguage:_seriesLanguage seasonNum:_seasonNum episodeNum:_episodeNum];
-
-        // return results
-        if (!isCancelled)
-            [callback performSelectorOnMainThread:@selector(searchForResultsDone:) withObject:results waitUntilDone:YES];
-
-        [pool release];
-    });
-}
-
-#pragma mark Parse metadata
-
-- (NSString *) cleanPeopleList:(NSString *)s {
-    NSArray *a = [[[s stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
-                          stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"|"]] 
-                         componentsSeparatedByString:@"|"];
++ (NSString *) cleanPeopleList:(NSString *)s {
+    NSArray *a = [[[s stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+				   stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"|"]]
+				  componentsSeparatedByString:@"|"];
     return [a componentsJoinedByString:@", "];
 }
 
-- (NSArray *) metadataForResults:(NSDictionary *)dict {
-    NSMutableArray *returnArray = [[NSMutableArray alloc] initWithCapacity:1];
-    NSArray *episodesList = [dict valueForKey:@"episodes"];
-    NSEnumerator *episodesEnum = [episodesList objectEnumerator];
-    NSDictionary *episodeDict;
-    while ((episodeDict = (NSDictionary *) [episodesEnum nextObject])) {
-        MP42Metadata *metadata = [[MP42Metadata alloc] init];
-        metadata.mediaKind = 10; // TV show
-        [metadata setTag:[dict valueForKey:@"seriesname"] forKey:@"TV Show"];
-        [metadata setTag:[episodeDict valueForKey:@"seasonnumber"] forKey:@"TV Season"];
-        [metadata setTag:[episodeDict valueForKey:@"episodenumber"] forKey:@"TV Episode #"];
-        [metadata setTag:[episodeDict valueForKey:@"productioncode"] forKey:@"TV Episode ID"];
-        [metadata setTag:[episodeDict valueForKey:@"seasonnumber"] forKey:@"TV Season"];
-        [metadata setTag:[episodeDict valueForKey:@"episodename"] forKey:@"Name"];
-        [metadata setTag:[episodeDict valueForKey:@"firstaired"] forKey:@"Release Date"];
-        [metadata setTag:[episodeDict valueForKey:@"overview"] forKey:@"Description"];
-        [metadata setTag:[episodeDict valueForKey:@"overview"] forKey:@"Long Description"];
-        [metadata setTag:[self cleanPeopleList:[episodeDict valueForKey:@"director"]] forKey:@"Director"];
-        [metadata setTag:[self cleanPeopleList:[episodeDict valueForKey:@"writer"]] forKey:@"Screenwriters"];
-        [metadata setTag:[episodeDict valueForKey:@"episodenumber"] forKey:@"Track #"];
-        // artwork
-        NSMutableArray *artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:10];
-        NSMutableArray *artworkFullsizeURLs = [[NSMutableArray alloc] initWithCapacity:10];
-        NSURL *u;
-        if ([episodeDict valueForKey:@"filename"]) {
-            u = [NSURL URLWithString:[episodeDict valueForKey:@"filename"]];
-            [artworkThumbURLs addObject:u];
-            [artworkFullsizeURLs addObject:u];
-        }
-        if ([dict valueForKey:@"artwork_season"]) {
-            NSString *s;
-            NSEnumerator *e = [((NSArray *) [dict valueForKey:@"artwork_season"]) objectEnumerator];
-            while ((s = (NSString *) [e nextObject])) {
-                u = [NSURL URLWithString:s];
-                [artworkThumbURLs addObject:u];
-                [artworkFullsizeURLs addObject:u];
-            }
-        }
-        if ([dict valueForKey:@"artwork_posters"]) {
-            NSString *s;
-            NSEnumerator *e = [((NSArray *) [dict valueForKey:@"artwork_posters"]) objectEnumerator];
-            while ((s = (NSString *) [e nextObject])) {
-                u = [NSURL URLWithString:s];
-                [artworkThumbURLs addObject:u];
-                [artworkFullsizeURLs addObject:u];
-            }
-        }
-        [metadata setArtworkThumbURLs: artworkThumbURLs];
-        [metadata setArtworkFullsizeURLs: artworkFullsizeURLs];
-        
-        [artworkThumbURLs release];
-        [artworkFullsizeURLs release];
++ (MP42Metadata *) metadataForEpisode:(NSDictionary *)aEpisode series:(NSDictionary *)aSeries {
+	MP42Metadata *metadata = [[MP42Metadata alloc] init];
+	metadata.mediaKind = 10; // TV show
+	[metadata setTag:[aSeries retrieveForPath:@"id.text"] forKey:@"TheTVDB Series ID"];
+	[metadata setTag:[aSeries retrieveForPath:@"SeriesName.text"] forKey:@"TV Show"];
+    [metadata setTag:[aSeries retrieveForPath:@"Overview.text"] forKey:@"Series Description"];
+    [metadata setTag:[TheTVDB cleanPeopleList:[aSeries retrieveForPath:@"Genre.text"]] forKey:@"Genre"];
 
-        // cast
-        NSString *actors = [((NSArray *) [dict valueForKey:@"actors"]) componentsJoinedByString:@", "];
-        NSString *gueststars = [self cleanPeopleList:[episodeDict valueForKey:@"gueststars"]];
-        if ([actors length]) {
-            if ([gueststars length]) {
-                [metadata setTag:[NSString stringWithFormat:@"%@, %@", actors, gueststars] forKey:@"Cast"];
-            } else {
-                [metadata setTag:actors forKey:@"Cast"];
-            }
-        } else {
-            if ([gueststars length]) {
-                [metadata setTag:gueststars forKey:@"Cast"];
-            }
-        }
-        // TheTVDB does not provide the following fields normally associated with TV shows in MP42Metadata:
-        // "TV Network", "Genre", "Copyright", "Comments", "Rating", "Producers", "Artist"
-        [returnArray addObject:metadata];
-        [metadata release];
+    NSString *ratingString = [aSeries retrieveForPath:@"ContentRating.text"];
+    if (ratingString && [ratingString length]) {
+        [metadata setTag:[NSNumber numberWithUnsignedInteger:
+                          [[MP42Ratings defaultManager] ratingIndexForiTunesCountry:@"USA"
+                                                                              media:@"TV"
+                                                                       ratingString:ratingString]]
+                  forKey:@"Rating"];
     }
-    return [returnArray autorelease];
-}
 
-#pragma mark Finishing up
+    [metadata setTag:[aSeries retrieveForPath:@"Network.text"] forKey:@"TV Network"];
+	[metadata setTag:[aEpisode retrieveForPath:@"SeasonNumber.text"] forKey:@"TV Season"];
+	[metadata setTag:[aEpisode retrieveForPath:@"EpisodeNumber.text"] forKey:@"TV Episode #"];
 
-- (void) dealloc {
-    callback = nil;
+    NSString *episodeID = [NSString stringWithFormat:@"%ld%02ld", (long)[[aEpisode retrieveForPath:@"SeasonNumber.text"] integerValue],
+                            (long)[[aEpisode retrieveForPath:@"EpisodeNumber.text"] integerValue]];
+	[metadata setTag:episodeID forKey:@"TV Episode ID"];
 
-    [super dealloc];
-}
+	[metadata setTag:[aEpisode retrieveForPath:@"SeasonNumber.text"] forKey:@"TV Season"];
+	[metadata setTag:[aEpisode retrieveForPath:@"EpisodeName.text"] forKey:@"Name"];
+	[metadata setTag:[aEpisode retrieveForPath:@"FirstAired.text"] forKey:@"Release Date"];
+	[metadata setTag:[aEpisode retrieveForPath:@"Overview.text"] forKey:@"Description"];
+	[metadata setTag:[aEpisode retrieveForPath:@"Overview.text"] forKey:@"Long Description"];
+	[metadata setTag:[aEpisode retrieveForPath:@"EpisodeNumber.text"] forKey:@"Track #"];
+	[metadata setTag:[TheTVDB cleanPeopleList:[aEpisode retrieveForPath:@"Director.text"]] forKey:@"Director"];
 
-- (void)cancel
-{
-    @synchronized(self) {
-        isCancelled = YES;
-    }
-}
+	[metadata setTag:[NSString stringWithFormat:@"%@, Season %@", [aSeries retrieveForPath:@"SeriesName.text"], [aEpisode retrieveForPath:@"SeasonNumber.text"]] forKey:@"Sort Album"];
+	[metadata setTag:[aSeries retrieveForPath:@"SeriesName.text"] forKey:@"Artist"];
+	[metadata setTag:[aSeries retrieveForPath:@"SeriesName.text"] forKey:@"Album Artist"];
+	[metadata setTag:[aSeries retrieveForPath:@"SeriesName.text"] forKey:@"Album"];
 
-#pragma mark Privacy
-
-+ (void) deleteCachedMetadata {
-    NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:4];
-    [args addObject:@"-c"];
-    [args addObject:@"import tempfile\nprint tempfile.gettempdir()"];
-    NSPipe *outputPipe = [NSPipe pipe];
-    NSTask *cmd = [[NSTask alloc] init];
-    [cmd setArguments:args];
-    [cmd setLaunchPath:@"/usr/bin/python"];
-    [cmd setStandardOutput:outputPipe];
-    [cmd launch];
-    [cmd waitUntilExit];
-    // read output into dictionary
-    NSFileHandle *outputFile = [outputPipe fileHandleForReading];
-    NSData *outputData = [outputFile readDataToEndOfFile];
-    NSString *output = [[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    [[NSFileManager defaultManager] removeItemAtPath:[output stringByAppendingPathComponent:@"tvdb_api"] error:NULL];
-
-    [cmd release];
-    [args release];
+	[metadata setTag:[TheTVDB cleanPeopleList:[aEpisode retrieveForPath:@"Writer.text"]] forKey:@"Screenwriters"];
+	// cast
+	NSString *actors = [TheTVDB cleanPeopleList:[aSeries retrieveForPath:@"Actors.text"]];
+	NSString *gueststars = [TheTVDB cleanPeopleList:[aEpisode retrieveForPath:@"GuestStars.text"]];
+	if ([actors length]) {
+		if ([gueststars length]) {
+			[metadata setTag:[NSString stringWithFormat:@"%@, %@", actors, gueststars] forKey:@"Cast"];
+		} else {
+			[metadata setTag:actors forKey:@"Cast"];
+		}
+	} else {
+		if ([gueststars length]) {
+			[metadata setTag:gueststars forKey:@"Cast"];
+		}
+	}
+	// artwork
+	NSMutableArray *artworkThumbURLs = [[NSMutableArray alloc] initWithCapacity:10];
+	NSMutableArray *artworkFullsizeURLs = [[NSMutableArray alloc] initWithCapacity:10];
+	NSMutableArray *artworkProviderNames = [[NSMutableArray alloc] initWithCapacity:10];
+	NSURL *u;
+	if ([aEpisode retrieveForPath:@"filename.text"]) {
+		u = [NSURL URLWithString:[NSString stringWithFormat:@"http://thetvdb.com/banners/%@", [aEpisode retrieveForPath:@"filename.text"]]];
+		[artworkThumbURLs addObject:u];
+		[artworkFullsizeURLs addObject:u];
+		[artworkProviderNames addObject:@"TheTVDB|episode"];
+	}
+	[metadata setArtworkThumbURLs: artworkThumbURLs];
+	[metadata setArtworkFullsizeURLs: artworkFullsizeURLs];
+	[metadata setArtworkProviderNames:artworkProviderNames];
+	[artworkThumbURLs release];
+	[artworkFullsizeURLs release];
+	[artworkProviderNames release];
+	// TheTVDB does not provide the following fields normally associated with TV shows in MP42Metadata:
+	// "Copyright", "Comments", "Producers", "Artist"
+	return [metadata autorelease];
 }
 
 @end

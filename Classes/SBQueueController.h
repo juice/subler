@@ -7,68 +7,50 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "SBTableView.h"
+#import "SBQueue.h"
 
-@class MP42File;
+NS_ASSUME_NONNULL_BEGIN
+
 @class SBQueueItem;
+@class SBOptionsViewController;
+@class SBQueuePreferences;
 
-enum {
-    SBQueueStatusUnknown = 0,
-    SBQueueStatusWorking,
-    SBQueueStatusCompleted,
-    SBQueueStatusFailed,
-    SBQueueStatusCancelled,
-};
-typedef NSInteger SBQueueStatus;
+@class SBTableView;
+@class MP42File;
 
-@interface SBQueueController : NSWindowController<NSTableViewDelegate, NSTableViewDataSource, SBTableViewDelegate> {
-    IBOutlet NSButton *start;
-    IBOutlet NSButton *open;
+@interface SBQueueController : NSWindowController {
+@private
+    IBOutlet NSTextField *_countLabel;
+    IBOutlet NSProgressIndicator *_progressIndicator;
 
-    IBOutlet NSTextField *countLabel;
-    IBOutlet NSProgressIndicator *spinningIndicator;
+    IBOutlet SBTableView *_tableView;
 
-    IBOutlet NSButton *OptimizeOption;
-    IBOutlet NSButton *MetadataOption;
-    IBOutlet NSButton *AutoStartOption;
-    IBOutlet NSBox    *optionsBox;
-    BOOL optionsStatus;
+    IBOutlet NSWindow *_detachedWindow;
+    IBOutlet NSToolbarItem *_startItem;
 
-    IBOutlet NSScrollView   *tableScrollView;
-    IBOutlet SBTableView    *tableView;
-    NSMutableArray *filesArray;
+    NSPopover *_popover;
+    NSPopover *_itemPopover;
+    SBOptionsViewController *_windowController;
 
-    NSURL *destination;
-    BOOL customDestination;
-    IBOutlet NSPopUpButton *destButton;
+    SBQueuePreferences *_prefs;
+    NSMutableDictionary<NSString *, id> *_options;
 
-    NSImage *docImg;
+    NSImage *_docImg;
 
-    dispatch_queue_t queue;
-    SBQueueStatus   status;
-    BOOL            isCancelled;
-    id              currentItem;
+    SBQueue *_queue;
 }
 
-@property (readonly) SBQueueStatus status;
+@property(readonly) SBQueueStatus status;
 
-+ (SBQueueController*)sharedController;
++ (SBQueueController *)sharedManager;
 
-- (void)start:(id)sender;
-- (void)stop:(id)sender;
+- (IBAction)open:(id)sender;
 
-- (void)addItem:(SBQueueItem*)item;
+- (void)addItem:(SBQueueItem *)item;
+- (void)editItem:(SBQueueItem *)item;
 
 - (BOOL)saveQueueToDisk;
 
-- (IBAction)removeSelectedItems:(id)sender;
-- (IBAction)removeCompletedItems:(id)sender;
-
-- (IBAction)toggleStartStop:(id)sender;
-- (IBAction)toggleOptions:(id)sender;
-
-- (IBAction)open:(id)sender;
-- (IBAction)chooseDestination:(id)sender;
-- (IBAction)destination:(id)sender;
-
 @end
+
+NS_ASSUME_NONNULL_END

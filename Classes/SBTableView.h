@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol SBTableViewDelegate
 @optional
 - (void)_deleteSelectionFromTableView:(NSTableView *)tableView;
@@ -15,12 +17,17 @@
 - (void)_cutSelectionFromTableView:(NSTableView *)tableView;
 - (void)_pasteToTableView:(NSTableView *)tableView;
 
+- (NSInteger)tableView:(NSTableView *)tableView
+    spanForTableColumn:(NSTableColumn *)tableColumn
+                   row:(NSInteger)row;
 @end
 
-@interface SBTableView : NSTableView<SBTableViewDelegate> {
-    NSArray *_pasteboardTypes;
+@interface SBTableView : NSTableView {
+    NSArray<NSString *> *_pasteboardTypes;
+    NSInteger _defaultEditingColumn;
 }
-- (void)keyDown:(NSEvent *)event;
-@property(readwrite, retain) NSArray* _pasteboardTypes;
+@property(nonatomic, readwrite, copy) NSArray<NSString *> *pasteboardTypes;
+@property(nonatomic, readwrite) NSInteger defaultEditingColumn;
 @end
 
+NS_ASSUME_NONNULL_END
